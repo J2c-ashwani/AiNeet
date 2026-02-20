@@ -14,10 +14,14 @@ export default function TestConfigPage() {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
     const [error, setError] = useState('');
+    const [user, setUser] = useState(null);
+    const [showLockModal, setShowLockModal] = useState(false);
+    const [lockMessage, setLockMessage] = useState('');
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
             if (!data.user) router.push('/login');
+            else setUser(data.user);
         });
         fetch('/api/syllabus').then(r => r.json()).then(data => {
             setSyllabus(data.subjects || []);
@@ -55,7 +59,16 @@ export default function TestConfigPage() {
                 })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
+
+            if (!res.ok) {
+                if (data.locked) {
+                    setLockMessage(data.error);
+                    setShowLockModal(true);
+                    return;
+                }
+                throw new Error(data.error);
+            }
+
             sessionStorage.setItem('currentTest', JSON.stringify(data));
             router.push(`/test/${data.testId}`);
         } catch (err) {
@@ -203,6 +216,50 @@ export default function TestConfigPage() {
                     )}
                 </button>
             </div>
+
+            {/* Referral Lock Modal */}
+            {showLockModal && (
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div className="modal-content" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
+                        <button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+
+                        <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🔒</div>
+                        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '16px' }}>Premium Feature Locked</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '32px', lineHeight: 1.6 }}>
+                            {lockMessage}
+                        </p>
+
+                        <div style={{ background: 'var(--bg-glass)', border: '1px dashed var(--accent-primary)', padding: '20px', borderRadius: '16px', marginBottom: '32px' }}>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Unique Invite Link</div>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px' }}>
+                                <input
+                                    type="text"
+                                    readOnly
+                                    value={`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`}
+                                    style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none' }}
+                                />
+                                <button
+                                    onClick={() => navigator.clipboard.writeText(`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`)}
+                                    className="btn btn-secondary btn-sm"
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                const text = `Join AI NEET Coach with me and get free AI Mock Tests! 🚀\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                            }}
+                            className="btn btn-success btn-lg w-full"
+                            style={{ fontSize: '1.2rem', padding: '16px', fontWeight: 700 }}
+                        >
+                            📱 Share via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }

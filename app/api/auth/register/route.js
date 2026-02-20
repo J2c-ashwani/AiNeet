@@ -10,7 +10,7 @@ export async function POST(request) {
     try {
         initializeDatabase();
         const db = getDb();
-        const { name, email, password, targetYear } = await request.json();
+        const { name, email, password, targetYear, referralCode } = await request.json();
 
         // Rate Limiting (5 req/min per IP)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
@@ -30,7 +30,22 @@ export async function POST(request) {
 
         const id = uuidv4();
         const hash = hashPassword(password);
-        await db.run('INSERT INTO users (id, name, email, password_hash, target_year) VALUES (?, ?, ?, ?, ?)', [id, name, email, hash, parseInt(targetYear) || 2026]);
+        const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        let referredBy = null;
+        if (referralCode) {
+            const referrer = await db.get('SELECT id FROM users WHERE referral_code = ?', [referralCode.trim().toUpperCase()]);
+            if (referrer) {
+                referredBy = referrer.id;
+                // Increment referrer's count
+                await db.run('UPDATE users SET referrals_count = referrals_count + 1 WHERE id = ?', [referrer.id]);
+            }
+        }
+
+        await db.run(
+            'INSERT INTO users (id, name, email, password_hash, target_year, referral_code, referred_by) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [id, name, email, hash, parseInt(targetYear) || 2026, myReferralCode, referredBy]
+        );
 
         const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
         const token = generateToken(user);

@@ -7,16 +7,37 @@ export default function MistakesPage() {
     const router = useRouter();
     const [mistakes, setMistakes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [exporting, setExporting] = useState(false);
+    const [showLockModal, setShowLockModal] = useState(false);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(auth => {
             if (!auth.user) { router.push('/login'); return; }
+            setUser(auth.user);
             fetch('/api/performance').then(r => r.json()).then(data => {
                 setMistakes(data.weakAreas || []);
                 setLoading(false);
             });
         }).catch(() => router.push('/login'));
     }, [router]);
+
+    const handleExportPDF = async () => {
+        setExporting(true);
+        try {
+            const res = await fetch('/api/mistakes/export');
+            if (res.status === 403) {
+                const data = await res.json();
+                if (data.locked) { setShowLockModal(true); return; }
+            }
+            if (!res.ok) { const d = await res.json(); alert(d.error); return; }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'NEET_Mistakes.pdf'; a.click();
+            URL.revokeObjectURL(url);
+        } catch (e) { alert('Failed to export PDF'); }
+        finally { setExporting(false); }
+    };
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>
@@ -29,9 +50,16 @@ export default function MistakesPage() {
             <Navbar />
 
             <div className="page" style={{ maxWidth: 800 }}>
-                <div className="page-header">
-                    <h1 className="page-title">📓 Mistake Notebook</h1>
-                    <p className="page-subtitle">Your weak areas and repeated mistakes — focus here for maximum improvement</p>
+                <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                    <div>
+                        <h1 className="page-title">📓 Mistake Notebook</h1>
+                        <p className="page-subtitle">Your weak areas and repeated mistakes — focus here for maximum improvement</p>
+                    </div>
+                    {mistakes.length > 0 && (
+                        <button onClick={handleExportPDF} disabled={exporting} className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+                            {exporting ? '⏳ Generating PDF...' : '📄 Download PDF'}
+                        </button>
+                    )}
                 </div>
 
                 {mistakes.length > 0 ? (
@@ -62,6 +90,28 @@ export default function MistakesPage() {
                     </div>
                 )}
             </div>
+
+            {/* Referral Lock Modal for PDF Export */}
+            {showLockModal && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
+                        <button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        <div style={{ fontSize: '4rem', marginBottom: '16px' }}>📄</div>
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px' }}>PDF Export Locked</h2>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.6 }}>Refer 2 friends to unlock unlimited Mistake Notebook PDF exports for last-minute revision.</p>
+                        <button
+                            onClick={() => {
+                                const text = `I'm preparing for NEET 2026 with AI NEET Coach! 🧠\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                            }}
+                            className="btn btn-success btn-lg w-full"
+                            style={{ fontSize: '1.1rem', padding: '14px', fontWeight: 700 }}
+                        >
+                            📱 Share via WhatsApp
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

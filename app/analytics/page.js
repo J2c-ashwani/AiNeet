@@ -8,6 +8,7 @@ export default function AnalyticsPage() {
     const router = useRouter();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         Promise.all([
@@ -15,6 +16,7 @@ export default function AnalyticsPage() {
             fetch('/api/performance').then(r => r.json())
         ]).then(([auth, perf]) => {
             if (!auth.user) { router.push('/login'); return; }
+            setUser(auth.user);
             setData(perf);
             setLoading(false);
         }).catch(() => router.push('/login'));
@@ -160,9 +162,27 @@ export default function AnalyticsPage() {
                     </div>
                 </div>
 
-                {/* Rank Prediction */}
-                <div className="card mt-6">
+                {/* Rank Prediction — Locked behind referral */}
+                <div className="card mt-6" style={{ position: 'relative', overflow: 'hidden' }}>
                     <h2 className="mb-4">🏆 Rank Prediction</h2>
+
+                    {(user?.referrals_count || 0) < 1 && (
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(10,14,26,0.85)', backdropFilter: 'blur(10px)', borderRadius: 'inherit' }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🔒</div>
+                            <h3 style={{ fontWeight: 800, marginBottom: '8px' }}>Premium Analytics Locked</h3>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.9rem' }}>Refer 1 friend to unlock your AIR prediction</p>
+                            <button
+                                onClick={() => {
+                                    const text = `Prepare for NEET 2026 with AI! 🧠\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                }}
+                                className="btn btn-primary"
+                            >
+                                📱 Share & Unlock
+                            </button>
+                        </div>
+                    )}
+
                     <div className="grid grid-4 gap-4">
                         <div className="text-center">
                             <div className="font-bold" style={{ fontSize: '2rem', color: 'var(--accent-primary)' }}>{rankPrediction?.predictedScore || 0}</div>

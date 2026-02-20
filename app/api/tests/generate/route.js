@@ -22,6 +22,18 @@ export async function POST(request) {
             return NextResponse.json({ error: 'You have reached the test generation limit for this hour.' }, { status: 429 });
         }
 
+        // GROWTH ENGINE: Lock Grand Mock Test behind referrals
+        if (type === 'mock') {
+            const user = await db.get('SELECT referrals_count FROM users WHERE id = ?', [decoded.id]);
+            if ((user?.referrals_count || 0) < 1) {
+                return NextResponse.json({
+                    error: 'Refer 1 friend to unlock the Grand Mock Test.',
+                    locked: true,
+                    feature: 'grand_mock'
+                }, { status: 403 });
+            }
+        }
+
         // MONETIZATION: Usage Limit Check
         if (decoded && type === 'ai_generated') { // Assuming 'ai_generated' is the type, logic below implies fallback to AI
             // We need to import UsageTracker
