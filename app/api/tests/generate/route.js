@@ -35,16 +35,12 @@ export async function POST(request) {
         }
 
         // MONETIZATION: Usage Limit Check
-        if (decoded && type === 'ai_generated') { // Assuming 'ai_generated' is the type, logic below implies fallback to AI
-            // We need to import UsageTracker
-            // Note: In strict node env we can't dynamic import easily inside function if module system differs,
-            // but here we are in same file context.
-            const { UsageTracker } = require('@/lib/usage');
+        if (decoded && type === 'ai_generated') {
+            const { UsageTracker } = await import('@/lib/usage');
             const check = await UsageTracker.checkLimit(decoded.id, decoded.plan_type || decoded.subscription_tier, 'test');
             if (!check.allowed) {
                 return NextResponse.json({ error: check.message + " (Available in Pro Plan)" }, { status: 403 });
             }
-            // Increment Usage
             await UsageTracker.incrementUsage(decoded.id, 'test', 0);
         }
 

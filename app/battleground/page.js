@@ -20,39 +20,65 @@ export default function BattlegroundPage() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const timerRef = useRef(null);
-    const pollRef = useRef(null);
+    const sseRef = useRef(null);
     const startTimeRef = useRef(null);
+    const [sseConnected, setSseConnected] = useState(false);
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
             if (!data.user) router.push('/login');
             else setUser(data.user);
         });
-        return () => { clearInterval(timerRef.current); clearInterval(pollRef.current); };
+        return () => { clearInterval(timerRef.current); if (sseRef.current) sseRef.current.close(); };
     }, [router]);
 
-    // Poll for status updates in lobby and results
+    // Real-time SSE connection for lobby and results
     useEffect(() => {
         if (!battleId || view === 'test') return;
-        const poll = () => {
-            fetch(`/api/battleground/status?battleId=${battleId}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.battle) setBattle(data.battle);
-                    if (data.participants) setParticipants(data.participants);
-                    // Auto-transition: if battle started and user hasn't submitted, go to test
-                    if (data.battle?.status === 'active' && !data.mySubmission && view === 'lobby') {
-                        setView('test');
-                        startTimeRef.current = Date.now();
-                        setTimeLeft(data.battle.timeLimitSeconds);
-                    }
-                    // Auto-transition: if ended, go to results
-                    if (data.battle?.status === 'ended') setView('results');
-                });
+
+        // Close any existing SSE connection
+        if (sseRef.current) sseRef.current.close();
+
+        const eventSource = new EventSource(`/api/battleground/stream?battleId=${battleId}`);
+        sseRef.current = eventSource;
+
+        eventSource.addEventListener('update', (e) => {
+            try {
+                const data = JSON.parse(e.data);
+                if (data.battle) setBattle(data.battle);
+                if (data.participants) setParticipants(data.participants);
+                setSseConnected(true);
+
+                // Auto-transition: if battle started and user hasn't submitted, go to test
+                if (data.battle?.status === 'active' && !data.mySubmission && view === 'lobby') {
+                    setView('test');
+                    startTimeRef.current = Date.now();
+                    setTimeLeft(data.battle.timeLimitSeconds);
+                    eventSource.close(); // Close SSE during test, we don't need live updates
+                }
+                // Auto-transition: if ended, go to results
+                if (data.battle?.status === 'ended' && view !== 'results') {
+                    setView('results');
+                }
+            } catch (err) {
+                console.error('SSE parse error:', err);
+            }
+        });
+
+        eventSource.addEventListener('error', (e) => {
+            try { const data = JSON.parse(e.data); console.error('SSE error event:', data); } catch { }
+        });
+
+        eventSource.onerror = () => {
+            setSseConnected(false);
+            // EventSource auto-reconnects by default
         };
-        poll();
-        pollRef.current = setInterval(poll, 3000);
-        return () => clearInterval(pollRef.current);
+
+        eventSource.onopen = () => {
+            setSseConnected(true);
+        };
+
+        return () => { eventSource.close(); setSseConnected(false); };
     }, [battleId, view]);
 
     // Timer for the test
@@ -180,7 +206,10 @@ export default function BattlegroundPage() {
             <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🏟️</div>
                 <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Battleground Lobby</h1>
-                <p className="text-muted" style={{ marginBottom: '32px' }}>Waiting for the host to start the battle...</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: sseConnected ? '#10b981' : '#ef4444', animation: sseConnected ? 'pulse 2s infinite' : 'none', display: 'inline-block' }}></span>
+                    <span className="text-muted" style={{ fontSize: '0.85rem' }}>{sseConnected ? 'LIVE — Real-time updates active' : 'Connecting...'}</span>
+                </div>
 
                 {/* Invite Code Display */}
                 {inviteCode && (
