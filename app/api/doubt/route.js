@@ -5,6 +5,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { generateDoubtResponse } from '@/lib/ai-engine';
 import { v4 as uuidv4 } from 'uuid';
 import { sanitizeString } from '@/lib/validate';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
@@ -12,6 +13,12 @@ export async function POST(request) {
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+        // Rate limit: 20 AI doubt requests per minute per user
+        const rl = rateLimit(`user:${decoded.id}:doubt`, 20, 60000);
+        if (!rl.success) {
+            return NextResponse.json({ error: 'Too many requests. Please wait a moment.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
+        }
 
         const { message, conversationId } = await request.json();
         if (!message || typeof message !== 'string') return NextResponse.json({ error: 'Message is required' }, { status: 400 });

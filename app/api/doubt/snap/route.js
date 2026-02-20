@@ -4,12 +4,19 @@ import { getUserFromRequest } from '@/lib/auth';
 import { analyzeImageDoubt } from '@/lib/vision_engine';
 import { initializeDatabase } from '@/lib/schema';
 import { getDb } from '@/lib/db';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
         // 1. Auth Check
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        // Rate limit: 5 image analysis requests per minute (expensive AI)
+        const rl = rateLimit(`user:${decoded.id}:snap`, 5, 60000);
+        if (!rl.success) {
+            return NextResponse.json({ error: 'Too many image requests. Please wait.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
+        }
 
         // 2. Parse Form Data (File Upload)
         const formData = await request.formData();

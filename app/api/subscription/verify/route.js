@@ -5,6 +5,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { initializeDatabase } from '@/lib/schema';
 import { sanitizeString } from '@/lib/validate';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
@@ -15,6 +16,12 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        // Rate limit: 5 verify attempts per 5 minutes
+        const rl = rateLimit(`user:${decoded.id}:verify`, 5, 300000);
+        if (!rl.success) {
+            return NextResponse.json({ error: 'Too many verification attempts.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }
 
         // 2. Parse & Sanitize Request

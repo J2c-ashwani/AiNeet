@@ -2,11 +2,18 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { sanitizeString } from '@/lib/validate';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+        // Rate limit: 20 requests per minute per user
+        const rl = rateLimit(`user:${decoded.id}:explain`, 20, 60000);
+        if (!rl.success) {
+            return NextResponse.json({ error: 'Too many requests. Please wait a moment.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
+        }
 
         const { text, bookId } = await request.json();
 

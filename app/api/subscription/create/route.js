@@ -5,6 +5,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeDatabase } from '@/lib/schema';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
@@ -15,6 +16,12 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        // Rate limit: 5 payment attempts per 5 minutes (fraud prevention)
+        const rl = rateLimit(`user:${decoded.id}:payment`, 5, 300000);
+        if (!rl.success) {
+            return NextResponse.json({ error: 'Too many payment attempts. Please wait.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }
 
         // 2. Parse Request
