@@ -4,6 +4,7 @@ import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { initializeDatabase } from '@/lib/schema';
 import { validateEmail, sanitizeString, sanitizePhone } from '@/lib/validate';
+import { checkFeatureAccess } from '@/lib/plan_gate';
 
 export async function GET(request) {
     try {
@@ -12,10 +13,11 @@ export async function GET(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const user = await db.get("SELECT parent_email, parent_phone FROM users WHERE id = ?", [decoded.id]);
+        const user = await db.get("SELECT parent_email, parent_phone, subscription_tier FROM users WHERE id = ?", [decoded.id]);
         return NextResponse.json({
             parent_email: user?.parent_email || '',
-            parent_phone: user?.parent_phone || ''
+            parent_phone: user?.parent_phone || '',
+            tier: user?.subscription_tier || 'free'
         });
 
     } catch (error) {
@@ -30,6 +32,10 @@ export async function POST(request) {
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        // Plan gate: Parent Connect requires Premium
+        const blocked = await checkFeatureAccess(decoded.id, 'parent_connect_enabled', 'premium');
+        if (blocked) return blocked;
 
         const body = await request.json();
 

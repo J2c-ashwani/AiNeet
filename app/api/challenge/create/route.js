@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { checkUsageLimit } from '@/lib/plan_gate';
 
 export async function POST(request) {
     try {
@@ -12,9 +13,28 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
         }
 
+        // Plan gate: limit challenges per day based on tier
+        const today = new Date().toISOString().split('T')[0];
+        const dailyCount = await db.get(
+            `SELECT COUNT(*) as count FROM battles WHERE user_id = ? AND created_at >= ?`,
+            [decoded.id, today]
+        );
+        const usage = await checkUsageLimit(decoded.id, 'challenges_per_day', dailyCount?.count || 0);
+
+        if (!usage.allowed) {
+            return NextResponse.json({
+                error: `Daily challenge limit reached (${usage.limit}/day). Upgrade to Pro for unlimited challenges!`,
+                locked: true,
+                feature: 'challenges_per_day',
+                used: usage.used,
+                limit: usage.limit,
+                tier: usage.tier,
+            }, { status: 403 });
+        }
+
         // Generate 10 random mixed questions for the challenge
         const questions = await db.all(`
-            SELECT id, text, option_a, option_b, option_c, option_d, correct_option, subject
+            SELECT id, text, option_a, option_b, option_c, option_d, correct_option, subject_id
             FROM questions 
             ORDER BY RANDOM() 
             LIMIT 10
@@ -27,14 +47,15 @@ export async function POST(request) {
         const challengeId = uuidv4();
 
         await db.run(
-            `INSERT INTO challenges (id, creator_id, questions_json) VALUES (?, ?, ?)`,
+            `INSERT INTO battles (id, user_id, questions, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
             [challengeId, decoded.id, JSON.stringify(questions)]
         );
 
         return NextResponse.json({
             success: true,
             challengeId,
-            shareUrl: `https://aineetcoach.com/challenge/${challengeId}`
+            shareUrl: `https://aineetcoach.com/challenge/${challengeId}`,
+            remaining: usage.remaining,
         });
 
     } catch (error) {

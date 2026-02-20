@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
+import { checkFeatureAccess } from '@/lib/plan_gate';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 
@@ -15,15 +16,11 @@ export async function GET(request) {
             return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
         }
 
-        // GROWTH ENGINE: Lock PDF exports behind 2 referrals
-        const user = await db.get('SELECT name, referrals_count FROM users WHERE id = ?', [decoded.id]);
-        if ((user?.referrals_count || 0) < 2) {
-            return NextResponse.json({
-                error: 'Refer 2 friends to unlock unlimited AI Mistake Notebook PDF exports.',
-                locked: true,
-                feature: 'pdf_export'
-            }, { status: 403 });
-        }
+        // Plan gate: PDF export requires Pro or Premium
+        const blocked = await checkFeatureAccess(decoded.id, 'pdf_export_enabled', 'pro');
+        if (blocked) return blocked;
+
+        const user = await db.get('SELECT name FROM users WHERE id = ?', [decoded.id]);
 
         // Fetch User's mistakes
         const mistakes = await db.all(`
