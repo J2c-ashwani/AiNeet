@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /test/
+Disallow: /doubts/
+Disallow: /profile/
+Disallow: /mistakes/
+Disallow: /revision/
+Disallow: /battle/
+
+Sitemap: https://aineetcoach.com/sitemap.xml
