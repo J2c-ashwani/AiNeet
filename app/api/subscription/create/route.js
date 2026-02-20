@@ -25,26 +25,44 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Invalid Plan ID' }, { status: 400 });
         }
 
-        // 3. Create Order via Payment Service
-        const order = await PaymentService.createOrder(plan.amount);
+        // 3. Get user details for Cashfree customer info
+        const user = await db.get('SELECT id, name, email FROM users WHERE id = ?', [decoded.id]);
 
-        // 4. Log intent in Payments table
-        // We use 'mock_provider_payment_id' for now since we don't have a real one yet
+        // 4. Create Order via Cashfree
+        const order = await PaymentService.createOrder(
+            plan.amount,
+            'INR',
+            {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                phone: '9999999999', // We don't collect phone at registration yet
+            },
+            planId
+        );
+
+        // 5. Log payment intent in DB
+        const paymentId = uuidv4();
         await db.run(
             `INSERT INTO payments (id, user_id, amount, currency, status, provider_order_id)
              VALUES (?, ?, ?, ?, ?, ?)`,
-            [uuidv4(), decoded.id, plan.amount, 'INR', 'pending', order.id]
+            [paymentId, decoded.id, plan.amount, 'INR', 'pending', order.orderId]
         );
 
+        // 6. Return Cashfree session details to frontend
         return NextResponse.json({
-            orderId: order.id,
+            orderId: order.orderId,
+            paymentSessionId: order.paymentSessionId,
+            cfOrderId: order.cfOrderId,
             amount: plan.amount,
             currency: 'INR',
-            key: process.env.RAZORPAY_KEY_ID || 'mock_key'
+            planId: planId,
+            environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
+            isMock: order.isMock || false,
         });
 
     } catch (error) {
         console.error('Subscription Create Error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to create payment order' }, { status: 500 });
     }
 }

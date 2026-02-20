@@ -20,30 +20,36 @@ export async function POST(request) {
         // 2. Parse & Sanitize Request
         const body = await request.json();
         const orderId = sanitizeString(body.orderId || '', 256);
-        const paymentId = sanitizeString(body.paymentId || '', 256);
-        const signature = sanitizeString(body.signature || '', 512);
         const planId = sanitizeString(body.planId || '', 128);
 
-        if (!orderId || !paymentId || !signature || !planId) {
-            return NextResponse.json({ error: 'Missing required payment fields (orderId, paymentId, signature, planId)' }, { status: 400 });
+        if (!orderId || !planId) {
+            return NextResponse.json({ error: 'Missing required fields (orderId, planId)' }, { status: 400 });
         }
 
-        // 3. Verify Payment
-        const isValid = await PaymentService.verifyPayment(paymentId, orderId, signature);
-        if (!isValid) {
-            return NextResponse.json({ error: 'Invalid Payment Signature' }, { status: 400 });
+        // 3. Verify Payment with Cashfree (fetch order status)
+        const verification = await PaymentService.verifyPayment(orderId);
+
+        if (!verification.isPaid) {
+            // Update payment status to failed
+            await db.run(
+                `UPDATE payments SET status = 'failed' WHERE provider_order_id = ?`,
+                [orderId]
+            );
+            return NextResponse.json({
+                error: 'Payment not completed',
+                orderStatus: verification.orderStatus
+            }, { status: 400 });
         }
 
         // 4. Calculate Expiry
         const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.id === planId);
-        const durationDays = plan ? plan.duration_days : 30; // Default to 30 if plan missing (shouldn't happen)
+        const durationDays = plan ? plan.duration_days : 30;
 
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + durationDays);
         const expiryIso = expiryDate.toISOString();
 
-        // 5. Update User Subscription (Transaction suggested here in prod)
-        // Set user to 'pro'
+        // 5. Upgrade User Subscription
         await db.run(
             `UPDATE users 
              SET subscription_tier = 'pro', 
@@ -54,18 +60,19 @@ export async function POST(request) {
         );
 
         // 6. Update Payment Status
-        // Note: Ideally we find the payment by order_id. 
-        // For sync simplicity, we assume the latest pending or we just insert a completion record if needed.
-        // Let's update the payment entry we created in /create
         await db.run(
             `UPDATE payments 
              SET status = 'completed', 
                  provider_payment_id = ? 
              WHERE provider_order_id = ?`,
-            [paymentId, orderId]
+            [verification.cfOrderId || orderId, orderId]
         );
 
-        return NextResponse.json({ success: true, expiry: expiryIso });
+        return NextResponse.json({
+            success: true,
+            expiry: expiryIso,
+            plan: planId,
+        });
 
     } catch (error) {
         console.error('Subscription Verify Error:', error);
