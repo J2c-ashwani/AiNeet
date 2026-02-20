@@ -20,6 +20,7 @@ export default function Navbar() {
     const navItems = [
         { name: 'Dashboard', path: '/dashboard', icon: '🏠' },
         { name: 'Practice', path: '/test/configure', icon: '📝' },
+        { name: 'Battle', path: '/battle', icon: '🤖' },
         { name: 'Battleground', path: '/battleground', icon: '⚔️' },
         { name: 'NCERT', path: '/ncert', icon: '📚' },
         { name: 'Profile', path: '/profile', icon: '👤' },
