@@ -14,9 +14,9 @@ export async function GET(request) {
 
     try {
         const db = getDb();
-        const users = db.prepare(
+        const users = await db.all(
             'SELECT id, name, email, xp, subscription_tier, subscription_expires, created_at, role FROM users ORDER BY id DESC'
-        ).all();
+        );
 
         return NextResponse.json({ users });
     } catch (error) {

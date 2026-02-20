@@ -8,7 +8,7 @@ export async function GET(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const guidance = generateDailyGuidance(decoded.id);
+        const guidance = await generateDailyGuidance(decoded.id);
 
         if (!guidance) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });

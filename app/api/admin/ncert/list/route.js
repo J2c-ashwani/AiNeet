@@ -10,9 +10,9 @@ export async function GET(request) {
 
     try {
         const db = getDb();
-        const books = db.prepare(
+        const books = await db.all(
             'SELECT id, subject_id, chapter_id, title, created_at FROM ncert_content ORDER BY id DESC'
-        ).all();
+        );
         return NextResponse.json({ books });
     } catch (error) {
         // Table might not exist yet
