@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -19,12 +19,20 @@ export async function POST(request) {
         if (!convId) {
             convId = uuidv4();
             const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
-            db.prepare('INSERT INTO doubt_conversations (id, user_id, title) VALUES (?, ?, ?)').run(convId, decoded.id, title);
+            await db.run('INSERT INTO doubt_conversations (id, user_id, title) VALUES (?, ?, ?)', [convId, decoded.id, title]);
         }
 
-        db.prepare('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)').run(convId, 'user', message);
-        const aiResponse = generateDoubtResponse(message);
-        db.prepare('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)').run(convId, 'assistant', aiResponse);
+        await db.run('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)', [convId, 'user', message]);
+        // Generate AI Response
+        // For now, context is an empty object. It can be populated with relevant information later.
+        const context = {};
+        const aiResponse = await generateDoubtResponse(message, context, decoded);
+
+        // Save AI message
+        await db.run(
+            'INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)',
+            [convId, 'assistant', aiResponse]
+        );
 
         return NextResponse.json({ conversationId: convId, response: aiResponse });
     } catch (error) {
@@ -35,7 +43,7 @@ export async function POST(request) {
 
 export async function GET(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -44,11 +52,11 @@ export async function GET(request) {
         const convId = searchParams.get('conversationId');
 
         if (convId) {
-            const messages = db.prepare('SELECT * FROM doubt_messages WHERE conversation_id = ? ORDER BY created_at ASC').all(convId);
+            const messages = await db.all('SELECT * FROM doubt_messages WHERE conversation_id = ? ORDER BY created_at ASC', [convId]);
             return NextResponse.json({ messages });
         }
 
-        const conversations = db.prepare('SELECT * FROM doubt_conversations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20').all(decoded.id);
+        const conversations = await db.all('SELECT * FROM doubt_conversations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20', [decoded.id]);
         return NextResponse.json({ conversations });
     } catch (error) {
         console.error('Doubt GET error:', error);

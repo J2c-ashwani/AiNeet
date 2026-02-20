@@ -5,15 +5,15 @@ import { getLevelFromXP } from '@/lib/scoring';
 
 export async function GET(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
 
-        const topUsers = db.prepare(`
-      SELECT id, name, xp, level, streak, avatar,
-        (SELECT COUNT(*) FROM tests WHERE user_id = users.id AND completed_at IS NOT NULL) as test_count,
-        (SELECT COALESCE(AVG(score), 0) FROM tests WHERE user_id = users.id AND completed_at IS NOT NULL) as avg_score
-      FROM users ORDER BY xp DESC LIMIT 20
-    `).all();
+        const topUsers = await db.all(`
+            SELECT id, name, xp, level, streak, avatar,
+            (SELECT COUNT(*) FROM tests WHERE user_id = users.id AND completed_at IS NOT NULL) as test_count,
+            (SELECT COALESCE(AVG(score), 0) FROM tests WHERE user_id = users.id AND completed_at IS NOT NULL) as avg_score
+            FROM users ORDER BY xp DESC LIMIT 20
+        `);
 
         const leaderboard = topUsers.map((u, idx) => ({
             rank: idx + 1, name: u.name, xp: u.xp,

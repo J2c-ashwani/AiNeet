@@ -16,7 +16,7 @@ export async function POST(request) {
         const actualScore = outcome === 'win' ? 1 : (outcome === 'draw' ? 0.5 : 0);
 
         // Fetch current Elo
-        const user = db.prepare('SELECT battle_elo FROM users WHERE id = ?').get(decoded.id);
+        const user = await db.get('SELECT battle_elo FROM users WHERE id = ?', [decoded.id]);
         const currentElo = user ? user.battle_elo : 1000;
 
         // Simple simplified opponent elo fetch (in real app, fetch from DB)
@@ -33,13 +33,13 @@ export async function POST(request) {
         const newElo = Math.round(currentElo + kFactor * (actualScore - expectedScore));
 
         // Update User
-        db.prepare('UPDATE users SET battle_elo = ? WHERE id = ?').run(newElo, decoded.id);
+        await db.run('UPDATE users SET battle_elo = ? WHERE id = ?', [newElo, decoded.id]);
 
         // Log Battle
-        db.prepare(`
+        await db.run(`
             INSERT INTO battles (id, user_id, opponent_id, user_score, opponent_score, outcome, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
-        `).run(battleId, decoded.id, opponentId, userScore, opponentScore, outcome);
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `, [battleId, decoded.id, opponentId, userScore, opponentScore, outcome, new Date().toISOString()]);
 
         return NextResponse.json({ success: true, newElo, eloChange: newElo - currentElo });
 

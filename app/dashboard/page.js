@@ -5,12 +5,15 @@ import Navbar from '@/components/Navbar';
 import { ActivityHeatmap } from '@/components/Charts';
 import RevisionCard from '@/components/RevisionCard';
 import CoachWidget from '@/components/CoachWidget';
+import AdBanner from "@/components/monetization/AdBanner";
+import PricingModal from "@/components/monetization/PricingModal";
 
 export default function Dashboard() {
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [performance, setPerformance] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showPricing, setShowPricing] = useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -30,6 +33,8 @@ export default function Dashboard() {
             <p>Loading your dashboard...</p>
         </div>
     );
+
+    const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
 
     const stats = performance?.overallStats || {};
     const rankPrediction = performance?.rankPrediction || {};

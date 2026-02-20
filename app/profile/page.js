@@ -157,10 +157,19 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Logout */}
-                <button onClick={handleLogout} className="btn btn-danger w-full" style={{ padding: '14px' }}>
-                    🚪 Logout
-                </button>
+                {/* Parent Connect Settings */}
+                <div className="mb-8">
+                    <ParentSettings />
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        onClick={handleLogout}
+                        className="btn btn-danger"
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
         </div>
     );

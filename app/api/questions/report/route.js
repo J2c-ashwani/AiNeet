@@ -21,14 +21,13 @@ export async function POST(request) {
         }
 
         // Insert report
-        const stmt = db.prepare(`
-            INSERT INTO question_reports (user_id, question_id, reason, comment)
-            VALUES (?, ?, ?, ?)
-        `);
-        stmt.run(decoded.id, questionId, reason, comment || '');
+        await db.run(
+            'INSERT INTO question_reports (question_id, user_id, issue_type, description) VALUES (?, ?, ?, ?)',
+            [questionId, decoded.id, reason, comment || '']
+        );
 
-        // Increment flag count on question
-        db.prepare('UPDATE questions SET flag_count = flag_count + 1 WHERE id = ?').run(questionId);
+        // Auto-flag the question if reported
+        await db.run('UPDATE questions SET flag_count = flag_count + 1 WHERE id = ?', [questionId]);
 
         return NextResponse.json({ success: true, message: 'Report submitted successfully' });
 

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -33,7 +33,7 @@ export async function POST(request) {
         query += ' LIMIT ?';
         params.push(questionCount || 20);
 
-        const questions = db.prepare(query).all(...params);
+        const questions = await db.all(query, params);
 
         if (questions.length === 0) {
             return NextResponse.json({ error: 'No PYQs available for the selected criteria. Try broadening your selection.' }, { status: 404 });
@@ -43,7 +43,10 @@ export async function POST(request) {
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, type: 'pyq', questionCount: questions.length });
 
-        db.prepare(`INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, 'pyq', ?, ?, ?, datetime('now'))`).run(testId, decoded.id, config, questions.length, totalMarks);
+        await db.run(
+            `INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, 'pyq', ?, ?, ?, ?)`,
+            [testId, decoded.id, config, questions.length, totalMarks, new Date().toISOString()]
+        );
 
         const clientQuestions = questions.map((q, idx) => ({
             id: q.id, index: idx + 1, text: q.text,

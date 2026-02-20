@@ -1,19 +1,55 @@
-
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+'use client';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import PDFViewerClient from '@/components/PDFViewerClient';
 import Navbar from '@/components/Navbar';
-import { notFound } from 'next/navigation';
 
-export default async function NCERTReaderPage({ params }) {
-    initializeDatabase();
-    const db = getDb();
+export default function NCERTReaderPage() {
+    const params = useParams();
+    const router = useRouter();
+    const [book, setBook] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Next.js 15 compatible: await params
-    const { bookId } = await params;
-    const book = db.prepare('SELECT * FROM ncert_books WHERE id = ?').get(bookId);
+    useEffect(() => {
+        async function fetchBook() {
+            try {
+                const res = await fetch(`/api/ncert/book/${params.bookId}`);
+                if (!res.ok) {
+                    setError('Book not found');
+                    return;
+                }
+                const data = await res.json();
+                setBook(data.book);
+            } catch (e) {
+                setError('Failed to load book');
+            }
+            setLoading(false);
+        }
+        if (params.bookId) fetchBook();
+    }, [params.bookId]);
 
-    if (!book) return notFound();
+    if (loading) return (
+        <div>
+            <Navbar />
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+                <div className="spinner" style={{ width: 32, height: 32 }}></div>
+            </div>
+        </div>
+    );
+
+    if (error || !book) return (
+        <div>
+            <Navbar />
+            <div className="page" style={{ textAlign: 'center', paddingTop: 80 }}>
+                <div style={{ fontSize: '3rem', marginBottom: 16 }}>📖</div>
+                <h2>{error || 'Book not found'}</h2>
+                <button onClick={() => router.push('/ncert')} className="btn btn-primary" style={{ marginTop: 16 }}>
+                    Back to Library
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <div className="h-screen flex flex-col">

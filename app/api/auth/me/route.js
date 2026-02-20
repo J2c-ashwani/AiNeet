@@ -7,12 +7,12 @@ import bcrypt from 'bcryptjs';
 
 export async function GET(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ user: null });
 
-        const user = db.prepare('SELECT id, name, email, xp, level, streak, target_year, daily_goal, avatar FROM users WHERE id = ?').get(decoded.id);
+        const user = await db.get('SELECT id, name, email, xp, level, streak, target_year, daily_goal, avatar FROM users WHERE id = ?', [decoded.id]);
         if (!user) return NextResponse.json({ user: null });
 
         const levelInfo = getLevelFromXP(user.xp);
@@ -25,7 +25,7 @@ export async function GET(request) {
 
 export async function PUT(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -48,7 +48,7 @@ export async function PUT(request) {
 
         values.push(decoded.id);
         const query = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
-        db.prepare(query).run(...values);
+        await db.run(query, values);
 
         return NextResponse.json({ success: true });
     } catch (error) {

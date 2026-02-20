@@ -2,18 +2,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import SnapSolver from '@/components/SnapSolver';
 
-export default function DoubtsPage() {
+export default function DoubtSolver() {
     const router = useRouter();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [sending, setSending] = useState(false);
     const [conversationId, setConversationId] = useState(null);
+    const [user, setUser] = useState(null);
     const messagesEnd = useRef(null);
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
             if (!data.user) router.push('/login');
+            else setUser(data.user);
         });
     }, [router]);
 
@@ -21,8 +24,17 @@ export default function DoubtsPage() {
         messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
+    const handleSnapshotSolution = (solutionText) => {
+        // Add user image placeholder (optional, complexities involved in showing image in chat bubble for now just show text)
+        const userMsg = { role: 'user', content: '[📸 Shared an Image Question]' };
+        const aiMsg = { role: 'assistant', content: solutionText };
+
+        setMessages(prev => [...prev, userMsg, aiMsg]);
+        messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     const handleSend = async () => {
-        if (!input.trim() || sending) return;
+        if (!input.trim() && !sending) return; // Changed 'loading' to 'sending' to match existing state
         const userMsg = input.trim();
         setInput('');
         setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
@@ -56,8 +68,17 @@ export default function DoubtsPage() {
         <div>
             <Navbar />
 
-            <div className="page" style={{ maxWidth: 900, padding: '0 24px' }}>
-                <div className="chat-container">
+            <div className="page" style={{ maxWidth: 800, margin: '0 auto', height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
+
+                <h1 className="text-2xl font-bold mb-4">AI Doubt Solver 🤖</h1>
+
+                {/* Vision Camera Feature */}
+                <SnapSolver
+                    userTier={user?.subscription_tier}
+                    onSolutionReceived={handleSnapshotSolution}
+                />
+
+                <div className="card flex-1 flex flex-col overflow-hidden" style={{ padding: 0 }}>
                     <div className="chat-messages">
                         {messages.length === 0 && (
                             <div className="text-center animate-fade-in" style={{ padding: '40px 0' }}>

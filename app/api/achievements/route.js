@@ -5,12 +5,12 @@ import { getUserFromRequest } from '@/lib/auth';
 
 export async function GET(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const badges = db.prepare('SELECT * FROM user_achievements WHERE user_id = ? ORDER BY earned_at DESC').all(decoded.id);
+        const badges = await db.all('SELECT * FROM user_achievements WHERE user_id = ? ORDER BY earned_at DESC', [decoded.id]);
         return NextResponse.json({ badges });
     } catch (error) {
         console.error('Achievements error:', error);

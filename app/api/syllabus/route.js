@@ -4,12 +4,14 @@ import { initializeDatabase } from '@/lib/schema';
 
 export async function GET(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
 
-        const subjects = db.prepare('SELECT * FROM subjects ORDER BY id').all();
-        const chapters = db.prepare('SELECT * FROM chapters ORDER BY subject_id, order_index').all();
-        const topics = db.prepare('SELECT * FROM topics ORDER BY chapter_id, id').all();
+        const [subjects, chapters, topics] = await Promise.all([
+            db.all('SELECT * FROM subjects ORDER BY id'),
+            db.all('SELECT * FROM chapters ORDER BY subject_id, order_index'),
+            db.all('SELECT * FROM topics ORDER BY chapter_id, id')
+        ]);
 
         const result = subjects.map(s => ({
             ...s,

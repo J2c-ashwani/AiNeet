@@ -174,7 +174,17 @@ export default function TestPage({ params }) {
                 <div style={{ flex: 1, paddingRight: showNav ? 24 : 0 }}>
                     <div className="card animate-fade-in" key={currentQ}>
                         {/* Question */}
+                        {/* Question */}
                         <div className="question-text">
+                            {question.is_ai_generated === 1 && (
+                                <span className="ai-badge" style={{
+                                    display: 'inline-block', padding: '2px 8px', borderRadius: '12px',
+                                    background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontSize: '0.75rem',
+                                    fontWeight: 'bold', marginRight: '8px', verticalAlign: 'middle', border: '1px solid rgba(59, 130, 246, 0.3)'
+                                }}>
+                                    ⚡ AI Generated
+                                </span>
+                            )}
                             {(question.year_asked || question.exam_name) && (
                                 <span style={{
                                     display: 'inline-block', padding: '2px 8px', borderRadius: '12px',

@@ -12,7 +12,7 @@ export async function GET(request) {
     const decoded = getUserFromRequest(request);
     if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-    const subjectPerformance = db.prepare(`
+    const subjectPerformance = await db.all(`
       SELECT s.id, s.name, s.icon, s.color,
         COALESCE(AVG(up.accuracy), 0) as avg_accuracy,
         COALESCE(SUM(up.total_attempted), 0) as total_attempted,
@@ -22,9 +22,9 @@ export async function GET(request) {
       LEFT JOIN topics t ON t.chapter_id = c.id
       LEFT JOIN user_performance up ON up.topic_id = t.id AND up.user_id = ?
       GROUP BY s.id
-    `).all(decoded.id);
+    `, [decoded.id]);
 
-    const chapterStrength = db.prepare(`
+    const chapterStrength = await db.all(`
       SELECT c.id, c.name, s.name as subject_name, s.color,
         COALESCE(AVG(up.accuracy), 0) as accuracy,
         COALESCE(SUM(up.total_attempted), 0) as total_attempted
@@ -33,9 +33,9 @@ export async function GET(request) {
       LEFT JOIN topics t ON t.chapter_id = c.id
       LEFT JOIN user_performance up ON up.topic_id = t.id AND up.user_id = ?
       GROUP BY c.id HAVING total_attempted > 0 ORDER BY accuracy ASC
-    `).all(decoded.id);
+    `, [decoded.id]);
 
-    const weakAreas = db.prepare(`
+    const weakAreas = await db.all(`
       SELECT t.name as topic_name, c.name as chapter_name, s.name as subject_name,
         up.accuracy, up.total_attempted, up.total_correct
       FROM user_performance up
@@ -44,9 +44,9 @@ export async function GET(request) {
       JOIN subjects s ON s.id = c.subject_id
       WHERE up.user_id = ? AND up.accuracy < 50 AND up.total_attempted >= 2
       ORDER BY up.accuracy ASC LIMIT 10
-    `).all(decoded.id);
+    `, [decoded.id]);
 
-    const strongAreas = db.prepare(`
+    const strongAreas = await db.all(`
       SELECT t.name as topic_name, c.name as chapter_name, s.name as subject_name,
         up.accuracy, up.total_attempted
       FROM user_performance up
@@ -55,21 +55,21 @@ export async function GET(request) {
       JOIN subjects s ON s.id = c.subject_id
       WHERE up.user_id = ? AND up.accuracy >= 80 AND up.total_attempted >= 2
       ORDER BY up.accuracy DESC LIMIT 10
-    `).all(decoded.id);
+    `, [decoded.id]);
 
-    const testHistory = db.prepare(`
+    const testHistory = await db.all(`
       SELECT id, type, score, total_marks, correct_count, incorrect_count, unanswered_count,
         total_questions, time_taken_seconds, completed_at
       FROM tests WHERE user_id = ? AND completed_at IS NOT NULL
       ORDER BY completed_at DESC LIMIT 20
-    `).all(decoded.id);
+    `, [decoded.id]);
 
-    const overallStats = db.prepare(`
+    const overallStats = await db.get(`
       SELECT COUNT(*) as total_tests, COALESCE(AVG(score), 0) as avg_score,
         COALESCE(MAX(score), 0) as best_score,
         COALESCE(AVG(CAST(correct_count AS REAL) / NULLIF(total_questions, 0) * 100), 0) as avg_accuracy
       FROM tests WHERE user_id = ? AND completed_at IS NOT NULL
-    `).get(decoded.id);
+    `, [decoded.id]);
 
     const rankPrediction = predictRank(overallStats.avg_score || 0, overallStats.total_tests || 0, overallStats.avg_accuracy || 0);
 
@@ -79,12 +79,24 @@ export async function GET(request) {
     rankPrediction.successProbability = successProb.probability;
     rankPrediction.trend = successProb.trend;
 
-    const activityData = db.prepare(`
-      SELECT DATE(completed_at) as date, SUM(total_questions) as count
+    // Activity Data (Cross-DB Compatible)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const dateStr = sevenDaysAgo.toISOString().split('T')[0];
+
+    const rawActivity = await db.all(`
+      SELECT completed_at, total_questions
       FROM tests 
-      WHERE user_id = ? AND completed_at >= date('now', '-7 days')
-      GROUP BY DATE(completed_at)
-    `).all(decoded.id);
+      WHERE user_id = ? AND completed_at >= ?
+    `, [decoded.id, dateStr]);
+
+    // Aggregate in JS
+    const activityMap = {};
+    for (const row of rawActivity) {
+      const date = row.completed_at.split('T')[0]; // Extract YYYY-MM-DD
+      activityMap[date] = (activityMap[date] || 0) + row.total_questions;
+    }
+    const activityData = Object.entries(activityMap).map(([date, count]) => ({ date, count }));
 
     return NextResponse.json({
       subjectPerformance, chapterStrength, weakAreas, strongAreas, testHistory,

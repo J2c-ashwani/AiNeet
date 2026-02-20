@@ -5,18 +5,26 @@ import { initializeDatabase } from '@/lib/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { getOpponentForElo, AI_OPPONENTS } from '@/lib/game_engine';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { subjectId } = await request.json(); // Optional subject filter
 
+        // Rate Limiting (20 req/hour per User)
+        const rateKey = `user:${decoded.id}:battle`;
+        const limitPos = rateLimit(rateKey, 20, 3600000);
+        if (!limitPos.success) {
+            return NextResponse.json({ error: 'Battle limit reached. Take a break, warrior!' }, { status: 429 });
+        }
+
         // Get User Elo
-        const user = db.prepare('SELECT battle_elo FROM users WHERE id = ?').get(decoded.id);
+        const user = await db.get('SELECT battle_elo FROM users WHERE id = ?', [decoded.id]);
         const userElo = user ? user.battle_elo : 1000;
 
         // Select Opponent
@@ -31,7 +39,7 @@ export async function POST(request) {
         }
         query += ' ORDER BY RANDOM() LIMIT 5';
 
-        const questions = db.prepare(query).all(...params);
+        const questions = await db.all(query, params);
 
         if (questions.length < 5) {
             return NextResponse.json({ error: 'Not enough questions for a battle.' }, { status: 404 });

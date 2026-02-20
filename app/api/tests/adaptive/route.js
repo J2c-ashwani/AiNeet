@@ -7,7 +7,7 @@ import { getAdaptiveQuestion } from '@/lib/adaptive_engine';
 
 export async function POST(request) {
     try {
-        initializeDatabase();
+        await initializeDatabase();
         const db = getDb();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -24,7 +24,7 @@ export async function POST(request) {
         // Iteratively select questions based on adaptive logic
         for (let i = 0; i < count; i++) {
             // We pass excludeIds to prevent duplicates in this session
-            const question = getAdaptiveQuestion(decoded.id, subjectId, topicId, excludeIds);
+            const question = await getAdaptiveQuestion(decoded.id, subjectId, topicId, excludeIds);
 
             if (question) {
                 selectedQuestions.push(question);
@@ -40,10 +40,13 @@ export async function POST(request) {
         }
 
         // Create Test Record
-        const result = db.prepare(`
+        const insertSql = `
             INSERT INTO tests (user_id, type, subject_id, topic_id, total_questions, status, created_at)
-            VALUES (?, ?, ?, ?, ?, 'in_progress', datetime('now'))
-        `).run(decoded.id, 'adaptive', subjectId || null, topicId || null, selectedQuestions.length);
+            VALUES (?, ?, ?, ?, ?, 'in_progress', ?)
+        `;
+        const result = await db.run(insertSql, [
+            decoded.id, 'adaptive', subjectId || null, topicId || null, selectedQuestions.length, new Date().toISOString()
+        ]);
 
         const testId = result.lastInsertRowid;
 
