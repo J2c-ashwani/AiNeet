@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -9,7 +10,10 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { questionCount = 20, timeLimitMinutes = 30 } = await request.json();
+        const { questionCount: rawQC = 20, timeLimitMinutes: rawTL = 30 } = await request.json();
+
+        const questionCount = validatePositiveInt(rawQC, 10, 50) || 20;
+        const timeLimitMinutes = validatePositiveInt(rawTL, 5, 60) || 30;
 
         // Freemium check: free users get 1 battleground creation
         const user = await db.get('SELECT subscription_tier, battleground_creates_used FROM users WHERE id = ?', [decoded.id]);

@@ -1,9 +1,12 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function RegisterPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const refCode = searchParams.get('ref') || '';
+    const challengeId = searchParams.get('challenge') || '';
     const [form, setForm] = useState({ name: '', email: '', password: '', targetYear: '2026' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -16,11 +19,16 @@ export default function RegisterPage() {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form)
+                body: JSON.stringify({ ...form, referralCode: refCode || undefined })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
-            router.push('/dashboard');
+            // Redirect to challenge if coming from a challenge link
+            if (challengeId) {
+                router.push(`/challenge/${challengeId}`);
+            } else {
+                router.push('/dashboard');
+            }
         } catch (err) {
             setError(err.message);
         } finally { setLoading(false); }
@@ -34,6 +42,12 @@ export default function RegisterPage() {
                     <h1>Create Account</h1>
                     <p>Start your NEET preparation journey</p>
                 </div>
+
+                {refCode && (
+                    <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 'var(--radius-md)', color: '#10b981', fontSize: '0.85rem', marginBottom: 20, textAlign: 'center' }}>
+                        🎉 You were invited by a friend! Sign up to start practicing together.
+                    </div>
+                )}
 
                 {error && (
                     <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>

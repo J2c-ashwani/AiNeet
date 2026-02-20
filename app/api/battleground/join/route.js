@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { validateInviteCode } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -10,7 +11,9 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { inviteCode } = await request.json();
-        if (!inviteCode) return NextResponse.json({ error: 'Invite code required' }, { status: 400 });
+        if (!inviteCode || !validateInviteCode(inviteCode)) {
+            return NextResponse.json({ error: 'Valid invite code required (4-8 alphanumeric characters)' }, { status: 400 });
+        }
 
         // Freemium check: free users can join 1 battleground
         const user = await db.get('SELECT subscription_tier, battleground_joins_used FROM users WHERE id = ?', [decoded.id]);
