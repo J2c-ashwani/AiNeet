@@ -1,25 +1,27 @@
 
 import { NextResponse } from 'next/server';
 import { logReview } from '@/lib/spaced_repetition';
-import { verifyToken } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/auth';
+import { validateId, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
+        const decoded = getUserFromRequest(request);
+        if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
         const { questionId, quality } = await request.json();
 
-        const token = request.headers.get('Authorization')?.split(' ')[1];
-        let userId = 'user_1';
-
-        if (token) {
-            const decoded = verifyToken(token);
-            userId = decoded.id;
+        if (!questionId || !validateId(questionId)) {
+            return NextResponse.json({ error: 'Valid question ID is required' }, { status: 400 });
         }
 
-        if (!questionId || quality === undefined) {
-            return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
+        // quality must be 0–5 (SM-2 algorithm scale)
+        const qualityVal = validatePositiveInt(quality, 0, 5);
+        if (qualityVal === false) {
+            return NextResponse.json({ error: 'Quality must be an integer 0–5' }, { status: 400 });
         }
 
-        const result = logReview(userId, questionId, quality);
+        const result = logReview(decoded.id, questionId, qualityVal);
         return NextResponse.json({ success: true, ...result });
 
     } catch (error) {

@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
+import { sanitizeString, validateId } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -9,9 +10,15 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { questionId, reason, comment } = await request.json();
+        const body = await request.json();
+        const questionId = body.questionId;
+        const reason = body.reason;
+        const comment = sanitizeString(body.comment || '', 500);
 
-        if (!questionId || !reason) {
+        if (!questionId || !validateId(questionId)) {
+            return NextResponse.json({ error: 'Valid question ID is required' }, { status: 400 });
+        }
+        if (!reason) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 

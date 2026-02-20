@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { AI_OPPONENTS } from '@/lib/game_engine';
+import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
 
 /**
  * 1v1 AI Battle — Submit Results
@@ -15,13 +16,18 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { battleId, opponentId, userScore, opponentScore, outcome } = await request.json();
+        const body = await request.json();
+        const battleId = sanitizeString(body.battleId || '', 128);
+        const opponentId = sanitizeString(body.opponentId || '', 128);
+        const userScore = validatePositiveInt(body.userScore, 0, 1000) || 0;
+        const opponentScore = validatePositiveInt(body.opponentScore, 0, 1000) || 0;
+        const outcome = body.outcome;
 
         if (!battleId || !opponentId || outcome === undefined) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        if (!['win', 'loss', 'draw'].includes(outcome)) {
+        if (!validateEnum(outcome, ['win', 'loss', 'draw'])) {
             return NextResponse.json({ error: 'Invalid outcome' }, { status: 400 });
         }
 

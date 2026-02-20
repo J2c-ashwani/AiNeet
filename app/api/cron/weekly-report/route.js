@@ -7,8 +7,8 @@ import { initializeDatabase } from '@/lib/schema';
 export async function GET(request) {
     try {
         const authHeader = request.headers.get('authorization');
-        // Simple secret check (Add CRON_SECRET to .env in prod)
-        if (authHeader !== `Bearer ${process.env.CRON_SECRET || 'dev_secret'}`) {
+        const cronSecret = process.env.CRON_SECRET;
+        if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

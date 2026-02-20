@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
+import { sanitizeString, validateEnum, validatePositiveInt, validateId } from '@/lib/validate';
 
 // Helper for RBAC
 function requireAdmin(request) {
@@ -41,9 +42,9 @@ export async function GET(request) {
 
         } else if (mode === 'all') {
             // Fetch all questions (Content Management)
-            const limit = searchParams.get('limit') || 50;
-            const search = searchParams.get('search') || '';
-            const page = parseInt(searchParams.get('page') || '1');
+            const limit = validatePositiveInt(searchParams.get('limit'), 1, 200) || 50;
+            const search = sanitizeString(searchParams.get('search') || '', 200);
+            const page = validatePositiveInt(searchParams.get('page'), 1, 10000) || 1;
             const offset = (page - 1) * limit;
 
             let query = `SELECT * FROM questions WHERE text LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?`;
@@ -74,6 +75,23 @@ export async function POST(request) {
             if (!body[field]) return NextResponse.json({ error: `Missing ${field}` }, { status: 400 });
         }
 
+        // Validate correct_option enum
+        if (!validateEnum(body.correct_option, ['A', 'B', 'C', 'D', 'a', 'b', 'c', 'd'])) {
+            return NextResponse.json({ error: 'correct_option must be A, B, C, or D' }, { status: 400 });
+        }
+        if (body.difficulty && !validateEnum(body.difficulty, ['easy', 'medium', 'hard'])) {
+            return NextResponse.json({ error: 'Invalid difficulty' }, { status: 400 });
+        }
+
+        // Sanitize text fields
+        const text = sanitizeString(body.text, 5000);
+        const option_a = sanitizeString(body.option_a, 1000);
+        const option_b = sanitizeString(body.option_b, 1000);
+        const option_c = sanitizeString(body.option_c, 1000);
+        const option_d = sanitizeString(body.option_d, 1000);
+        const explanation = sanitizeString(body.explanation || '', 5000);
+        const tags = sanitizeString(body.tags || '', 500);
+
         const insertSql = `
             INSERT INTO questions (
                 subject_id, chapter_id, topic_id, text, 
@@ -85,10 +103,10 @@ export async function POST(request) {
         `;
 
         const result = await db.run(insertSql, [
-            body.subject_id, body.chapter_id, body.topic_id, body.text,
-            body.option_a, body.option_b, body.option_c, body.option_d,
-            body.correct_option, body.difficulty || 'medium', body.explanation || '',
-            body.is_pyq ? 1 : 0, body.exam_name || null, body.year_asked || null, body.tags || ''
+            body.subject_id, body.chapter_id, body.topic_id, text,
+            option_a, option_b, option_c, option_d,
+            body.correct_option.toUpperCase(), body.difficulty || 'medium', explanation,
+            body.is_pyq ? 1 : 0, body.exam_name || null, body.year_asked || null, tags
         ]);
 
         return NextResponse.json({ success: true, id: result.lastInsertRowid });
@@ -108,7 +126,7 @@ export async function DELETE(request) {
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
-        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+        if (!id || !validateId(id)) return NextResponse.json({ error: 'Missing or invalid ID' }, { status: 400 });
 
         await db.run('DELETE FROM questions WHERE id = ?', [id]);
         return NextResponse.json({ success: true });

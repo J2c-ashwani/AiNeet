@@ -2,16 +2,17 @@ import { ImageResponse } from '@vercel/og';
 import { getDb } from '@/lib/db';
 import { initializeDatabase } from '@/lib/schema';
 import { calculateNEETScore } from '@/lib/scoring';
+import { sanitizeString } from '@/lib/validate';
 
 export const runtime = 'nodejs'; // Use nodejs because SQLite requires native modules
 
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
-        const testId = searchParams.get('testId');
+        const testId = sanitizeString(searchParams.get('testId') || '', 128);
 
         if (!testId) {
-            return new Response('Missing testId', { status: 400 });
+            return new Response('Missing or invalid testId', { status: 400 });
         }
 
         initializeDatabase();

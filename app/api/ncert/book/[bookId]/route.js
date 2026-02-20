@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { getUserFromRequest } from '@/lib/auth';
+import { sanitizeString } from '@/lib/validate';
 
 export async function GET(request, { params }) {
     try {
-        const { bookId } = await params;
+        const decoded = getUserFromRequest(request);
+        if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+        const { bookId: rawBookId } = await params;
+        const bookId = sanitizeString(rawBookId, 128);
+        if (!bookId) return NextResponse.json({ error: 'Invalid book ID' }, { status: 400 });
+
         const db = getDb();
 
         let book = null;

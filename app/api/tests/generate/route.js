@@ -4,6 +4,7 @@ import { initializeDatabase } from '@/lib/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
+import { validateArray, validateEnum, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -13,6 +14,14 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { subjects, chapters, topics, difficulty, questionCount, type } = await request.json();
+
+        // Input validation
+        if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
+        if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
+        if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
+        if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
+        if (type && !validateEnum(type, ['custom', 'mock', 'chapter', 'ai_generated', 'pyq'])) return NextResponse.json({ error: 'Invalid test type' }, { status: 400 });
+        if (difficulty && !validateEnum(difficulty, ['easy', 'medium', 'hard', 'all'])) return NextResponse.json({ error: 'Invalid difficulty' }, { status: 400 });
 
         // Rate Limiting (10 req/hour per User) - Kept as DDoS protection
         // Rate limit based on User ID if available, else IP

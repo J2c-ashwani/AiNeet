@@ -19,6 +19,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'No image provided' }, { status: 400 });
         }
 
+        // Validate file type and size
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' }, { status: 400 });
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json({ error: 'Image too large. Maximum size is 5MB.' }, { status: 400 });
+        }
+
         // 3. Check Subscription Tier from DB (Ensure fresh status)
         await initializeDatabase();
         const db = getDb();

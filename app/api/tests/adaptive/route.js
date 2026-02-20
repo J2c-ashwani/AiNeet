@@ -4,6 +4,7 @@ import { getDb } from '@/lib/db';
 import { initializeDatabase } from '@/lib/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { getAdaptiveQuestion } from '@/lib/adaptive_engine';
+import { sanitizeString, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -12,7 +13,10 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { subjectId, topicId, count = 10 } = await request.json(); // Default 10 questions for adaptive
+        const body = await request.json();
+        const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
+        const topicId = body.topicId ? sanitizeString(String(body.topicId), 128) : null;
+        const count = validatePositiveInt(body.count, 1, 50) || 10;
 
         if (!subjectId && !topicId) {
             return NextResponse.json({ error: 'Subject or Topic ID required' }, { status: 400 });

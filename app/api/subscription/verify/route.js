@@ -4,6 +4,7 @@ import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { initializeDatabase } from '@/lib/schema';
+import { sanitizeString } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -16,8 +17,16 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // 2. Parse Request
-        const { orderId, paymentId, signature, planId } = await request.json();
+        // 2. Parse & Sanitize Request
+        const body = await request.json();
+        const orderId = sanitizeString(body.orderId || '', 256);
+        const paymentId = sanitizeString(body.paymentId || '', 256);
+        const signature = sanitizeString(body.signature || '', 512);
+        const planId = sanitizeString(body.planId || '', 128);
+
+        if (!orderId || !paymentId || !signature || !planId) {
+            return NextResponse.json({ error: 'Missing required payment fields (orderId, paymentId, signature, planId)' }, { status: 400 });
+        }
 
         // 3. Verify Payment
         const isValid = await PaymentService.verifyPayment(paymentId, orderId, signature);

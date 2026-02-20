@@ -5,6 +5,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { getOpponentForElo } from '@/lib/game_engine';
 import { rateLimit } from '@/lib/rate-limit';
+import { sanitizeString } from '@/lib/validate';
 
 /**
  * 1v1 AI Battle — Create
@@ -24,7 +25,7 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const body = await request.json().catch(() => ({}));
-        const { subjectId } = body;
+        const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
 
         // Rate Limiting (20 battles/hour per user)
         const limitResult = rateLimit(`user:${decoded.id}:battle`, 20, 3600000);

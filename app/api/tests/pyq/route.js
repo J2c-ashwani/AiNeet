@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { initializeDatabase } from '@/lib/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { validateArray, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -12,6 +13,12 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { subjects, chapters, topics, questionCount } = await request.json();
+
+        // Input validation
+        if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
+        if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
+        if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
+        if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
 
         let query = 'SELECT * FROM questions WHERE is_pyq = 1';
         const params = [];

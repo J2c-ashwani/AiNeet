@@ -4,6 +4,7 @@ import { initializeDatabase } from '@/lib/schema';
 import { getUserFromRequest } from '@/lib/auth';
 import { generateDoubtResponse } from '@/lib/ai-engine';
 import { v4 as uuidv4 } from 'uuid';
+import { sanitizeString } from '@/lib/validate';
 
 export async function POST(request) {
     try {
@@ -13,20 +14,23 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { message, conversationId } = await request.json();
-        if (!message) return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+        if (!message || typeof message !== 'string') return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+
+        const cleanMessage = sanitizeString(message, 2000);
+        if (cleanMessage.length < 2) return NextResponse.json({ error: 'Message is too short' }, { status: 400 });
 
         let convId = conversationId;
         if (!convId) {
             convId = uuidv4();
-            const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
+            const title = cleanMessage.length > 50 ? cleanMessage.substring(0, 50) + '...' : cleanMessage;
             await db.run('INSERT INTO doubt_conversations (id, user_id, title) VALUES (?, ?, ?)', [convId, decoded.id, title]);
         }
 
-        await db.run('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)', [convId, 'user', message]);
+        await db.run('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)', [convId, 'user', cleanMessage]);
         // Generate AI Response
         // For now, context is an empty object. It can be populated with relevant information later.
         const context = {};
-        const aiResponse = await generateDoubtResponse(message, context, decoded);
+        const aiResponse = await generateDoubtResponse(cleanMessage, context, decoded);
 
         // Save AI message
         await db.run(

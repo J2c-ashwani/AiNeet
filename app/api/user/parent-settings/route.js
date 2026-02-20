@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { initializeDatabase } from '@/lib/schema';
+import { validateEmail, sanitizeString, sanitizePhone } from '@/lib/validate';
 
 export async function GET(request) {
     try {
@@ -30,10 +31,13 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { parent_email, parent_phone } = await request.json();
+        const body = await request.json();
 
-        // Basic validation
-        if (parent_email && !parent_email.includes('@')) {
+        // Sanitize and validate
+        const parent_email = body.parent_email ? sanitizeString(body.parent_email, 320) : '';
+        const parent_phone = body.parent_phone ? sanitizePhone(body.parent_phone) : '';
+
+        if (parent_email && !validateEmail(parent_email)) {
             return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
         }
 

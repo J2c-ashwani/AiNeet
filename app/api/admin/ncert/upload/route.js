@@ -3,6 +3,7 @@ import { getDb } from '@/lib/db';
 import { getUserFromRequest } from '@/lib/auth';
 import { uploadFile } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
+import { sanitizeString } from '@/lib/validate';
 
 // Helper for RBAC
 function requireAdmin(request) {
@@ -20,10 +21,23 @@ export async function POST(request) {
         const file = formData.get('file');
         const subjectId = formData.get('subjectId');
         const chapterId = formData.get('chapterId');
-        const title = formData.get('title');
+        const rawTitle = formData.get('title');
 
-        if (!file || !subjectId || !chapterId || !title) {
+        if (!file || !subjectId || !chapterId || !rawTitle) {
             return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+        }
+
+        const title = sanitizeString(rawTitle, 500);
+        if (!title) return NextResponse.json({ error: 'Invalid title' }, { status: 400 });
+
+        // Validate file type
+        const allowedTypes = ['application/pdf', 'application/x-pdf'];
+        if (!allowedTypes.includes(file.type)) {
+            return NextResponse.json({ error: 'Only PDF files are allowed' }, { status: 400 });
+        }
+        // Validate file size (50MB max)
+        if (file.size > 50 * 1024 * 1024) {
+            return NextResponse.json({ error: 'File too large. Maximum size is 50MB.' }, { status: 400 });
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());

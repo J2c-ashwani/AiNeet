@@ -23,6 +23,13 @@ export async function POST(request) {
 
         const { testId, answers, timeTaken } = await request.json();
 
+        if (!testId || typeof testId !== 'string') {
+            return NextResponse.json({ error: 'Valid test ID is required' }, { status: 400 });
+        }
+        if (!Array.isArray(answers) || answers.length === 0) {
+            return NextResponse.json({ error: 'Answers array is required' }, { status: 400 });
+        }
+
         const test = await db.get('SELECT * FROM tests WHERE id = ? AND user_id = ?', [testId, decoded.id]);
         if (!test) return NextResponse.json({ error: 'Test not found' }, { status: 404 });
         if (test.completed_at) return NextResponse.json({ error: 'Test already submitted' }, { status: 400 });
