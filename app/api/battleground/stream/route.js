@@ -64,7 +64,7 @@ export async function GET(request) {
 
                     // Auto-end if all participants submitted
                     if (battle.status === 'active' && participants.length > 0 && participants.every(p => p.submitted_at)) {
-                        await db.run("UPDATE battlegrounds SET status = 'ended', ended_at = datetime('now') WHERE id = ?", [battleId]);
+                        await db.run("UPDATE battlegrounds SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?", [battleId]);
                         battle.status = 'ended';
                     }
 

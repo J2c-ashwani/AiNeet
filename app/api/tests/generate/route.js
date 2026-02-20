@@ -140,7 +140,7 @@ export async function POST(request) {
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, difficulty, questionCount: questions.length, type });
 
-        await db.run(`INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+        await db.run(`INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
             [testId, decoded.id, type || 'custom', config, questions.length, totalMarks]);
 
         const clientQuestions = questions.map((q, idx) => ({

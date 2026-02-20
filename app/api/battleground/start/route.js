@@ -14,7 +14,7 @@ export async function POST(request) {
         if (!battle) return NextResponse.json({ error: 'Battleground not found or you are not the creator' }, { status: 404 });
         if (battle.status !== 'waiting') return NextResponse.json({ error: 'Battleground already started' }, { status: 400 });
 
-        await db.run("UPDATE battlegrounds SET status = 'active', started_at = datetime('now') WHERE id = ?", [battleId]);
+        await db.run("UPDATE battlegrounds SET status = 'active', started_at = CURRENT_TIMESTAMP WHERE id = ?", [battleId]);
 
         return NextResponse.json({ success: true, message: 'Battleground started!' });
 

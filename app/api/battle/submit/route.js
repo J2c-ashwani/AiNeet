@@ -49,7 +49,7 @@ export async function POST(request) {
         // Log battle to history
         await db.run(`
             INSERT INTO battles (id, user_id, opponent_id, opponent_name, user_score, opponent_score, outcome, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         `, [battleId, decoded.id, opponentId, opponent.name || 'AI Opponent', userScore || 0, opponentScore || 0, outcome]);
 
         return NextResponse.json({

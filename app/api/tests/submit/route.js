@@ -62,13 +62,13 @@ export async function POST(request) {
                     if (answer.selectedOption) {
                         const upsertPerf = `
                             INSERT INTO user_performance (user_id, topic_id, accuracy, total_attempted, total_correct, avg_time_seconds, last_attempted)
-                            VALUES (?, ?, ?, 1, ?, ?, datetime('now'))
+                            VALUES (?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP)
                             ON CONFLICT(user_id, topic_id) DO UPDATE SET
                                 total_attempted = total_attempted + 1,
                                 total_correct = total_correct + excluded.total_correct,
                                 accuracy = ROUND(CAST((total_correct + excluded.total_correct) AS REAL) / (total_attempted + 1) * 100, 1),
                                 avg_time_seconds = (avg_time_seconds * total_attempted + excluded.avg_time_seconds) / (total_attempted + 1),
-                                last_attempted = datetime('now')
+                                last_attempted = CURRENT_TIMESTAMP
                         `;
                         await db.run(upsertPerf, [decoded.id, question.topic_id, isCorrect * 100, isCorrect, timeSpent]);
 
@@ -86,7 +86,7 @@ export async function POST(request) {
                         await updateUserMastery(decoded.id, question.topic_id, isCorrect, qDiff);
 
                         if (!isCorrect) {
-                            await db.run(`INSERT OR IGNORE INTO mistake_log (user_id, question_id, test_id, mistake_count, last_mistake_at) VALUES (?, ?, ?, 1, datetime('now'))`,
+                            await db.run(`INSERT OR IGNORE INTO mistake_log (user_id, question_id, test_id, mistake_count, last_mistake_at) VALUES (?, ?, ?, 1, CURRENT_TIMESTAMP)`,
                                 [decoded.id, answer.questionId, testId]);
                             await scheduleNewCard(decoded.id, answer.questionId);
                         }
@@ -96,7 +96,7 @@ export async function POST(request) {
                 const scoreData = calculateNEETScore(processedAnswers);
                 const xpEarned = calculateXP(scoreData);
 
-                await db.run(`UPDATE tests SET score = ?, correct_count = ?, incorrect_count = ?, unanswered_count = ?, time_taken_seconds = ?, completed_at = datetime('now') WHERE id = ?`,
+                await db.run(`UPDATE tests SET score = ?, correct_count = ?, incorrect_count = ?, unanswered_count = ?, time_taken_seconds = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?`,
                     [scoreData.scaledScore, scoreData.correct, scoreData.incorrect, scoreData.unanswered, timeTaken || 0, testId]);
 
                 // Update XP and Level
@@ -120,7 +120,7 @@ export async function POST(request) {
                     } else {
                         newStreak = 1;
                     }
-                    await db.run("UPDATE users SET streak = ?, last_active_date = datetime('now') WHERE id = ?", [newStreak, decoded.id]);
+                    await db.run("UPDATE users SET streak = ?, last_active_date = CURRENT_TIMESTAMP WHERE id = ?", [newStreak, decoded.id]);
                 }
 
                 // Achievements Logic

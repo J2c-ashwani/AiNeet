@@ -34,7 +34,7 @@ export async function POST(request) {
         const score = (correct * 4) - (incorrect * 1); // NEET marking scheme
 
         await db.run(
-            "UPDATE battleground_participants SET score = ?, correct_count = ?, incorrect_count = ?, time_spent_seconds = ?, submitted_at = datetime('now') WHERE battleground_id = ? AND user_id = ?",
+            "UPDATE battleground_participants SET score = ?, correct_count = ?, incorrect_count = ?, time_spent_seconds = ?, submitted_at = CURRENT_TIMESTAMP WHERE battleground_id = ? AND user_id = ?",
             [score, correct, incorrect, timeSpent || 0, battleId, decoded.id]
         );
 
