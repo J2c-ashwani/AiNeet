@@ -1,10 +1,62 @@
 
 'use client';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function AdminLayout({ children }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const [authState, setAuthState] = useState('loading'); // 'loading' | 'authorized' | 'denied'
+
+    useEffect(() => {
+        async function checkAdmin() {
+            try {
+                const res = await fetch('/api/auth/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.user?.role === 'admin') {
+                        setAuthState('authorized');
+                    } else {
+                        setAuthState('denied');
+                    }
+                } else {
+                    setAuthState('denied');
+                }
+            } catch {
+                setAuthState('denied');
+            }
+        }
+        checkAdmin();
+    }, []);
+
+    if (authState === 'loading') {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#050510' }}>
+                <div style={{ width: 40, height: 40, border: '2px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        );
+    }
+
+    if (authState === 'denied') {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#050510', color: 'white', gap: 16 }}>
+                <div style={{ fontSize: '4rem' }}>🔒</div>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ef4444' }}>Access Denied</h1>
+                <p style={{ color: '#64748b', maxWidth: 400, textAlign: 'center' }}>
+                    You don't have permission to access the Admin Portal. This area is restricted to administrators only.
+                </p>
+                <button onClick={() => router.push('/dashboard')} style={{
+                    marginTop: 16, padding: '12px 32px', borderRadius: 12, border: '1px solid rgba(99,102,241,0.3)',
+                    background: 'rgba(99,102,241,0.1)', color: '#a5b4fc', fontWeight: 600, cursor: 'pointer',
+                    fontSize: '0.9rem', transition: 'all 0.2s'
+                }}>
+                    ← Back to Dashboard
+                </button>
+            </div>
+        );
+    }
 
     const navItems = [
         { name: 'Overview', path: '/admin', icon: '📊' },
