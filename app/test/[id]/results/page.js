@@ -98,6 +98,16 @@ export default function ResultsPage({ params }) {
                     <a href="/test/configure" className="btn btn-primary">📝 Take Another Test</a>
                     <a href="/analytics" className="btn btn-secondary">📊 View Analytics</a>
                     <a href="/dashboard" className="btn btn-secondary">🏠 Dashboard</a>
+                    <button
+                        onClick={() => {
+                            const text = `I just scored ${score.scaledScore}/720 on my AI NEET Mock Test! 🚀\n\nCheck out my scorecard and rank prediction here:\nhttps://aineetcoach.com/test/${testId}/share`;
+                            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                        }}
+                        className="btn btn-success"
+                        style={{ marginLeft: 'auto' }}
+                    >
+                        📱 Share to WhatsApp
+                    </button>
                 </div>
 
                 {/* Answer Review */}

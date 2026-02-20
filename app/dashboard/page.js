@@ -130,6 +130,32 @@ export default function Dashboard() {
                                     <p>AI-generated personalized schedule</p>
                                 </div>
                             </a>
+                            <button
+                                onClick={async (e) => {
+                                    e.currentTarget.disabled = true;
+                                    e.currentTarget.innerHTML = '<div class="quick-action-icon" style="background: rgba(168,85,247,0.1)">⏳</div><div class="quick-action-text"><h3>Generating...</h3><p>Creating challenge link</p></div>';
+                                    try {
+                                        const res = await fetch('/api/challenge/create', { method: 'POST' });
+                                        const data = await res.json();
+                                        if (data.success) {
+                                            const text = `I'm challenging you to a 10-question AI NEET Mock Test duel! ⚔️\n\nCan you beat my score? Accept here:\n${data.shareUrl}`;
+                                            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                        } else {
+                                            alert(data.error || 'Failed to create challenge. Have you taken enough tests?');
+                                        }
+                                    } catch (err) {
+                                        alert('Error creating challenge.');
+                                    }
+                                    window.location.reload();
+                                }}
+                                className="quick-action" style={{ textAlign: 'left', cursor: 'pointer', border: 'none', background: 'var(--bg-glass)', width: '100%', fontFamily: 'inherit' }}
+                            >
+                                <div className="quick-action-icon" style={{ background: 'rgba(168,85,247,0.1)' }}>⚔️</div>
+                                <div className="quick-action-text">
+                                    <h3 style={{ background: 'linear-gradient(135deg, #a855f7, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Challenge a Friend</h3>
+                                    <p>Send a 10-question duel via WhatsApp</p>
+                                </div>
+                            </button>
                         </div>
                     </div>
 
