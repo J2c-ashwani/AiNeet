@@ -85,18 +85,12 @@ export default function PDFViewerClient({ book }) {
                 {/* Top Controls Toolbar */}
                 <div className="sticky top-0 z-40 bg-gray-900/90 backdrop-blur border border-gray-700 p-3 rounded-xl shadow-lg flex gap-6 items-center mb-6 w-full max-w-4xl justify-between">
                     <div className="flex items-center gap-2">
-                        <button disabled={pageNumber <= 1} onClick={() => setPageNumber(p => p - 1)} className="btn btn-secondary btn-sm px-4">
-                            ← Prev
-                        </button>
-                        <span className="text-white font-medium text-sm w-24 text-center">
-                            {pageNumber} / {numPages || '?'}
+                        <span className="text-white font-medium text-sm">
+                            {numPages ? `${numPages} Pages` : 'Loading...'}
                         </span>
-                        <button disabled={pageNumber >= numPages} onClick={() => setPageNumber(p => p + 1)} className="btn btn-secondary btn-sm px-4">
-                            Next →
-                        </button>
                     </div>
 
-                    <div className="flex items-center gap-2 border-l border-gray-700 pl-6">
+                    <div className="flex items-center gap-2">
                         <button onClick={zoomOut} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom Out">
                             -
                         </button>
@@ -107,20 +101,24 @@ export default function PDFViewerClient({ book }) {
                     </div>
                 </div>
 
-                <div className="shadow-2xl mb-20 bg-white" style={{ minHeight: 800 }}>
+                <div className="mb-20 w-full flex flex-col items-center" style={{ minHeight: 800 }}>
                     <Document
                         file={book.file_path}
                         onLoadSuccess={onDocumentLoadSuccess}
-                        className="pdf-document"
-                        loading={<div className="p-20 text-center text-gray-900 font-bold">Loading PDF...</div>}
+                        className="pdf-document flex flex-col gap-6"
+                        loading={<div className="p-20 text-center text-gray-400 font-bold">Loading PDF...</div>}
                     >
-                        <Page
-                            pageNumber={pageNumber}
-                            scale={zoom}
-                            renderTextLayer={true}
-                            renderAnnotationLayer={true}
-                            className="bg-white"
-                        />
+                        {Array.from(new Array(numPages || 0), (el, index) => (
+                            <div key={`page_${index + 1}`} className="shadow-2xl bg-white rounded-lg overflow-hidden">
+                                <Page
+                                    pageNumber={index + 1}
+                                    scale={zoom}
+                                    renderTextLayer={true}
+                                    renderAnnotationLayer={true}
+                                    className="bg-white"
+                                />
+                            </div>
+                        ))}
                     </Document>
                 </div>
 
