@@ -1,0 +1,88 @@
+R
+E
+T
+P
+A
+H
+8
+C Respiration in Plants
+6. The number of substrate level phosphorylations in one turn
+Glycolysis & Fermentation
+of citric acid cycle is: (2020)
+a. One b. Two
+1. What is the net gain of ATP when each molecule of glucose c. Three d. Zero
+is converted to two molecules of pyruvic acid? (2022)
+7. Pyruvate dehydrogenase activity during aerobic respiration
+a. Eight b. Four requires: (2020-Covid)
+a. Iron b. Cobalt
+c. Six d. Two
+c. Magnesium d. Calcium
+2. What amount of energy is released from glucose during lactic
+8. What is the role of NAD+ in cellular respiration? (2018)
+acid fermentation? (2022)
+a. It functions as an enzyme
+a. Less than 7% b. Approximately 15%
+b. It functions as an electron carrier
+c. More than 18% d. About 10%
+c. It is a nucleotide source for ATP synthesis
+3. Conversion of glucose to glucose-6-phosphate, the first d. It is the final electron acceptor for anaerobic respiration
+irreversible reaction of glycolysis, is catalysed by (2019)
+9. Which of these statements is incorrect? (2018)
+a. Aldolase b. Hexokinase a. Enzymes of TCA cycle are present in mitochondrial
+matrix.
+c. Enolase d. Phosphofructokinase
+b. Glycolysis occurs in cytosol.
+4. In which one of the following processes CO is not released?
+2 c. Glycolysis operates as long as it is supplied with
+(2014)
+NAD that can pick up hydrogen atoms.
+a. Lactate fermentation
+d. Oxidative phosphorylation takes place in outer
+mitochondrial membrane.
+b. Aerobic respiration in plants
+10. Which statement is wrong for Krebs’ cycle? (2017-Delhi)
+c. Aerobic respiration in animals
+a. There are three points in the cycle where NAD+ is reduced
+d. Alcoholic fermentation to NADH + H+
+b. There is one point in the cycle where FAD+ is reduced to
+Aerobic Respiration FADH
+2
+c. During conversion of succinyl CoA to succinic acid, a
+molecule of GTP is synthesised
+5. Which of the following statements is incorrect? (2021)
+d. The cycle starts with condensation of acetyl group (acetyl
+a. In ETC (Electron Transport Chain), one molecule of CoA) with pyruvic acid to yield citric acid
+NADH + H+ gives rise to 2 ATP molecules, and one
+11. Oxidative phosphorylation is: (2016 - II)
+FADH gives rise to 3 ATP molecules.
+2 a. Addition of phosphate group to ATP.
+b. ATP is synthesized through complex V.
+b. Formation of ATP by energy released from electrons
+c. Oxidation - reduction reactions produce proton gradient removed during substrate oxidation.
+in respiration, c. Formation of ATP by transfer of phosphate group from a
+substrate to ADP
+d. During aerobic respiration, role of oxygen is limited to the
+terminal stage. d. Oxidation of phosphate group in ATP
+Respiration in Plants 2
+12. Cytochromes are found in: (2015) 14. The three boxes in this diagram represent the three major
+biosynthetic pathways in aerobic respiration. Arrows
+a. Cristae of mitochondria b. Lysosomes
+represent net reactants or products: (2013)
+c. Matrix of mitochondria d. Outer wall of mitochondria
+Respiratory Balance Sheet &
+Amphibolic Pathway
+Arrows numbered 4, 8, and 12 can all be
+a. FAD+ or FADH b. NADH
+2
+c. ATP d. HO
+2
+13. Which of the following biomolecules is common to
+respiration-mediated breakdown of fats, carbohydrates and Respiratory Quotient
+proteins? (2016 - II, 2003)
+15. Respiratory Quotient (RQ) value of tripalmitin is (2019)
+a. Pyruvic acid b. Acetyl CoA
+a. 0.9 b. 0.7
+c. Glucose-6-phosphate d. Fructose 1,6-bisphosphate c. 0.07 d. 0.09
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+d a b a a a c b d d b a b c b
