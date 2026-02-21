@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 
 const SUBJECT_ICONS = { physics: '⚡', chemistry: '🧪', biology: '🧬' };
 const SUBJECT_COLORS = { physics: '#6366f1', chemistry: '#06b6d4', biology: '#22c55e' };
@@ -102,7 +103,7 @@ export default function NCERTLibrary() {
                                         <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 16 }}>
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
                                                 {book.chapters.map(ch => (
-                                                    <a key={ch.ch} href={ch.pdfUrl} target="_blank" rel="noopener noreferrer"
+                                                    <Link key={ch.ch} href={`/ncert/${book.code}?ch=${ch.ch}`}
                                                         style={{
                                                             display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
                                                             borderRadius: 10, background: 'rgba(255,255,255,0.03)',
@@ -118,7 +119,7 @@ export default function NCERTLibrary() {
                                                         </span>
                                                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{ch.title}</span>
                                                         <span style={{ marginLeft: 'auto', color: '#64748b', fontSize: '0.8rem' }}>PDF →</span>
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                             </div>
                                         </div>

@@ -15,6 +15,8 @@ export default function PDFViewerClient({ book }) {
     const [explanation, setExplanation] = useState(null);
     const [loadingAI, setLoadingAI] = useState(false);
 
+    const [zoom, setZoom] = useState(1.2);
+
     const containerRef = useRef(null);
 
     function onDocumentLoadSuccess({ numPages }) {
@@ -60,74 +62,108 @@ export default function PDFViewerClient({ book }) {
         }
     };
 
+    const zoomIn = () => setZoom(z => Math.min(z + 0.2, 3.0));
+    const zoomOut = () => setZoom(z => Math.max(z - 0.2, 0.5));
+
     return (
-        <div className="flex gap-4 h-[calc(100vh-80px)]" onMouseUp={handleTextSelection}>
+        <div className="flex gap-4 h-full bg-gray-900" onMouseUp={handleTextSelection}>
             {/* Sidebar: Notes/Highlights */}
-            <div className="w-1/4 card h-full scrollable hidden md:block">
-                <h3>Highlights</h3>
-                <p className="text-muted text-sm">Select text to explain.</p>
+            <div className="w-1/4 card h-full scrollable hidden lg:block bg-gray-950 border-r border-gray-800 rounded-none">
+                <h3 className="text-xl font-bold text-white mb-2">Highlights</h3>
+                <p className="text-gray-400 text-sm">Select text in the PDF to explain concepts with AI.</p>
                 {/* Placeholder for saved highlights */}
+                <div className="mt-8 p-4 bg-gray-900 rounded-lg border border-gray-800">
+                    <div className="text-center text-gray-500 text-sm">
+                        No highlights saved yet.
+                    </div>
+                </div>
             </div>
 
             {/* Main Viewer */}
-            <div className="flex-1 card h-full overflow-auto relative flex flex-col items-center bg-gray-100" ref={containerRef}>
-                <Document
-                    file={book.file_path}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    className="pdf-document"
-                >
-                    <Page
-                        pageNumber={pageNumber}
-                        width={containerRef.current ? containerRef.current.offsetWidth - 40 : 600}
-                        renderTextLayer={true}
-                        renderAnnotationLayer={true}
-                    />
-                </Document>
+            <div className="flex-1 h-full overflow-auto relative flex flex-col items-center bg-gray-800 p-4" ref={containerRef}>
 
-                {/* Navigation */}
-                <div className="sticky bottom-4 bg-white p-2 rounded shadow flex gap-4 items-center mt-4">
-                    <button
-                        disabled={pageNumber <= 1}
-                        onClick={() => setPageNumber(prev => prev - 1)}
-                        className="btn btn-secondary btn-sm"
+                {/* Top Controls Toolbar */}
+                <div className="sticky top-0 z-40 bg-gray-900/90 backdrop-blur border border-gray-700 p-3 rounded-xl shadow-lg flex gap-6 items-center mb-6 w-full max-w-4xl justify-between">
+                    <div className="flex items-center gap-2">
+                        <button disabled={pageNumber <= 1} onClick={() => setPageNumber(p => p - 1)} className="btn btn-secondary btn-sm px-4">
+                            ← Prev
+                        </button>
+                        <span className="text-white font-medium text-sm w-24 text-center">
+                            {pageNumber} / {numPages || '?'}
+                        </span>
+                        <button disabled={pageNumber >= numPages} onClick={() => setPageNumber(p => p + 1)} className="btn btn-secondary btn-sm px-4">
+                            Next →
+                        </button>
+                    </div>
+
+                    <div className="flex items-center gap-2 border-l border-gray-700 pl-6">
+                        <button onClick={zoomOut} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom Out">
+                            -
+                        </button>
+                        <span className="text-gray-300 text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
+                        <button onClick={zoomIn} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom In">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <div className="shadow-2xl mb-20 bg-white" style={{ minHeight: 800 }}>
+                    <Document
+                        file={book.file_path}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        className="pdf-document"
+                        loading={<div className="p-20 text-center text-gray-900 font-bold">Loading PDF...</div>}
                     >
-                        Previous
-                    </button>
-                    <span>Page {pageNumber} of {numPages}</span>
-                    <button
-                        disabled={pageNumber >= numPages}
-                        onClick={() => setPageNumber(prev => prev + 1)}
-                        className="btn btn-secondary btn-sm"
-                    >
-                        Next
-                    </button>
+                        <Page
+                            pageNumber={pageNumber}
+                            scale={zoom}
+                            renderTextLayer={true}
+                            renderAnnotationLayer={true}
+                            className="bg-white"
+                        />
+                    </Document>
                 </div>
 
                 {/* Text Selection Popup */}
                 {selection && !explanation && (
                     <div
-                        className="absolute z-50 bg-black text-white px-3 py-1 rounded shadow-lg cursor-pointer flex items-center gap-2 transform -translate-x-1/2"
+                        className="absolute z-50 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg shadow-xl cursor-pointer flex items-center gap-2 transform -translate-x-1/2 transition-colors border border-blue-400 font-bold"
                         style={{ top: selection.top, left: selection.left + 50 }}
                         onClick={handleExplain}
-                        onMouseDown={(e) => e.stopPropagation()} // Prevent deselection
+                        onMouseDown={(e) => e.stopPropagation()}
                     >
-                        <span>✨ Explain with AI</span>
+                        ✨ Explain with AI
                     </div>
                 )}
 
-                {/* AI Explanation Modal/Tooltip */}
+                {/* AI Explanation Modal */}
                 {(loadingAI || explanation) && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={() => setExplanation(null)}>
-                        <div className="bg-white p-6 rounded-lg max-w-md w-full m-4" onClick={e => e.stopPropagation()}>
-                            <h3 className="text-lg font-bold mb-2">AI Explanation</h3>
+                    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4" onClick={() => setExplanation(null)}>
+                        <div className="bg-gray-900 border border-gray-700 shadow-2xl p-6 rounded-2xl max-w-lg w-full text-white m-4" onClick={e => e.stopPropagation()}>
+                            <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-800">
+                                <h3 className="text-xl font-bold flex items-center gap-2">✨ AI Explanation</h3>
+                                <button onClick={() => setExplanation(null)} className="text-gray-400 hover:text-white text-xl">×</button>
+                            </div>
+
                             {loadingAI ? (
-                                <div className="spinner mx-auto"></div>
+                                <div className="py-10 text-center">
+                                    <div className="spinner mx-auto mb-4 border-blue-500"></div>
+                                    <p className="text-gray-400">Analyzing NCERT concept...</p>
+                                </div>
                             ) : (
-                                <>
-                                    <p className="text-sm text-muted mb-4 p-2 bg-gray-50 rounded">"{selection?.text}"</p>
-                                    <div className="prose">{explanation}</div>
-                                    <button className="btn btn-primary w-full mt-4" onClick={() => setExplanation(null)}>Close</button>
-                                </>
+                                <div>
+                                    <div className="mb-6 p-4 bg-gray-950 border border-gray-800 rounded-xl relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                                        <p className="text-sm text-gray-300 italic">"{selection?.text}"</p>
+                                    </div>
+                                    <div className="prose prose-invert max-w-none text-gray-200">
+                                        {/* Mock explanation formatting - in reality this would ideally be markdown rendered */}
+                                        <div dangerouslySetInnerHTML={{ __html: explanation.replace(/\n/g, '<br/>') }} />
+                                    </div>
+                                    <button className="btn btn-primary w-full mt-6 py-3 font-bold text-lg rounded-xl" onClick={() => setExplanation(null)}>
+                                        Got it!
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>
