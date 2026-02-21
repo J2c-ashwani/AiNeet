@@ -1,0 +1,155 @@
+R
+E
+T
+P
+A
+H
+5
+C Body Fluids and Circulation
+5. Which of the following conditions cause erythroblastosis
+Blood and Lymph
+foetalis? (2020-Covid)
+a. Mother Rh–ve and foetus Rh+ve
+1. Given below are two statements: (2022) b. Both mother and foetus Rh–ve
+Statement I: The coagulum is formed of network of threads c. Both mother and foetus Rh+ve
+called thrombins d. Mother Rh+ve and foetus Rh–ve
+Statement II: Spleen is the graveyard of erythrocytes 6. Match the items given in Column-I with those in Column-II
+In the light of the above statements, choose the most and select the correct option given below (2018)
+appropriate answer from the options given below.
+Column-I Column-II
+a. Statement I is incorrect but Statement II is correct
+A. Fibrinogen i. Osmotic balance
+b. Both Statement I and Statement II are correct
+B. Globulin ii. Blood clotting
+c. Both statement I and statement II are incorrect
+C. Albumin iii. Defence mechanism
+d. Statement I is correct but Statement II is incorrect
+a. A-iii B-ii C-i b. A-i B-ii C-iii
+2. Which enzyme is responsible for the conversion of inactive
+c. A-i B-iii C-ii d. A-ii B-iii C-i
+fibrinogens to fibrins? (2021)
+7. Adult human RBCs are enucleate. Which of the following
+a. Renin b. Epinephrine
+statement(s) is/are most appropriate explanation for this
+c. Thrombokinase d. Thrombin
+feature? (2017-Delhi)
+3. Persons with ‘AB’ blood group are called as “Universal A. They do not need to reproduce
+recipients”. This is due to: (2021) B. They are somatic cells
+a. Absence of antigens A and B in plasma C. They do not metabolise
+D. All their internal space is available for oxygen transport
+b. Presence of antibodies, anti-A and anti-B, on RBCs
+a. Only (D) b. Only (A)
+c. Absence of antibodies, anti-A and anti-B, in plasma
+c. (A), (C) and (D) d. (B) and (C)
+d. Absence of antigens A and B on the surface of RBCs
+8. Serum differs from blood in: (2016 - II)
+4. Match the following columns and select the correct option
+a. Lacking clotting factors b. Lacking antibodies
+(2020)
+c. Lacking globulins d. Lacking albumins
+Column-I Column-II
+9. Name the blood cells, whose reduction in number can cause
+1. Eosinophils (i) Immune response
+clotting disorder, leading to excessive loss of blood from the
+2. Basophils (ii) Phagocytosis body. (2016 - II)
+3. Neutrophils (iii) Release histaminase, a. Neutrophils b. Thrombocytes
+destructive enzymes c. Erythrocytes d. Leukocytes
+4. Lymphocytes (iv) Release granules contain- 10. Which one of the following is correct? (2015)
+ing histamine
+a. Lymph = Plasma + RBC + WBC
+(1) (2) (3) (4) b. Blood = Plasma + RBC + WBC + Platelets
+c. Plasma = Blood – Lymphocytes
+a. (iv) (i) (ii) (iii)
+d. Serum = Blood + Fibrinogen
+b. (i) (ii) (iv) (iii)
+11. Erythropoiesis starts in: (2015)
+c. (ii) (i) (iii) (iv) a. Spleen b. Red bone marrow
+d. (iii) (iv) (ii) (i) c. Kidney d. Liver
+Body Fluids and Circulation 2
+12. If you suspect major deficiency of antibodies in a person, Select the correct option.
+to which of the following would you look for confirmatory a. A-iv B-i C-ii D-iii
+evidences? (2015 Re) b. A-iv B-i C-ii D-v
+a. Serum albumins c. A-ii B-i C-v D-iii
+b. Haemocytes d. A-ii B-iii C-v D-iv
+c. Serum globulins 19. Match the items given in Column-I with those in Column-II
+d. Fibrinogen in plasma and select the correct option given below: (2018)
+13. Person with blood group AB is considered as universal
+Column-I Column-II
+recipient because he has: (2014)
+a. Both A and B antigens in the plasma but no antibodies A. Tricuspid i. Between left atrium and left
+b. Both A and B antigens on RBC but no antibodies in the valve ventricle
+plasma B. Bicuspid valve ii. Between right ventricle and
+c. Both A and B antibodies in the plasma pulmonary artery
+d. No antigen on RBC and no antibody in the plasma C. Semilunar iii. Between right atrium and right
+14. The most abundant intracellular cation is: [OS] (2013) valve ventricle
+a. K+ b. Na+ a. A-iii B-i C-ii
+c. Ca++ d. H+ b. A-i B-iii C-ii
+c. A-i B-ii C-iii
+d. A-ii B-i C-iii
+Circulatory Pathways
+20. Blood pressure in the mammalian aorta is maximum during:
+(2015)
+15. Which one of the following statements is correct? (2022)
+a. Systole of the left ventricle
+a. Increased ventricular pressure causes closing of the
+b. Diastole of the right atrium
+semilunar valves
+c. Systole of the left atrium
+b. The atrio-ventricular node (AVN) generates an action
+d. Diastole of the right ventricle
+potential to stimulate atrial contraction
+c. The tricuspid and the bicuspid valves open due to the 21. Which one of the following animals has two separate
+pressure exerted by the simultaneous contraction of the circulatory pathways? (2015 Re)
+atria a. Lizard
+d. Blood moves freely from atrium to the ventricle during
+b. Whale
+joint diastole.
+c. Shark
+16. The QRS complex in a standard ECG represents: (2020)
+d. Frog
+a. Depolarisation of auricles
+b. Depolarisation of ventricles 22. Doctors use stethoscope to hear the sounds produced during
+each cardiac cycle. The second sound is heard when:
+c. Repolarisation of ventricles
+(2015 Re)
+d. Repolarisation of auricles
+a. Ventricular walls vibrate due to pushing in of blood from
+17. What would be the heart rate of a person if the cardiac output
+atria
+is 5 L, blood volume in the ventricles at the end of diastole
+is 100 mL and at the end of ventricular systole is 50 mL? b. Semilunar valves close down after the blood flows into
+(2019) vessels from ventricles
+a. 50 beats per minute c. AV node receives signal from SA Node
+b. 75 beats per minute d. AV valves open up
+c. 100 beats per minute
+23. The diagram given here is the standard ECG of a normal
+d. 125 beats per minute person. The P-wave represents the: (2013)
+18. Match the Column-I with Column-II (2019)
+Column-I Column-II
+A. P - wave i. Depolarisation of ventricles
+B. QRS complex ii. Repolarisation of ventricle
+C. T - wave iii. Coronary ischemia a. End of systole
+D. Reduction in the iv. Depolarisation of atria b. Contraction of both the atria
+size of T-wave c. Initiation of the ventricular contraction
+v. Repolarisation of atria
+d. Beginning of the systole
+3 Chapter & Topicwise NEET PYQ's P
+W
+25. The hepatic portal vein drains blood to liver from (2017-Delhi)
+Double Circulation & Regulation a. Heart b. Stomach
+of Cardiac Activity c. Kidneys d. Intestine
+Disorders of Circulatory System
+24. Which of the following is associated with decrease in cardiac
+output? (2020-Covid)
+26. Blood pressure in the pulmonary artery is: (2016 - I)
+a. Parasympathetic neural signals
+a. Same as that in the aorta
+b. Pneumotaxic centre
+b. More than that in the carotid
+c. Adrenal medullary hormones c. More than that in the pulmonary vein
+d. Sympathetic nerves d. Less than that in the vena cava
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+a d c d a d a a b b b c b a d b c
+18 19 20 21 22 23 24 25 26
+a a a b b b a d c
