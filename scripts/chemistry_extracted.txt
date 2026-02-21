@@ -1,0 +1,564 @@
+CHEMISTRY
+Detailed Ch apter-wise Analysis
+1. Some Basic Concepts of Chemistry
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Atoms and 1 0 0 0 0 0 1 0 0 1
+Molecules
+Empirical And 0 1 0 0 1 0 2 0 2 0
+Molecular
+Formula
+Concentration 0 0 1 0 0 0 1 1 0 0
+Terms &
+Application
+Stoichiometry 0 0 2 2 0 0 4 0 1 3
+And
+Stoichiometric
+Calculations
+Miscellaneous 0 0 0 1 0 0 1 0 0 1
+Mole 0 0 0 0 1 1 2 0 1 1
+Dalton's Atomic 0 0 0 0 0 1 1 1 0 0
+Theory
+Total 1 1 3 3 2 2 12 2 4 6
+Summary: The "Some Basic Concepts of Chemistry" chapter contributed 12 questions, with a
+significant number of Hard questions (6 questions), alongside 2 Easy and 4 Medium questions.
+Insights:
+• Stoichiometry And Stoichiometric Calculations is a frequently tested topic and often
+features Hard difficulty.
+• Understanding Empirical And Molecular Formula and Mole Concept is also crucial.
+2. Redox Reaction
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Oxidation 1 0 1 0 1 1 4 2 1 1
+Number
+Types of 0 1 0 0 0 0 1 0 1 0
+Redox
+Reaction
+Balancing of 0 0 0 1 0 0 1 0 0 1
+Redox
+Reaction
+Total 1 1 1 1 1 1 6 2 2 2
+Summary: "Redox Reaction" provided 6 questions, with an even distribution across Easy (2
+questions), Medium (2 questions), and Hard (2 questions).
+Insights:
+• Oxidation Number is a consistently tested topic.
+• Understanding different Types of Redox Reactions and Balancing Redox Reactions is
+crucial, sometimes appearing with Hard difficulty.
+3. Solutions
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Colligative 1 1 0 0 1 2 5 1 1 3
+Properties
+Ideal And 1 0 0 0 0 0 1 0 1 0
+Non-Ideal
+Solutions
+Vapour 0 1 0 0 0 1 2 0 0 2
+Pressure of
+Liquid
+Solutions
+Solubility 0 0 0 1 1 0 2 1 1 0
+Binary 0 0 0 0 0 1 1 0 1 0
+Solution
+Total 2 2 0 1 2 4 11 2 4 5
+Summary: The "Solutions" chapter accounted for 11 questions, with a significant number of
+Hard questions (5 questions) and Medium questions (4 questions).
+Insights:
+• Colligative Properties and Vapour Pressure of Liquid Solutions are frequently
+examined topics, often with Hard difficulty.
+• A thorough understanding of these concepts and their applications is crucial.
+4. Thermodynamics
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Change in 1 1 0 0 0 0 2 0 2 0
+Thermodynamics
+Properties in
+Expansion or
+Contraction of a Gas
+Spontaneity: Second 1 0 0 0 1 0 2 0 0 2
+Law of
+Thermodynamics
+Relationship 0 1 0 0 0 0 1 1 0 0
+Between Heat of
+Reaction at Constant
+Pressure and that at
+Constant Volume
+Pressure-Volume 0 0 1 0 0 0 1 0 1 0
+Work
+Gibbs Energy 0 0 0 1 0 0 1 0 1 0
+Change and Non-
+Mechanical Work
+Measurement of dU 0 0 0 1 0 0 1 1 0 0
+and dH: Bomb
+Calorimeter
+Thermodynamic 0 0 0 0 2 0 2 0 2 0
+Processes
+Enthalpy Change 0 0 0 0 0 1 1 0 0 1
+Total 2 2 1 2 3 1 11 2 6 3
+Summary: The "Thermodynamics & Thermochemistry" chapter provided 11 questions, with a balanced
+distribution across Medium (6 questions), Hard (3 questions), and Easy (2 questions) difficulties.
+Insights:
+• Topics related to the Second Law of Thermodynamics (Spontaneity and Entropy) and
+Thermodynamic Processes are consistently tested and can involve Hard questions.
+• Understanding different forms of energy change and work in thermodynamic processes is essential.
+5. Equilibrium
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Solubility And 1 0 0 0 0 0 1 0 1 0
+Solubility
+Product
+Relationship 1 0 0 1 0 0 2 0 1 1
+Between
+Equilibrium
+Constant (K),
+Reaction
+Quotient (Q)
+and Gibbs Free
+Energy (G)
+Different 0 2 0 1 0 0 3 2 1 0
+Theory For
+Acid And Base
+pH–Calculation 0 0 1 0 0 0 1 0 1 0
+Application of 0 0 1 0 2 0 3 1 2 0
+Equilibrium
+Constant
+Equilibrium 0 0 0 0 0 1 1 0 0 1
+Constant of
+Various
+Equilibrium
+Le Chatelier'S 0 0 0 0 0 1 1 0 1 0
+Principle
+Total 2 2 2 2 2 2 12 3 7 2
+Summary: The "Equilibrium" chapter (covering both chemical and ionic equilibrium topics)
+contributed 12 questions, mostly of Medium difficulty (7 questions), with some Easy (3
+questions) and Hard (2 questions).
+Insights:
+• Topics related to Acids and Bases, Equilibrium Constant, and its relationship with
+Gibbs Free Energy are frequently asked.
+• Understanding pH calculations and Le Chatelier's Principle is crucial.
+6. Electrochemistry
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Electrolysis 1 0 1 0 0 0 2 1 0 1
+Quantitative 1 0 0 0 2 0 3 0 1 2
+Aspects of
+Electrolysis
+And Faraday's
+Laws
+Kohlrausch's 0 1 0 0 0 0 1 0 0 1
+Law
+Measurement of 0 1 0 0 0 0 1 0 0 1
+Conductance
+and
+Conductivity of
+Ionic Solutions
+Electrochemical 0 0 1 0 0 0 1 0 0 1
+Series
+Nernst Equation 0 0 1 0 0 0 1 0 1 0
+Determination 0 0 0 1 0 0 1 1 0 0
+of Cell Constant
+Molar 0 0 0 0 0 1 1 0 1 0
+Conductivity
+Total 2 2 3 1 2 1 11 2 3 6
+Summary: The "Electrochemistry" chapter accounted for 11 questions, with a significant
+number of Hard questions (6 questions).
+Insights:
+• Quantitative Aspects of Electrolysis And Faraday'S Laws and topics like
+Kohlrausch's Law and Electrochemical Series are frequently tested and often
+challenging.
+• A strong grasp of the principles of electrolysis and conductivity is essential.
+7. Chemical Kinetics
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Activation 1 1 0 1 1 0 4 1 2 1
+Energy
+Integrated Rate 0 0 1 0 0 2 3 0 2 1
+Equations
+Rate constant 0 0 1 0 1 0 2 1 1 0
+Experimental 0 0 0 1 0 0 1 0 0 1
+Determination
+of Order of
+Reaction
+Temperature 0 1 0 0 0 0 1 0 0 1
+Dependence of
+The Rate of A
+Reaction
+Ratio of Two 0 0 0 0 1 0 1 0 0 1
+Rate Constant
+at Two
+Different
+Temperatures
+Potential 0 0 0 0 0 1 1 0 1 0
+Energy Curve
+Total 2 2 2 2 3 3 13 2 6 5
+Summary: The "Chemical Kinetics" chapter generated 13 questions, with a notable number of
+Hard questions (5 questions) alongside Easy (2 questions) and Medium (6 questions).
+Insights:
+• Activation Energy and Integrated Rate Equations are frequently examined topics,
+often including complex problems.
+• Understanding the factors affecting reaction rates, rate constants, and the temperature
+dependence of reactions is critical.
+8. Structure of Atom
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Bohr's Model 1 1 1 0 1 2 6 1 4 1
+For Hydrogen
+Atom
+Quantum 0 0 1 1 1 0 3 0 1 2
+Mechanical
+Model of The
+Atom
+Some 0 0 0 0 0 1 1 1 0 0
+Important
+Atomic Terms
+Total 1 1 2 1 2 3 10 2 5 3
+Summary: The "Structure of Atom" chapter provided 10 questions, with a majority being
+Medium difficulty (5 questions), and some Easy (2 questions) and Hard (3 questions).
+Insights:
+• Bohr's Model For Hydrogen Atom is a highly recurring topic, appearing every year and
+covering various aspects like limitations, energy of electrons, and radius of shells.
+• Understanding the Quantum Mechanical Model of The Atom and concepts like
+quantum numbers is also important, often featuring Hard difficulty.
+9. Classification of Elements and Periodicity in Properties
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Nomenclature 1 0 1 0 0 0 2 1 0 1
+of Elements
+With Atomic
+Number > 100
+Effective 0 0 0 1 0 0 1 1 0 0
+Nuclear Charge
+Periodic 0 0 0 0 2 1 3 1 1 1
+Properties
+Electronic 0 0 0 0 0 1 1 0 1 0
+Configuration
+of Elements
+And The
+Periodic Table
+Total 1 0 1 1 2 2 7 3 2 2
+Summary: This chapter provided 7 questions with a balanced difficulty, including 3 Easy, 2
+Medium, and 2 Hard questions.
+Insights:
+• Nomenclature of Elements With Atomic Number > 100 and Periodic Properties (like
+ionization energy and electronegativity) are recurring topics.
+• Foundational knowledge of periodic trends and electron configuration is important.
+10. Chemical Bonding and Molecular Structure
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Bond 1 0 1 1 0 1 4 0 2 2
+Parameters
+Dipole Moment 1 1 0 0 1 0 3 0 2 1
+Kössel - Lewis 0 0 1 1 0 0 2 1 1 0
+Approach To
+Chemical
+Bonding
+Valence Shell 0 1 1 0 1 0 3 0 2 1
+Electron Pair
+Repulsion
+(VSEPR)
+Theory
+Hybridisation 0 1 0 0 1 0 2 0 2 0
+Hydrogen 0 0 0 0 1 0 1 1 0 0
+Bonds
+Molecular 0 0 0 0 0 1 1 1 0 0
+Orbital Theory
+(MOT)
+Total 2 3 3 2 4 2 16 3 9 4
+Summary: "Chemical Bonding And Molecular Structure" is a significant chapter, yielding 16
+questions over the six years. Questions displayed a diverse difficulty, with 3 Easy, 9 Medium,
+and 4 Hard questions.
+Insights:
+• Topics like Bond Parameters, Dipole Moment, and Valence Shell Electron Pair
+Repulsion (VSEPR) Theory are consistently tested, often with Medium to Hard
+difficulty.
+• Understanding various bonding theories and their applications is crucial.
+11. Some Basic Principles And Techniques
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Methods of 1 0 0 0 1 1 3 2 0 1
+Purification of
+Organic Compounds
+Reaction 1 0 0 0 1 0 2 1 1 0
+Intermediate
+Nomenclature of 0 1 1 0 1 1 4 2 1 1
+Organic Compounds
+Isomerism 0 1 0 0 1 1 3 1 1 1
+Qualitative Analysis 0 0 1 1 0 1 3 0 2 1
+of Organic
+Compounds
+Aromaticity 0 0 0 1 0 0 1 0 1 0
+General Introduction 0 0 0 0 1 0 1 0 1 0
+Hyperconjugation 0 0 0 0 0 1 1 0 1 0
+Effect
+Total 2 2 2 2 4 5 17 6 8 4
+Summary: This chapter is significant, with 17 questions over the years. Difficulty was
+balanced, with 6 Easy, 8 Medium, and 4 Hard questions.
+Insights:
+• Nomenclature of Organic Compounds, Methods of Purification, and Qualitative
+Analysis are consistently tested.
+• Understanding Isomerism, Reaction Intermediates, and electronic displacement
+effects (like Hyperconjugation) is important, often appearing with Medium to Hard
+difficulty.
+12. Hydrocarbon
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Preparation of 1 1 0 0 0 0 2 1 1 0
+Alkene
+Chemical 1 1 1 0 1 1 5 1 2 2
+Properties of
+Alkene
+Preparation of 1 1 0 0 0 0 2 0 2 0
+Alkane
+Conformations 0 1 0 0 0 0 1 0 1 0
+Aromatic 0 0 1 1 0 1 3 0 1 2
+Hydrocarbon
+Chemical 0 0 0 1 0 0 1 0 1 0
+Properties of
+Alkane
+Physical 0 0 0 0 1 0 1 0 1 0
+Properties of
+Alkane
+Test of 0 0 0 0 0 1 1 1 0 0
+Unsaturation of
+Alkene
+Total 3 4 2 2 2 3 16 3 9 4
+Summary: The "Hydrocarbon" chapter yielded 16 questions, with a majority being Medium
+difficulty (9 questions), and some Easy (3 questions) and Hard (4 questions).
+Insights:
+• Chemical Properties of Alkenes and Aromatic Hydrocarbons are frequently tested
+topics, often with varied difficulty.
+• Understanding the preparation methods and chemical reactions of alkanes, alkenes, and
+aromatic compounds is essential.
+13. Haloalkanes and Haloarenes
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Chemical 1 1 0 0 1 0 3 2 1 0
+Properties
+Nature of C-X 0 1 0 0 0 0 1 0 1 0
+Bond
+Stereochemical 0 0 1 0 0 1 2 2 0 0
+Aspects of
+Nucleophilic
+Substitution
+Reactions
+Preparation of 0 0 1 0 0 0 1 1 0 0
+Haloarenes
+Classification of 0 0 0 1 0 0 1 1 0 0
+Haloalkanes &
+Haloarenes
+Preparation of 0 0 0 0 1 0 1 0 1 0
+Haloalkanes
+Isomerism 0 0 0 0 0 1 1 0 0 1
+Total 1 2 2 1 2 2 10 6 3 1
+Summary: The "Haloalkanes and Haloarenes" chapter contributed 10 questions, with a strong
+focus on Easy difficulty (6 questions).
+Insights:
+• Chemical Properties and Stereochemical Aspects of Nucleophilic Substitution
+Reactions are recurring topics, often appearing at Easy difficulty.
+• Basic understanding of classification, preparation, and reaction mechanisms is key.
+14. Alcohols, Ethers and Phenols
+Topic 2020 2021 2022 2023 2024 2025 Total Questions Easy Medium Hard
+Ethers 1 0 0 1 0 1 3 0 1 2
+Phenols 0 0 1 0 0 0 1 0 1 0
+Alcohols 0 0 1 1 2 0 4 1 3 0
+Total 1 0 2 2 2 1 8 1 5 2
+Summary: The "Alcohols, Phenols and Ethers" chapter had 8 questions over the years, mainly
+focusing on Medium difficulty (5 questions), with some Easy (1 question) and Hard (2
+questions) questions.
+Insights:
+• Questions on Alcohols and Ethers have appeared consistently, with "Ethers" sometimes
+featuring Hard difficulty questions.
+• A broad understanding of the chemical properties of these functional groups is important.
+15. Aldehydes, Ketones and Carboxylic Acids
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Methods of 1 0 0 0 0 1 2 0 1 1
+Preparation For
+Aldehydes
+Chemical 2 3 3 3 1 1 13 1 6 6
+Reactions of
+Aldehydes And
+Ketones
+Physical 0 0 1 0 0 0 1 0 1 0
+Properties of
+Aldehydes And
+Ketones
+Carboxylic 0 0 1 0 0 1 2 1 0 1
+Acid
+Total 3 3 5 3 1 3 18 2 8 8
+Summary: The "Aldehydes, Ketones and Carboxylic Acids" chapter contributed 18 questions
+across the six years. Questions were well-distributed in difficulty, with 2 Easy, 8 Medium, and
+8 Hard questions.
+Insights:
+• Chemical Reactions of Aldehydes And Ketones is a consistently important topic,
+appearing multiple times with varying difficulty levels, often including Hard questions.
+• "Methods of Preparation For Aldehydes" and "Carboxylic Acid" also appear with a mix
+of Medium and Hard difficulty.
+• Understanding both the preparation methods and the diverse chemical reactions of
+aldehydes, ketones, and carboxylic acids is crucial.
+16. Amines
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Chemical 1 2 2 2 1 1 9 1 5 3
+Reactions of
+Amines &
+Anilines
+Preparation of 0 0 0 0 1 0 1 0 1 0
+Amines
+Diazonium 0 1 0 0 0 1 2 0 2 0
+Salts
+Total 1 3 2 2 2 2 12 1 8 3
+Summary: This chapter provided 12 questions, with a balance between Medium (8 questions)
+and Hard (3 questions) difficulties.
+Insights:
+• Chemical Reactions of Amines & Anilines is a highly tested topic, consistently
+appearing each year and encompassing a range of difficulties.
+• Understanding the basic character of amines and reactions like the Carbylamine Reaction
+is crucial.
+17. Biomolecules
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Disaccharides 2 0 0 0 0 0 2 0 1 1
+Proteins 1 0 0 0 0 0 1 1 0 0
+Vitamins 0 1 0 1 0 1 3 1 2 0
+Enzymes 0 0 1 0 0 0 1 0 1 0
+Nucleic Acids 0 0 0 1 0 0 1 1 0 0
+Glucose 0 0 0 0 1 0 1 0 1 0
+Monosaccharides 0 0 0 0 0 1 1 1 0 0
+Total 3 1 1 2 1 2 10 5 5 1
+Summary: The "Biomolecules" chapter accounted for 10 questions, predominantly of Easy (5
+questions) and Medium (5 questions) difficulty.
+Insights:
+• Topics like Disaccharides and Vitamins are recurring, highlighting the importance of
+understanding the basic properties and biological roles of these molecules.
+• Questions tend to be straightforward, emphasizing foundational knowledge of
+biomolecules.
+18. Coordination Compound
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Ligand Field 1 0 1 0 0 1 3 1 0 2
+Theory
+Chelation and 0 1 0 0 0 0 1 0 1 0
+Denticity
+Magnetism 0 1 0 0 1 1 3 0 2 1
+Nomenclature 0 0 1 0 0 0 1 0 0 1
+of Coordination
+Compounds
+Coordination 0 0 0 1 0 0 1 0 1 0
+Compounds
+Stability of 0 0 0 1 0 0 1 0 1 0
+Coordination
+Compounds
+Isomerism In 0 0 0 0 1 1 2 0 1 1
+Coordination
+Compounds
+Definitions of 0 0 0 0 1 0 1 1 0 0
+Some Important
+Terms
+Pertaining To
+Coordination
+Compounds
+Werner'S 0 0 0 0 0 1 1 1 0 0
+Theory of
+Coordination
+Compounds
+Application of 0 0 0 0 0 1 1 1 0 0
+Coordination
+Compounds
+Total 2 2 2 2 3 5 18 4 6 8
+Summary: This chapter is significant, contributing 18 questions with a notable number of Hard
+questions (8 questions), alongside Easy (4 questions) and Medium (6 questions).
+Insights:
+• Ligand Field Theory, Magnetism, and Isomerism In Coordination Compounds are
+frequently tested topics, often featuring Hard difficulty.
+• Understanding the nomenclature, bonding theories (VBT, CFT), and stability of
+coordination compounds is essential.
+19. d and f Block Elements
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+General 2 1 0 2 1 1 7 0 4 3
+Properties of
+Transition
+Elements (d-
+block)
+The Inner 1 0 1 0 0 0 2 0 2 0
+Transition
+Elements
+Some Important 1 1 0 0 0 0 2 0 2 0
+Applications of
+d and f Block
+Elements
+Chemical 0 0 1 2 2 0 5 3 2 0
+Properties
+The 0 0 0 0 1 0 1 0 0 1
+Lanthanoids
+Total 4 2 2 4 4 1 17 3 10 4
+Summary: This chapter is significant, contributing 17 questions over the six years. Questions
+were predominantly of Medium difficulty (10 questions), with some Easy (3 questions) and
+Hard (4 questions).
+Insights:
+• General Properties of Transition Elements (D-Block), including trends in standard
+electrode potentials, catalytic, and magnetic properties, are consistently tested and can be
+challenging.
+• Chemical Properties of d- and f-block elements are also frequently asked, often at Easy
+to Medium difficulty.
+20. The p-Block Elements (Group 13,14,15, 16, 17, 18)
+Chapter: P-Block Element (Group 13 And 14)
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Allotropes of 1 0 1 1 0 0 3 1 2 0
+Carbon
+Important 1 0 0 0 0 0 1 0 1 0
+Trends And
+Anomalous
+Behaviour of
+Carbon
+Total 2 0 2 2 0 0 6 1 5 0
+Summary: The "P-Block Element (Group 13 And 14)" chapter provided 6 questions, mostly of
+Medium difficulty (5 questions).
+Insights:
+• Allotropes of Carbon is a recurring topic, often at Medium difficulty.
+• Understanding the general trends and anomalous behavior of elements in these groups,
+particularly carbon and boron compounds, is important.
+Chapter: The p-Block Elements (XII)
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Oxoacids of 1 0 0 1 0 0 2 1 0 1
+Sulphur
+Group 17 1 0 1 0 0 0 2 1 1 0
+Elements
+Group 18 0 1 0 0 0 1 2 1 0 1
+Elements
+Group 16 0 0 1 0 2 0 3 1 2 0
+Elements
+Classification 0 0 0 1 0 0 1 0 1 0
+of Oxides
+Based on
+Chemical
+Behaviour
+Group 15 0 0 0 0 0 1 1 0 1 0
+Elements
+Total 2 1 2 2 2 2 11 4 5 2
+Summary: The "The p-Block Elements (XII)" chapter had 11 questions, primarily of Medium
+(5 questions) and Easy (4 questions) difficulty.
+Insights:
+• Questions are spread across various groups (15, 16, 17, 18), indicating a need for a broad
+understanding of their properties, compounds (like Oxoacids of Sulphur), and
+reactivity.
+• Group 16 Elements have appeared consistently.
+21. Salt Analysis
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Test for 0 0 0 1 0 1 2 0 2 0
+Nitrogen,
+Sulphur and
+Halogens
+(Lassaigne's
+Test)
+Introduction 0 0 0 0 1 0 1 0 1 0
+Test of Cation 0 0 0 0 0 1 1 0 1 0
+Total 0 0 0 1 1 2 4 0 4 0
+Summary: The "Practical Chemistry (Salt analysis)" chapter had 4 questions, all of Medium
+difficulty.
+Insights:
+• Questions related to Qualitative Analysis of Organic Compounds and Test of Cation
+are observed, suggesting an emphasis on practical skills and tests.
