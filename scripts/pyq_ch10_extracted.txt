@@ -1,0 +1,253 @@
+R
+E
+T
+P
+A
+H
+1
+C Cell: The Unit of Life
+7. Inclusion bodies of blue-green, purple and green
+An Overview of Cell and photosynthetic bacteria are: (2020-Covid)
+Cell Theory a. Gas vacuoles b. Centrioles
+c. Microtubules d. Contractile vacuoles
+8. The size of Pleuropneumonia-like Organism (PPLO) is:
+1. The concept of “Omnis cellula-e cellula” regarding cell
+(2020-Covid)
+division was first proposed by (2019)
+a. 1 - 2 μm b. 10 - 20 μm
+a. Rudolf Virchow b. Theodor Schwann
+c. 0.1 μm d. 0.02 μm
+c. Schleiden d. Aristotle
+9. Which among the following is not a prokaryote? (2018)
+2. Cellular organelles with membranes are: (2015 Re) a. Saccharomyces b. Mycobacterium
+a. Chromosomes, ribosomes and endoplasmic reticulum c. Nostoc d. Oscillatoria
+b. Endoplasmic reticulum, ribosomes and nuclei 10. Many ribosomes may associate with a single mRNA to
+c. Lysosomes, Golgi apparatus and mitochondria form multiple copies of a polypeptide simultaneously. Such
+strings of ribosomes are termed as (2018)
+d. Nuclei, ribosome and mitochondria
+a. Polysome b. Polyhedral bodies
+3. Which of the following structures is not found in a prokaryotic
+c. Plastidome d. Nucleosome
+cell? (2015 Re)
+11. Which of the following components provides sticky character
+a. Ribosome b. Mesosome
+to the bacterial cell? [OS] (2017-Delhi)
+c. Plasma membrane d. Nuclear envelope
+a. Cell wall b. Nuclear membrane
+4. Which of the following is not membrane-bound? (2015 Re)
+c. Plasma membrane d. Glycocalyx
+a. Ribosomes b. Lysosomes
+12. Select the wrong statement: (2016 - II)
+c. Mesosomes d. Vacuoles a. Cyanobacteria lack flagellated cells.
+b. Mycoplasma is a wall-less microorganism
+Prokaryotic Cells
+c. Bacterial cell wall is made up of peptidoglycan.
+d. Pilli and fimbriae are mainly involved in motility of
+5. Given below are two statements: (2022) bacterial cells
+Statement I: Mycoplasma can pass through less than 1 micron 13. Select the mismatch: (2016 - II)
+filter size. a. Protists-Eukaryotes
+Statement II: Mycoplasma are bacteria with cell wall b. Methanogens-Prokaryotes
+In the light of the above statements, choose the most c. Gas vacuoles-Green bacteria
+appropriate answer from the options given below. d. Large central vacuoles-Animal cells
+a. Statement I is incorrect but Statement II is correct 14. A complex of ribosomes attached to a single strand of RNA
+is known: (2016 - I)
+b. Both Statement I and Statement II are correct
+a. Polysome b. Polymer
+c. Both statement I and statement II are incorrect
+c. Polypeptide d. Okazaki fragment
+d. Statement I is correct but Statement II is incorrect
+15. Which one of the following is not an inclusion body found
+6. Which of the following statements about inclusion bodies is
+in prokaryotes? (2015)
+incorrect? (2020)
+a. Glycogen granule b. Polysome
+a. These are involved in ingestion of food particles.
+c. Phosphate granule d. Cyanophycean granule
+b. They lie free in the cytoplasm 16. Chromatophores take part in: (2015 Re)
+c. These represent reserve material in cytoplasm a. Growth b. Movement
+d. They are not bound by any membrane c. Respiration d. Photosynthesis
+2 Chapter & Topicwise NEET PYQ's P
+W
+17. The structures that help some bacteria to attach to rocks and 27. Which one of the following organelle in the figure correctly
+or host tissues are: (2015 Re) matches with its function? (2013)
+a. Fimbriae b. Mesosomes
+c. Holdfast d. Rhizoids
+18. The motile bacteria are able to move by: (2014)
+a. Pili b. Fimbriae
+c. Flagella d. Cilia
+Endomembrane System a. Rough endoplasmic reticulum, protein synthesis
+b. Rough endoplasmic reticulum, formation of
+19. The organelles that are included in the endomembrane glycoproteins
+system are: (2021) c. Golgi apparatus, protein synthesis
+a. Endoplasmic reticulum, Golgi complex, Lysosomes and d. Golgi apparatus, formation of glycolipids
+Vacuoles. 28. A major site for synthesis of lipids is: (2013)
+b. Golgi complex, Mitochondria, Ribosomes and Lysosomes. a. Nucleoplasm b. RER
+c. SER d. Symplast
+c. Golgi complex, Endoplasmic reticulum, Mitochondria
+and Lysosomes. 29. The Golgi complex plays a major role: (2013)
+a. In post translational modification of proteins and
+d. Endoplasmic reticulum, Mitochondria, Ribosomes and
+glycosidation of lipids
+Lysosomes.
+b. In trapping the light and transforming it into chemical energy
+20. Which is the important site of formation of glycoproteins
+c. In digesting proteins and carbohydrates
+and glycolipids in eukaryotic cells? (2020)
+d. As energy transferring organelles
+a. Peroxisomes b. Golgi bodies
+c. Polysomes d. Endoplasmic reticulum
+Mitochondria, Plastids, Ribosomes
+21. Which of the following statements is not correct? (2019)
+a. Lysosomes have numerous hydrolytic enzymes.
+30. Which of the following pair of organelles does not contain
+b. The hydrolytic enzymes of lysosomes are active under
+DNA? (2019)
+acidic pH.
+a. Mitochondria and Lysosomes
+c. Lysosomes are membrane bound structures. b. Chloroplast and Vacuoles
+d. Lysosomes are formed by the process of packaging in the c. Lysosomes and Vacuoles
+endoplasmic reticulum. d. Nuclear envelope and Mitochondria
+22. The Golgi complex participates in (2018) 31. Which of the following statements regarding mitochondria
+a. Fatty acid breakdown is incorrect? [OS] (2019)
+b. Formation of secretory vesicles a. Outer membrane is permeable to monomers of
+c. Respiration in bacteria carbohydrates, fats and proteins.
+b. Enzymes of electron transport are embedded in outer
+d. Activation of amino acid
+membrane.
+23. Which of the following events does not occur in rough
+c. Inner membrane is convoluted with infoldings.
+endoplasmic reticulum? (2018)
+d. Mitochondrial matrix contains single circular DNA
+a. Protein folding b. Protein glycosylation
+molecule and ribosomes.
+c. Cleavage of signal peptide d. Phospholipid synthesis
+32. Which of the following cell organelles is responsible
+24. A cell organelle containing hydrolytic enzymes is: (2016 - II) for extracting energy from carbohydrates to form ATP?
+a. Ribosome b. Mesosome (2017-Delhi)
+c. Lysosome d. Microsome a. Lysosome b. Ribosome
+25. Select the correct matching in the following pairs: (2015) c. Chloroplast d. Mitochondrion
+33. Mitochondria and chloroplast are
+a. Rough ER – Synthesis of glycogen
+A. Semi-autonomous organelles
+b. Rough ER – Oxidation of fatty acids
+B. Formed by division of pre-existing organelles and they
+c. Smooth ER – Oxidation of phospholipids contain DNA but lack protein synthesizing machinery
+d. Smooth ER – Synthesis of lipids Which one of the following options is correct? (2016-I)
+26. The osmotic expansion of a cell kept in water is chiefly a. Both (A) and (B) are correct
+regulated by: (2014) b. (B) is true but (A) is false
+c. (A) is true but (B) is false
+a. Ribosomes b. Mitochondria
+d. Both (A) and (B) are false
+c. Vacuoles d. Plastids
+Cell: The Unit of Life 3
+34. The structures that are formed by stacking of organized
+Nucleus and Microbodies
+flattened membranous sacs in the chloroplasts are: (2015)
+a. Stroma lamellae b. Stroma
+c. Cristae d. Grana 41. Match List-I with List-II. (2022)
+35. DNA is not present in: (2015) List-I List-II
+a. Nucleus b. Mitochondria
+A. Metacentric i. Centromere situated close to the
+c. Chloroplast d. Ribosomes chromosome end forming one extremely short
+36. Which structures perform the function of mitochondria in and one very long arms
+bacteria? (2014) B. Acrocentric ii. Centromere at the terminal end
+a. Mesosomes b. Nucleoid chromosome
+c. Ribosomes d. Cell wall C. Sub- iii. Centromere in the middle forming
+metacentric two equal arms of chromosomes
+D. Telocentric iv. Centromere slightly away from the
+Cytoskeleton, Cilia and Flagella,
+chromosome middle forming one shorter arm and
+Centrosome and Centrioles one longer arm
+Choose the correct answer from the options given below.
+a. A-i B-ii C-iii D-iv
+37. Match the following columns and select the correct option:
+b. A-iii B-i C-iv D-ii
+(2020-Covid)
+c. A-i B-iii C-ii D-iv
+Column-I Column-II
+d. A-ii B-iii C-iv D-i
+A. Smooth Endoplasmic i. Protein synthesis
+42. Which of the following is an incorrect statement? (2021)
+Reticulum
+a. Microbodies are present both in plant and animal cells.
+B. Rough endoplasmic reticulum ii. Lipid synthesis
+b. The perinuclear space forms a barrier between the materials
+C. Golgi complex iii. Glycosylation present inside the nucleus and that of the cytoplasm.
+D. Centriole iv. Spindle formation c. Nuclear pores act as passages for proteins and RNA molecules
+in both directions between nucleus and cytoplasm.
+(A) (B) (C) (D)
+d. Mature sieve tube elements possess a conspicuous nucleus
+a. (iii) (i) (ii) (iv)
+and usual cytoplasmic organelles.
+b. (iv) (ii) (i) (iii)
+43. Match List-I with List-II (2021)
+c. (i) (ii) (iii) (iv)
+List-I List-II
+d. (ii) (i) (iii) (iv)
+A. Cristae i. Primary constriction in chromo-
+38. Microtubules are the constituents of: (2016-I)
+some
+a. Cilia, Flagella and Peroxisomes
+B. Thylakoids ii. Disc-shaped sacs in Golgi
+b. Spindle fibres, Centrioles and Cilia
+apparatus
+c. Centrioles, Spindle fibres and Chromatin
+C. Centromere iii. Infoldings in mitochondria
+d. Centrosome, Nucleosome and Centrioles
+39. The solid linear cytoskeleton elements having a diameter of D. Cisternae iv. Flattened membranous sacs in
+6 nm and made up of a single type of monomer are known stroma of plastids
+as: [OS] (2014) Choose the correct answer from the options given below.
+a. Lamins b. Microtubules a. A-i B-iv C-iii D-ii
+c. Microfilaments d. Intermediate filaments b. A-iii B-iv C-i D-ii
+40. Match the following and select the correct answer: (2014) c. A-ii B-iii C-iv D-i
+A. Centriole i. Infoldings in mitochondria d. A-iv B-iii C-ii D-i
+44. When the centromere is situated in the middle of two equal
+B. Chlorophyll ii. Thylakoids
+arms of chromosomes, the chromosome is referred as:
+C. Cristae iii. Nucleic acids (2021)
+a. Telocentric b. Sub-metacentric
+D. Ribozymes iv. Basal body cilia or flagella
+c. Acrocentric d. Metacentric
+a. A-iv B-iii C-i D-ii
+45. The biosynthesis of ribosomal RNA occurs in:
+b. A-iv B-ii C-i D-iii (2020-Covid)
+c. A-i B-ii C-iv D-iii a. Golgi apparatus b. Microbodies
+d. A-i B-iii C-ii D-iv c. Nucleolus d. Ribsosomes
+4 Chapter & Topicwise NEET PYQ's P
+W
+46. The shorter and longer arms of a submetacentric chromosome 50. Balbiani rings are sites of: [OS] (2015 Re)
+are referred to as [OS] (2019)
+a. Nucleotide synthesis
+a. s-arm and l-arm respectively
+b. Polysaccharide synthesis
+b. p-arm and q-arm respectively
+c. q-arm and p-arm respectively c. RNA and protein synthesis
+d. m-arm and n-arm respectively d. Lipid synthesis
+47. Which of the following is true for nucleolus? (2018)
+51. Match the columns and identify the correct option. (2015 Re)
+a. Larger nucleoli are present in dividing cells.
+Column-I Column-II
+b. It is a membrane-bound structure.
+c. It takes part in spindle formation. A. Thylakoids i. Disc-shaped sacs in Golgi apparatus
+d. It is a site for active ribosomal RNA synthesis
+B. Cristae ii. Condensed structure of DNA
+48. The chromosomes in which centromere are situated close to
+one end are: (2015) C. Cisternae iii. Flat membranous sacs in stroma
+a. Telocentric b. Sub-metacentric
+D. Chromatin iv. Infoldings in mitochondria
+c. Metacentric d. Acrocentric
+49. Nuclear envelope is a derivative of: (2015) a. A-(iii) B-(iv) C-(i) D-(ii)
+a. Microtubules
+b. A-(iii) B-(i) C-(iv) D-(ii)
+b. Rough endoplasmic reticulum
+c. A-(iii) B-(iv) C-(ii) D-(i)
+c. Smooth endoplasmic reticulum
+d. A-(iv) B-(iii) C-(i) D-(ii)
+d. Membrane of Golgi complex
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+a c d a d a a c a a d d d a b d a
+18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+c a b d b d c d c a c a c b d c d
+35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51
+d a d b c b b d b d c b d d b c a
