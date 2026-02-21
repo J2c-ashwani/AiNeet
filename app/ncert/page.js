@@ -13,12 +13,34 @@ export default function NCERTLibrary() {
     const [activeClass, setActiveClass] = useState('all');
     const [expandedBook, setExpandedBook] = useState(null);
 
+    const [generating, setGenerating] = useState(null);
+
     useEffect(() => {
         fetch('/api/ncert/library')
             .then(res => res.json())
             .then(data => { setBooks(data.books || []); setLoading(false); })
             .catch(() => setLoading(false));
     }, []);
+
+    const handleStartPyq = async (chapterName) => {
+        setGenerating(chapterName);
+        try {
+            const res = await fetch('/api/tests/pyq', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chapter_name: chapterName, questionCount: 20 })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                window.location.href = `/test/${data.testId}`;
+            } else {
+                alert(data.error || 'Failed to generate PYQ test. Try another chapter.');
+            }
+        } catch (error) {
+            alert('Error generating test. Please try again.');
+        }
+        setGenerating(null);
+    };
 
     let filtered = books;
     if (activeSubject !== 'all') filtered = filtered.filter(b => b.subject === activeSubject);
@@ -90,36 +112,45 @@ export default function NCERTLibrary() {
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                            <a href={book.bookUrl} target="_blank" rel="noopener noreferrer"
-                                                onClick={(e) => e.stopPropagation()}
-                                                style={{ padding: '8px 16px', borderRadius: 8, background: `${color}22`, color, fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none', border: `1px solid ${color}44` }}>
-                                                📥 Full Book
-                                            </a>
+                                            <button onClick={(e) => { e.stopPropagation(); setExpandedBook(isExpanded ? null : i); }}
+                                                className="btn btn-secondary btn-sm"
+                                                style={{ padding: '8px 16px', borderRadius: 8, background: `${color}22`, color, fontWeight: 700, fontSize: '0.85rem', border: `1px solid ${color}44` }}>
+                                                {isExpanded ? 'Collapse' : '📂 Chapter-wise'}
+                                            </button>
                                             <span style={{ color: '#64748b', fontSize: '1.5rem', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
                                         </div>
                                     </div>
 
                                     {isExpanded && (
                                         <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 16 }}>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12 }}>
                                                 {book.chapters.map(ch => (
-                                                    <Link key={ch.ch} href={`/ncert/${book.code}?ch=${ch.ch}`}
+                                                    <div key={ch.ch}
                                                         style={{
-                                                            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
-                                                            borderRadius: 10, background: 'rgba(255,255,255,0.03)',
+                                                            display: 'flex', flexDirection: 'column', gap: 12, padding: '16px',
+                                                            borderRadius: 12, background: 'rgba(255,255,255,0.03)',
                                                             border: '1px solid rgba(255,255,255,0.06)',
-                                                            textDecoration: 'none', color: '#e2e8f0',
-                                                            transition: 'all 0.2s',
                                                         }}
-                                                        onMouseEnter={e => { e.currentTarget.style.background = `${color}11`; e.currentTarget.style.borderColor = `${color}44`; }}
-                                                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; }}
                                                     >
-                                                        <span style={{ background: `${color}22`, color, padding: '4px 10px', borderRadius: 6, fontWeight: 800, fontSize: '0.8rem', minWidth: 36, textAlign: 'center' }}>
-                                                            Ch {ch.ch}
-                                                        </span>
-                                                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{ch.title}</span>
-                                                        <span style={{ marginLeft: 'auto', color: '#64748b', fontSize: '0.8rem' }}>PDF →</span>
-                                                    </Link>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                            <span style={{ background: `${color}22`, color, padding: '4px 10px', borderRadius: 6, fontWeight: 800, fontSize: '0.8rem', minWidth: 40, textAlign: 'center' }}>
+                                                                Ch {ch.ch}
+                                                            </span>
+                                                            <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#f8fafc', lineHeight: 1.3 }}>{ch.title}</span>
+                                                        </div>
+                                                        <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+                                                            <Link href={`/ncert/${book.code}?ch=${ch.ch}`}
+                                                                style={{ flex: 1, textAlign: 'center', padding: '10px', borderRadius: 8, background: `${color}22`, color, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                                                                📖 Study PDF
+                                                            </Link>
+                                                            <button
+                                                                onClick={() => handleStartPyq(ch.title)}
+                                                                disabled={generating === ch.title}
+                                                                style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(245,158,11,0.1)`, color: '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: `1px solid rgba(245,158,11,0.3)`, cursor: generating === ch.title ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                                                                {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : '🎯 10 Yr PYQs'}
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 ))}
                                             </div>
                                         </div>

@@ -12,13 +12,26 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { subjects, chapters, topics, questionCount } = await request.json();
+        const { subjects, chapters, chapter_name, topics, questionCount } = await request.json();
 
         // Input validation
         if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
         if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
         if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
         if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
+        if (chapter_name && typeof chapter_name !== 'string') return NextResponse.json({ error: 'Invalid chapter name' }, { status: 400 });
+
+        let chapterIds = chapters ? [...chapters] : [];
+        if (chapter_name) {
+            const cleanName = chapter_name.replace(/[^a-zA-Z0-9 ]/g, '');
+            const words = cleanName.split(' ').slice(0, 2).join('%');
+            const matchedChapter = await db.get('SELECT id FROM chapters WHERE name LIKE ?', [`%${words}%`]);
+            if (matchedChapter) {
+                chapterIds.push(matchedChapter.id);
+            } else {
+                return NextResponse.json({ error: 'Our syllabus database is syncing with this specific NCERT chapter name. Please try another chapter.' }, { status: 404 });
+            }
+        }
 
         let query = 'SELECT * FROM questions WHERE is_pyq = 1';
         const params = [];
@@ -27,9 +40,9 @@ export async function POST(request) {
             query += ` AND subject_id IN (${subjects.map(() => '?').join(',')})`;
             params.push(...subjects);
         }
-        if (chapters && chapters.length > 0) {
-            query += ` AND chapter_id IN (${chapters.map(() => '?').join(',')})`;
-            params.push(...chapters);
+        if (chapterIds && chapterIds.length > 0) {
+            query += ` AND chapter_id IN (${chapterIds.map(() => '?').join(',')})`;
+            params.push(...chapterIds);
         }
         if (topics && topics.length > 0) {
             query += ` AND topic_id IN (${topics.map(() => '?').join(',')})`;

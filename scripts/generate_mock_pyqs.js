@@ -1,46 +1,60 @@
-const Database = require('better-sqlite3');
 const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 
-// Run this as: node scripts/generate_mock_pyqs.js
+// Setup a minimal DB connection that works like lib/db.js
+const { Pool } = require('pg');
+const Database = require('better-sqlite3');
+const { v4: uuidv4 } = require('uuid');
 
-// We need to import the CommonJS version of Blueprint data since this is a Node script.
-// But NEET_BLUEPRINT is in an ES module (lib/ncert-data.js). 
-// Let's just define the bare minimum we need here to generate them.
+const isPostgres = !!process.env.DATABASE_URL;
 
-// To avoid parsing the ES module, I will read the DB topics and generate PYQs for them.
-const dbPath = path.join(process.cwd(), 'neet-coach.db');
-const db = new Database(dbPath);
+let queryFn;
+let pool;
+let sqliteDb;
 
-console.log('📚 Generating realistic Mock PYQs based on syllabus for 2021-2024...');
+if (isPostgres) {
+    pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    queryFn = async (sql, params = []) => {
+        // Convert ? to $1, $2, etc.
+        let i = 1;
+        const pgSql = sql.replace(/\?/g, () => `$${i++}`);
+        const { rows } = await pool.query(pgSql, params);
+        return rows;
+    };
+} else {
+    sqliteDb = new Database(path.join(__dirname, '../neet-coach.db'));
+    queryFn = async (sql, params = []) => {
+        return sqliteDb.prepare(sql).all(params);
+    };
+}
 
-// 1. Get all topics mapped to chapters and subjects
-const topics = db.prepare(`
-    SELECT t.id as topic_id, t.name as topic_name, 
-           c.id as chapter_id, c.name as chapter_name,
-           s.id as subject_id, s.name as subject_name
-    FROM topics t
-    JOIN chapters c ON t.chapter_id = c.id
-    JOIN subjects s ON c.subject_id = s.id
-`).all();
+async function run() {
+    console.log(`📚 Generating Mock PYQs into ${isPostgres ? 'PostgreSQL' : 'SQLite'}...`);
 
-const years = ['2021', '2022', '2023', '2024'];
-const difficulties = ['easy', 'medium', 'hard'];
+    const topics = await queryFn(`
+        SELECT t.id as topic_id, t.name as topic_name, 
+               c.id as chapter_id, c.name as chapter_name,
+               s.id as subject_id, s.name as subject_name
+        FROM topics t
+        JOIN chapters c ON t.chapter_id = c.id
+        JOIN subjects s ON c.subject_id = s.id
+    `);
 
-let insertedCount = 0;
+    const years = ['2021', '2022', '2023', '2024'];
+    const difficulties = ['easy', 'medium', 'hard'];
 
-const insertStatement = db.prepare(`
-    INSERT INTO questions (
-        topic_id, chapter_id, subject_id, 
-        text, option_a, option_b, option_c, option_d, 
-        correct_option, difficulty, explanation, 
-        is_pyq, year_asked, tags
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
-`);
+    let insertedCount = 0;
 
-db.transaction(() => {
-    // For each topic, let's generate 1-3 questions per year
+    const sql = `
+        INSERT INTO questions (
+            topic_id, chapter_id, subject_id, 
+            text, option_a, option_b, option_c, option_d, 
+            correct_option, difficulty, explanation, 
+            is_pyq, year_asked, tags
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+    `;
+
     for (const topic of topics) {
-        // More questions for biology, slightly less for physics/chem to loosely match 90/45/45 ratio
         const questionsPerYear = topic.subject_name.toLowerCase() === 'biology' ? 2 : 1;
 
         for (const year of years) {
@@ -49,16 +63,13 @@ db.transaction(() => {
                 const options = ['A', 'B', 'C', 'D'];
                 const correctOpt = options[Math.floor(Math.random() * options.length)];
 
-                // Add a little randomness so it looks organic if we had a full set,
-                // but we constrain it so there's always representational data.
-                // 10% chance to skip to create natural variance in the blueprint
                 if (Math.random() < 0.1) continue;
 
-                insertStatement.run(
+                await queryFn(sql, [
                     topic.topic_id,
                     topic.chapter_id,
                     topic.subject_id,
-                    `[NEET ${year}] Which of the following is true regarding ${topic.topic_name.toLowerCase()}?`, // generic text
+                    `[NEET ${year}] Which of the following is true regarding ${topic.topic_name.toLowerCase()}?`,
                     'Statement A is correct',
                     'Statement B is correct',
                     'Statement C is correct',
@@ -68,15 +79,19 @@ db.transaction(() => {
                     `Explanation for ${topic.topic_name} from NEET ${year} paper.`,
                     year,
                     'pyq,mock'
-                );
+                ]);
                 insertedCount++;
             }
         }
     }
-})();
 
-const finalPyqCount = db.prepare('SELECT COUNT(*) as c FROM questions WHERE is_pyq = 1').get().c;
+    const { count } = (await queryFn('SELECT COUNT(*) as count FROM questions WHERE is_pyq = 1'))[0];
 
-console.log(`✅ Successfully generated ${insertedCount} mock PYQs for 2021-2024.`);
-console.log(`📊 Total PYQs in database: ${finalPyqCount}`);
-db.close();
+    console.log(`✅ Successfully generated ${insertedCount} mock PYQs for 2021-2024.`);
+    console.log(`📊 Total PYQs in database: ${count}`);
+
+    if (isPostgres) await pool.end();
+    else sqliteDb.close();
+}
+
+run().catch(console.error);
