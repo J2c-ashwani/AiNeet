@@ -24,14 +24,16 @@ function HeatCell({ value, maxValue }) {
 export default function BlueprintPage() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeSubject, setActiveSubject] = useState('physics');
+    const [activeSubject, setActiveSubject] = useState('biology'); // Default to biology since it has both
+    const [viewType, setViewType] = useState('topic'); // 'topic' or 'chapter'
 
     useEffect(() => {
-        fetch('/api/blueprint')
+        setLoading(true);
+        fetch(`/api/blueprint?viewType=${viewType}`)
             .then(res => res.json())
             .then(d => { setData(d); setLoading(false); })
             .catch(() => setLoading(false));
-    }, []);
+    }, [viewType]);
 
     if (loading) {
         return (
@@ -65,7 +67,33 @@ export default function BlueprintPage() {
             <div className="page">
                 <div className="page-header">
                     <h1 className="page-title">📊 NEET Exam Blueprint</h1>
-                    <p className="page-subtitle">Year-wise chapter question distribution (2021–2024)</p>
+                    <p className="page-subtitle">Historical question distribution across topics and chapters</p>
+                </div>
+
+                {/* View Type Toggle */}
+                <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,0.05)', padding: 6, borderRadius: 12, width: 'fit-content', margin: '0 0 24px 0' }}>
+                    <button
+                        onClick={() => setViewType('topic')}
+                        style={{
+                            padding: '8px 24px', borderRadius: 8, fontSize: '0.9rem', fontWeight: 600,
+                            background: viewType === 'topic' ? '#3b82f6' : 'transparent',
+                            color: viewType === 'topic' ? '#fff' : '#94a3b8',
+                            border: 'none', cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                    >
+                        Topic-wise (2021-2024)
+                    </button>
+                    <button
+                        onClick={() => setViewType('chapter')}
+                        style={{
+                            padding: '8px 24px', borderRadius: 8, fontSize: '0.9rem', fontWeight: 600,
+                            background: viewType === 'chapter' ? '#8b5cf6' : 'transparent',
+                            color: viewType === 'chapter' ? '#fff' : '#94a3b8',
+                            border: 'none', cursor: 'pointer', transition: 'all 0.2s'
+                        }}
+                    >
+                        Chapter-wise (2009-2025)
+                    </button>
                 </div>
 
                 {/* Subject Tabs */}
@@ -151,6 +179,15 @@ export default function BlueprintPage() {
                                     <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 600, color: '#22c55e' }}>{t.avg}</td>
                                 </tr>
                             ))}
+                            {topics.length === 0 && (
+                                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                                    <td colSpan={years.length + 3} style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
+                                        <div style={{ fontSize: '2rem', marginBottom: 16 }}>🚧</div>
+                                        <h3 style={{ margin: '0 0 8px', color: '#f1f5f9' }}>Data coming soon!</h3>
+                                        <p style={{ margin: 0 }}>Chapter-wise data for {cfg.label} is currently being compiled by our experts.</p>
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

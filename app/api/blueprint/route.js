@@ -1,28 +1,44 @@
 import { NextResponse } from 'next/server';
 import { NEET_BLUEPRINT } from '@/lib/ncert-data';
+import { CHAPTER_WISE_BLUEPRINT } from '@/lib/blueprint-chapter-data';
 
 /**
  * GET /api/blueprint — NEET Exam Blueprint Data
- * Returns year-wise chapter question distribution for all subjects
+ * Returns year-wise chapter/topic question distribution
+ * Accepts ?subject=biology&viewType=chapter
  */
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const subject = searchParams.get('subject'); // physics, chemistry, biology
+        const viewType = searchParams.get('viewType') || 'topic'; // 'topic' or 'chapter'
 
-        if (subject && NEET_BLUEPRINT[subject]) {
+        const DATA_SOURCE = viewType === 'chapter' ? CHAPTER_WISE_BLUEPRINT : NEET_BLUEPRINT;
+        let years = [2021, 2022, 2023, 2024]; // default topic years
+
+        if (viewType === 'chapter') {
+            // Dynamically get all years/phases from the first entry of biology data
+            const sampleChapter = Object.keys(CHAPTER_WISE_BLUEPRINT.biology || {})[0];
+            if (sampleChapter) {
+                years = Object.keys(CHAPTER_WISE_BLUEPRINT.biology[sampleChapter]);
+            }
+        }
+
+        if (subject && DATA_SOURCE[subject]) {
             return NextResponse.json({
                 subject,
-                data: NEET_BLUEPRINT[subject],
-                years: [2021, 2022, 2023, 2024],
+                viewType,
+                data: DATA_SOURCE[subject],
+                years,
             });
         }
 
-        // Return all subjects
+        // Return all available subjects
         return NextResponse.json({
-            subjects: ['physics', 'chemistry', 'biology'],
-            data: NEET_BLUEPRINT,
-            years: [2021, 2022, 2023, 2024],
+            subjects: Object.keys(DATA_SOURCE),
+            viewType,
+            data: DATA_SOURCE,
+            years,
             meta: {
                 totalQuestions: { physics: 45, chemistry: 45, biology: 90 },
                 totalMarks: 720,
