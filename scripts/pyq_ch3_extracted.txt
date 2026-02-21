@@ -1,0 +1,142 @@
+R
+E
+T
+P
+A
+H Breathing and
+4
+C
+Exchange of Gases
+5. Match the items given Column-I with those in Column-II and
+Mechanism of Breathing
+select the correct option given below (2018)
+Column-I Column-II
+1. Select the correct events that occur during inspiration
+A. Tidal volume i. 2500-3000 mL
+(2020)
+B. Inspiratory Reserve volume ii. 1100-1200 mL
+1. Contraction of diaphragm
+2. Contraction of external inter-costal muscles C. Expiratory Reserve volume iii. 500-550 mL
+3. Pulmonary volume decreases D. Residual volume iv. 1000-1100 mL
+4. Intra pulmonary pressure increases
+a. A-iii B-ii C-i D-iv
+a. (3) and (4) b. (1), (2) and (4)
+b. A-iii B-i C-iv D-ii
+c. Only (4) d. (1) and (2) c. A-i B-iv C-ii D-iii
+2. Lungs do not collapse between breaths and some air always
+d. A-iv B-iii C-ii D-i
+remains in the lungs which can never be expelled because:
+6. Lungs are made up of air-filled sacs the alveoli. They do
+(2016 - II)
+not collapse even after forceful expiration, because of:
+a. There is a positive intrapleural pressure
+(2017-Delhi)
+b. Pressure in the lungs is higher than the atmospheric
+a. Residual Volume b. Inspiratory Reserve Volume
+pressure.
+c. Tidal Volume d. Expiratory Reserve Volume
+c. There is a negative pressure in the lungs.
+d. There is a negative intrapleural pressure pulling at the Exchange and Transport of Gases
+lung walls
+7. Select the favourable conditions required for the formation
+of oxyhaemoglobin at the alveoli. (2021)
+Respiratory Volumes & Capacities
+a. Low pO, high pCO, more H+, higher temperature
+2 2
+b. High pO, high pCO, less H+, higher temperature
+3. The Total Lung Capacity (TLC) is the total volume of air 2 2
+c. Low pO, low pCO, more H+, higher temperature
+accomodated in the lungs at the end of a forced inspiration. 2 2
+This includes: (2020-Covid) d. High pO, low pCO, less H+, lower temperature
+2 2
+a. RV; ERV; IC and EC 8. The partial pressures (in mm Hg) of oxygen (O) and carbon
+2
+b. RV; ERV; VC (Vital Capacity) and FRC (Functional dioxide (CO) at alveoli (the site of diffusion) are: (2021)
+2
+Residual Capacity) a. pO = 40 and pCO = 45 b. pO = 95 and pCO = 40
+2 2 2 2
+c. RV (Residual volume); ERV (Expiratory Reserve c. pO = 159 and pCO = 0.3 d. pO = 104 and pCO = 40
+2 2 2 2
+Volume); TV (Tidal Volume); and IRV (Inspiratory
+9. Identify the wrong statement with reference to transport of
+Reserve Volume)
+oxygen. (2020)
+d. RV; IC (Inspiratory Capacity); EC (Expiratory Capacity); a. Partial pressure of CO can interfere with O binding with
+2 2
+and ERV haemoglobin.
+4. Tidal Volume and Expiratory Reserve Volume of an athlete b. Higher H+ conc. in alveoli favours the formation of
+is 500 mL and 1000 mL, respectively. What will be his oxyhaemoglobin.
+Expiratory Capacity if the Residual Volume is 1200 mL? c. Low pCO in alveoli favours the formation of
+2
+(2019) oxyhaemoglobin.
+a. 1500 mL b. 1700 mL d. Binding of oxygen with haemoglobin is mainly related to
+c. 2200 mL d. 2700 mL partial pressure of O.
+2
+2 Chapter & Topicwise NEET PYQ's P
+W
+10. The partial pressure of oxygen in the alveoli of the lungs is: 15. Due to increasing air-borne allergens and pollutants, many
+(2016 - II) people in urban areas are suffering from respiratory disorder
+a. Less than that in the blood causing wheezing due to (2019)
+b. Less than that of carbon dioxide a. Benign growth on mucous lining of nasal cavity
+c. Equal to that in the blood
+b. Inflammation of bronchi and bronchioles
+d. More than that in the blood
+c. Proliferation of fibrous tissues and damage of the alveolar
+11. Reduction in pH of blood will: (2016 - I)
+walls
+a. Reduce the rate of heart beat
+b. Reduce the blood supply to the brain d. Reduction in the secretion of surfactants by pneumocytes.
+c. Decrease the affinity of hemoglobin with oxygen 16. Which of the following options correctly represents the lung
+d. Release bicarbonate ions by the liver conditions in asthma and emphysema, respectively? (2018)
+12. When you hold your breath, which of the following gas a. Inflammation of bronchioles; Decreased respiratory
+changes in blood would first lead to the urge to breathe? surface
+(2015 Re)
+b. Increased number of bronchioles; Increased respiratory
+a. Rising CO concentration
+2 surface
+b. Rising CO and falling O concentration
+2 2 c. Increased respiratory surface; Inflammation of bronchioles
+c. Falling O concentration
+2
+d. Falling CO concentration d. Decreased respiratory surface; Inflammation of
+2
+13. Approximately seventy percent of carbon-dioxide absorbed bronchioles
+by the blood will be transported to the lungs: (2014) 17. Which of the following is an occupational respiratory
+a. As carbamino-haemoglobin disorder? (2018)
+b. As bicarbonate ions
+a. Anthracis
+c. In the form of dissolved gas molecules
+b. Silicosis
+d. By binding to R.B.C.
+c. Botulism
+Regulation & Disorders of d. Emphysema
+18. Asthma may be attributed to: (2016 - I)
+Respiratory System
+a. Bacterial infection of the lungs
+14. Match the following columns and select the correct option: b. Allergic reaction of the mast cells in the lungs
+(2020-Covid) c. Inflammation of the trachea
+d. Accumulation of fluid in the lungs
+Column-I Column-II
+19. Name the chronic respiratory disorder caused mainly by
+1. Pneumotaxic Centre (i) Alveoli
+cigarette smoking: (2016 - I)
+2. O Dissociation curve (ii) Pons region of brain
+2 a. Emphysema
+3. Carbonic Anhydrase (iii) Haemoglobin
+b. Asthma
+4. Primary site of exchange (iv) R.B.C.
+c. Respiratory acidosis
+of gases
+d. Respiratory alkalosis
+(1) (2) (3) (4)
+20. Name the pulmonary disease in which alveolar surface
+a. (ii) (iii) (iv) (i)
+area involved in gas exchange is drastically reduced due to
+b. (iii) (ii) (iv) (i) damage in the alveolar walls. (2015 Re)
+c. (iv) (i) (iii) (ii) a. Emphysema b. Pneumonia
+d. (i) (iii) (ii) (iv) c. Asthma d. Pleurisy
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+d d c a b a d d b d c a b a b a b
+18 19 20
+b a a
