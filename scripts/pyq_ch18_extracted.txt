@@ -1,0 +1,123 @@
+R
+E
+T
+P
+A
+H Photosynthesis in
+9
+C
+Higher Plants
+Experiments of Photosynthesis
+Light Reaction &
+Electron Transport
+1. Anoxygenic photosynthesis is characteristic of:
+[OS] (2014)
+a. Ulva b. Rhodospirillum
+8. Which one of the following is not true regarding the release
+c. Spirogyra d. Chlamydomonas
+of energy during ATP synthesis through chemiosmosis?
+It involves: (2022)
+a. Reduction of NADP to NADPH on the stroma side of the
+Location & Pigments of 2
+membrane
+Photosynthesis b. Breakdown of proton gradient
+c. Breakdown of electron gradient
+d. Movement of protons across the membrane to the stroma
+2. Which of the following statements is incorrect? (2021)
+9. In light reaction, plastoquinone facilitates the transfer of
+a. Stroma lamellae have PS I only and lack NADP reductase.
+electrons from: (2020)
+b. Grana lamellae have both PS I and PS II.
+a. Cytbf complex to PS-I b. PS-I to NADP+
+c. Cyclic photophosphorylation involves both PS I and PS 6
+II. c. PS-I to ATP synthase d. PS-II to Cytbf complex
+6
+d. Both ATP and NADPH + H+ are synthesized during non- 10. During non-cyclic photophosphorylation, when electrons are
+cyclic photophosphorylation. lost from the reaction centre at PS II, what is the source
+3. Phytochrome is a: (2016 - II) which replaces these electrons? (2020-Covid)
+a. Lipoprotein b. Chromoprotein a. Water b. Carbon dioxide
+c. Flavoprotein d. Glycoprotein c. Light d. Oxygen
+4. In a chloroplast the highest number of protons are found in:
+(2016 - I) Where are ATP & NADPH Used?
+a. Stroma b. Lumen of thylakoid
+c. Inter membranal space d. Antennae complex
+11. Which of the following is not a product of light reaction of
+5. Water soluble pigments found in plant cell vacuoles are: photosynthesis? (2018)
+(2016 - I)
+a. ATP b. NADH
+a. Xanthophylls b. Chlorophylls
+c. NADPH d. Oxygen
+c. Carotenoids d. Anthocyanins
+6. Emerson’s enhancement effect and Red drop have been
+C Pathway & Photorespiration
+instrumental in the discovery of: [OS] (2016 - I)
+4
+a. Photophosphorylation and non-cyclic electron transport
+b. Two photosystem operating simultaneously 12. What is the role of large bundle shealth cells found around
+the vascular bundles in C plants? (2022)
+c. Photophosphorylation and cyclic electron transport
+4
+d. Oxidative phosphorylation a. To protect the vascular tissue from high light intensity
+7. In photosynthesis, the light-independent reactions take place b. To provide the site for photorespiratory pathway
+at: (2015 Re) c. To increase the number of chloroplast for the operation of
+Calvin cycle
+a. Photosystem-I b. Photosystem-II
+c. Stromal matrix d. Thylakoid lumen d. To enable the plant to tolerate high temperature
+2 Chapter & Topicwise NEET PYQ's P
+W
+13. Given below are two statements: (2022) 17. Phosphoenol pyruvate (PEP) is the primary CO acceptor in:
+2
+Statement-I: The primary CO acceptor in C plants is (2017-Delhi)
+2 4
+phosphoenolpyruvate and is found in the mesophyll cells. a. C plants b. C plants
+3 4
+Statement-II: Mesophyll cells of C plants lack RuBisCO d. C plants d. C and C plants
+4 2 3 4
+enzyme 18. The process which makes major difference between C and
+3
+In the light of the above statements, choose the correct C plants is: (2016 - II)
+4
+answer from the options given below.
+a. Photorespiration b. Respiration
+a. Statement I is incorrect but Statement II is correct
+c. Glycolysis d. Calvin cycle
+b. Both Statement I and Statement II are correct
+19. A plant in your garden avoids photorespiratory losses,
+c. Both statement I and statement II are incorrect
+has improved water use efficiency, shows high rates of
+d. Statement I is correct but Statement II is incorrect
+photosynthesis at high temperatures and has improved
+14. The first stable product of CO fixation in Sorghum is: efficiency of nitrogen utilisation. In which of the following
+2
+(2021) physiological groups would you assign this plant? (2016 - I)
+a. Oxaloacetic acid b. Succinic acid a. C b. C
+3 4
+c. Phosphoglyceric acid d. Pyruvic acid c. CAM d. Nitrogen fixer
+15. The oxygenation activity of RuBisCo enzyme in
+photorespiration leads to the formation of: (2020) Factors Affecting Photosynthesis
+a. 1 molecule of 3-C compound
+b. 1 molecule of 6-C compound
+20. With reference to factors affecting the rate of photosynthesis,
+c. 1 molecule of 4-C compound and 1 molecule of 2-C which of the following statements is not correct?
+compound (2017-Delhi)
+d. 2 molecules of 3-C compound
+a. Light saturation for CO fixation occurs at 10% of full
+2
+16. Which of the following statements is incorrect? sunlight
+(2020-Covid) b. Increasing atmospheric CO concentration upto 0.05%
+2
+a. In C plants, the site of RuBisCO activity is mesophyll can enhance CO fixation rate
+4 2
+cell c. C plants responds to higher temperatures with enhanced
+3
+b. The substrate molecule for RuBisCO activity is a 5-carbon photosynthesis while C plants have much lower
+4
+compound temperature optimum
+c. RuBisCO action requires ATP and NADPH d. Tomato is a greenhouse crop which can be grown in CO-
+2
+d. RuBisCO is a bifunctional enzyme enriched atmosphere for higher yield
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+b c b b d b c c d a b c b a a a b
+18 19 20
+a b c
