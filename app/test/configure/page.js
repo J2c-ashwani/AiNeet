@@ -46,11 +46,17 @@ export default function TestConfigPage() {
         setError('');
         try {
             const endpoint = testType === 'adaptive' ? '/api/tests/adaptive' : (testType === 'pyq' ? '/api/tests/pyq' : '/api/tests/generate');
+            // For custom tests, if they selected specific chapters, we only send those chapters
+            // so we don't accidentally restrict them by the 'subjects' filter if they mixed and matched.
+            const apiSubjects = (testType === 'custom' && selectedChapters.length > 0)
+                ? undefined
+                : (selectedSubjects.length > 0 ? selectedSubjects : syllabus.map(s => s.id));
+
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    subjects: selectedSubjects.length > 0 ? selectedSubjects : syllabus.map(s => s.id),
+                    subjects: apiSubjects,
                     subjectId: testType === 'adaptive' ? selectedSubjects[0] : undefined,
                     chapters: selectedChapters.length > 0 ? selectedChapters : undefined,
                     difficulty: (testType !== 'pyq' && difficulty !== 'all') ? difficulty : undefined,
@@ -82,9 +88,10 @@ export default function TestConfigPage() {
         </div>
     );
 
-    const filteredChapters = selectedSubjects.length > 0
-        ? syllabus.filter(s => selectedSubjects.includes(s.id)).flatMap(s => s.chapters.map(c => ({ ...c, subjectName: s.name, color: s.color })))
-        : syllabus.flatMap(s => s.chapters.map(c => ({ ...c, subjectName: s.name, color: s.color })));
+    // We determine which subjects to show chapters for. If no subject selected, show all.
+    const activeSubjectsForChapters = selectedSubjects.length > 0
+        ? syllabus.filter(s => selectedSubjects.includes(s.id))
+        : syllabus;
 
     return (
         <div>
@@ -151,18 +158,32 @@ export default function TestConfigPage() {
 
                         {/* Chapter Selection */}
                         <div className="card mb-4">
-                            <h3 className="mb-4">Select Chapters <span className="text-muted text-sm font-normal">(optional)</span></h3>
-                            <div className="chapter-grid">
-                                {filteredChapters.map(c => (
-                                    <div key={c.id}
-                                        className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''}`}
-                                        onClick={() => toggleChapter(c.id)}>
-                                        <div className="chapter-checkbox">
-                                            {selectedChapters.includes(c.id) && '✓'}
-                                        </div>
-                                        <div>
-                                            <div style={{ fontSize: '0.85rem' }}>{c.name}</div>
-                                            <div className="text-xs text-muted">{c.subjectName} • Class {c.class_level}</div>
+                            <h3 className="mb-2">Select Specific Chapters <span className="text-muted text-sm font-normal">(Mix and match items across subjects)</span></h3>
+                            <p className="text-sm text-muted mb-6">If you pick specific chapters, your test will only include questions from those chapters.</p>
+
+                            <div className="flex flex-col gap-6">
+                                {activeSubjectsForChapters.map(subject => (
+                                    <div key={subject.id}>
+                                        <h4 style={{ color: subject.color, marginBottom: 12, borderBottom: `1px solid ${subject.color}33`, paddingBottom: 8 }}>
+                                            {subject.icon} {subject.name}
+                                        </h4>
+                                        <div className="chapter-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
+                                            {subject.chapters.map(c => (
+                                                <div key={c.id}
+                                                    className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''}`}
+                                                    onClick={() => toggleChapter(c.id)}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', cursor: 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border-color)' }}
+                                                >
+                                                    <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                                        {selectedChapters.includes(c.id) && '✓'}
+                                                    </div>
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? '#fff' : 'var(--text-secondary)' }}>
+                                                            {c.name}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 ))}
