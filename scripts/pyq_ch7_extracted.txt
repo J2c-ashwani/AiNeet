@@ -1,0 +1,136 @@
+R
+E
+T
+P
+A
+H
+8
+C Neural Control and Coordination
+Neural System, Human Neural Central Nervous System and
+System and Neuron Reflex Action
+1. Select the incorrect statement regarding synapses: (2022) 6. Which part of the brain is responsible for thermoregulation?
+a. Impulse transmission across a chemical synapse is always (2019)
+faster than that across an electrical synapse. a. Cerebrum b. Hypothalamus
+b. The membranes of preseynaptic and postsynaptic neurons c. Corpus callosum d. Medulla oblongata
+are in close proximity in an electrical synapse. 7. Which of the following structures or regions is incorrectly
+c. Electrical current can flow directly from one neuron into paired with its function? (2018)
+the other across the electrical synapse. a. Medulla oblongata : controls respiration and cardiovascular
+d. Chemical synapses use neurotransmitters reflexes.
+2. Nissl bodies are mainly composed of: (2018) b. Limbic system : consists of fibre tracts that interconnect
+a. Proteins and lipids b. DNA and RNA different regions of brain; controls movement.
+c. Nucleic acids and SER d. Free ribosomes and RER c. Hypothalamus : production of releasing hormones and
+regulation of temperature, hunger and thirst.
+3. Myelin sheath is produced by: [OS] (2017-Delhi)
+d. Corpus callosum : band of fibres connecting left and right
+a. Schwann Cells and Oligodendrocytes
+cerebral hemispheres.
+b. Astrocytes and Schwann Cells
+8. Which of the following regions of the brain is incorrectly
+c. Oligodendrocytes and Osteoclasts
+paired with its function? (2015)
+d. Osteoclasts and Astrocytes
+a. Corpus callosum-Communication between the left and
+4. Receptor sites for neurotransmitters are present on: right cerebral cortices
+(2017-Delhi) b. Cerebrum-Calculation and contemplation
+a. Membranes of synaptic vesicles c. Medulla oblongata-Homeostatic control
+b. Pre-synaptic membrane d. Cerebellum-Language comprehension
+c. Tips of axons
+9. Injury localised to the hypothalamus would most likely
+d. Post-synaptic membrane disrupt: (2014)
+5. A diagram showing axon terminal and synapse is given. a. Regulation of body temperature
+Identify correctly at least two of A-D (2013) b. Short term memory
+c. Co-ordination during locomotion
+d. Executive function, such as decision making
+Reflex Action and Reflex Arc
+10. Destruction of the anterior horn cell of the spinal cord would
+result in loss of: [RC] (2015 Re)
+a. C-Neurotransmitter; D-Ca++ a. Voluntary motor impulses
+b. A-Receptor; C-Synaptic vesicles b. Commissural impulses
+c. B-Synaptic connection; D-K+ c. Integrating impulses
+d. A-Neurotransmitter; B-Synaptic cleft d. Sensory impulses
+2 Chapter & Topicwise NEET PYQ's P
+W
+17. Photosensitive compound in human eye is made up of:
+Sensory Organs
+[RC] (2016 - I)
+a. Guanosine and Retinol b. Opsin and Retinal
+11. The Pacinian corpuscle responds to rapid changes in:
+c. Opsin and Retinol d. Transducin and Retinone
+[RC] (2017-Gujarat)
+18. In mammalian eye, the ‘fovea’ is the centre of the visual
+a. Light intensity b. Gravity
+field, where: [RC] (2015 Re)
+c. Pressure d. Temperature
+a. The optic nerve leaves the eye.
+Eye b. Only rods are present.
+c. More rods than cones are found.
+12. Match the following columns and select the correct option: d. High density of cones occurs, but has no rods
+[RC] (2020-Covid)
+19. Parts A, B, C and D of the human eye are shown in the
+Column-I Column-II diagram. Select the option which gives correct identification
+1. Rods and Cones (i) Absence of photoreceptor cells along with its functions/ characteristics: [RC] (2013)
+2. Blind Spot (ii) Cones are densely packed
+3. Fovea (iii) Photoreceptor cells
+4. Iris (iv) Visible coloured portion of the eye
+(1) (2) (3) (4)
+a. (ii) (iii) (i) (iv)
+b. (iii) (iv) (ii) (i)
+c. (ii) (iv) (iii) (i)
+d. (iii) (i) (ii) (iv)
+a. D: Choroid – Its anterior part forms ciliary body
+13. Which of the following statements is correct? [RC] (2019)
+b. A: Retina – Contains photo receptors – rods and cones
+a. Cornea is an external, transparent and protective
+c. B: Blind spot – Has only a few rods and cones
+proteinacious covering of the eye-ball.
+b. Cornea consists of dense connective tissue of elastin and d. C: Aqueous chamber – Reflects the light which does not
+can repair itself. pass through the lens
+c. Cornea is convex, transparent layer which is highly
+vascularised. Ear
+d. Cornea consists of dense matrix of collagen and is the
+most sensitive portion the eye.
+20. Match the following columns and select the correct option
+14. The transparent lens in the human eye is held in its place by: [RC] (2020)
+[RC] (2018)
+Column-I Column-II
+a. Ligaments attached to the ciliary body
+1. Organ of corti (i) Connects middle ear and
+b. Ligaments attached to the iris
+pharynx
+c. Smooth muscles attached to the iris
+2. Cochlea (ii) Coiled part of the labyrinth
+d. Smooth muscles attached to the ciliary body
+3. Eustachian (iii) Attached to the oval window
+15. Good vision depends on adequate intake of carotene rich
+tube
+food [RC] (2017-Delhi)
+4. Stapes (iv) Located on the basilar membrane
+Select the best option from the following statements
+A. Vitamin A derivatives are formed from carotene (1) (2) (3) (4)
+B. The photopigments are embedded in the membrane discs a. (iii) (i) (iv) (ii)
+of the inner segment
+b. (iv) (ii) (i) (iii)
+C. Retinal is a derivative of vitamin A
+c. (i) (ii) (iv) (iii)
+D. Retinal is a light absorbing part of all the visual
+photopigments d. (ii) (iii) (i) (iv)
+a. (A) & (B) b. (A), (C) & (D)
+21. Which of the following ossicles is adhered to tympanic
+c. (A) & (C) d. (B), (C) & (D)
+membrane of middle ear? [RC] (2017-Gujarat)
+16. Choose the correct statement. [RC] (2016 - II)
+a. Malleus b. Incus
+a. Photoreceptors in the human eye are depolarised during
+c. Stapes d. Utricle
+darkness and become hyperpolarised in response to the
+light stimulus. 22. A gymnast is able to balance his body upside down even in
+the total darkness because of: [RC] (2015)
+b. Receptors do not produce graded potentials.
+c. Nociceptors respond to changes in pressure. a. Tectorial membrane b. Organ of Corti
+d. Meissner’s corpuscles are thermoreceptors. c. Cochlea d. Vestibular apparatus
+Neural Control and Coordination 3
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+a d a d b b b d a a c d d a b a b
+18 19 20 21 22
+d b b a d
