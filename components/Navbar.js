@@ -23,6 +23,7 @@ export default function Navbar() {
         { name: 'Battle', path: '/battle', icon: '🤖' },
         { name: 'Battleground', path: '/battleground', icon: '⚔️' },
         { name: 'NCERT', path: '/ncert', icon: '📚' },
+        { name: 'Blueprint', path: '/blueprint', icon: '📊' },
         { name: 'Profile', path: '/profile', icon: '👤' },
     ];
 
