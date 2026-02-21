@@ -1,0 +1,218 @@
+R
+E
+T
+P
+A
+H
+2
+C Cell Cycle and Cell Division
+6. Match the following events that occur in their respective
+Cell Cycle
+phases of cell cycle and select the correct option:
+(2020-Covid)
+1. The fruit fly has 8 chromosomes (2n) in each cell. During 1. G phase (i) Cell grows and organelle duplication
+1
+interphase of Mitosis if the number of chromosomes at 2. S phase (ii) DNA replication and chromosome
+G phase is 8, what would be the number of chromosomes duplication
+1
+after S phase? (2021) 3. G phase (iii) Cytoplasmic growth
+2
+a. 16 b. 4 4. Metaphase in (iv) Alignment of chromosomes
+M-phase
+c. 32 d. 8
+(1) (2) (3) (4)
+2. The centriole undergoes duplication during: (2021)
+a. (iii) (iv) (i) (ii)
+a. Prophase b. Metaphase b. (iv) (i) (ii) (iii)
+c. (i) (ii) (iii) (iv)
+c. G phase d. S-phase
+2 d. (ii) (iii) (iv) (i)
+3. Match List-I with List-II (2021)
+7. The correct sequence of phases of cell cycle is (2019)
+List-I List-II a. M → G → G → S b. G → G → S → M
+1 2 1 2
+A. S phase (i) Proteins are synthesized c. S → G → G → M d. G → S → G → M
+1 2 1 2
+B. G phase (ii) Inactive phase 8. Cell in G phase (2019)
+2 0
+C. Quiescent stage (iii) Interval between mitosis a. Exit the cell cycle b. Enter the cell cycle
+and initiation of DNA
+c. Suspend the cell cycle d. Terminate the cell cycle
+replication
+9. DNA replication in bacteria occurs: (2017-Delhi)
+D. G phase (iv) DNA replication
+1 a. During S-phase b. Within nucleolus
+Choose the correct answer from the options given below. c. Prior to fission d. Just before transcription
+a. A-iv B-ii C-iii D-i 10. When cell has stalled DNA replication fork, which checkpoint
+b. A-iv B-i C-ii D-iii should be predominantly activated? [OS] (2016 - II)
+c. A-ii B-iv C-iii D-i a. M b. Both G/M and M
+2
+c. G/S d. G/M
+d. A-iii B-ii C-i D-iv 1 2
+11. During cell growth, DNA synthesis takes place in: (2016 - II)
+4. Identify the correct statement with regard to G phase (Gap
+1 a. G phase b. M phase
+1)of interphase. (2020) 2
+c. S phase d. G phase
+1
+a. Reorganisation of all cell components takes place.
+12. A somatic cell that has just completed the S phase of its
+b. Cell is metabolically active, grows but does not replicate cell cycle, as compared to gamete of the same species, has:
+its DNA. (2015 Re)
+c. Nuclear division takes place. a. Twice the number of chromosomes and four times the
+amount of DNA
+d. DNA synthesis or replication takes place.
+b. Four times the number of chromosomes and twice the
+5. Some dividing cells exit the cell cycle and enter vegetative
+amount of DNA
+inactive stage. This is called quiescent stage (G). This
+0 c. Twice the number of chromosomes and twice the amount
+process occurs at the end of: (2020)
+of DNA
+a. G phase b. S phase
+1 d. Same number of chromosomes but twice the amount of
+c. G phase d. M phase DNA
+2
+Cell Cycle and Cell Division 2
+13. During which phase(s) of cell cycle, amount of DNA in a 21. Which of the following is not a characteristic feature during
+cell remains at 4C level if the initial amount is denoted as mitosis in somatic cells? (2016 - I)
+2C? (2014) a. Spindle fibres
+a. G and M b. G and G b. Disappearance of nucleolus
+2 0 1
+c. G and S d. Only G c. Chromosome movement
+1 2
+14. In ‘S’ phase of the cell cycle: (2014) d. Synapsis
+a. Amount of DNA is reduced to half in each cell 22. Spindle fibres attach on to: (2016 - I)
+b. Amount of DNA doubles in each cell a. Telomere of the chromosome
+c. Amount of DNA remains same in each cell b. Kinetochore of the chromosome
+d. Chromosome number is increased c. Centromere of the chromosome
+d. Kinetosome of the chromosome
+Mitosis
+23. A cell at telophase stage is observed by a student in a plant
+brought from the field. He tells his teacher that this cell is
+15. Which one of the following never occurs during mitotic cell not like other cells at telophase stage. There is no formation
+division? (2022) of cell plate and thus the cell is containing more number
+of chromosomes as compared to other dividing cells. This
+a. Coiling and condensation of the chromatids
+would result in: (2016 - I)
+b. Spindle fibres attach to kinetochores of chromosomes
+a. Aneuploidy b. Polyploidy
+c. Movement of centrioles towards opposite poles
+d. Pairing of homologous chromosomes c. Somaclonal variation d. Polyteny
+16. Select the incorrect statement with reference to mitosis: 24. A stage in cell division is shown in the figure. Select the
+answer which gives correct identification of the stage with
+(2022)
+its characteristics: (2013)
+a. Splitting of centromere occurs at anaphase.
+b. All the chromosomes lie at the equator at metaphase.
+c. Spindle fibres attach to centromere of chromosomes
+d. Chromosomes decondense at telophase.
+17. In a mitotic cycle, the correct sequence of phases is
+(2020-Covid)
+a. G, S, G, M b. M, G, G, S
+1 2 1 2
+c. G, G, S, M d. S, G, G, M
+1 2 1 2 Endoplasmic reticulum and nucleolus not
+a. Telophase
+18. Attachment of spindle fibers to kinetochores of chromosomes reformed yet.
+becomes evident in: (2020-Covid)
+Nuclear envelope reforms, Golgi complex
+b. Telophase
+a. Telophase b. Prophase reforms.
+c. Metaphase d. Anaphase Chromosomes move away from equatorial
+c. Late Anaphase
+plate, Golgi complex not present.
+19. Which of the following options gives the correct sequence
+of events during mitosis? (2017-Delhi) Cell plate formed, mitochondria
+d. Cytokinesis
+distributed between two daughter cells.
+a. Condensation → Nuclear membrane disassembly →
+Crossing over → Segregation → Telophase
+Meiosis
+b. Condensation → Nuclear membrane disassembly →
+Arrangement at equator → Centromere division →
+Segregation → Telophase 25. The appearance of recombination nodules on homologous
+c. Condensation → Crossing over → Nuclear membrane chromosomes during meiosis characterizes? (2022)
+disassembly → Segregation → Telophase a. Terminalization
+d. Condensation → Arrangement at equator → Centromere b. Synaptonemal complex
+division → Segregation → Telophase c. Bivalent
+d. Sites at which crossing over occurs
+20. Anaphase promoting complex (APC) is a protein degradation
+machinery necessary for proper mitosis of animal cells. If 26. Regarding Meiosis, which of the statements is incorrect?
+APC is defective in a human cell, which of the following is (2022)
+expected to occur? [OS] (2017-Delhi)
+a. Four haploid cells are formed at the end of Meiosis-II
+a. Chromosomes will not condense
+b. There are two stages in Meiosis, Meiosis-I and II
+b. Chromosomes will be fragmented c. DNA replication occurs in S phase of Meiosis-II
+c. Chromosomes will not segregate d. Pairing of homologous chromosomes and recombination
+d. Recombination of chromosome arms will occur occurs in Meiosis-I
+3 Chapter & Topicwise NEET PYQ's P
+W
+27. Which stage of meiotic prophase shows terminalisation of Codes:
+chiasmata as its distinctive feature? (2021)
+a. A-ii B-iv C-iii D-i
+a. Zygotene b. Diakinesis
+b. A-iv B-iii C-ii D-i
+c. Pachytene d. Leptotene
+c. A-iii B-iv C-ii D-i
+28. Which of the following stages of meiosis involves division
+of centromere? (2021) d. A-i B-iv C-ii D-iii
+a. Metaphase II b. Anaphase II 34. In meiosis, crossing over is initiated at: (2016 - I)
+c. Telophase II d. Metaphase I a. Pachytene b. Leptotene
+29. Match the following with respect to meiosis: (2020) c. Zygotene d. Diplotene
+Column-I Column-II 35. Select the correct option: (2015)
+1. Zygotene (i) Terminalization
+Column-I Column-II
+2. Pachytene (ii) Chiasmata
+A. Synapsis aligns the homologous i. Anaphase-II
+3. Diplotene (iii) Crossing over
+chromosomes
+4. Diakinesis (iv) Synapsis
+B. Synthesis of RNA and protein ii. Zygotene
+Select the correct option from the following:
+C. Action of enzyme recombinase iii. G-phase
+(1) (2) (3) (4) 2
+D. Centromeres do not separate but iv. Anaphase-I
+a. (iv) (iii) (ii) (i)
+chromatids move towards opposite
+b. (i) (ii) (iv) (iii) poles
+c. (ii) (iv) (iii) (i) v. Pachytene
+d. (iii) (iv) (i) (ii) a. A-i B-ii C-iii D-iv
+30. Dissolution of the synaptonemal complex occurs during:
+b. A-ii B-iii C-iv D-v
+(2020)
+a. Zygotene b. Diplotene c. A-ii B-i C-iii D-iv
+b. Leptotene d. Pachytene d. A-ii B-iii C-v D-iv
+31. During Meiosis I, in which stage synapsis takes place? 36. Arrange the following events of meiosis in correct sequence:
+(2020-Covid) (2015 Re)
+a. Zygotene b. Diplotene A. Crossing over
+c. Leptotene d. Pachytene B. Synapsis
+32. The stage during which separation of the paired homologous C. Terminalisation of chiasmata
+chromosomes begins is (2018)
+D. Disappearance of nucleolus
+a. Pachytene b. Diplotene
+a. (B), (A), (C), (D) b. (A), (B), (C), (D)
+c. Diakinesis d. Zygotene
+c. (B), (C), (D), (A) d. (B), (A), (D), (C)
+33. Match the stages of meiosis in Column-I to their characteristic
+37. The enzyme recombinase is required at which stage of
+features in Column-II and select the correct option using the
+meiosis? (2014)
+codes given below: (2016 - II)
+a. Diakinesis b. Pachytene
+Column-I Column-II
+c. Zygotene d. Diplotene
+A. Pachytene i. Pairing of homologous chromosomes
+38. The complex formed by a pair of synapsed homologous
+B. Metaphase-I ii. Terminalisation of chiasmata
+chromosomes is called: (2013)
+C. Diakinesis iii. Crossing over takes place a. Axoneme b. Equatorial plate
+D. Zygotene iv. Chromosomes align at equatorial plate c. Kinetochores d. Bivalent
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+d d b b a c d a c c c a d b d c a
+18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+c b c d b b b d c b b a b a b c a
+35 36 37 38
+d a b d
