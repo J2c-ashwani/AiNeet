@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 
 const SUBJECT_CONFIG = {
@@ -26,6 +26,7 @@ export default function BlueprintPage() {
     const [loading, setLoading] = useState(true);
     const [activeSubject, setActiveSubject] = useState('biology'); // Default to biology since it has both
     const [viewType, setViewType] = useState('topic'); // 'topic' or 'chapter'
+    const [expandedChapters, setExpandedChapters] = useState({});
 
     useEffect(() => {
         setLoading(true);
@@ -49,17 +50,58 @@ export default function BlueprintPage() {
     const subjectData = data?.data?.[activeSubject] || {};
     const cfg = SUBJECT_CONFIG[activeSubject];
 
-    // Sort topics by total questions (most important first)
-    const topics = Object.entries(subjectData)
-        .map(([topic, yearData]) => ({
-            topic,
-            yearData,
-            total: Object.values(yearData).reduce((a, b) => a + b, 0),
-            avg: (Object.values(yearData).reduce((a, b) => a + b, 0) / years.length).toFixed(1),
-        }))
+    // Sort chapters by total questions (most important first)
+    const processedChapters = Object.entries(subjectData)
+        .map(([chapter, yearDataOrTopics]) => {
+            // Check if this chapter has nested topics (like Zoology) or flat data (like Botany)
+            const isNested = typeof Object.values(yearDataOrTopics)[0] === 'object';
+
+            let total = 0;
+            let aggYearData = {};
+            let subTopics = [];
+
+            if (isNested) {
+                // Initialize aggYearData with 0s
+                years.forEach(y => aggYearData[y] = 0);
+
+                Object.entries(yearDataOrTopics).forEach(([topicTitle, topicYears]) => {
+                    let topicTotal = 0;
+                    Object.entries(topicYears).forEach(([y, val]) => {
+                        aggYearData[y] += val;
+                        topicTotal += val;
+                    });
+                    total += topicTotal;
+                    subTopics.push({
+                        topic: topicTitle,
+                        yearData: topicYears,
+                        total: topicTotal,
+                        avg: (topicTotal / years.length).toFixed(1)
+                    });
+                });
+
+                // Sort subtopics by highest weightage internally
+                subTopics.sort((a, b) => b.total - a.total);
+            } else {
+                aggYearData = yearDataOrTopics;
+                total = Object.values(yearDataOrTopics).reduce((a, b) => a + b, 0);
+            }
+
+            return {
+                chapter,
+                yearData: aggYearData,
+                total,
+                avg: (total / years.length).toFixed(1),
+                isNested,
+                subTopics,
+            };
+        })
         .sort((a, b) => b.total - a.total);
 
-    const maxQ = Math.max(...topics.map(t => Math.max(...Object.values(t.yearData))));
+    const maxQ = Math.max(...processedChapters.map(c => Math.max(...Object.values(c.yearData))));
+
+    const toggleChapter = (chapter) => {
+        setExpandedChapters(prev => ({ ...prev, [chapter]: !prev[chapter] }));
+    };
 
     return (
         <div>
@@ -122,8 +164,8 @@ export default function BlueprintPage() {
                 {/* Stats Cards */}
                 <div className="grid grid-3 gap-4" style={{ marginBottom: 24 }}>
                     <div className="card" style={{ borderLeft: `4px solid ${cfg.color}` }}>
-                        <div className="text-muted text-sm">Total Topics</div>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: cfg.color }}>{topics.length}</div>
+                        <div className="text-muted text-sm">Total Chapters</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: cfg.color }}>{processedChapters.length}</div>
                     </div>
                     <div className="card" style={{ borderLeft: '4px solid #f59e0b' }}>
                         <div className="text-muted text-sm">Questions/Year</div>
@@ -132,9 +174,9 @@ export default function BlueprintPage() {
                     <div className="card" style={{ borderLeft: '4px solid #ef4444' }}>
                         <div className="text-muted text-sm">Highest Weightage</div>
                         <div style={{ fontSize: '1rem', fontWeight: 700, color: '#ef4444' }}>
-                            {topics[0]?.topic || '—'}
+                            {processedChapters[0]?.chapter || '—'}
                             <span style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8' }}>
-                                ~{topics[0]?.avg} Q/year avg
+                                ~{processedChapters[0]?.avg} Q/year avg
                             </span>
                         </div>
                     </div>
@@ -166,20 +208,50 @@ export default function BlueprintPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {topics.map((t, i) => (
-                                <tr key={t.topic} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                                    <td style={{ padding: '10px 16px', fontWeight: 600, color: '#e2e8f0', position: 'sticky', left: 0, background: i % 2 === 0 ? '#0d1322' : '#111827', zIndex: 1, whiteSpace: 'nowrap' }}>
-                                        <span style={{ color: '#64748b', marginRight: 8, fontSize: '0.8rem', fontWeight: 400 }}>#{i + 1}</span>
-                                        {t.topic}
-                                    </td>
-                                    {years.map(y => (
-                                        <HeatCell key={y} value={t.yearData[y] || 0} maxValue={maxQ} />
+                            {processedChapters.map((c, i) => (
+                                <React.Fragment key={c.chapter}>
+                                    <tr
+                                        onClick={() => c.isNested && toggleChapter(c.chapter)}
+                                        style={{
+                                            borderBottom: '1px solid rgba(255,255,255,0.04)',
+                                            cursor: c.isNested ? 'pointer' : 'default',
+                                            transition: 'background 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => c.isNested && (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
+                                        onMouseLeave={(e) => c.isNested && (e.currentTarget.style.background = 'transparent')}
+                                    >
+                                        <td style={{ padding: '10px 16px', fontWeight: 600, color: '#e2e8f0', position: 'sticky', left: 0, background: i % 2 === 0 ? '#0d1322' : '#111827', zIndex: 1, whiteSpace: 'nowrap' }}>
+                                            <span style={{ color: '#64748b', marginRight: 8, fontSize: '0.8rem', fontWeight: 400 }}>#{i + 1}</span>
+                                            {c.isNested && (
+                                                <span style={{ display: 'inline-block', width: 20, color: '#3b82f6', fontSize: '1.2rem', verticalAlign: 'middle', userSelect: 'none' }}>
+                                                    {expandedChapters[c.chapter] ? '▾' : '▸'}
+                                                </span>
+                                            )}
+                                            {c.chapter}
+                                        </td>
+                                        {years.map(y => (
+                                            <HeatCell key={y} value={c.yearData[y] || 0} maxValue={maxQ} />
+                                        ))}
+                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 800, color: '#f59e0b', background: 'rgba(245,158,11,0.08)' }}>{c.total}</td>
+                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 600, color: '#22c55e' }}>{c.avg}</td>
+                                    </tr>
+
+                                    {/* Render Subtopics if expanded */}
+                                    {c.isNested && expandedChapters[c.chapter] && c.subTopics.map((topic, tIdx) => (
+                                        <tr key={topic.topic} style={{ background: 'rgba(0,0,0,0.2)', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                                            <td style={{ padding: '8px 16px 8px 48px', fontWeight: 400, color: '#94a3b8', position: 'sticky', left: 0, background: '#0a0f18', zIndex: 1, whiteSpace: 'nowrap' }}>
+                                                <span style={{ color: '#475569', marginRight: 6 }}>↳</span> {topic.topic}
+                                            </td>
+                                            {years.map(y => (
+                                                <HeatCell key={`sub-${y}`} value={topic.yearData[y] || 0} maxValue={maxQ} />
+                                            ))}
+                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 600, color: 'rgba(245,158,11,0.7)', fontSize: '0.85rem' }}>{topic.total}</td>
+                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 500, color: 'rgba(34,197,94,0.7)', fontSize: '0.85rem' }}>{topic.avg}</td>
+                                        </tr>
                                     ))}
-                                    <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 800, color: '#f59e0b', background: 'rgba(245,158,11,0.08)' }}>{t.total}</td>
-                                    <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 600, color: '#22c55e' }}>{t.avg}</td>
-                                </tr>
+                                </React.Fragment>
                             ))}
-                            {topics.length === 0 && (
+                            {processedChapters.length === 0 && (
                                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                                     <td colSpan={years.length + 3} style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
                                         <div style={{ fontSize: '2rem', marginBottom: 16 }}>🚧</div>

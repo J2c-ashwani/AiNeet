@@ -1,0 +1,1266 @@
+{
+    "zoology": {
+        "Structural Organization In Animals": {
+            "Epithelial Tissue (Simple Epithelium)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Epithelial Tissue (Glandular Epithelium)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Epithelial Tissue (Cell-Cell Communication Junctions)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Connective Tissue (Loose Connective Tissue)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 2,
+                "2023": 0,
+                "2024": 0
+            },
+            "Connective Tissue (Dense Regular Connective Tissue)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Dense Connective Tissue (Irregular Dense Connective Tissue)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Connective Tissue (Specialised Connective Tissue)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Connective Tissue (Specialised - Blood)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Epithelial Tissue (Compound Epithelium)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Total": {
+                "2020": 2,
+                "2021": 1,
+                "2022": 5,
+                "2023": 5,
+                "2024": 1
+            }
+        },
+        "Breathing And Exchange of Gases": {
+            "Transport of Gases (O2 & CO2)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Mechanism of Breathing (Inspiration & Muscles)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Disorders of Respiratory System": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Exchange of Gases (pO2, pCO2, Alveoli, Blood/Tissue)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Human Respiratory System": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Respiratory Volumes and Capacities (TV, IRV, ERV, etc.)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Respiratory Capacities (Vital Capacity)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Total": {
+                "2020": 3,
+                "2021": 3,
+                "2022": 2,
+                "2023": 1,
+                "2024": 2
+            }
+        },
+        "Body Fluids And Circulation": {
+            "ECG (PQRST & Clinical Significance)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Blood - Formed Elements (Leucocytes & Disorders)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Coagulation of Blood": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 2,
+                "2023": 0,
+                "2024": 0
+            },
+            "Blood Groups (ABO)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Circulatory Pathways": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Blood Plasma": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Cardiac Cycle": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Regulation of Cardiac Activity": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 2,
+                "2021": 2,
+                "2022": 5,
+                "2023": 2,
+                "2024": 2
+            }
+        },
+        "Excretory Products And Their Elimination": {
+            "Disorders of the Excretory System": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Mechanism of Filtrate Concentration (Counter Current)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Regulation of Kidney Function (JGA, RAAS)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Osmoregulation (Introduction & Different Organisms)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Human Excretory System": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Regulation of Kidney Function (Heart ANF)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Regulation of Kidney Function (ADH, RAAS, ANF)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Functions of the Tubules (PCT)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Functions of the Tubules (PCT, Henle's Loop, DCT)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 2,
+                "2021": 1,
+                "2022": 1,
+                "2023": 4,
+                "2024": 2
+            }
+        },
+        "Locomotion And Movement": {
+            "Skeletal System (Appendicular Skeleton)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Disorders of Muscular and Skeletal System": {
+                "2020": 0,
+                "2021": 4,
+                "2022": 3,
+                "2023": 1,
+                "2024": 1
+            },
+            "Types of Muscle (Smooth Muscle)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Skeletal System (Axial Skeleton)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Joints (Fibrous, Cartilaginous, Synovial)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 1
+            },
+            "Mechanism of Muscle Contraction (Sliding Filament Theory)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Types of Muscle (Cardiac Muscle)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Total": {
+                "2020": 1,
+                "2021": 8,
+                "2022": 4,
+                "2023": 3,
+                "2024": 3
+            }
+        },
+        "Neural Control And Coordination": {
+            "Conduction of Nerve Impulse (Saltatory Conduction)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Parts of Brain (Forebrain)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Parts of Brain (Hindbrain)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 2
+            },
+            "Total": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 1,
+                "2023": 2,
+                "2024": 2
+            }
+        },
+        "Chemical Coordination & Integration": {
+            "Hormonal Disorders (Examples)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Adrenal Gland (Cortex Hormones)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Parathyroid Hormones & Function": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Hormones (Current & Scientific Definition)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Thyroid Hormones & Function": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Classification of Hormones (Protein & Steroid)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Adrenal Gland (Medulla Hormones)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Hormones of Gastrointestinal Tract": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Hypothalamus (Location & Hormones)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Ovary Hormones & Function": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 2,
+                "2021": 0,
+                "2022": 2,
+                "2023": 1,
+                "2024": 2
+            }
+        },
+        "Animal Kingdom": {
+            "Non-Chordate Classification (Coelenterata/Cnidaria)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Basis of Classification (Notochord)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Chordate Classification (Pisces - Chondrichthyes)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Porifera)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Ctenophora)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Annelida)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Chordate Classification (Class Aves)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Mollusca)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Arthropoda)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Aschelminthes/Nematoda)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Non-Chordate Classification (Platyhelminthes)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Non-Chordate Classification (Echinodermata)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Introduction (General Description)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Chordata and Non-Chordata (Differences/Examples)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 1
+            },
+            "Non-Chordate Classification (Hemichordata)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Chordate Classification (Class Mammalia)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Chordata - Vertebrata (Pisces: Chondrichthyes & Osteichthyes)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 2
+            },
+            "Broad Classification (Coelom)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Chordata - Vertebrata (Class Cyclostomata)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Phylum Chordata (Basic Features)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 3,
+                "2021": 12,
+                "2022": 3,
+                "2023": 3,
+                "2024": 4
+            }
+        },
+        "Biomolecules": {
+            "Enzymes (Classification & Nomenclature)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Nature of Bonds Linking Monomers (Glycosidic, Peptide, etc.)": {
+                "2020": 1,
+                "2021": 2,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Primary and Secondary Metabolites (Examples & Function)": {
+                "2020": 1,
+                "2021": 2,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Nucleic Acids (DNA)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Amino Acids (Types)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Proteins (Function)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Lipids (Glycerol & Fatty Acid)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Carbohydrates (Cell Wall Composition)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Lipids (Phospholipid, Triglycerides, Steroids, etc.)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 1
+            },
+            "Carbohydrates (Disaccharides)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Carbohydrates (Polysaccharides)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Enzymes (Inhibition)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Proteins (Structure)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Enzymes (Competitive/Non- Competitive Inhibition)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Enzymes (Co- factors)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Enzymes (Mechanism of Action)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Analysis of Chemical Composition (DNA)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 6,
+                "2021": 7,
+                "2022": 5,
+                "2023": 4,
+                "2024": 6
+            }
+        },
+        "Human Reproduction": {
+            "Gametogenesis (Oogenesis)": {
+                "2020": 2,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Placenta (Hormones)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Fertilisation (Mechanism & Significance)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Parturition (Foetal Ejection Reflex)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Pregnancy/Gestation (Period/Trimesters)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Gametogenesis (Spermatogenesis & Oogenesis)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Gametogenesis (Spermatogenesis)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Male Reproductive System (Parts & Accessory Glands)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Female Reproductive System (Parts & Accessory Glands)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Embryonic Development (Morula, Blastula, Gastrulation)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Menstrual Cycle": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 2,
+                "2024": 0
+            },
+            "Female Reproductive System (External Genitalia)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Gametogenesis (Hormonal Control of Spermatogenesis and Oogenesis)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 2
+            },
+            "Lactation": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Gametogenesis (Structure of Sperm)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Embryonic Development (Organ Development in Foetus)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Cleavage (Types)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 3,
+                "2021": 3,
+                "2022": 3,
+                "2023": 5,
+                "2024": 5
+            }
+        },
+        "Reproductive Health": {
+            "Assisted Reproductive Technologies (ART, IVF, etc.)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Sexually Transmitted Diseases (STDs)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Birth Control (Barrier Methods)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 1,
+                "2023": 1,
+                "2024": 1
+            },
+            "Birth Control (IUDS)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 2,
+                "2023": 1,
+                "2024": 1
+            },
+            "Birth Control (Sterilisation Procedure)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Birth Control (Natural Methods)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Birth Control (Oral Contraceptive)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Reproductive Health (Problems & Strategies)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 1,
+                "2021": 5,
+                "2022": 5,
+                "2023": 6,
+                "2024": 2
+            }
+        },
+        "Human Health And Diseases": {
+            "Common Diseases in Humans (Typhoid, Pneumonia, etc.)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 2
+            },
+            "Common Diseases in Humans (Life Cycle of Plasmodium)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Immunity (Active & Passive)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Common Diseases in Humans (Disease Causing Organisms)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Drugs (Different Types)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Immunity (Acquired)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "AIDS (HIV Virus, Transmission, Symptoms)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 2,
+                "2024": 0
+            },
+            "Drugs (Opioids, Cannabinoids, Cocaine, etc.)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 1
+            },
+            "Lymphoid Organs (Secondary)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Cancer (Introduction)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Immunity (Structure of Antibody)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Immunity (Innate)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 3,
+                "2021": 2,
+                "2022": 2,
+                "2023": 5,
+                "2024": 4
+            }
+        },
+        "Biotechnology: Principles And Processes": {
+            "Gel Electrophoresis (DNA Fragments)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Restriction Enzymes (Types, Nomenclature, Ends)": {
+                "2020": 2,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Tools of Recombinant DNA Technology (Restriction Enzymes & Others)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Cloning Vectors (Plasmid pBR322)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 1
+            },
+            "Polymerase Chain Reaction (PCR Process & Applications)": {
+                "2020": 0,
+                "2021": 3,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Process of Recombinant DNA Technologies (Isolation of Genetic Material)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 2,
+                "2024": 0
+            },
+            "Identification of Clones (Antibiotic Resistance)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Principles of Biotechnology (Introduction)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Identification of Clones (Blue White Screening)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Methods of Gene Transfer (Gene Gun, Electroporation, etc.)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Cloning Vectors (Pbr322, Cosmids, etc.)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 1,
+                "2024": 0
+            },
+            "Process of Recombinant DNA Technologies (Insertion into Host Cell)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Obtaining Foreign Gene Product (Bioreactors)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Cloning Vectors (Ti Plasmid, Retrovirus for Plants/Animals)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Processes of Recombinant DNA Technologies (Gene Amplification using PCR)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 5,
+                "2021": 7,
+                "2022": 7,
+                "2023": 6,
+                "2024": 6
+            }
+        },
+        "Biotechnology And Its Applications": {
+            "Applications in Medicine (Recombinant Insulin - Humulin)": {
+                "2020": 1,
+                "2021": 1,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Applications in Agriculture (Bt Cotton)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Applications in Agriculture (RNA Interference)": {
+                "2020": 1,
+                "2021": 2,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Applications in Medicine (Gene Therapy)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 1,
+                "2023": 0,
+                "2024": 1
+            },
+            "Applications in Agriculture (Introduction)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 2
+            },
+            "Applications in Agriculture (Green Revolution)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Applications in Medicine (Molecular Diagnosis)": {
+                "2020": 0,
+                "2021": 2,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Applications in Medicine (Treatment of Cancer)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 3,
+                "2021": 8,
+                "2022": 4,
+                "2023": 1,
+                "2024": 4
+            }
+        },
+        "Evolution": {
+            "Origin of Life (Oparin-Haldane Theory)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Evidences for Evolution (Embryological)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Mechanism of Evolution (Variation, Mutation, Recombination)": {
+                "2020": 1,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Convergent and Divergent Evolution": {
+                "2020": 1,
+                "2021": 2,
+                "2022": 1,
+                "2023": 1,
+                "2024": 1
+            },
+            "Hardy-Weinberg Principle": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Evidences for Evolution (Biogeographical)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Adaptive Radiation (Convergence & Divergence)": {
+                "2020": 0,
+                "2021": 1,
+                "2022": 1,
+                "2023": 1,
+                "2024": 0
+            },
+            "Natural Selection (Types)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 1,
+                "2023": 0,
+                "2024": 0
+            },
+            "Origin and Evolution of Man": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Brief Account of Evolution (Animal Forms)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 1
+            },
+            "Evidences for Evolution (Morphological)": {
+                "2020": 0,
+                "2021": 0,
+                "2022": 0,
+                "2023": 0,
+                "2024": 0
+            },
+            "Total": {
+                "2020": 4,
+                "2021": 5,
+                "2022": 3,
+                "2023": 2,
+                "2024": 4
+            }
+        }
+    }
+}

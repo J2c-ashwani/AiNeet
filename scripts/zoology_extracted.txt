@@ -1,0 +1,655 @@
+ZOOLOGY
+Detailed Chapter-wise Analysis
+1. Structural Organization In Animals
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Epithelial Tissue 1 0 1 1 0 0 3 1 2 0
+(Simple Epithelium)
+Epithelial Tissue 1 0 1 0 0 0 2 2 0 0
+(Glandular
+Epithelium)
+Epithelial Tissue 0 1 0 0 0 0 1 0 1 0
+(Cell-Cell
+Communication
+Junctions)
+Connective Tissue 0 0 2 0 0 0 2 1 1 0
+(Loose Connective
+Tissue)
+Connective Tissue 0 0 1 1 0 0 2 0 2 0
+(Dense Regular
+Connective Tissue)
+Dense Connective 0 0 0 1 0 0 1 0 1 0
+Tissue (Irregular
+Dense Connective
+Tissue)
+Connective Tissue 0 0 0 1 0 0 1 1 0 0
+(Specialised
+Connective Tissue)
+Connective Tissue 0 0 0 1 0 0 1 0 1 0
+(Specialised - Blood)
+Epithelial Tissue 0 0 0 0 1 0 1 0 0 1
+(Compound
+Epithelium)
+Total 2 1 5 5 1 0 14 5 8 1
+Summary: The "Structural Organization In Animals" chapter (excluding Cockroach and Frog
+topics) contributed a total of 14 questions. Questions were primarily of Medium difficulty (8
+questions), with 5 Easy and 1 Hard question.
+Insights:
+• Epithelial Tissue (Simple, Glandular, Cell-cell communication junctions, Compound
+Epithelium) is a consistently tested area, mostly Easy to Medium difficulty.
+• Connective Tissue (Loose, Dense Regular, Dense Irregular, Specialised Connective
+Tissue, Blood) is another important topic, often with Medium difficulty.
+• This chapter focuses on the basic tissue types and their characteristics, excluding detailed
+organ or organism-specific anatomy (like Cockroach/Frog) which are covered in their
+dedicated chapter.
+2. Breathing And Exchange of Gases
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Transport of Gases 1 0 0 0 1 0 2 2 0 0
+(O2 & CO2)
+Mechanism of 1 0 0 0 0 0 1 0 1 0
+Breathing
+(Inspiration &
+Muscles)
+Disorders of 0 1 0 0 0 0 1 0 1 0
+Respiratory System
+Exchange of Gases 0 2 1 0 0 0 3 0 3 0
+(pO2, pCO2,
+Alveoli,
+Blood/Tissue)
+Human Respiratory 0 0 1 0 0 0 1 0 1 0
+System
+Respiratory Volumes 0 0 0 1 0 0 1 0 0 1
+and Capacities (TV,
+IRV, ERV, etc.)
+Respiratory 0 0 0 0 1 0 1 0 1 0
+Capacities (Vital
+Capacity)
+Total 3 3 2 1 2 0 11 2 8 1
+Summary: The "Breathing And Exchange of Gases" chapter had a total of 11 questions over the
+six years. Questions were predominantly of Medium difficulty (8 questions), with a couple of
+Easy (2 questions) and one Hard question.
+Insights:
+• Transport of Gases (O2 and CO2) is a fundamental and frequently tested concept, often
+appearing as Easy questions.
+• Exchange of Gases (pO2 and pCO2 in alveoli, oxygenated/deoxygenated blood) is
+another key recurring topic, typically Medium difficulty.
+• Human Respiratory System and its mechanism of breathing (e.g., inspiration muscles) are
+important.
+• Respiratory Volumes and Capacities (e.g., Vital Capacity, TV, IRV) are periodically
+tested and can be Hard.
+• Disorders of the Respiratory System are also examined.
+3. Body Fluids And Circulation
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+ECG (PQRST & 1 0 0 1 1 0 3 1 2 0
+Clinical
+Significance)
+Blood - Formed 1 0 0 1 0 0 2 0 2 0
+Elements
+(Leucocytes &
+Disorders)
+Coagulation of 0 1 2 0 0 0 3 1 2 0
+Blood
+Blood Groups 0 1 0 0 0 0 1 0 1 0
+(ABO)
+Circulatory 0 0 1 0 0 0 1 0 0 1
+Pathways
+Blood Plasma 0 0 1 0 0 0 1 0 1 0
+Cardiac Cycle 0 0 0 0 1 0 1 0 1 0
+Regulation of 0 0 0 0 0 1 1 0 1 0
+Cardiac Activity
+Total 2 2 5 2 2 1 14 2 10 1
+Summary: The "Body Fluids And Circulation" chapter contributed a total of 14 questions over
+the six years. Questions were primarily of Medium difficulty (10 questions), with a few Easy (2
+questions) and Hard (1 question).
+Insights:
+• ECG (PQRST and Clinical Significance) is a consistently tested topic, often with Easy
+to Medium difficulty.
+• Blood components, including Formed Elements (Leucocytes and Disorders) and Blood
+Plasma, are important.
+• Coagulation of Blood is a recurring theme, often with Medium difficulty.
+• Blood Groups (ABO) and Circulatory Pathways are also examined.
+• Cardiac Cycle and its regulation are periodically asked.
+4. Excretory Products And Their Elimination
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Disorders of the 1 0 0 0 0 0 1 1 0 0
+Excretory System
+Mechanism of 1 0 0 0 0 0 1 1 0 0
+Filtrate
+Concentration
+(Counter Current)
+Regulation of 0 1 0 0 0 0 1 0 1 0
+Kidney Function
+(JGA, RAAS)
+Osmoregulation 0 0 1 1 0 0 2 0 2 0
+(Introduction &
+Different
+Organisms)
+Human Excretory 0 0 0 1 1 0 2 0 1 1
+System
+Regulation of 0 0 0 1 0 0 1 0 1 0
+Kidney Function
+(Heart ANF)
+Regulation of 0 0 0 1 0 0 1 1 0 0
+Kidney Function
+(ADH, RAAS, ANF)
+Functions of the 0 0 0 0 1 0 1 0 0 1
+Tubules (PCT)
+Functions of the 0 0 0 0 0 1 1 0 1 0
+Tubules (PCT,
+Henle's Loop, DCT)
+Total 2 1 1 4 2 1 11 3 6 2
+Summary: The "Excretory Products And Their Elimination" chapter has consistently appeared,
+with a total of 11 questions. The difficulty is largely Medium (6 questions), with some Easy (3
+questions) and Hard (2 questions).
+Insights:
+• Regulation of Kidney Function, involving JGA, RAAS, ADH, and ANF, is a high-yield
+area, with questions often ranging from Easy to Hard.
+• Functions of the Tubules (PCT, Henle's Loop, DCT) and the Mechanism of
+Concentration of Filtrate (Counter Current Mechanism) are consistently tested, often
+with Medium to Hard difficulty.
+• Human Excretory System and Osmoregulation in different organisms are also important.
+• Disorders of the Excretory System appear periodically.
+5. Locomotion And Movement
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Skeletal System 1 1 0 0 0 0 2 1 1 0
+(Appendicular
+Skeleton)
+Disorders of 0 4 3 1 1 1 10 0 8 2
+Muscular and
+Skeletal System
+Types of Muscle 0 1 0 0 0 0 1 0 1 0
+(Smooth Muscle)
+Skeletal System 0 1 0 0 0 0 1 0 1 0
+(Axial Skeleton)
+Joints (Fibrous, 0 0 1 1 1 0 3 0 2 1
+Cartilaginous,
+Synovial)
+Mechanism of 0 1 0 1 0 0 2 0 2 0
+Muscle Contraction
+(Sliding Filament
+Theory)
+Types of Muscle 0 0 0 0 1 0 1 0 1 0
+(Cardiac Muscle)
+Total 1 8 4 3 3 1 20 1 16 3
+Summary: The "Locomotion And Movement" chapter is a significant area, contributing a total
+of 20 questions. Questions are predominantly of Medium difficulty (16 questions), with one
+Easy and three Hard questions.
+Insights:
+• Disorders of Muscular and Skeletal System are a major recurring topic, consistently
+appearing across years with Medium to Hard difficulty.
+• Joints (Fibrous, Cartilaginous, Synovial) are frequently tested, often with Medium to
+Hard difficulty.
+• Mechanism of Muscle Contraction (Sliding Filament Theory) is an important concept,
+typically Medium difficulty.
+• Skeletal System (Axial and Appendicular Skeleton) and Types of Muscle (Smooth,
+Cardiac) are also consistently questioned.
+6. Neural Control And Coordination
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Conduction of Nerve 0 0 1 0 0 0 1 0 1 0
+Impulse (Saltatory
+Conduction)
+Parts of Brain 0 0 0 1 0 0 1 0 1 0
+(Forebrain)
+Parts of Brain 0 0 0 0 2 0 2 0 1 1
+(Hindbrain)
+Total 1 0 1 2 2 0 6 0 4 2
+Summary: The "Neural Control And Coordination" chapter contributed a total of 6 questions
+over the six years. Questions were primarily of Medium difficulty (4 questions), with two Hard
+questions.
+Insights:
+• Parts of the Brain (Forebrain, Hindbrain) are consistently tested, often with Medium to
+Hard difficulty.
+• Conduction of Nerve Impulse (Saltatory Conduction) is also examined.
+7. Chemical Coordination & Integration
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Hormonal Disorders 1 0 0 0 0 0 1 0 1 0
+(Examples)
+Adrenal Gland 1 0 0 0 0 0 1 1 0 0
+(Cortex Hormones)
+Parathyroid 0 0 1 0 0 0 1 0 1 0
+Hormones &
+Function
+Hormones (Current 0 0 1 0 0 0 1 1 0 0
+& Scientific
+Definition)
+Thyroid Hormones 0 0 0 1 1 0 2 0 1 1
+& Function
+Classification of 0 0 0 0 1 0 1 1 0 0
+Hormones (Protein
+& Steroid)
+Adrenal Gland 0 0 0 0 0 1 1 0 0 1
+(Medulla Hormones)
+Hormones of 0 0 0 0 0 1 1 1 0 0
+Gastrointestinal
+Tract
+Hypothalamus 0 0 0 0 0 1 1 1 0 0
+(Location &
+Hormones)
+Ovary Hormones & 0 0 0 0 0 1 1 1 0 0
+Function
+Total 2 0 2 1 2 4 11 6 3 2
+Summary: The "Chemical Coordination & Integration" chapter yielded a total of 11 questions
+across the years, showing a consistent presence. Questions were mostly Easy (6 questions), with
+some Medium (3 questions) and Hard (2 questions).
+Insights:
+• Hormonal glands and their functions, particularly Adrenal Gland (Cortex and
+Medulla), Thyroid, and Parathyroid hormones, are consistently important and can range
+from Easy to Difficult.
+• Classification of hormones (Protein, Steroid) and the general definition of hormones are
+also tested.
+• Hypothalamus and hormones of the Gastrointestinal Tract and Ovary have also appeared.
+• Hormonal Disorders are periodically questioned.
+8. Animal Kingdom
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Non-Chordate Classification 1 1 0 0 0 0 2 1 1 0
+(Coelenterata/Cnidaria)
+Basis of Classification 1 0 0 0 0 0 1 1 0 0
+(Notochord)
+Chordate Classification 1 0 0 0 0 0 1 0 1 0
+(Pisces - Chondrichthyes)
+Non-Chordate Classification 0 1 0 0 0 0 1 1 0 0
+(Porifera)
+Non-Chordate Classification 0 2 0 0 0 0 2 1 1 0
+(Ctenophora)
+Non-Chordate Classification 0 1 0 0 0 0 1 1 0 0
+(Annelida)
+Chordate Classification 0 1 1 0 0 0 2 0 1 1
+(Class Aves)
+Non-Chordate Classification 0 1 0 0 0 0 1 1 0 0
+(Mollusca)
+Non-Chordate Classification 0 1 0 0 0 0 1 0 1 0
+(Arthropoda)
+Non-Chordate Classification 0 2 0 0 1 0 3 2 1 0
+(Aschelminthes/Nematoda)
+Non-Chordate Classification 0 1 0 0 0 0 1 0 1 0
+(Platyhelminthes)
+Non-Chordate Classification 0 1 0 0 0 1 2 0 2 0
+(Echinodermata)
+Introduction (General 0 0 1 0 0 0 1 1 0 0
+Description)
+Chordata and Non-Chordata 0 0 1 1 1 0 3 0 2 1
+(Differences/Examples)
+Non-Chordate Classification 0 0 0 1 0 0 1 0 1 0
+(Hemichordata)
+Chordate Classification 0 0 0 1 0 0 1 0 1 0
+(Class Mammalia)
+Chordata - Vertebrata (Pisces: 0 0 0 0 2 0 2 0 1 1
+Chondrichthyes &
+Osteichthyes)
+Broad Classification 0 0 0 0 0 1 1 0 0 1
+(Coelom)
+Chordata - Vertebrata (Class 0 0 0 0 0 1 1 1 0 0
+Cyclostomata)
+Phylum Chordata (Basic 0 0 0 0 0 1 1 0 1 0
+Features)
+Total 3 12 3 3 4 4 29 9 15 5
+Summary: The "Animal Kingdom" chapter is a significant contributor to NEET questions, with
+a total of 29 questions asked across the six years. Questions are largely focused on Medium
+difficulty (15 questions), though there is a healthy mix of Easy (9 questions) and Hard (5
+questions) questions.
+Insights:
+• Classification of animals, both chordates and non-chordates, particularly their
+characteristic features and examples, is a consistently tested area.
+• Topics like Coelenterata/Cnidaria, Aschelminthes/Nematoda, Ctenophora, and
+Echinodermata appear multiple times, spanning Easy to Medium difficulty.
+• Chordate classification, including Pisces (Chondrichthyes and Osteichthyes) and Class
+Aves/Mammalia, is also important and can include Hard questions.
+• General concepts like Basis of Classification (e.g., Notochord) and Broad Classification
+of Kingdom Animalia (e.g., Coelom) are also tested.
+9. Biomolecules
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Enzymes 1 0 0 0 1 1 3 1 2 0
+(Classification &
+Nomenclature)
+Nature of Bonds 1 2 0 0 0 0 3 1 2 0
+Linking Monomers
+(Glycosidic, Peptide,
+etc.)
+Primary and 1 2 0 0 0 0 3 0 1 2
+Secondary
+Metabolites
+(Examples &
+Function)
+Nucleic Acids 1 0 1 0 0 1 3 1 2 0
+(DNA)
+Amino Acids 1 0 0 0 0 0 1 1 0 0
+(Types)
+Proteins (Function) 1 0 0 0 1 0 2 0 2 0
+Lipids (Glycerol & 0 1 0 0 0 0 1 0 0 1
+Fatty Acid)
+Carbohydrates (Cell 0 0 1 0 0 0 1 0 1 0
+Wall Composition)
+Lipids 0 0 1 0 1 0 2 1 1 0
+(Phospholipid,
+Triglycerides,
+Steroids, etc.)
+Carbohydrates 0 0 1 0 0 0 1 0 1 0
+(Disaccharides)
+Carbohydrates 0 0 1 1 0 0 2 0 2 0
+(Polysaccharides)
+Enzymes (Inhibition) 0 0 0 1 0 0 1 0 0 1
+Proteins (Structure) 0 1 0 1 0 0 2 0 1 1
+Enzymes 0 0 0 0 1 0 1 1 0 0
+(Competitive/Non-
+Competitive
+Inhibition)
+Enzymes (Co- 0 0 0 0 1 2 3 2 0 0
+factors)
+Enzymes 0 0 0 1 1 0 2 0 1 1
+(Mechanism of
+Action)
+Analysis of 0 0 0 0 0 1 1 0 1 0
+Chemical
+Composition (DNA)
+Total 6 7 5 4 6 5 32 8 15 9
+Summary: The "Biomolecules" chapter contributed a total of 32 questions across the six years,
+indicating its consistent importance. Questions show a diverse difficulty distribution, with 15
+Medium questions, 9 Hard questions, and 8 Easy questions.
+Insights:
+• Enzymes, including their classification, nomenclature, mechanism of action, inhibition,
+and co-factors, are frequently questioned, with a mix of Easy, Medium, and Hard
+difficulty.
+• The nature of bonds linking monomers in polymers (Glycosidic, Peptide, etc.) and the
+structure/function of proteins are important and often appear as Medium difficulty
+questions.
+• Lipids and Carbohydrates, covering their types, composition, and functions, are
+consistently tested, often with Medium to Hard questions.
+• Nucleic Acids, specifically DNA, also feature in the questions, including analysis of
+chemical composition.
+10. Human Reproduction
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Gametogenesis 2 0 1 0 0 0 3 1 1 1
+(Oogenesis)
+Placenta (Hormones) 1 0 0 0 0 0 1 0 1 0
+Fertilisation 0 1 0 0 0 0 1 0 1 0
+(Mechanism &
+Significance)
+Parturition (Foetal 0 1 0 0 0 0 1 0 1 0
+Ejection Reflex)
+Pregnancy/Gestation 0 1 0 0 0 0 1 0 1 0
+(Period/Trimesters)
+Gametogenesis 0 0 1 0 0 0 1 0 0 1
+(Spermatogenesis &
+Oogenesis)
+Gametogenesis 0 0 1 0 0 0 1 0 0 1
+(Spermatogenesis)
+Male Reproductive 0 0 0 1 0 0 1 0 1 0
+System (Parts &
+Accessory Glands)
+Female 0 0 0 1 1 0 2 1 1 0
+Reproductive
+System (Parts &
+Accessory Glands)
+Embryonic 0 0 0 1 0 0 1 0 1 0
+Development
+(Morula, Blastula,
+Gastrulation)
+Menstrual Cycle 0 0 0 2 0 2 4 1 1 2
+Female 0 0 0 0 1 0 1 0 1 0
+Reproductive
+System (External
+Genitalia)
+Gametogenesis 0 0 0 0 2 0 2 0 0 2
+(Hormonal Control
+of Spermatogenesis
+and Oogenesis)
+Lactation 0 0 0 0 1 0 1 0 1 0
+Gametogenesis 0 0 0 0 0 1 1 0 1 0
+(Structure of Sperm)
+Embryonic 0 0 0 0 0 1 1 0 1 0
+Development (Organ
+Development in
+Foetus)
+Cleavage (Types) 0 0 0 0 0 1 1 0 1 0
+Total 3 3 3 5 5 5 24 3 13 7
+Summary: The "Human Reproduction" chapter is a highly significant area, contributing a total
+of 24 questions across the six years. Questions are diverse in difficulty, with 13 Medium, 7
+Hard, and 3 Easy questions.
+Insights:
+• Gametogenesis (Oogenesis, Spermatogenesis, Hormonal Control, Structure of Sperm) is
+a highly significant and frequently tested area, often including Hard questions.
+• Menstrual Cycle (Menarche, events, menopause) is consistently asked, ranging from
+Easy to Difficult.
+• The Male and Female Reproductive Systems (parts, accessory glands, external genitalia)
+are important.
+• Embryonic Development (Morula, Blastula, Gastrulation, organ development, cleavage)
+and Fertilisation are recurring topics, often with Medium difficulty.
+• Placenta hormones, Parturition, Pregnancy, and Lactation also appear periodically.
+11. Reproductive Health
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Assisted 1 0 0 0 0 1 2 1 0 1
+Reproductive
+Technologies (ART,
+IVF, etc.)
+Sexually 0 1 0 0 0 0 1 1 0 0
+Transmitted
+Diseases (STDs)
+Birth Control 0 1 1 1 1 0 4 2 2 0
+(Barrier Methods)
+Birth Control 0 2 2 1 1 0 6 1 5 0
+(IUDS)
+Birth Control 0 1 0 1 0 0 2 0 2 0
+(Sterilisation
+Procedure)
+Birth Control 0 0 1 1 0 0 2 0 2 0
+(Natural Methods)
+Birth Control (Oral 0 0 1 1 0 0 2 1 1 0
+Contraceptive)
+Reproductive Health 0 0 0 1 0 0 1 0 1 0
+(Problems &
+Strategies)
+Total 1 5 5 6 2 1 20 6 13 1
+Summary: The "Reproductive Health" chapter has been consistently tested, contributing a total
+of 20 questions. The majority of questions are of Medium difficulty (13 questions), with 6
+Easy and 1 Hard question.
+Insights:
+• Birth Control methods (Barrier, IUDS, Sterilisation, Natural, Oral Contraceptive) are
+frequently tested, appearing consistently across years with Easy to Medium difficulty.
+• Assisted Reproductive Technologies (ART, IVF, etc.) are recurring topics, with a mix
+of Easy and Difficult questions.
+• Sexually Transmitted Diseases (STDs) are also important.
+• Reproductive Health - Problems and Strategies, including family planning and awareness,
+appear periodically.
+12. Human Health And Diseases
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Common Diseases in 1 1 0 0 2 0 4 0 4 0
+Humans (Typhoid,
+Pneumonia, etc.)
+Common Diseases in 1 0 0 0 0 0 1 1 0 0
+Humans (Life Cycle
+of Plasmodium)
+Immunity (Active & 1 0 0 0 0 0 1 1 0 0
+Passive)
+Common Diseases in 0 1 0 1 0 0 2 1 1 0
+Humans (Disease
+Causing Organisms)
+Drugs (Different 0 0 1 0 0 0 1 0 0 1
+Types)
+Immunity 0 0 1 0 0 0 1 0 0 1
+(Acquired)
+AIDS (HIV Virus, 0 0 0 2 0 0 2 0 2 0
+Transmission,
+Symptoms)
+Drugs (Opioids, 0 0 0 1 1 0 2 0 2 0
+Cannabinoids,
+Cocaine, etc.)
+Lymphoid Organs 0 0 0 0 1 1 2 0 2 0
+(Secondary)
+Cancer 0 0 0 0 0 1 1 0 0 1
+(Introduction)
+Immunity (Structure 0 0 0 0 0 1 1 1 0 0
+of Antibody)
+Immunity (Innate) 0 0 0 0 0 1 1 1 0 0
+Total 3 2 2 5 4 4 20 5 12 3
+Summary: The "Human Health And Diseases" chapter consistently features in NEET exams,
+contributing a total of 20 questions. Questions are predominantly of Medium difficulty (12
+questions), with a fair share of Easy (5 questions) and Hard (3 questions).
+Insights:
+• Common Diseases in Humans, including specific diseases (Typhoid, Pneumonia,
+Amoebiasis, etc.) and disease-causing organisms, are frequently tested, spanning Easy to
+Medium difficulty.
+• Immunity, covering Active/Passive, Acquired, Innate Immunity, and Antibody
+Structure, is a critical area, often with Hard questions.
+• AIDS (HIV Virus, transmission, replication, symptoms) is a consistently important topic,
+typically Medium difficulty.
+• Drugs (Opioids, Cannabinoids, Cocaine, etc.) and their effects are periodically
+questioned, sometimes with Hard difficulty.
+• Lymp hoid Organs (Secondary) and Cancer (Introduction) have also appeared.
+13. Biotechnology: Principles And Processes
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Gel Electrophoresis 1 1 1 1 0 1 5 2 2 1
+(DNA Fragments)
+Restriction Enzymes 2 0 0 0 1 0 3 2 1 0
+(Types,
+Nomenclature, Ends)
+Tools of 1 1 1 0 0 0 3 1 2 0
+Recombinant DNA
+Technology
+(Restriction
+Enzymes & Others)
+Cloning Vectors 1 0 1 0 1 0 3 0 1 2
+(Plasmid pBR322)
+Polymerase Chain 0 3 1 0 0 1 5 1 3 1
+Reaction (PCR
+Process &
+Applications)
+Process of 0 1 0 2 0 0 3 1 1 1
+Recombinant DNA
+Technologies
+(Isolation of Genetic
+Material)
+Identification of 0 1 1 0 0 0 2 0 1 1
+Clones (Antibiotic
+Resistance)
+Principles of 0 0 1 1 0 0 2 1 1 0
+Biotechnology
+(Introduction)
+Identification of 0 0 1 0 0 1 2 1 1 0
+Clones (Blue White
+Screening)
+Methods of Gene 0 0 0 1 0 0 1 0 1 0
+Transfer (Gene Gun,
+Electroporation, etc.)
+Cloning Vectors 0 0 0 1 0 1 2 1 0 1
+(Pbr322, Cosmids,
+etc.)
+Process of 0 0 0 0 1 0 1 0 0 1
+Recombinant DNA
+Technologies
+(Insertion into Host
+Cell)
+Obtaining Foreign 0 0 0 0 1 1 2 2 0 0
+Gene Product
+(Bioreactors)
+Cloning Vectors (Ti 0 0 0 0 1 0 1 1 0 0
+Plasmid, Retrovirus
+for Plants/Animals)
+Processes of 0 0 0 0 0 1 1 0 1 0
+Recombinant DNA
+Technologies (Gene
+Amplification using
+PCR)
+Total 5 7 7 6 6 6 37 13 15 9
+Summary: This chapter is a high-yield area, accounting for a total of 37 questions over the six
+years. The difficulty is varied, with 15 Medium questions, 13 Easy questions, and 9 Hard
+questions.
+Insights:
+• Tools of Recombinant DNA Technology, especially Restriction Enzymes (types,
+nomenclature, sticky/non-sticky ends), are repeatedly asked and can be Easy to Medium.
+• Gel Electrophoresis for DNA fragment separation and isolation is a recurring topic, with
+questions ranging from Easy to Hard.
+• Polymerase Chain Reaction (PCR), including its steps (denaturation, annealing,
+extension), Taq Polymerase, importance, and applications, is a high-yield topic,
+appearing with Medium to Hard difficulty.
+• Cloning Vectors (e.g., Plasmid (pBR322), Cosmids, Ti Plasmid) and methods of gene
+transfer are also critical, sometimes with Hard difficulty.
+• The process of Recombinant DNA Technologies, such as isolation of genetic material
+and insertion into host cells, is tested periodically.
+• Identification of clones, including antibiotic resistance and blue-white screening methods,
+are important concepts.
+14. Biotechnology And Its Applications
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Applications in 1 1 1 0 0 2 5 3 2 0
+Medicine
+(Recombinant
+Insulin - Humulin)
+Applications in 1 0 0 0 1 0 2 1 1 0
+Agriculture (Bt
+Cotton)
+Applications in 1 2 1 0 0 2 6 2 3 1
+Agriculture (RNA
+Interference)
+Applications in 0 2 1 0 1 0 4 1 2 1
+Medicine (Gene
+Therapy)
+Applications in 0 0 0 0 2 0 2 2 0 0
+Agriculture
+(Introduction)
+Applications in 0 1 0 0 0 0 1 0 1 0
+Agriculture (Green
+Revolution)
+Applications in 0 2 1 1 0 0 4 0 3 1
+Medicine (Molecular
+Diagnosis)
+Applications in 0 0 0 0 0 1 1 0 1 0
+Medicine (Treatment
+of Cancer)
+Total 3 8 4 1 4 5 25 9 13 3
+Summary: The "Biotechnology And Its Applications" chapter contributed a total of 25
+questions, showing its consistent importance in NEET exams. Questions are predominantly of
+Medium difficulty (13 questions), with a good number of Easy (9 questions) and some Hard (3
+questions).
+Insights:
+• Biotechnological Applications in Medicine, particularly Recombinant Insulin
+(Humulin) and Gene Therapy, are frequently tested, spanning Easy to Medium difficulty.
+• Applications in Agriculture, such as Bt Cotton and RNA Interference, are also
+consistently important, often with Medium difficulty.
+• Molecular Diagnosis is a recurring topic with a mix of difficulty.
+• General introductions to biotechnological applications and the concept of Green
+Revolution appear periodically.
+15. Evolution
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Origin of Life 1 0 0 0 0 0 1 1 0 0
+(Oparin-Haldane
+Theory)
+Evidences for 1 0 0 0 0 0 1 1 0 0
+Evolution
+(Embryological)
+Mechanism of 1 0 0 0 0 0 1 0 1 0
+Evolution
+(Variation, Mutation,
+Recombination)
+Convergent and 1 2 1 1 1 0 6 4 2 0
+Divergent Evolution
+Hardy-Weinberg 0 1 0 0 1 0 2 1 1 0
+Principle
+Evidences for 0 1 0 0 0 0 1 0 1 0
+Evolution
+(Biogeographical)
+Adaptive Radiation 0 1 1 1 0 0 3 0 3 0
+(Convergence &
+Divergence)
+Natural Selection 0 0 1 0 0 0 1 0 0 1
+(Types)
+Origin and Evolution 0 0 0 0 1 0 1 0 1 0
+of Man
+Brief Account of 0 0 0 0 1 0 1 0 0 1
+Evolution (Animal
+Forms)
+Evidences for 0 0 0 0 0 1 1 1 0 0
+Evolution
+(Morphological)
+Total 4 5 3 2 4 1 19 8 9 2
+Summary: The "Evolution" chapter is a moderate contributor, with a total of 19 questions
+across the six years. Questions are largely balanced between Easy (8 questions) and Medium (9
+questions), with a couple of Hard questions (2 questions).
+Insights:
+• Evidences for Evolution (Embryological, Biogeographical, Morphological) are
+frequently tested, spanning Easy to Medium difficulty.
+• Concepts like Convergent and Divergent Evolution and Adaptive Radiation are
+consistently important, often appearing as Medium questions.
+• Hardy-Weinberg Principle and Natural Selection are also recurring topics, with a mix
+of Easy and Hard questions.
+• Theor ies of Origin of Life (Oparin-Haldane) and the Origin and Evolution of Man are
+periodically examined.
+• A Brief Account of Evolution, specifically animal forms through geological periods, can
+be a Hard question.

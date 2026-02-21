@@ -1,0 +1,528 @@
+BOTANY
+Detailed Ch apter-wise Analysis
+1. Cell : The Unit of Life
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Golgi body 1 0 0 1 0 1 3 1 1 1
+Mitochondria 0 1 0 0 1 0 2 0 0 2
+Endoplasmic 0 1 0 0 0 0 1 1 0 0
+Reticulum
+Chromosomes 0 0 1 0 0 0 1 0 0 1
+Ribosomes 0 0 0 1 0 1 2 2 0 0
+Cell Organelles 0 0 0 0 1 1 2 0 1 1
+Plastids 0 0 0 0 1 0 1 1 0 0
+Nucleus, 0 0 0 0 1 0 1 0 1 0
+Karyotype,
+Polytene,
+Lampbrush etc.
+What is a Cell ? 0 0 0 0 0 1 1 1 0 0
+Overview of the
+Cell
+Prokaryotic 0 0 0 0 0 1 1 1 0 0
+Ribosomes,
+Inclusion
+Bodies,
+Mesosomes,
+Nucleoid,
+Cytoplasm
+Contents etc.
+Total 1 2 1 3 4 6 17 7 3 5
+Summary: The chapter "Cell: The Unit of Life" accounted for 17 questions over the years. This chapter
+covers various eukaryotic and prokaryotic cell components, with a noticeable number of Hard questions
+(5 questions), particularly concerning mitochondria, chromosomes, and cell organelles.
+Insights:
+• Eukaryotic cell organelles like Golgi body, Mitochondria, Ribosomes, and the general concept
+of Cell Organelles are frequently questioned.
+• There's a good mix of difficulty, but some topics like Mitochondria and Chromosomes tend to
+be Hard.
+2. Cell Cycle and Cell Division
+Topic 2020 2021 2022 2023 2024 2025 Total Questions Easy Medium Hard
+G1 Phase 2 1 0 0 0 0 3 1 1 1
+Meiosis I 1 1 2 1 2 0 7 4 3 1
+Meiosis II 0 1 0 2 0 0 3 1 2 0
+Mitosis 0 1 2 0 1 1 5 2 3 0
+S Phase 0 1 0 2 0 0 3 1 1 0
+G2 Phase 0 0 0 1 0 0 1 0 0 1
+Interphase 0 0 0 0 1 0 1 0 1 0
+Total 3 5 5 6 4 2 25 9 9 3
+Summary: This chapter is highly significant, with 25 questions in total. Questions were well-
+distributed across Easy (9), Medium (9), and Hard (3) difficulties. Both Mitosis and Meiosis,
+along with the phases of the cell cycle (G1, S, G2, Interphase), are regularly tested.
+Insights:
+• Meiosis I is a particularly important topic, consistently appearing and having a mix of
+Easy and Medium/Hard questions.
+• Understanding the different phases of Interphase (G1, S, G2) and Mitosis is crucial, as
+they appear frequently.
+3. The Living World
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Species/Genus/Family/Order/Class/Phylum 0 0 1 0 0 0 1 0 1 0
+or Division/Kingdom
+Total 0 0 1 0 0 0 1 0 1 0
+Summary: This chapter had only 1 question in 2022, focusing on Taxonomic Hierarchy.
+Insights:
+• While infrequent, the Taxonomic Hierarchy is a basic concept that might be tested.
+4. Biological Classification
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+History, Structure, 1 0 0 0 0 0 1 0 1 0
+Biochemical
+Composition and
+Examples (Viruses
+and other Acellular
+organisms.)
+General Characters 0 1 0 0 2 0 3 2 1 0
+(Fungi)/Mycorrhiza
+Ascomycetes 0 0 1 0 0 0 1 1 0 0
+Mycoplasma 0 0 1 0 0 0 1 0 1 0
+Characteristics 0 0 1 0 0 0 1 0 1 0
+Five Kingdom 0 0 0 0 0 1 1 0 0 1
+Total 1 1 3 0 2 1 8 3 4 1
+Summary: This chapter provided 8 questions over the years. Key areas included fungal
+characteristics and classification and features of Monera (Mycoplasma, Characteristics).
+Difficulty was balanced between Easy and Medium.
+Insights:
+• Kingdom Fungi has been a recurrent topic.
+• Understanding the characteristics of Kingdom Monera, particularly Mycoplasma, is
+important.
+5. Plant Kingdom
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Rhodophyceae 1 1 1 0 0 0 3 3 0 0
+Chlorophyceae 1 1 1 0 0 0 3 2 1 0
+Characteristics 1 1 0 1 0 1 4 3 0 1
+and Importance
+Liverworts 0 1 0 0 0 0 1 1 0 0
+Phaeophyceae 0 1 1 0 1 0 3 0 1 2
+Mosses 0 0 0 1 0 0 1 0 0 1
+General 0 0 0 1 0 1 2 1 1 0
+Characteristics
+and Importance
+Introduction, 0 0 0 0 0 2 2 1 0 1
+Characteristics
+Total 3 5 4 3 1 4 20 11 2 5
+Summary: This chapter is significant, contributing 20 questions. It extensively covers different
+plant groups: Algae (Rhodophyceae, Chlorophyceae, Phaeophyceae), Bryophytes (Liverworts,
+Mosses), Pteridophytes, and Gymnosperms. Difficulty is varied, with 11 Easy, 2 Medium, and 5
+Hard questions.
+Insights:
+• Algae (Rhodophyceae, Chlorophyceae, Phaeophyceae) are a consistent topic.
+• Pteridophytes and Bryophytes characteristics are also important.
+• Gymnosperms and Angiosperms general characteristics have started to appear in later
+years.
+• Expect questions covering plant life cycles with some Hard difficulty.
+6. Morphology of Flowering Plants
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Types 1 0 0 0 0 0 1 1 0 0
+Gynoecium (Carpels) 2 0 0 0 0 0 2 2 0 0
+Androecium (Stamens) 0 1 0 0 1 0 2 1 1 0
+Brassicaceae 0 1 0 0 0 0 1 0 0 1
+Poaceae 0 1 0 0 0 0 1 0 1 0
+Symmetry 0 0 1 0 1 0 2 1 1 0
+Modifications 0 0 1 0 0 0 1 0 1 0
+Aestivation 0 0 1 0 0 0 1 1 0 0
+Solanaceae 0 0 0 1 0 0 1 0 1 0
+Placentation 0 0 0 1 0 0 1 1 0 0
+Solitary Flowers 0 0 0 1 0 0 1 0 0 1
+Structure of Monocotyledonous Seed 0 0 0 0 1 1 2 1 1 0
+Terminology/Symmetry/Thalamus/Position 0 0 0 0 1 1 2 1 1 0
+of Floral Parts on Thalamus/Functions of
+Flower
+Types of Fruits 0 0 0 0 1 0 1 0 0 1
+Floral Formula 0 0 0 0 0 1 1 0 0 1
+Total 3 3 3 3 5 4 21 8 6 4
+Summary: This chapter provided 21 questions. Questions covered various parts of flowering
+plants, including roots, flowers (parts, symmetry, aestivation, placentation, formula),
+inflorescence, fruits, and seeds. There was a good mix of Easy, Medium, and Hard questions.
+Insights:
+• Detailed knowledge of floral parts, their arrangements (symmetry, aestivation,
+placentation), and terminology is crucial.
+• Questions on plant families (Brassicaceae, Poaceae, Solanaceae) and types of
+fruits/seeds are also present.
+• Expect detailed questions, including Hard ones, on floral formula.
+7. Anatomy of Flowering Plants
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Vascular Cambium 1 1 1 0 0 0 3 0 3 0
+Anatomy of 1 0 0 0 0 1 2 0 2 0
+Monocotyledonous
+Stem
+Complex Tissues 0 1 0 0 0 0 1 0 1 0
+Epidermal Tissue 0 1 0 0 1 0 2 0 2 0
+System
+Anatomy of 0 0 1 0 0 0 1 0 1 0
+Monocotyledonous
+Root
+Vascular Tissue 0 0 1 1 0 0 2 1 1 0
+System
+Cork Cambium 0 0 0 1 0 0 1 0 1 0
+Anatomy of 0 0 0 0 1 0 1 1 0 0
+Monocotyledonous
+(Isobilateral) Leaf
+Simple Tissue 0 0 0 0 1 0 1 0 1 0
+Total 2 4 4 3 3 1 17 2 12 3
+Summary: The "Anatomy of Flowering Plants" chapter saw a consistent presence in NEET
+exams, with 17 questions asked across the six years. Questions were predominantly of Medium
+difficulty (12 questions), with some Easy (2 questions) and Hard (3 questions) questions.
+Insights:
+• "Vascular Cambium" is a frequently tested topic, appearing multiple times with
+Medium and Hard difficulty respectively.
+• Topics related to Monocotyledonous plant anatomy, including Stem, Root, and Leaf
+structures, have also been consistently questioned.
+• Understanding different Tissue Systems (Epidermal and Vascular) is important.
+8. Plant Growth and Development
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Growth Phases of 1 0 0 0 0 0 1 1 0 0
+Growth
+Gibberellins 1 0 0 1 1 0 3 3 0 0
+Abscisic Acid 1 0 0 0 0 0 1 0 1 0
+Plasticity 0 1 1 0 0 0 2 2 0 0
+Introduction 0 1 0 0 0 0 1 0 0 1
+Auxins 0 1 0 0 1 1 3 2 0 1
+Ethylene 0 0 2 1 0 0 3 2 1 0
+Differentiation, 0 0 0 1 1 0 2 2 0 0
+Dedifferentiation
+and
+Redifferentiation
+Effects of PGR 0 0 0 0 0 1 1 1 0 0
+Total 3 4 3 3 3 2 18 12 2 2
+Summary: This chapter had 18 questions. Questions were primarily focused on Plant Growth
+Regulators (PGRs) like Gibberellins, Abscisic Acid, Auxins, and Ethylene, as well as processes
+like differentiation and photoperiodism. Most questions were Easy (12), with some Medium (2)
+and Hard (2) ones.
+Insights:
+• Knowledge of Plant Growth Regulators (PGRs) and their physiological effects is
+consistently tested. Gibberellins and Auxins specifically appear multiple times with
+Easy difficulty.
+• Concepts like Developmental Plasticity and Differentiation are also important.
+9. Photosynthesis in Higher Plants
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Photorespiration 1 0 0 0 1 0 2 1 1 0
+What is Light 1 1 0 1 0 0 3 2 1 0
+Reaction?
+Hatch and Slack 0 1 1 0 0 0 2 1 1 0
+Pathway
+Chemiosmotic 0 0 1 1 0 0 2 0 2 0
+Hypothesis
+Calvin Cycle or 0 0 0 1 2 2 5 1 2 2
+C3
+Cycle/Primary
+Acceptor of
+CO2/Stages of
+Calvin Cycle
+Chlorophyll 'a', 0 0 0 0 0 1 1 0 1 0
+Chlorophyll 'b'
+and c',
+Xanthophylls,
+Carotenoids,
+Absorption and
+Action
+Spectrum
+Total 2 2 2 3 3 3 15 5 8 2
+Summary: This chapter had 15 questions, consistently appearing each year. It covers crucial
+aspects of photosynthesis, including light reaction, C4 pathway, chemiosmotic hypothesis, and
+the Calvin cycle. Difficulty is mostly Easy (5) and Medium (8), with a couple of Hard questions
+(2).
+Insights:
+• Calvin Cycle (C3 Cycle) and associated concepts (primary CO2 acceptor, stages) are
+very important and have appeared with increasing frequency and varied difficulty.
+• Understanding the Light Reaction and the Chemiosmotic Hypothesis is also essential.
+• The C4 pathway (Hatch and Slack Pathway) is a recurring topic.
+10. Respiration in Plants
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+TCA Cycle 1 0 0 0 1 0 2 1 1 0
+Electron 0 1 0 0 1 1 3 1 2 0
+Transport
+Chain
+Alcoholic and 0 0 1 0 0 0 1 1 0 0
+Lactic Acid
+Fermentation
+Formation of 0 0 1 2 0 0 3 1 0 2
+Pyruvic Acid
+Total 1 1 2 2 2 1 9 4 3 2
+Summary: "Respiration in Plants" provided 9 questions. This chapter focuses on aerobic
+respiration (TCA cycle, Electron Transport Chain) and fermentation. Questions are distributed
+across Easy, Medium, and Hard difficulties.
+Insights:
+• Key pathways like TCA Cycle, Electron Transport Chain, and Glycolysis (Formation
+of Pyruvic Acid) are frequently examined.
+• The Formation of Pyruvic Acid has appeared with Hard difficulty in recent years.
+11. Sexual Reproduction in Flowering Plants
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Microsporogenesis, T.S. 1 0 0 0 0 0 1 0 1 0
+of Anther, Po llen Grain,
+Pollen Viability, Pollen
+Bank
+Pollination/Agents of 1 1 3 2 2 1 10 4 4 2
+Pollination/Outbreeding
+Devices/Emasculation
+Structure and 1 0 0 0 0 2 3 1 2 0
+Development of Ovule
+and Female Gametophyte
+Double Fertilisation 0 1 0 1 0 0 2 1 1 0
+Types of Fruits on the 0 0 1 0 0 0 1 1 0 0
+Basis of Development,
+Epicarp, Mesocarp,
+Endocarp and Endosperm
+Structure and 0 0 0 0 0 1 1 0 0 1
+Development of Anther
+and Male Gametophyte
+Formation of Seed, 0 0 0 0 0 1 1 0 0 1
+Classification of Seed
+Total 3 2 4 3 2 6 20 7 8 5
+Summary: This chapter is another consistently high-contributing area, with 20 questions. It
+covers the entire reproductive process in flowering plants, from gametophyte development to
+pollination, fertilization, and fruit/seed formation. Difficulty is balanced, with 7 Easy, 8 Medium,
+and 5 Hard questions.
+Insights:
+• Pollination (Types, Agents, Outbreeding Devices) is the most frequently tested topic,
+appearing every year and accounting for 10 questions, spanning Easy, Medium, and Hard
+difficulties.
+• Structure and Development of Anther/Male Gametophyte and Ovule/Female
+Gametophyte are also important, often appearing with Medium to Hard difficulty.
+• Concepts like Double Fertilisation and Seed/Fruit Formation are crucial for a
+complete understanding.
+12. Molecular Basis of Inheritance
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Process of Translation 1 0 1 0 0 0 2 2 0 0
+Initiation, Elongation and 1 1 0 0 1 1 4 3 0 1
+Termination Process,
+Enzymes Involved in that
+Nucleotide 1 0 0 0 0 0 1 0 1 0
+Nitrogen Base 1 0 0 0 0 0 1 0 1 0
+Salient Features of 1 1 0 0 0 0 2 0 2 0
+Genetic Code
+Mutations and the 0 1 0 0 0 0 1 1 0 0
+Genetic Code
+Derivation of DNA 0 1 0 0 0 0 1 0 1 0
+Structure and Central
+Dogma
+Post Transcriptional 0 1 0 0 0 1 2 0 1 1
+Process
+DNA Fingerprinting 0 1 1 0 0 0 2 2 0 0
+RNA Polymerases 0 1 0 1 0 0 2 2 0 0
+Chargaff's Rule 0 1 0 0 0 0 1 0 1 0
+RNA World 0 1 0 1 0 1 3 1 2 0
+Nucleosome, Histone 0 1 1 1 0 1 4 1 3 0
+Proteins etc.
+Hershey-Chase 0 0 1 0 0 1 2 0 2 0
+Experiment
+Methodologies/Salient 0 0 1 1 0 1 3 3 0 0
+Features of Human
+Genome
+Properties of Genetic 0 0 0 1 0 0 1 1 0 0
+Material (DNA Versus
+RNA)
+Lac-Operon 0 0 0 1 1 0 2 1 0 1
+Transcription Unit 0 0 0 0 1 0 1 0 1 0
+The Experimental Proof 0 0 0 0 1 0 1 0 0 1
+The Machinery and 0 0 0 0 1 0 1 1 0 0
+Enzymes for DNA
+Replication, Mechanism
+of DNA Replication
+Process of Transcription 0 0 0 1 1 0 2 0 2 0
+Genetic Code/tRNA - 0 0 0 0 0 1 1 1 0 0
+The Adapter Molecule
+Total 5 10 6 8 6 7 43 20 17 6
+Summary: T his is a high-yield chapter, with a total of 43 questions over the six years.
+Questions cover a wide range of topics, including DNA structure, replication, transcription,
+translation, genetic code, and regulation. The difficulty is diverse, with 20 Easy, 17 Medium, and
+6 Hard questions.
+Insights:
+• Replication, Transcription, and Translation are fundamental and frequently tested
+processes, appearing in multiple years with varying topics and difficulties.
+• Genetic Code, Packaging of DNA Helix, and the Human Genome Project are also
+consistently important areas.
+• Topics like Lac-Operon and Experimental Proofs (Hershey-Chase, Replication) are
+periodically asked and can be Hard.
+13. Principles of Inheritance and Variation
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Co-Dominance 1 0 0 0 1 0 2 0 1 1
+Haemophilia 1 0 0 0 0 0 1 0 1 0
+Selection of Pea 1 0 1 0 0 0 2 1 1 0
+Plant
+Chromosomal 1 0 0 0 0 0 1 1 0 0
+Theory of
+Inheritance and
+its Verification
+Punnett Square 0 1 0 0 0 0 1 1 0 0
+Sickle-cell 0 1 0 0 0 0 1 0 1 0
+Anaemia
+Sex 0 0 1 0 0 0 1 1 0 0
+Determination
+in Other
+Organisms
+Autosomal 0 0 1 0 0 0 1 1 0 0
+Recessive,
+Autosomal
+Dominant
+Disorders
+Dihybrid Cross, 0 0 1 0 0 1 2 0 1 1
+Law of
+Independent
+Assortment,
+Back Cross,
+Reciprocal
+Cross
+Linkage and 0 0 1 1 0 0 2 1 1 0
+Recombination,
+Recombination
+Map, Three
+Point Cross
+Colour 0 0 1 0 0 0 1 0 1 0
+Blindness
+Pleiotropy 0 0 0 1 0 0 1 1 0 0
+Klinefelter's 0 0 0 1 1 0 2 0 2 0
+Syndrome
+Down's 0 0 0 1 0 0 1 1 0 0
+Syndrome
+Pedigree 0 0 0 1 0 1 2 0 1 1
+Analysis
+Test Cross 0 0 0 0 1 0 1 0 1 0
+Incomplete 0 0 0 0 1 0 1 0 0 1
+Dominance
+Concept of 0 0 0 0 1 0 1 0 0 1
+Factors, Law of
+Dominance,
+Monohybrid
+Cross, Punnett
+Square, Test
+Cross, Law of
+Segregation
+Law of 0 0 0 0 1 0 1 0 0 1
+Dominance
+Polygenic 0 0 0 0 0 1 1 0 1 0
+Inheritance
+Total 4 2 6 6 6 3 27 8 11 8
+Summary: This is another critical chapter, yielding 27 questions across the years. It covers
+Mendelian principles, exceptions, genetic disorders (Mendelian and Chromosomal), sex
+determination, linkage, and pedigree analysis. Difficulty is diverse with 8 Easy, 11 Medium, and
+8 Hard questions.
+Insights:
+• Genetic Disorders (Mendelian like Haemophilia, Sickle-cell Anaemia, Colour
+Blindness, Autosomal Recessive/Dominant, and Chromosomal like Klinefelter's, Down's
+Syndrome) are frequently tested and can be challenging.
+• Mendel's Laws, Inheritance of One/Two Genes, and Exceptions to Mendelian
+Principles (Co-Dominance, Incomplete Dominance) are fundamental and regularly
+questioned.
+• Linkage and Recombination and Pedigree Analysis are important advanced topics,
+often with Medium to Hard difficulty.
+14. Microbes in Human Welfare
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Primary 1 0 0 0 0 0 1 1 0 0
+Treatment
+Bioactive 1 0 1 0 0 0 2 1 0 1
+Molecules
+Chemicals 0 1 0 0 0 0 1 0 0 1
+Enzymes 0 0 0 0 1 1 2 1 1 0
+Fermented 0 0 0 0 0 1 1 1 0 0
+Beverages
+Microbes as 0 0 0 0 0 1 1 0 1 0
+Biofertilizers
+Microbes in 0 0 0 0 0 1 1 0 1 0
+Household
+Products
+Total 2 1 1 0 1 4 9 4 3 2
+Summary: "Microbes in Human Welfare" had 9 questions over the years. The questions
+covered various applications of microbes, including sewage treatment, industrial products
+(bioactive molecules, chemicals, enzymes, fermented beverages), and biofertilizers.
+Insights:
+• Questions are spread across different applications, indicating that a broad
+understanding of microbial roles in industry and environment is necessary.
+• Topics like Bioactive Molecules and Industrial Enzymes/Fermentation are
+recurring.
+15. Organisms and Populations
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Natality, 1 0 0 0 0 0 1 0 1 0
+Mortality,
+Immigration
+and Emigration
+Types of 0 2 2 2 1 1 8 4 3 1
+Population
+Interactions
+Growth Models 0 1 0 0 1 1 3 3 0 0
+: Exponential
+and Logistic
+Growth
+Population 0 0 0 1 0 0 1 0 0 1
+Attributes
+Total 1 4 2 3 2 3 15 7 4 3
+Summary: This chapter accounted for 15 questions. Population Interactions are the most
+frequently asked topic, consistently appearing each year. Questions were primarily Easy (7) and
+Medium (4), with some Hard ones (3).
+Insights:
+• Types of Population Interactions (e.g., predation, competition, mutualism) is a must-
+know topic due to its high frequency.
+• Understanding Population Growth Models (Exponential and Logistic) and
+Population Attributes is also important.
+16. Ecosystem
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Food Chain 1 0 0 0 0 1 2 0 1 1
+GPP 1 0 0 0 0 0 1 0 1 0
+Pyramid of 0 1 0 0 0 0 1 0 1 0
+Biomass
+NPP 0 1 0 1 1 1 4 2 0 2
+Process 0 0 2 1 0 0 3 1 2 0
+Involved in
+Decomposition
+Primary 0 0 0 0 0 1 1 0 0 1
+Productivity
+Introduction 0 0 0 0 0 1 1 0 1 0
+Total 2 3 2 2 1 5 15 4 6 4
+Summary: The "Ecosystem" chapter generated 15 questions. Topics ranged from energy flow
+(Food Chain) to productivity (GPP, NPP, Primary Productivity) and ecological processes
+(Decomposition). Difficulty was spread across Easy (4), Medium (6), and Hard (4).
+Insights:
+• Productivity (NPP, GPP, Primary Productivity) is a recurring and important topic,
+often with varied difficulty.
+• Decomposition processes and Food Chains also appear consistently.
+17. Biodiversity and Conservation
+Topic 2020 2021 2022 2023 2024 2025 Total Easy Medium Hard
+Questions
+Introduction 1 0 0 0 0 0 1 1 0 0
+Patterns of 1 0 0 0 0 0 1 1 0 0
+Biodiversity
+Botanical 0 0 1 0 1 2 4 3 1 0
+Gardens,
+Zoological
+Parks and
+Wildlife Safari
+Parks
+IUCN Red List, 0 0 1 1 2 0 4 4 0 0
+the Evil
+Quartet, Over-
+Exploitation,
+Alien Species
+Invasions and
+Co-Extinctions
+Hot Spots, 0 0 1 0 0 0 1 1 0 0
+Major Hotspots
+in India, Sacred
+Groves
+Earth Summit 0 0 0 1 0 0 1 1 0 0
+Latitudinal 0 0 0 0 1 0 1 0 0 1
+Gradients
+Productivity 0 0 0 0 1 0 1 0 1 0
+Stability
+Hypothesis,
+Rivet Popper
+Hypothesis
+Total 2 0 3 2 5 2 14 11 2 1
+Summary: The "Biodiversity and Conservation" chapter contributed 14 questions, mainly
+focusing on Easy difficulty levels (11 questions). Ex-situ and In-situ conservation methods,
+along with the causes and patterns of biodiversity loss, are recurring themes.
+Insights:
+• Conservation strategies (Ex-Situ and In-Situ) and Loss of Biodiversity are
+consistently asked topics.
+• Questions tend to be relatively straightforward (Easy difficulty), suggesting an
+emphasis on foundational knowledge.
