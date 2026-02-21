@@ -1,0 +1,127 @@
+R
+E
+T
+P
+A
+H
+10
+C Plant Growth and Development
+7. The plant hormone used to destroy weeds in a field is:
+Growth
+(2021)
+a. NAA b. 2, 4-D
+1. The process of growth is maximum during: (2020)
+c. IBA d. IAA
+a. Lag phase b. Senescence
+8. Name the plant growth regulator which upon spraying on
+c. Dormancy d. Log phase
+sugarcane crop, increases the length of stem, thus increasing
+2. Typical growth curve in plants is: (2015)
+the yield of sugarcane crop. (2020)
+a. Stair-steps shaped b. Parabolic
+a. Gibberellin b. Ethylene
+c. Sigmoid d. Linear
+c. Abscisic acid d. Cytokinin
+9. Match the following concerning the activity/function and the
+Differentiation, Dedifferentiation,
+phytohormone involved. (2020-Covid)
+Redifferentiation and Development
+1. Fruit ripener (i) Abscisic acid
+2. Herbicide (ii) GA
+3
+3. Which one of the following plants does not show plasticity? 3. Bolting agent (iii) 2, 4-D
+(2022)
+4. Stress hormone (iv) Ethephon
+a. Maize b. Cotton
+c. Coriander d. Buttercup Select the correct option from following:
+(1) (2) (3) (4)
+4. Plants follow different pathways in response to environment
+or phase of life to form different kinds of structures. This a. (iii) (iv) (ii) (i)
+ability is called: (2021) b. (iv) (iii) (ii) (i)
+a. Flexibility b. Plasticity c. (iv) (ii) (i) (iii)
+c. Maturity d. Elasticity
+d. (ii) (iii) (iv) (i)
+10. Who coined the term 'Kinetin'? (2020-Covid)
+Plant Growth Regulators
+a. Darwin b. Went
+c. Kurosawa d. Skoog and Miller
+5. Production of Cucumber has increased manifold in recent
+11. It takes very long time for pineapple plants to produce
+years. Application of which of the following phytohormones
+flowers. Which combination of hormones can be applied to
+has resulted in this increased yield as the hormone is known
+artificially induce flowering in pineapple plants throughout
+to produce female flowers in the plants: (2022)
+the year to increase yield? (2019)
+a. Cytokinin b. ABA
+a. Auxin and Ethylene
+c. Gibberellin d. Ethylene
+b. Gibberellin and Cytokinin
+6. The gaseous plant growth regulator is used in plants to:
+c. Gibberellin and Abscisic acid
+(2022)
+d. Cytokinin and Abscisic acid
+a. Kill dicotyledonous weeds in the fields
+b. Speed up the malting process 12. Fruit and leaf drop at early stages can be prevented by the
+application of: (2017-Delhi)
+c. Promote root growth and root hair formation to increase
+the absorption surface a. Cytokinins b. Ethylene
+d. Help overcome apical dominance c. Auxins d. Gibberellic acid
+Plant Growth and Development 2
+13. You are given a tissue with its potential for differentiation 19. During seed germination its stored food is mobilised by:
+in an artificial culture. Which of the following pairs of (2013)
+hormones would you add to the medium to secure shoots as
+a. Gibberellin b. Ethylene
+well as roots? (2016 - II)
+c. Cytokinin d. ABA
+a. Auxin and Abscisic acid b. Gibberellin and Abscisic acid
+c. IAA and Gibberellin d. Auxin and Cytokinin
+14. The Avena curvature is used for bioassay of: (2016 -I) Photoperiodism, Vernalisation,
+a. ABA b. GA
+Seed Dormancy
+c. IAA d. Ethylene
+15. What causes a green plant exposed to the light on only one
+side, to bend toward the source of light as it grows? (2015) 20. The site of perception of light in plants during photoperiodism
+is: [RC] (2021)
+a. Light stimulates plant cells on the lighted side to grow
+faster. a. Stem b. Axillary bud
+b. Auxin accumulates on the shaded side, stimulating greater c. Leaf d. Shoot apex
+cell elongation there.
+21. Which of the following is not an inhibitory substance
+c. Green plants need light to perform photosynthesis.
+governing seed dormancy? [RC] (2020)
+d. Green plants seek light because they are phototropic.
+a. Abscisic acid b. Phenolic acid
+16. Auxin can be bioassay by: [OS] (2015 Re)
+c. Para-ascorbic acid d. Gibberellic acid
+a. Hydroponics
+22. Inhibitory substances in dormant seeds cannot be removed
+b. Potometer
+by subjecting seeds to: [RC] (2020-Covid)
+c. Lettuce hypocotyl elongation
+a. Nitrate
+d. Avena coleoptile curvature
+b. Ascorbic acid
+17. Dr. F. Went noted that if coleoptile tips were removed and
+placed on agar for one hour, the agar would produce a bending c. Chilling conditions
+when placed on one side of freshly cut coleoptile stumps. Of d. Gibberellic acid
+what significance is this experiment? [OS] (2014)
+23. What is the site of perception of photoperiod necessary for
+a. It demonstrated polar movement of auxins
+induction of flowering in plants? [RC] (2019)
+b. It made possible the isolation and exact identification of
+auxin a. Lateral buds b. Pulvinus
+c. It is the basis for quantitative determination of small c. Shoot apex d. Leaves
+amounts of growth-promoting substances
+24. A few normal seedlings of tomato were kept in a dark room.
+d. It supports the hypothesis that IAA is auxin After a few days they were found to have become white-
+18. Which one of the following growth regulators is known as colored like albinos. Which of the following terms will you
+‘stress hormone’? (2014) use to describe them? [RC] (2014)
+a. Indole acetic acid b. Abscisic acid a. Defoliated b. Mutated
+c. Ethylene d. GA c. Embolised d. Etiolated
+3
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+d c a b d c b a b d a c d c b d b
+18 19 20 21 22 23 24
+b a c d b d d
