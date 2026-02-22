@@ -1,0 +1,191 @@
+R
+E
+T
+P
+A
+H
+6
+C Ecosystem
+8. In an ecosystem, the rate of production of organic matter
+Ecosystem-Structure And Function
+during photosynthesis is termed as: (2015)
+a. Secondary productivity b. Net productivity
+1. Which ecosystem has the maximum biomass? (2017-Delhi) c. Net primary productivity d. Gross primary productivity
+a. Forest ecosystem b. Grassland ecosystem
+9. Secondary productivity is rate of formation of new organic
+c. Pond ecosystem d. Lake ecosystem matter by: (2013)
+2. The term ecosystem was coined by: (2016 - I) a. Decomposer b. Producer
+a. E.P. Odum b. A.G. Tansley c. Parasite d. Consumer
+c. E. Haeckel d. E. Warming
+Decomposition
+3. Which one of the following is a characteristic feature of
+cropland ecosystem? (2016 - I)
+a. Absence of soil organisms 10. Given below are two statements: (2022)
+b. Least genetic diversity Statement I: Decomposition is a process in which the detritus
+is degraded into simpler substances by microbes.
+c. Absence of weeds
+Statement II: Decomposition is faster if the detritus is rich in
+d. Ecological succession
+lignin and chitin
+4. Vertical distribution of different species occupying different
+In the light of the above statements, choose the correct
+levels in a biotic community is known as: (2015)
+answer from the options given below.
+a. Zonation b. Pyramid
+a. Statement I is incorrect but Statement II is correct
+c. Divergence d. Stratification
+b. Both Statement I and Statement II are correct
+5. An association of individuals of different species living in
+c. Both statement I and statement II are incorrect
+the same habitual and having functional interactions is:
+d. Statement I is correct but Statement II is incorrect
+(2015 Re)
+11. Detritivores breakdown detritus into smaller particles. This
+a. Biotic community b. Ecosystem
+process is called. (2022)
+c. Population d. Ecological niche
+a. Decomposition b. Catabolism
+c. Fragmentation d. Humification
+Productivity
+12. The rate of decomposition is faster in the ecosystem due to
+following factors EXCEPT: (2020-Covid)
+6. In the equation GPP-R = NPP. (2021)
+a. Warm and moist environment
+R represents: b. Presence of aerobic soil microbes
+a. Retaradation factor b. Environment factor c. Detritus richer in lignin and chitin
+c. Respiration losses d. Radiant energy d. Detritus rich in sugars
+7. In relation to gross primary productivity and net primary 13. Which one of the following processes during decomposition
+productivity of an ecosystem, which one of the following is correctly described? (2013)
+statements is correct? (2020) a. Leaching: Water soluble inorganic nutrients rise to the top
+a. Gross primary productivity is always more than net layers of soil
+primary productivity. b. Fragmentation: Carried out by organisms such as
+b. Gross primary productivity and net primary productivity earthworm
+are one and same. c. Humification: Leads to the accumulation of a dark colored
+c. There is no relationship between Gross primary substance humus which undergoes microbial action at a
+productivity and net primary productivity very fast rate
+d. Gross primary productivity is always less than net primary d. Catabolism: Last step in the decomposition under fully
+productivity. anaerobic condition
+2 Chapter & Topicwise NEET PYQ's P
+W
+19. The primary producers of the deep-sea hydrothermal vent
+Energy Flow & Ecological Pyramids
+ecosystem are: (2016 - II)
+a. Blue-green algae b. Coral reefs
+14. Which of the following statements is not correct ? (2021) c. Green algae d. Chemosynthetic bacteria
+a. Pyramid of biomass in sea is generally upright.
+20. The mass of living material at a tropic level at a particular
+b. Pyramid of energy is always upright. time is called: (2015)
+c. Pyramid of numbers in a grassland ecosystem is upright.
+a. Net primary productivity
+d. Pyramid of biomass in sea is generally inverted.
+b. Standing crop
+15. Match the trophic levels with their correct species examples
+in grassland ecosystem. (2020) c. Gross primary productivity
+d. Standing state
+Column-I Column-II
+21. Most animals that live in deep oceanic waters are: (2015)
+1. Fourth trophic level (i) Crow
+a. Secondary consumers b. Tertiary consumers
+2. Second trophic level (ii) Vulture
+c. Detritivores d. Primary consumers
+3. First trophic level (iii) Rabbit 22. If 20 J of energy is trapped at producer level, then how much
+energy will be available to peacock as food in the following
+4. Third trophic level (iv) Grass chain? (2014)
+Plant → Mice → Snake → Peacock
+(1) (2) (3) (4)
+a. 0.0002 J b. 0.02 J
+a. (iii) (ii) (i) (iv) c. 0.002 J d. 0.2 J
+b. (iv) (iii) (ii) (i)
+Ecological Succession
+c. (i) (ii) (iii) (iv)
+d. (ii) (iii) (iv) (i)
+23. Presence of plants arranged into well defined vertical layers
+16. Which of the following statements is incorrect? depending on their height can be seen best in:
+(2020-Covid) [RC] (2017-Delhi)
+a. Energy content gradually increases from first to fourth a. Tropical Savannah b. Tropical Rain Forest
+trophic level
+c. Grassland d. Temperate Forest
+b. Number of individuals decreases from first trophic level
+24. Which of the following would appear as the pioneer
+to fourth trophic level
+organisms on bare rocks? [RC] (2016 - I)
+c. Energy content gradually decreases from first to fourth
+a. Lichens b. Liverworts
+trophic level
+c. Mosses d. Green algae
+d. Biomass decreases from first to fourth trophic level
+25. Secondary succession takes place on/in: [RC] (2015)
+17. Which of the following ecological pyramids is generally
+inverted? (2019) a. Newly created pond b. Newly cooled lava
+a. Pyramid of numbers in grassland c. Bare rock d. Degraded forest
+b. Pyramid of energy 26. During ecological succession: [RC] (2015 Re)
+c. Pyramid of biomass in a forest
+a. The establishment of a new biotic community is very fast
+d. Pyramid of biomass in a sea in its primary phase.
+18. What type of ecological pyramid would obtained with the b. The numbers and types of animals remain constant.
+following data? (2018)
+c. The changes lead to a community that is in near equilibrium
+Secondary consumer : 120 g with the environment and is called pioneer community
+Primary consumer : 60 g
+d. The gradual and predictable change in species composition
+Primary producer : 10 g occurs in a given area
+a. Inverted pyramid of biomass 27. The second stage of hydrosere is occupied by plants like:
+b. Pyramid of energy [RC] (2013)
+c. Upright pyramid of numbers a. Azolla b. Typha
+d. Upright pyramid of biomass c. Salix d. Vallisneria
+Ecosystem 3
+32. Given below is a simplified model of phosphorus cycling in
+Nutrient Cycling
+a terrestrial ecosystem with four blanks (A-D). Identify the
+blanks. [RC] (2014)
+28. Which one of the following will accelerate phosphorus
+cycle? [RC] (2022)
+a. Rain fall and storms
+b. Burning of fossil fuels
+c. Volcanic activity
+d. Weathering of rocks
+29. The amount of nutrients, such as carbon, nitrogen, phosphorus
+and calcium present in the soil at any given time is referred
+as: [RC] (2021)
+A B C D
+a. Climax community b. Standing state a. Producers Litter fall Rock minerals Detritus
+c. Standing crop d. Climax b. Rock Detritus Litter fall Producers
+minerals
+30. Which of the following statements is incorrect regarding the
+c. Litter fall Producers Rock minerals Detritus
+phosphorus cycle? [RC] (2020-Covid)
+d. Detritus Rock Producer Litter fall
+a. Phosphorus solubilising bacteria facilitate the release of
+minerals
+phosphorus from organic remains
+33. Natural reservoir of phosphorus is: [RC] (2013)
+b. There is appreciable respiratory release of phosphorus
+a. Fossils b. Sea water
+into atmosphere
+c. Animal bones d. Rock
+c. It is sedimentary cycle
+d. Phosphates are the major form of phosphorus reservoir
+Ecosystem Services
+31. In which of the following both pairs have correct combination?
+[RC] (2015 Re)
+34. Match the following and select the correct option:
+a. Gaseous nutrient cycle Carbon and sulphur [RC](2014)
+Sedimentary nutrient cycle Nitrogen and Phosphorus A. Earthworm i. Pioneer species
+B. Succession ii. Detritivores
+b. Gaseous nutrient cycle Nitrogen and sulphur
+C. Ecosystem service iii. Natality
+Sedimentary nutrient cycle Carbon and Phosphorus
+D. Population growth iv Pollination
+c. Gaseous nutrient cycle Sulphur and Phosphorus
+A B C D
+Sedimentary nutrient cycle Carbon and Nitrogen
+a. ii i iv iii
+d. Gaseous nutrient cycle Carbon and Nitrogen b. i ii iii iv
+c. iv i iii ii
+Sedimentary nutrient cycle Sulphur and Phosphorus
+d. iii ii iv i
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+a b b d a c a d d d c c b a d a d
+18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+a d b c b b a d d d d b b d d d a
