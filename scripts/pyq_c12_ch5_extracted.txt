@@ -1,0 +1,307 @@
+R
+E
+T
+P
+A
+H Molecular Basis of
+2
+C
+Inheritance
+6. Which of the following statements is correct? (2020)
+DNA
+a. Adenine pairs with thymine through one H-bond
+b. Adenine pairs with thymine through three H-bonds.
+1. If the length of a DNA molecule is 1.1 metres, what will be c. Adenine does not pair with thymine.
+the approximate number of base pairs? (2022) d. Adenine pairs with thymine through two H-bonds.
+a. 6.6 × 106 bp b. 3.3 × 109 bp 7. If the distance between two consecutive base pairs is 0.34 nm
+c. 6.6 × 109 bp d. 3.3 × 106 bp and the total number of base pairs of a DNA double helix in
+a typical mammalian cell is 6.6 × 109 bp, then the length of
+2. Read the following statements and choose the set of correct
+the DNA is approximately: (2020)
+statements (2022)
+a. 2.5 meters b. 2.2 meters
+A. Euchromatin is loosely packed chromatin
+c. 2.7 meters d. 2.0 meters
+B. Heterochromatin is transcriptionally active
+8. In the polynucleotide chain of DNA, a nitrogenous base is
+C. Histone octomer is wrapped by negatively charged DNA linked to the –OH of: (2020-Covid)
+in nucleosome
+a. 3'C pentose sugar b. 5'C pentose sugar
+D. Histones are rich in lysine and arginine c. 1'C pentose sugar d. 2'C pentose sugar
+E.A typical nucleosome contains 400 bp of DNA helix
+9. E. Coli has only 4.6 × 106 base pairs and completes the
+Choose the correct answer from the options given below. process of replication within 18 minutes; then the average
+a. A, C and E only b. B, D and E only rate of polymerisation is approximately- (2020-Covid)
+c. A, C and D only d. B and E only a. 3000 base pairs/second b. 4000 base pairs/second
+c. 1000 base pairs/second d. 2000 base pairs/second
+3. Complete the flow chart on central dogma. (2021)
+(B) (C) 10. Purines found both in DNA and RNA are (2019)
+(A) DNA mRNA (D)
+a. Adenine and thymine b. Adenine and guanine
+a. (A)-Translation;(B)-Replication;
+c. Guanine and cytosine d. Cytosine and thymine
+(C)-Transcription;(D)- Transduction
+11. The association of histone H with a nucleosome indicates:
+b. (A)-Replication;(B)-Transcription; 1
+(2017-Delhi)
+(C)-Translation; (D)-Protein
+a. Transcription is occurring
+c. (A)-Transduction;(B)-Translation;
+b. DNA replication is occurring
+(C)-Replication; (D)-Protein
+c. The DNA is condensed into a chromatin fibre
+d. (A)-Replication;(B)-Transcription
+d. The DNA double helix is exposed
+(C)-Transduction;(D)-Protein
+12. DNA fragments are: (2017-Delhi)
+4. If Adenine makes 30% of the DNA molecule, what will be
+a. Positively charged
+the percentage of Thymine, Guanine and Cytosine in it?
+b. Negatively charged
+(2021)
+c. Neutral
+a. T : 20; G : 20; C : 30 b. T : 30; G : 20; C : 20
+d. Either positively or negatively charged depending on their
+c. T : 20; G : 25; C : 25 d. T : 20; G : 30; C : 20 size
+5. Which one of the following statement about histones is 13. Identify the correct order of organisation of genetic material
+wrong? (2021) from largest to smallest: (2015 Re)
+a. The pH of histones is slightly acidic. a. Genome, chromosome, nucleotide, gene
+b. Histones are rich in amino acids - Lysine and Arginine. b. Genome, chromosome, gene, nucleotide
+c. Histones carry positive charge in the side chain. c. Chromosome, genome, nucleotide, gene
+d. Histones are organized to form a unit of 8 molecules. d. Chromosome, gene, genome, nucleotide
+2 Chapter & Topicwise NEET PYQ's P
+W
+14. The diagram shows an important concept in the genetic 23. In sea urchin DNA, which is double stranded, 17% of the
+implication of DNA Fill in the blanks A to C: (2013) bases were shown to be cytosine. The percentages of the
+other three bases expected to be present in this DNA are:
+(2015)
+a. A-translation, B-extension, C-Rosalind Franklin a. G = 17%, A = 33%, T = 33%
+b. A-transcription, B-replication, C-James Watson
+b. G = 8.5 %, A = 50 %, T = 24.5 %
+c. A-translation, B-transcription, C-Erwin Chargaff
+c. G = 34%, A = 24.5%, T = 24.5%
+d. A-transcription, B-translation, C-Francis Crick
+d. G = 17%, A = 16.5%, T = 32.5%
+24. Which one of the following is not applicable to RNA?
+The Search For Genetic Material (2015 Re)
+a. 5′ phosphoryl and 3′ hydroxyl ends
+And RNA World
+b. Heterocyclic nitrogenous bases
+c. Chargaff’s rule
+15. Ten E.coli with 15N- dsDNA are incubated in medium d. Complementary base pairing
+containing 14N nucleotide. After 60 minutes, how many 25. Transformation was discovered by: (2014)
+E.coli cells will have DNA totally free from 15N? (2022)
+a. Watson and Crick b. Messelson and Stahl
+a. 80 cells b. 20 cells
+c. Hershey and Chase d. Griffith
+c. 40 cells d. 60 cells
+16. The term 'Nuclein' for the genetic material was used by: Replication
+(2020-Covid)
+a. Meischer b. Chargaff
+26. During DNA replication, Okazaki fragments are used to
+c. Mendel d. Franklin
+elongate (2017-Delhi)
+17. The experimental proof for semiconservative replication of
+a. The leading strand towards replication fork
+DNA was first shown in a: (2018)
+b. The lagging strand towards replication fork
+a. Fungus b. Bacterium
+c. The leading strand away from replication fork
+c. Plant d. Virus
+d. The lagging strand away from the replication fork
+18. Select the correct match (2018)
+27. Select the correct option: (2014)
+a. Ribozyme Nucleic acid
+b. F × Recessive parent Dihybrid cross Direction of RNA Direction of reading of the
+2
+c. T.H. Morgan Transduction synthesis template DNA strand
+d. G. Mendel Transformation
+a. 3′ → 5′ 3′ → 5′
+19. The final proof for DNA as the genetic material came from
+b. 5′ → 3′ 3′ → 5′
+the experiments of (2017-Delhi)
+c. 3′ → 5′ 5′ → 3′
+a. Griffith
+d. 5′ → 3′ 5′ → 3′
+b. Hershey and Chase
+c. Avery, Mcleod and McCarty
+d. Hargobind Khorana Transcription
+20. A molecule that can act as a genetic material must fulfill the
+traits given below, except: (2016 - II)
+28. What is the role of RNA ploymerase III in the process of
+a. It should be unstable structurally and chemically
+transcription in eukaryotes? (2021)
+b. It should provide the scope for slow changes that are
+a. Transcribes tRNA, 5s rRNA and sn RNA
+required for evolution
+b. Transcribes precursor of mRNA
+c. It should be able to express itself in the form of ‘Mendelian
+characters’ c. Transcribes only snRNAs
+d. It should be able to generate its replica d. Transcribes rRNAs (28S, 18S and 5.8S)
+21. Taylor conducted the experiment to prove semi- conservative 29. Identify the correct statement. (2021)
+mode of chromosome replication on: (2016 - II)
+a. RNA polymerase binds with Rho factor to terminate the
+a. Drosophila melanogaster b. E. coli process of transcription in bacteria.
+c. Vinca rosea d. Vicia faba b. The coding strand in transcription unit is copied to an
+22. Which of the following rRNA acts as structural RNA as well mRNA.
+as ribozyme in bacteria? (2016 - II) c. Split gene arrangement is characteristic of prokaryotes.
+a. 23 S rRNA b. 5.8 S rRNA d. In capping, methyl guanosine triphosphate is added to the
+c. 5 S rRNA d. 18 S rRNA 3′ end of hnRNA.
+Molecular Basis of Inheritance 3
+30. Which is the “Only enzyme” that has “Capability” to catalyse 38. Which of the following features of genetic code does allow
+Initiation, Elongation and Termination in the process of bacteria to produce human insulin by recombinant DNA
+transcription in prokaryotes? (2021) technology? (2019)
+a. DNA dependent RNA polymerase a. Genetic code is not ambiguous
+b. DNA Ligase b. Genetic code is redundant
+c. Genetic code is nearly universal
+c. DNase
+d. Genetic code is specific
+d. DNA dependent DNA polymerase
+39. If there are 999 bases in an RNA that codes for a protein with
+31. Name the enzyme that facilitates opening of DNA helix
+333 amino acids, and the base at position 901 is deleted such
+during transcription. (2020)
+that the length of the RNA becomes 998 bases, how many
+a. DNA helicase b. DNA polymerase
+codons will be altered? (2017-Delhi)
+c. RNA polymerase d. DNA ligase
+a. 1 b. 11
+32. AGGTATCGCAT is a sequence from the coding strand of c. 33 d. 333
+a gene. What will be the corresponding sequence of the
+40. Which one of the following is the starter codon? (2016 - I)
+transcribed mRNA? (2018)
+a. AUG b. UGA
+a. AGGUAUCGCAU
+c. UAA d. UAG
+b. UGGTUTCGCAT
+c. ACCUAUGCGAU
+Translation
+d. UCCAUAGCGUA
+33. Spliceosomes are not found in cells of: (2017-Delhi)
+41. The process of translation of mRNA to proteins begins as
+a. Plants b. Fungi
+soon as: (2022)
+c. Animals d. Bacteria
+a. The tRNA is activated and the larger subunit of ribosome
+34. Which of the following RNAs should be most abundant in encounters mRNA
+animal cell? (2017-Delhi) b. The small subunit of ribosome encounters mRNA
+a. r-RNA b. t-RNA c. The larger subunit of ribosome encounters mRNA
+c. m-RNA d. mi-RNA d. Both the subunits join together to bind with mRNA
+35. DNA-dependent RNA polymerase catalyses transcription on 42. Which of the following RNAs is not required for the synthesis
+one strand of the DNA which is called the: (2016 - II) of protein? (2021)
+a. tRNA b. rRNA
+a. Alpha strand b. Antistrand
+c. siRNA d. mRNA
+c. Template strand d. Coding strand
+43. The first phase of translation is: (2020)
+a. Recognition of DNA molecule
+Genetic Code
+b. Aminoacylation of tRNA
+c. Recognition of an anti-codon
+36. Statement I: The codon ‘AUG’ codes for methionine and d. Binding of mRNA to ribosome
+phenylalanine. 44. Which one of the following is wrongly matched? (2014)
+Statement II: ‘AAA’ and ‘AAG’ both codons code for the a. Operon-Structural genes, operator and promoter
+amino acid lysine. b. Transcription-Writing information from DNA to tRNA
+In the light of the above statements, choose the correct c. Translation-Using information in mRNA to make protein
+answer from the options given below. (2021) d. Repressor protein-Binds to operator to stop enzyme
+a. Both statement I and statement II are false synthesis
+b. Statement I is correct but statement II is false
+c. Statement I is incorrect but statement II is true Regulation of Gene Expression
+d. Both statement I and statement II are true
+37. Under which of the following conditions will there be no
+45. In an E.coil strain i gene gets mutated and its product can
+change in the reading frame of following mRNA? (2019)
+not bind the inducer molecule. If growth medium is provided
+5′AACAGCGGUGCUAUU3′ with lactose, what will be the outcome? (2022)
+a. Insertion of G at 5th position a. RNA polymerase will bind the promoter region
+b. Deletion of G from 5th position b. Only z gene will get transcribed
+c. Insertion of A and G at 4th and 5th positions respectively c. z, y, a genes will be transcribed
+d. Deletion of GGU from 7th, 8th and 9th positions d. z, y, a genes will not be translated
+4 Chapter & Topicwise NEET PYQ's P
+W
+46. Match the following genes of the Lac operon with their 53. If a geneticist uses the blind approach for sequencing the
+respective products : (2019) whole genome of an organism, followed by assignment of
+A. i gene i. β-galactosidase function to different segments, the methodology adopted by
+him is called as: (2022)
+B. z gene ii. Permease
+a. Bioinformatics b. Sequence annotation
+C. a gene iii. Repressor
+c. Gene mapping d. Expressed sequence tags
+D. y gene iv. Transacetylase
+54. DNA fingerprinting involves identifying differences in some
+Select the correct option.
+specific regions in DNA sequence, called as: (2021)
+(A) (B) (C) (D)
+a. Repetitive DNA
+a. (i) (iii) (ii) (iv)
+b. Single nucleotides
+b. (iii) (i) (ii) (iv)
+c. Polymorphic DNA
+c. (iii) (i) (iv) (ii)
+d. Satellite DNA
+d. (iii) (iv) (i) (ii)
+55. Which is the basis of genetic mapping of human genome as
+47. Select the correct match: (2018)
+well as DNA finger printing? (2020-Covid)
+a. Alec Jeffreys – Streptococcus pneumoniae a. Single nucleotide polymorphism
+b. Alfred Hershey and Martha Chase – TMV b. Polymorphism in hnRNA sequence
+c. Matthew Meselson and F. Stahl – Pisum sativum c. Polymorphism in RNA sequence
+d. Francois Jacob and Jacques Monod – Lac operon d. Polymorphism in DNA sequence
+48. All of the following are part of an operon except: (2018) 56. Expressed Sequence Tags (ESTs) refers to : (2019)
+a. An operator b. Structural genes a. Genes expressed as RNA
+c. An enhancer d. A promoter b. Polypeptide expression
+c. DNA polymorphism
+49. The equivalent of a structural gene is: (2016 - II)
+d. Novel DNA sequences
+a. Operon b. Recon
+57. Which of the following is not required for any of the
+c. Muton d. Cistron
+techniques of DNA fingerprinting available at present?
+50. Gene regulation governing lactose operon of E. coli that
+(2016 - I)
+involves the lac I gene product is: (2015)
+a. Polymerase chain reaction
+a. Negative and repressible because repressor protein prevents
+b. Zinc finger analysis
+transcription
+c. Restriction enzymes
+b. Feedback inhibition because excess of β-galactosidase
+d. DNA-DNA hybridisation
+can switch off transcription
+58. Which of the following is required as inducer(s) for the
+c. Positive and inducible because it can be induced lactose
+expression of Lac operon? (2016 - I)
+d. Negative and inducible because repressor protein pre-
+a. Glucose b. Galactose
+vents transcription
+c. Lactose d. Lactose and Galactose
+51. Which enzyme/s will be produced in a cell in which there is
+a nonsense mutation in the lac Y gene? (2013) 59. Satellite DNA is important because it: (2015 Re)
+a. Lactose permease and transacetylase a. Shows high degree of polymorphism in population and
+b. β-galactosidase also the same degree of polymorphism in an individual,
+which are heritable form parents to children.
+c. Lactose permease
+b. Does not code for proteins and is same in all members of
+d. Transacetylase
+the population
+c. Codes for enzymes needed for DNA replication
+Human Genome Project And DNA d. Codes for proteins needed in cell cycle.
+60. Commonly used vectors for human genome sequencing are:
+Fingerprinting
+(2014)
+a. T/A Cloning Vectors b. T-DNA
+52. DNA polymorphism forms the basis of: (2022) c. BAC and YAC d. Expression Vectors
+a. Translation 61. An analysis of chromosomal DNA using the southern
+b. Genetic mapping hybridisation technique does not use: (2014)
+c. DNA finger printing a. PCR b. Electrophoresis
+d. Both genetic mapping and DNA finger printing c. Blotting d. Autoradiography
+Molecular Basis of Inheritance 5
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+b c b b a d b c d b c b b d d a b
+18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+a b a d a a c d d b a a a c a d a
+35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51
+c c d c c a b c b b d c d c d d b
+52 53 54 55 56 57 58 59 60 61
+d b a d a b c a c a
