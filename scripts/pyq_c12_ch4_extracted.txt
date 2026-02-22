@@ -1,0 +1,145 @@
+R
+E
+T
+P
+A
+H Microbes in Human
+4
+C
+Welfare
+4. For the commercial and industrial production of Citric Acid,
+Microbes in Household & which of the following microbes is used? (2020-Covid)
+a. Lactobacillus sp
+Industrial Product
+b. Saccharomyces cerevisiae
+c. Clostridium butylicum
+1. Identify the microorganism which is responsible for the d. Aspergillus niger
+production of an immunosuppressive molecule cyclosporin 5. Cyclosporin A, used as immuno-suppression agent, is
+A: (2022) produced from: (2020-Covid)
+a. Streptococcus cerevisiae a. Saccharomyces cerevisiae
+b. Trichoderma polysporum b. Penicillium notatum
+c. Clostridium butylicum c. Trichoderma polysporum
+d. Aspergillus niger d. Monascus purpureus
+2. Match List-I with List-II. (2021)
+6. Match the following organisms with the products they
+List-I List-II produce (2019)
+(A) Aspergillus niger (i) Acetic Acid A. Lactobacillus i. Cheese
+B. Saccharomyces cerevisiae ii. Curd
+(B) Acetobacter aceti (ii) Lactic Acid
+C. Aspergillus niger iii. Citric Acid
+(C) Clostridium butylicum (iii) Citric Acid
+D. Acetobacter aceti iv. Bread
+(D) Lactobacillus (iv) Butyric acid
+v. Acetic Acid
+Choose the correct answer from the options given below. Select the correct option.
+a. A-i B-ii C-iii D-iv (A) (B) (C) (D)
+b. A-ii B-iii C-i D-iv a. (ii) (iv) (v) (iii)
+c. A-iv B-ii C-i D-iii b. (ii) (iv) (iii) (v)
+c. (iii) (iv) (v) (i)
+d. A-iii B-i C-iv D-ii
+d. (ii) (i) (iii) (v)
+3. Match the following columns and select the correct option.
+7. Which of the following is a commercial blood cholesterol
+(2020)
+lowering agent? (2019)
+Column-I Column-II a. Cyclosporin A b. Statin
+1. Clostridium butylicum (i) Cyclosporin-A c. Streptokinase d. Lipases
+2. Trichoderma polysporum (ii) Butyric acid
+8. Conversion of milk to curd improves its nutritional value by
+3. Monascus purpureus (iii) Citric acid increasing the amount of: (2018)
+4. Aspergillus niger (iv) Blood cholesterol a. Vitamin D b. Vitamin A
+lowering agent
+c. Vitamin B d. Vitamin E
+12
+(1) (2) (3) (4) 9. Which of the following is correctly matched for the product
+produced by them? (2017-Delhi)
+a. (ii) (i) (iv) (iii)
+a. Acetobacter aceti : Antibiotics
+b. (i) (ii) (iv) (iii)
+b. Methanobacterium : Lactic acid
+c. (iv) (iii) (ii) (i)
+c. Penicillium notatum : Acetic acid
+d. (iii) (iv) (ii) (i)
+d. Saccharomyces cerevisiae : Ethanol
+2 Chapter & Topicwise NEET PYQ's P
+W
+10. Match Column-I with Column-II and select the correct a. Floating debris b. Effluents of primary treatment
+option using the codes given below (2016-II) c. Activated sludge d. Primary sludge
+Column-I Column-II
+15. Which of the following in sewage treatment removes
+A. Citric acid i. Trichoderma
+suspended solids? (2017-Delhi)
+B. Cyclosporin A ii. Clostridium
+a. Tertiary treatment b. Secondary treatment
+C. Statins iii. Aspergillus
+c. Primary treatment d. Sludge treatment
+D. Butyric acid iv. Monascus
+Codes: 16. During sewage treatment, biogases are produced which
+include: (2013)
+a. A-i B-iv C-ii D-iii
+b. A-iii B-iv C-i D-ii a. Hydrogen sulphide, nitrogen, methane
+c. A-iii B-i C-ii D-iv
+b. Methane, hydrogen sulphide, carbon dioxide
+d. A-iii B-i C-iv D-ii
+c. Methane, oxygen, hydrogen sulphide
+11. Which of the following is wrongly matched in the given
+d. Hydrogen sulphide, methane, sulphur dioxide
+table? (2016-I)
+Microbe Product Application
+Microbes as Biocontrol Agents
+Immunosuppressive
+a. Trichoderma Cyclosporin A
+drug
+Lowering of blood
+b. Monascus Statins 17. Match the following columns and select the correct option:
+cholesterol
+(2020-Covid)
+Removal of clot
+c. Streptococcus Streptokinase
+from blood vessel
+Column-I Column-II
+Clostridium
+d. Lipase Removal of oil stains 1. Dragonflies (i) Biocontrol agents of several
+butylicum
+plant pathogens
+12. Match the following list of microbes and their importance:
+2. Bacillus (ii) Get rid of Aphids and
+(2015 Re)
+thuringiensis mosquitoes
+A. Saccharomyces i. Production of
+3. Glomus (iii) Narrow spectrum insecticidal
+cerevisiae immunosuppressive agents
+applications
+B. Monascus ii. Ripening of Swiss cheese
+4. Baculoviruses (iv) Biocontrol agents of
+purpureus
+lepidopteran plant pests
+C. Trichoderma poly- iii. Commercial production of
+(v) Absorb phosphorus from soil
+sporum ethanol
+D. Propionibacterium iv. Production of blood (1) (2) (3) (4)
+sharmanii cholesterol lowering a. (ii) (i) (iii) (iv)
+agents b. (ii) (iii) (iv) (v)
+c. (ii) (iv) (v) (iii)
+a. A-iv B-iii C-ii D-i
+d. (iii) (v) (iv) (i)
+b. A-iv B-ii C-i D-iii
+c. A-iii B-i C-iv D-ii
+18. Which of the following can be used as a biocontrol agent in
+d. A-iii B-iv C-i D-ii
+the treatment of plant disease? (2019)
+13. A good producer of citric acid is: (2013)
+a. Trichoderma b. Chlorella
+a. Saccharomyces b. Aspergillus
+c. Anabaena d. Lactobacillus
+c. Pseudomonas d. Clostridium
+19. Select the correct group of biocontrol agents. (2019)
+Microbes in Sewage Treatment a. Bacillus thuringiensis, Tobacco mosaic virus, Aphids
+b. Trichoderma, Baculovirus, Bacillus thuringiensis
+14. Which of the following is put into Anaerobic sludge digester c. Oscillatoria, Rhizobium, Trichoderma
+for further sewage treatment? (2020) d. Nostoc, Azospirillium, Nucleopolyhedrovirus
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+b d a d c b b c d d d d b c c b c
+18 19
+a b
