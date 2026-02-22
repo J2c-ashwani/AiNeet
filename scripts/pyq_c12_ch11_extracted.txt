@@ -1,0 +1,148 @@
+R
+E
+T
+P
+A
+H Biotechnology and
+6
+C
+It's Application
+8. Golden rice is a genetically modified crop plant where the
+Biotechnological incorporated gene is meant for biosynthesis of: (2015 Re)
+Application in Agriculture a. Vitamin C b. Omega 3
+c. Vitamin A d. Vitamin B
+1. Transposons can be used during which one of the following? 9. Which of the following Bt crops is being grown in India by
+(2022) the farmers? (2013)
+a. Gene sequencing b. Polymerase Chain Reaction a. Soyabean b. Maize
+c. Gene silencing d. Autoradiography c. Cotton d. Brinjal
+2. Bt cotton variety that was developed by the introduction
+of toxin gene of Bacillus thuringiensis (Bt) is resistant to
+Biotechnological
+(2020)
+a. Fungal diseases b. Plant nematodes Application in Medicine
+c. Insect predators d. Insect pests
+3. RNA interference is used for which of the following purposes
+10. In gene therapy of Adenosine Deaminase (ADA) deficiency,
+in the field of biotechnology? (2020-Covid)
+the patient requires periodic infusion genetically engineered
+a. To develop a pest resistant plant against infestation by
+lymphocytes because: (2022)
+nematode
+a. Genetically engineered lymphocytes are not immortal
+b. To enhance the mineral usage by the plant
+cells.
+c. To reduce post harvest losses
+b. Retroviral vector is introduced into these lymphocytes.
+d. To develop a plant tolerant to abiotic stresses
+c. Gene isolated from marrow cells producing ADA is
+4. Which of the following is true for Golden rice? (2019)
+introduced into cells at embryonic stages
+a. It is Vitamin A enriched, with a gene from daffodil
+d. Lymphocytes from patient's blood are grown in culture,
+b. It is pest resistant, with a gene from Bacillus thuringiensis
+outside the body.
+c. It is drought tolerant, developed using Agrobacterium
+11. Statements related to human Insulin are given below. Which
+vector
+statement(s) is/are correct about genetically engineered
+d. It has yellow grains, because of a gene introduced from a
+Insulin? (2022)
+primitive variety of rice
+5.What triggers activation of protoxin to active Bt toxin of A. Pro-hormone insulin contain extra stretch of C-peptide
+Bacillus thuringiensis in boll worm? (2019) B. A-peptide and B-peptide chains of insulin were produced
+a. Body temperature b. Moist surface of midgut separately in E.coli, extracted and combined by creating
+c. Alkaline pH of gut d. Acidic pH of stomach disulphide bond between them.
+6. Which part of the tobacco plant is infected by Meloidogyne C. Insulin used for treating Diabetes was extracted from
+incognita? (2016 - I) Cattles and Pigs.
+a. Flower b. Leaf D. Pro-hormone Insulin needs to be processed for converting
+c. Stem d. Root into a mature and functional hormone.
+7. In Bt cotton, the Bt toxin present in plant tissue as pro-toxin E.Some patients develop allergic reactions to the foreign
+is converted into active toxin due to: (2015) insulin.
+a. Action of gut micro-organism Choose the most appropriate answer from the options given
+b. Presence of conversion factors in insect gut below.
+c. Alkaline pH of the insect gut a. C, D and E only b. A, B and D only
+d. Acidic pH of the insect gut c. B only d. C and D only
+Biotechnology and its Application 2
+12. When gene targetting involving gene amplification is 20. Match the following columns and select the correct option
+attempted in an individual’s tissue to treat disease, it is (2020)
+known as: (2021)
+Column-I Column-II
+a. Gene therapy b. Molecular diagnosis
+1. Bt cotton (i) Gene therapy
+c. Safety testing d. Biopiracy
+2. Adenosine deaminase (ii) Cellular defence
+13. Which of the following is not an application of PCR deficiency
+(Polymerase Chain Reaction) ? (2021)
+3. RNAi (iii) Detection of HIV infection
+a. Gene amplification b. Purification of isolated protein
+4. PCR (iv) Bacillus thuringiensis
+c. Detection of gene mutation d. Molecular diagnosis
+14. Which of the following is a correct sequence of steps in a (1) (2) (3) (4)
+PCR (Polymerase Chain Reaction)? (2021) a. (iii) (ii) (i) (iv)
+a. Denaturation, Extension, Annealing b. (ii) (iii) (iv) (i)
+b. Extension, Denaturation, Annealing c. (i) (ii) (iii) (iv)
+d. (iv) (i) (ii) (iii)
+c. Annealing, Denaturation, Extension
+21. Which of the following is commonly used as a vector
+d. Denaturation, Annealing, Extension
+for introducing a DNA fragment in human lymphocytes?
+15. Now a days it is possible to detect the mutated gene
+(2018)
+causing cancer by allowing radioactive probe to hybridise
+a. Retrovirus b. Ti plasmid
+its complimentary DNA in a clone of cells, followed by its
+detection using autoradiography because: (2021) c. λ phage d. pBR322
+a. Mutated gene completely and clearly appears on a 22. Which kind of therapy was given in 1990 to a four year old
+photographic film. girl with adenosine deaminase (ADA) deficiency? (2016 - II)
+b. Mutated gene does not appear on a photographic film as a. Immunotherapy b. Radiation therapy
+the prober has no complimentarity with it. c. Gene therapy d. Chemotherapy
+c. Mutated gene does not appear on photographic film as the 23. The two polypeptides of human insulin are linked together
+probe has complimentarity with it. by: (2016 - I)
+d. Mutated gene partially appears on a photographic film. a. Hydrogen bonds b. Phosphodiester bond
+16. With regard to insulin choose correct options. (2021) c. Covalent bond d. Disulphide bridges
+A. C-peptide is not present in mature insulin. 24. ADA is an enzyme which is deficient in a genetic disorder
+B. The insulin produced by rDNA technology has C-peptide. SCID. What is the full form of ADA? (2014)
+C. The pro-insulin has C-peptide. a. Adenosine DeoxyAminase b. Adenosine Deaminase
+D. A-peptide and B-peptide of insulin are interconnected by c. Aspartate Deaminase d. Arginine Deaminase
+disulphide bridges. 25. The first human hormone produced by recombinant DNA
+Choose the correct answer from the options given below. technology is: (2014)
+a. B and C only b. A, C and D only a. Progesterone b. Insulin
+c. A and D only d. B and D only c. Estrogen d. Thyroxin
+17. For effective treatment of the disease, early diagnosis and
+understanding its pathophysiology is very important. Which Ethical Issues
+of the following molecular diagnostic techniques is very
+useful for early detection? (2021)
+26. The laws and rules to prevent unauthorised exploitation of
+a. Southern Blotting Technique
+bio-resources are termed as- (2020-Covid)
+b. ELISA Technique
+a. Bioethics b. Bioengineering
+c. Hybridization Technique
+c. Biopiracy d. Biopatenting
+d. Western Blotting Technique
+27. In India, the organisation responsible for assessing the safety
+18. The adenosine deaminase deficiency results into: (2021) of introducing genetically modified organisms for public use
+a. Parkinson’s disease is: (2018)
+b. Digestive disorder a. Indian Council of Medical Research (ICMR)
+c. Addison’s disease b. Council for Scientific and Industrial Research (CSIR)
+d. Dysfunction of Immune system c. Research Committee on Genetic Manipulation (RCGM)
+19. Which of the following statements is not correct? (2020) d. Genetic Engineering Appraisal Committee (GEAC)
+a. The proinsulin has an extra peptide called C-peptide 28. A ‘new’ variety of rice was patented by a foreign company
+b. The functional insulin has A and B chains linked together though such varieties have been present in India for a long
+by hydrogen bonds time. This is related to: (2018)
+c. Genetically engineered insulin is produced in E.coli. a. Co-667 b. Sharbati Sonora
+d. In man insulin is synthesised as a proinsulin. c. Lerma Rojo d. Basmati
+3 Chapter & Topicwise NEET PYQ's P
+W
+29. Use of bioresources by multinational companies and 30. Which body of the Government of India regulates GM
+organisations without authorisation from the concerned research and safety of introducing GM organisms for public
+country and its people is called: (2018) services? (2015)
+a. Bio-infringement a. Genetic Engineering Approval Committee
+b. Biopiracy b. Research Committee on Genetic Manipulation
+c. Biodegradation c. Bio-safety committee
+d. Bioexploitation d. Indian Council of Agricultural Research
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+c d a a c d c c c a c a b d b b b
+18 19 20 21 22 23 24 25 26 27 28 29 30
+d b d a c d b b d d d b a
