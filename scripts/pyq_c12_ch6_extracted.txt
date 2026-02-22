@@ -1,0 +1,285 @@
+R
+E
+T
+P
+A
+H Principles of Inheritance
+3
+C
+and Variation
+6. In Antirrhinum (Snapdragon), a red flower was crossed
+Mendal's Laws of Inheritance And with a white flower and in F generation pink flowers were
+1
+obtained. When pink flowers were selfed, the F generation
+Inheritance of One Gene showed white, red and pink flowers. Choose th 2 e incorrect
+statement from the following : (2019)
+a. This experiment does not follow the principle of
+1. Given below are two statements:
+dominance.
+Statement I: Mendel studied seven pairs of contrasting traits
+b. Pink colour in F is due to incomplete dominance.
+in pea plants and proposed the Laws of Inheritance. 1
+1 2 1
+Statement II: Seven characters examined by Mendel in his c. Ratio of F is (Red) : (Pink) : (White)
+2 4 4 4
+experiment on pea plants were seed shape and colour, flower
+d. Law of segregation does not apply in this experiment
+colour, pod shape and colour, flower position and stem height.
+In the light of the above statements, choose the correct 7. Which of the following characteristics represent 'Inheritance
+of blood groups' in humans? (2018)
+answer from the options given below. (2022)
+a. Statement I is incorrect but Statement II is correct A. Dominance B. Co-dominance
+C. Multiple alleles D. Incomplete dominance
+b. Both Statement I and Statement II are correct
+E. Polygenic inheritance
+c. Both statement I and statement II are incorrect
+a. B, C and E b. A, B and C
+d. Statement I is correct but Statement II is incorrect
+c. B, D and E d. A, C and E
+2. The production for gametes by the parents, formation of
+8. Among the following characters, which one was not considered
+zygotes, the F and F plants,can be understood from a by Mendel in his experiments on pea? (2017-Delhi)
+1 2
+diagram called: (2021)
+a. Stem – Tall or Dwarf
+a. Punch square
+b. Trichomes – Glandular or non-glandular
+b. Punnett square c. Seed – Green or Yellow
+c. Net square d. Pod – Inflated or Constricted
+d. Bullet square
+9. The genotypes of a Husband and Wife are IAIB and IAi.
+3. Identify the wrong statement with reference to the gene ‘I’ Among the blood types of their children, how many different
+that controls ABO blood groups. (2020) genotypes and phenotypes are possible? (2017-Delhi)
+a. A person will have only two of the three alleles. a. 3 genotypes ; 3 phenotypes
+b. When IA and IB are present together, they express same b. 3 genotypes ; 4 phenotypes
+type of sugar. c. 4 genotypes ; 3 phenotypes
+c. Allele ‘i’ does not produce any sugar d. 4 genotypes ; 4 phenotypes
+d. The gene I has three alleles. 10. Which one from those given below is the period for Mendel’s
+hybridisation experiments? (2017-Delhi)
+4. How many true breeding pea plant varieties did Mendel
+select as pairs, which were similar except in one character a. 1856 - 1863 b. 1840 - 1850
+with contrasting traits? (2020) c. 1857 - 1869 d. 1870 - 1877
+a. 2 b. 14 11. A true breeding plant is: (2016 - II)
+c. 8 d. 4 a. Nearly homozygous and produces offspring of its own
+5. The number of contrasting characters studied by Mendel for kind
+his experiments was: (2020-Covid) b. Always homozygous recessive in its genetic constitution
+a. 4 b. 2 c. One that is able to breed on its own
+c. 7 d. 14 d. Produced due to cross-pollination among unrelated plants
+Principles of Inheritance and Variation 2
+12. In a test cross involving F dihybrid flies, more parental- 21. Which Mendelian idea is depicted by a cross in which the F
+1 1
+type offspring were produced than the recombinant-type generation resembles both the parents? (2013)
+offspring. This indicates (2016 - I)
+a. Co-dominance b. Incomplete dominance
+a. The two genes are located on two different chromosomes
+c. Law of dominance d. Inheritance of one gene
+b. Chromosomes failed to separate during meiosis
+c. The two genes are linked and present on the same
+Inheritance of Two Genes
+chromosome
+d. Both of the characters are controlled by more than one
+22. Fruit colour in squash is an example of: (2014)
+gene
+a. Inhibitory genes b. Recessive epistasis
+13. A tall true breeding garden pea plant is crossed with a dwarf
+true breeding garden pea plant. When the F plants were c. Dominant epistasis d. Complementary genes
+1
+selfed the resulting genotypes were in the ratio of:( 2016 - I)
+a. 1 : 2 : 1 : Tall homozygous : Tall heterozygous : Dwarf
+Chromosomal Theory of
+b. 1 : 2 : 1 : Tall heterozygous : Tall homozygous : Dwarf
+Inheritance
+c. 3 : 1 : Tall : Dwarf
+d. 3 : 1 : Dwarf : Tall
+14. How many pairs of contrasting characters in pea plants were 23. Experimental verification of the chromosomal theory of
+studied by Mendel in his experiments? (2016 - I) inheritance was done by: (2020)
+a. Eight b. Seven a. Sutton b. Boveri
+c. Five d. Six c. Morgan d. Mendel
+15. A man with blood group ‘A’ marries a woman with blood 24. Chromosomal theory of inheritance was proposed by:
+group ‘B’. What are all the possible blood groups of their (2020-Covid)
+offspring’s? (2016 - I) a. Bateson and Punnet b. T.H. Morgan
+a. A, B, AB and O b. O only c. Watson and Crick d. Sutton and Boveri
+c. A and B only d. A, B and AB only
+25. What map unit (Centimorgan) is adopted in the construction
+16. Multiple alleles are present: (2015) of genetic maps? [Os] (2019)
+a. At the same locus of the chromosome a. A unit of distance between two expressed genes
+b. On non-sister chromatids representing 10% cross over.
+c. On different chromosomes b. A unit of distance between two expressed genes
+d. At different loci on the same chromosome representing 100% cross over.
+17. Alleles are: (2015) c. A unit of distance between genes on chromosomes,
+representing 1% cross over.
+a. Different molecular forms of a gene
+d. A unit of distance between genes on chromosomes,
+b. Heterozygote’s
+representing 50% cross over.
+c. Different phenotype
+d. True breeding homozygote’s
+18. A gene showing co-dominance has: (2015 Re) Linkage and Recombination,
+a. Alleles tightly linked on the same chromosome Polygenic Inheritance and Pleiotropy
+b. Alleles that is recessive to each other
+c. Both alleles independently expressed in the heterozygote
+26. Given below are two statements: one is labelled as Assertion
+d. One allele dominant on the other
+(A) and the other is labelled as Reason (R).
+19. In his classic experiments on pea plants, Mendel did not use:
+Assertion (A): Mendel's law of Independent assortment does
+(2015 Re)
+not hold good for the genes that are located closely one the
+a. Pod length b. Seed shape
+same chromosome.
+c. Flower position d. Seed colour
+Reason (R): Closely located genes assort independently.
+20. If two persons with ‘AB’ blood group marry and have
+In the light of the above statements, choose the correct
+sufficiently large number of children, these children could
+answer from the options given below. (2022)
+be classified as ‘A’ blood group : ‘AB’ blood group : ‘B’
+a. (A) is not correct but (R) is correct
+blood group in 1 : 2 : 1 ratio. Modern technique of protein
+electrophoresis reveals presence of both ‘A’ and ‘B’ type b. Both (A) and (R) are correct and (R) is the correct
+proteins in ‘AB’ blood group individuals. This is an example explanation of (A)
+of: (2013) c. Both (A) and (R) are correct but (R) is not the correct
+a. Complete dominance b. Co-dominance explanation of (A)
+c. Incomplete dominance d. Partial dominance d. (A) is correct but (R) is not correct
+3 Chapter & Topicwise NEET PYQ's P
+W
+27. The best example for pleiotropy is: (2020-Covid)
+Sex Determination And Mutation
+a. Phenylketonuria
+b. Colour Blindness
+c. ABO Blood group 35. Select the incorrect statement. (2019)
+d. Skin colour a. Male fruit fly is heterogametic
+28. The frequency of recombination between gene pairs on the b. In male grasshoppers 50% of sperms have no sex-
+chromosome
+same chromosome as a measure of the distance between
+genes was explained by (2019) c. In domesticated fowls, sex of progeny depends on the
+type of sperm rather than egg
+a. T.H. Morgan b. Gregor J. Mendel
+d. Human males have one of their sex-chromosome much
+c. Alfred Sturtevant d. Sutton Boveri
+shorter than the other
+29. Select the correct statement: (2018)
+36. Which of the following pairs is wrongly matched? (2018)
+a. Franklin Stahl coined the term "linkage".
+a. Starch synthesis in pea : Multiple alleles
+b. Punnett square was developed by a British scientist.
+b. ABO blood grouping : Co-dominance
+c. Spliceosomes take part in translation.
+c. XO type sex determination : Grasshopper
+d. Transduction was discovered by S. Altman.
+d. T.H. Morgan : Linkage
+30. Match the terms in Column-I with their description in
+37. An abnormal human baby with ‘XXX’ sex chromosomes
+Column-II and choose the correct option (2016 - I) was born due to: (2015)
+Column-I Column-II a. Fusion of two ova and one sperm
+A. Dominance i. Many genes govern a single b. Fusion of two sperms and one ovum
+character c. Formation of abnormal sperms in the father
+B. Co-dominance ii. In a heterozygous organism only d. Formation of abnormal ova in the mother
+one allele expresses itself
+C. Pleiotropy iii. In a heterozygous organism both
+alleles express themselves fully
+Genetic Disorders
+D. Polygenic iv. A single gene influences many
+inheritance characters
+38. Which of the following occurs due to the presence of
+a. A-(ii), B-(i), C-(iv), D-(iii)
+autosome linked dominant trait? (2022)
+b. A-(ii), B-(iii), C-(iv), D-(i)
+a. Thalessemia b. Sickle cell anaemia
+c. A-(iv), B-(i), C-(ii), D-(iii)
+c. Myotonic dystrophy d. Haemophilia
+d. A-(iv), B-(iii), C-(i), D-(ii)
+39. If a colour blind female marries a man whose mother was
+31. The movement of a gene from one linkage group to another also colour blind, what are the chances of her progeny having
+is called: (2015) colour blindness? (2022)
+a. Translocation a. 100% b. 25%
+b. Crossing over c. 50% d. 75%
+c. Inversion 40. In a cross between a male and female, both heterozygous for
+sickle cell anaemia gene, what percentage of the progeny will
+d. Duplication
+be diseased? (2021)
+32. The term “linkage” was coined by: (2015 Re)
+a. 75% b. 25%
+a. T. Boveri b. G. Mendel
+c. 100% d. 50%
+c. W. Sutton d. T.H. Morgan
+41. Select the correct match (2020)
+33. A pleiotropic gene: (2015 Re)
+Column-I Column-II
+a. Is a gene evolved during Pliocene
+a. Phenylketonuria - Autosomal dominant trait
+b. Controls a trait only in combination with another gene
+c. Controls multiple traits in an individual b. Sickle cell anaemia - Autosomal recessive trait,
+chromosome-11
+d. Is expressed only in primitive plants
+c. Thalassemia - X linked
+34. Which of the following statements is not true for two genes
+that show 50% recombination frequency? (2013) d. Haemophilia - Y linked
+a. If the genes are present on the same chromosome, they 42. What is the genetic disorder in which an individual has
+undergo more than one crossover in every meiosis an overall masculine development gynaecomastia, and is
+b. The genes may be on different chromosomes sterile? (2019)
+c. The genes are tightly linked a. Turner's syndrome b. Klinefelter's syndrome
+d. The genes show independent assortment c. Edward syndrome d. Down's syndrome
+Principles of Inheritance and Variation 4
+43. A woman has an X-linked condition on one of her X 49. In the following human pedigree, the filled symbols represent
+chromosomes. This chromosome can be inherited by: the affected individuals. Identify the type of given pedigree.
+(2018) (2015 Re)
+a. Only daughters b. Only sons
+c. Only grandchildren d. Both sons and daughters
+44. A disease caused by an autosomal primary non-disjunction
+is (2017-Delhi)
+a. Down’s syndrome b. Klinefelter’s syndrome
+c. Turner’s syndrome d. Sickle cell anemia
+a. X-linked recessive b. Autosomal recessive
+45. Thalassemia and sickle cell anemia are caused due to a
+c. X-linked dominant d. Autosomal dominant
+problem in globin molecule synthesis. Select the correct
+statement. (2017-Delhi) 50. A colour blind man marries a woman with normal sight who
+has no history of colour blindness in her family. What is the
+a. Both are due to a qualitative defect in globin chain
+probability of their grandson being colour blind? (2015 Re)
+synthesis
+a. 1 b. Nil
+b. Both are due to a quantitative defect in globin chain
+synthesis c. 0.25 d. 0.5
+c. Thalassemia is due to less synthesis of globin molecules 51. A human female with Turner’s syndrome: (2014)
+d. Sickle cell anemia is due to a quantitative problem of a. Is able to produce children with normal husband
+globin molecules
+b. Has 45 chromosomes with XO
+46. If a colour-blind man marries a woman who is homozygous c. Has one additional X chromosome
+for normal colour vision, the probability of their son being
+d. Exhibits male characters
+colour-blind is: (2016 - II)
+52. A man whose father was colour blind marries a woman who
+a. 0.75 b. 1
+had a colour blind mother and normal father. What percentage
+c. 0 d. 0.5
+of male children of this couple will be colour blind? (2014)
+47. Pick out the correct statements: (2016 - I)
+a. 75% b. 25%
+A. Haemophilia is a sex-linked recessive disease.
+c. 0% d. 50%
+B. Down’s syndrome is due to aneuploidy.
+C. Phenylketonuria is an autosomal recessive gene disorder. 53. The incorrect statement with regard to Haemophilia is:
+D. Sickle cell anaemia is an X-linked recessive gene disorder. (2013)
+a. (A) and (D) are correct a. A single protein involved in the clotting of blood is
+b. (B) and (D) are correct affected
+c. (A), (C) and (D) are correct b. It is a sex - linked disease
+d. (A), (B) and (C) are correct c. It is a recessive disease
+48. Which of the following most appropriately describes d. It is a dominant disease
+haemophilia? (2016 - I) 54. If both parents are carriers for Thalassaemia, which is an
+a. Recessive gene disorder autosomal recessive disorder, what are the chances of
+b. X-linked recessive gene disorder pregnancy resulting in an affected child? (2013)
+c. Chromosomal disorder a. 100% b. No chance
+d. Dominant gene disorder c. 50% d. 25%
+5 Chapter & Topicwise NEET PYQ's P
+W
+Answer Key
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+b b b b c d b b c a a c a b a a a
+18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
+c a b a c c d c d a c b b a d c c
+35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51
+c a d c a b b b d a c c d b b c b
+52 53 54
+d d d
