@@ -32,6 +32,7 @@ export default function NCERTLibrary() {
             });
             const data = await res.json();
             if (res.ok) {
+                sessionStorage.setItem('currentTest', JSON.stringify(data));
                 window.location.href = `/test/${data.testId}`;
             } else {
                 alert(data.error || 'Failed to generate PYQ test. Try another chapter.');
@@ -147,7 +148,7 @@ export default function NCERTLibrary() {
                                                                 onClick={() => handleStartPyq(ch.title)}
                                                                 disabled={generating === ch.title}
                                                                 style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(245,158,11,0.1)`, color: '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: `1px solid rgba(245,158,11,0.3)`, cursor: generating === ch.title ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                                                                {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : '🎯 10 Yr PYQs'}
+                                                                {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : '🎯 Solve PYQs'}
                                                             </button>
                                                         </div>
                                                     </div>
