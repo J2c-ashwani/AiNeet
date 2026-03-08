@@ -82,7 +82,7 @@ db.exec(`
         option_c TEXT NOT NULL,
         option_d TEXT NOT NULL,
         correct_option TEXT NOT NULL CHECK(correct_option IN ('A','B','C','D')),
-        difficulty TEXT DEFAULT 'medium' CHECK(difficulty IN ('easy','medium','hard')),
+        difficulty TEXT DEFAULT 'medium' CHECK(difficulty IN ('easy','medium','hard','neet')),
         explanation TEXT,
         is_pyq INTEGER DEFAULT 0,
         exam_name TEXT,
@@ -318,8 +318,13 @@ const topicMap = {};
 // Seed syllabus in a transaction
 const seedSyllabus = db.transaction(() => {
     for (const [key, subject] of Object.entries(NEET_SYLLABUS)) {
+        let subjectId;
         const result = insertSubject.run(subject.name, subject.icon, subject.color);
-        const subjectId = result.lastInsertRowid;
+        if (result.changes > 0) {
+            subjectId = result.lastInsertRowid;
+        } else {
+            subjectId = db.prepare('SELECT id FROM subjects WHERE name = ?').get(subject.name).id;
+        }
         subjectMap[subject.name] = subjectId;
 
         subject.chapters.forEach((chapter, idx) => {

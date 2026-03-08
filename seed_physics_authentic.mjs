@@ -1,17 +1,14 @@
-
 import { getDb } from './lib/db.js';
-import { PHYSICS_PYQ, CHEMISTRY_PYQ, BIOLOGY_PYQ } from './data/questions-pyq.js';
+import fs from 'fs';
 
 const db = getDb();
 
 async function getSubjectId(name) {
     let row = await db.get('SELECT id FROM subjects WHERE name = ?', [name]);
     if (!row) {
-        // Map common variations if needed, or insert
         if (name === 'Physics') return 1;
         if (name === 'Chemistry') return 2;
         if (name === 'Biology') return 3;
-        // Fallback insert
         const info = await db.run('INSERT INTO subjects (name) VALUES (?) RETURNING id', [name]);
         return info.lastInsertRowid;
     }
@@ -21,7 +18,7 @@ async function getSubjectId(name) {
 async function getChapterId(subjectId, name) {
     let row = await db.get('SELECT id FROM chapters WHERE subject_id = ? AND name = ?', [subjectId, name]);
     if (!row) {
-        const info = await db.run('INSERT INTO chapters (subject_id, name) VALUES (?, ?) RETURNING id', [subjectId, name]);
+        const info = await db.run('INSERT INTO chapters (subject_id, name, class_level, order_index) VALUES (?, ?, 11, 0) RETURNING id', [subjectId, name]);
         return info.lastInsertRowid;
     }
     return row.id;
@@ -37,18 +34,21 @@ async function getTopicId(chapterId, name) {
 }
 
 async function seedPYQs(subjectName, questions) {
-    console.log(`Seeding ${questions.length} PYQs for ${subjectName}...`);
+    console.log(`Seeding ${questions.length} authentic PYQs for ${subjectName}...`);
     const subjectId = await getSubjectId(subjectName);
 
     let added = 0;
     for (const q of questions) {
-        // Check duplicate by text
-        const exists = await db.get('SELECT id FROM questions WHERE text = ?', [q.text]);
-        if (exists) continue;
-
         const chapterId = await getChapterId(subjectId, q.chapter);
         const topicId = await getTopicId(chapterId, q.topic);
-        const examName = parseInt(q.year_asked) < 2013 ? 'AIPMT' : 'NEET';
+        const yearAsked = q.year_asked || '2020';
+        const examName = parseInt(yearAsked) < 2013 ? 'AIPMT' : 'NEET';
+
+        const exists = await db.get('SELECT id FROM questions WHERE text = ?', [q.text]);
+        if (exists) {
+            // we deleted mocks earlier, so any exists are unexpected duplicates
+            continue;
+        }
 
         await db.run(`
             INSERT INTO questions (
@@ -61,19 +61,21 @@ async function seedPYQs(subjectName, questions) {
             subjectId, chapterId, topicId, q.text,
             q.options[0], q.options[1], q.options[2], q.options[3],
             q.correct, q.difficulty, q.explanation,
-            q.year_asked, examName
+            yearAsked, examName
         ]);
         added++;
     }
-    console.log(`Added ${added} new PYQs for ${subjectName}.`);
+    console.log(`Successfully added ${added} new authentic PYQs for ${subjectName}.`);
 }
 
 async function main() {
     try {
-        await seedPYQs('Physics', PHYSICS_PYQ);
-        await seedPYQs('Chemistry', CHEMISTRY_PYQ);
-        await seedPYQs('Biology', BIOLOGY_PYQ);
-        console.log('PYQ Seeding Completed.');
+        const data = JSON.parse(fs.readFileSync('data/physics_pyqs_extracted.json', 'utf8'));
+        const physicsPyqs = data.PHYSICS_EXTRA || [];
+
+        await seedPYQs('Physics', physicsPyqs);
+
+        console.log('Authentic PYQ Seeding Completed.');
     } catch (error) {
         console.error('Seeding failed:', error);
     }
