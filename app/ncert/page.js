@@ -22,13 +22,16 @@ export default function NCERTLibrary() {
             .catch(() => setLoading(false));
     }, []);
 
-    const handleStartPyq = async (chapterName) => {
+    const handleStartPyq = async (chapterName, pyqCount) => {
         setGenerating(chapterName);
         try {
             const res = await fetch('/api/tests/pyq', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chapter_name: chapterName, questionCount: 20 })
+                body: JSON.stringify({ 
+                    chapter_name: chapterName, 
+                    questionCount: Math.min(20, pyqCount || 20) 
+                })
             });
             const data = await res.json();
             if (res.ok) {
@@ -144,12 +147,18 @@ export default function NCERTLibrary() {
                                                                 style={{ flex: 1, textAlign: 'center', padding: '10px', borderRadius: 8, background: `${color}22`, color, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                                                                 📖 Study PDF
                                                             </Link>
-                                                            <button
-                                                                onClick={() => handleStartPyq(ch.title)}
-                                                                disabled={generating === ch.title}
-                                                                style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(245,158,11,0.1)`, color: '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: `1px solid rgba(245,158,11,0.3)`, cursor: generating === ch.title ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                                                                {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : '🎯 Solve PYQs'}
-                                                            </button>
+                                                            {ch.pyqCount === 0 ? (
+                                                                <div style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(239,68,68,0.1)`, color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, border: `1px solid rgba(239,68,68,0.2)`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+                                                                    No PYQs asked yet
+                                                                </div>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => handleStartPyq(ch.title, ch.pyqCount)}
+                                                                    disabled={generating === ch.title}
+                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(245,158,11,0.1)`, color: '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: `1px solid rgba(245,158,11,0.3)`, cursor: generating === ch.title ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : `🎯 Solve PYQs (${ch.pyqCount})`}
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 ))}

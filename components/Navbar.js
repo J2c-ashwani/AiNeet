@@ -25,6 +25,7 @@ export default function Navbar() {
         { name: 'NCERT', path: '/ncert', icon: '📚' },
         { name: 'Blueprint', path: '/blueprint', icon: '📊' },
         { name: 'Profile', path: '/profile', icon: '👤' },
+        { name: 'Premium', path: '/pricing', icon: '💎' },
     ];
 
     if (['/login', '/register', '/'].includes(pathname)) return null;

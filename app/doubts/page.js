@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import SnapSolver from '@/components/SnapSolver';
+import ReactMarkdown from 'react-markdown';
 
 export default function DoubtSolver() {
     const router = useRouter();
@@ -102,7 +103,9 @@ export default function DoubtSolver() {
                                 </div>
                                 <div className="chat-bubble">
                                     {msg.role === 'assistant' ? (
-                                        <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\n/g, '<br>').replace(/##\s(.*)/g, '<strong>$1</strong>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                                        <div className="prose prose-invert max-w-none text-gray-200">
+                                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                        </div>
                                     ) : (
                                         msg.content
                                     )}

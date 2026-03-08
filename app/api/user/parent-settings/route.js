@@ -34,8 +34,9 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         // Plan gate: Parent Connect requires Premium
-        const blocked = await checkFeatureAccess(decoded.id, 'parent_connect_enabled', 'premium');
-        if (blocked) return blocked;
+        // TEMPORARILY DISABLED: Allow all users to save parent settings during testing
+        // const blocked = await checkFeatureAccess(decoded.id, 'parent_connect_enabled', 'premium');
+        // if (blocked) return blocked;
 
         const body = await request.json();
 

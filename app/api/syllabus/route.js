@@ -7,11 +7,15 @@ export async function GET(request) {
         await initializeDatabase();
         const db = getDb();
 
-        const [subjects, chapters, topics] = await Promise.all([
+        const [subjects, chapters, topics, pyqCounts] = await Promise.all([
             db.all('SELECT * FROM subjects ORDER BY id'),
             db.all('SELECT * FROM chapters ORDER BY subject_id, order_index'),
-            db.all('SELECT * FROM topics ORDER BY chapter_id, id')
+            db.all('SELECT * FROM topics ORDER BY chapter_id, id'),
+            db.all('SELECT chapter_id, COUNT(id) as pyq_count FROM questions WHERE is_pyq = 1 GROUP BY chapter_id')
         ]);
+
+        const pyqMap = {};
+        pyqCounts.forEach(c => pyqMap[c.chapter_id] = c.pyq_count);
 
         const result = subjects.map(s => ({
             ...s,
@@ -19,6 +23,7 @@ export async function GET(request) {
                 .filter(c => c.subject_id === s.id)
                 .map(c => ({
                     ...c,
+                    pyq_count: pyqMap[c.id] || 0,
                     topics: topics.filter(t => t.chapter_id === c.id)
                 }))
         }));

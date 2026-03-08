@@ -20,16 +20,16 @@ export default function CoachWidget() {
     const { greeting, message, actionItem, tip, sentiment } = guidance;
 
     return (
-        <div className="card bg-white border-l-4 border-indigo-500 shadow-md p-6 mb-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10 text-6xl">🤖</div>
+        <div className="card bg-gray-900 border border-gray-800 shadow-md p-6 mb-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-5 text-6xl">🤖</div>
 
             <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2">
                     <span className="text-2xl">👋</span>
-                    <h2 className="text-lg font-bold text-gray-800">{greeting}</h2>
+                    <h2 className="text-lg font-bold text-white">{greeting}</h2>
                 </div>
 
-                <p className="text-gray-600 mb-4 max-w-2xl leading-relaxed">
+                <p className="text-gray-300 mb-4 max-w-2xl leading-relaxed">
                     {message}
                 </p>
 
@@ -44,7 +44,7 @@ export default function CoachWidget() {
                     </div>
                 )}
 
-                <div className="bg-yellow-50 border border-yellow-100 p-3 rounded-md text-sm text-yellow-800 flex items-start gap-2 max-w-xl">
+                <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
                     <span>💡</span>
                     <span className="italic">{tip}</span>
                 </div>

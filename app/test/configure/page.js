@@ -1,22 +1,30 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import AppInstallPrompt from '@/components/AppInstallPrompt';
 
 export default function TestConfigPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [syllabus, setSyllabus] = useState([]);
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [selectedChapters, setSelectedChapters] = useState([]);
     const [difficulty, setDifficulty] = useState('all');
     const [questionCount, setQuestionCount] = useState(20);
-    const [testType, setTestType] = useState('custom');
+    const [testType, setTestType] = useState(searchParams.get('type') || 'custom');
+
+    // Yearly PYQ States
+    const [availableYears, setAvailableYears] = useState([]);
+    const [selectedYear, setSelectedYear] = useState('');
+
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
     const [error, setError] = useState('');
     const [user, setUser] = useState(null);
     const [showLockModal, setShowLockModal] = useState(false);
     const [lockMessage, setLockMessage] = useState('');
+    const [showAppPromo, setShowAppPromo] = useState(false);
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
@@ -26,6 +34,13 @@ export default function TestConfigPage() {
         fetch('/api/syllabus').then(r => r.json()).then(data => {
             setSyllabus(data.subjects || []);
             setLoading(false);
+        });
+        // Fetch available PYQ years
+        fetch('/api/pyq/years').then(r => r.json()).then(data => {
+            if (data.years && data.years.length > 0) {
+                setAvailableYears(data.years);
+                setSelectedYear(data.years[0]);
+            }
         });
     }, [router]);
 
@@ -42,27 +57,42 @@ export default function TestConfigPage() {
     };
 
     const handleGenerate = async () => {
+        // App Install Gate for Mobile Web
+        if (typeof window !== 'undefined') {
+            const isMobileBrowser = Boolean(navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
+            if (isMobileBrowser) {
+                setShowAppPromo(true);
+                return;
+            }
+        }
+
         setGenerating(true);
         setError('');
         try {
-            const endpoint = testType === 'adaptive' ? '/api/tests/adaptive' : (testType === 'pyq' ? '/api/tests/pyq' : '/api/tests/generate');
+            let endpoint = '/api/tests/generate';
+            if (testType === 'adaptive') endpoint = '/api/tests/adaptive';
+            if (testType === 'pyq') endpoint = '/api/tests/pyq';
+
             // For custom tests, if they selected specific chapters, we only send those chapters
             // so we don't accidentally restrict them by the 'subjects' filter if they mixed and matched.
             const apiSubjects = (testType === 'custom' && selectedChapters.length > 0)
                 ? undefined
                 : (selectedSubjects.length > 0 ? selectedSubjects : syllabus.map(s => s.id));
 
+            const payload = {
+                subjects: apiSubjects,
+                subjectId: testType === 'adaptive' ? selectedSubjects[0] : undefined,
+                chapters: selectedChapters.length > 0 ? selectedChapters : undefined,
+                difficulty: (testType !== 'pyq' && testType !== 'yearly_pyq' && difficulty !== 'all') ? difficulty : undefined,
+                questionCount: (testType === 'mock' || testType === 'yearly_pyq') ? 180 : questionCount,
+                type: testType,
+                year: testType === 'yearly_pyq' ? selectedYear : undefined
+            };
+
             const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    subjects: apiSubjects,
-                    subjectId: testType === 'adaptive' ? selectedSubjects[0] : undefined,
-                    chapters: selectedChapters.length > 0 ? selectedChapters : undefined,
-                    difficulty: (testType !== 'pyq' && difficulty !== 'all') ? difficulty : undefined,
-                    questionCount: testType === 'mock' ? 180 : questionCount,
-                    type: testType
-                })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
 
@@ -96,6 +126,7 @@ export default function TestConfigPage() {
     return (
         <div>
             <Navbar />
+            <AppInstallPrompt mode="hard" showModal={showAppPromo} onClose={() => setShowAppPromo(false)} />
 
             <div className="page" style={{ maxWidth: 900 }}>
                 <div className="page-header">
@@ -115,11 +146,13 @@ export default function TestConfigPage() {
                     <div className="flex gap-3 flex-wrap">
                         {[
                             { value: 'custom', label: 'Custom Test', icon: '🎯', desc: 'Choose your own settings' },
-                            { value: 'adaptive', label: 'Adaptive Practice', icon: '🧠', desc: ' AI Adjusts Difficulty' },
-                            { value: 'pyq', label: 'Past Papers', icon: '📜', desc: 'Real NEET Questions' },
+                            { value: 'adaptive', label: 'Adaptive Practice', icon: '🧠', desc: 'AI Adjusts Difficulty' },
+                            { value: 'ai_generated', label: 'AI Generated', icon: '⚡', desc: 'Unique AI questions' },
+                            { value: 'pyq', label: 'Past Papers (Topic)', icon: '📜', desc: 'Filter by chapter' },
+                            { value: 'yearly_pyq', label: 'Year-wise PYQ', icon: '📅', desc: 'Full papers by year' },
                             { value: 'topic', label: 'Topic-wise', icon: '📌', desc: 'Focus on specific topics' },
                             { value: 'chapter', label: 'Chapter-wise', icon: '📖', desc: 'Complete chapter test' },
-                            { value: 'mock', label: 'Full Mock', icon: '⏱️', desc: '180 Qs • 720 marks • 3 hrs' },
+                            { value: 'mock', label: 'Full Mock', icon: '⏱️', desc: '180 Qs • 720 marks' },
                         ].map(t => (
                             <div key={t.value} className={`option-card ${testType === t.value ? 'selected' : ''}`}
                                 onClick={() => setTestType(t.value)} style={{ flex: '1 1 180px' }}>
@@ -133,7 +166,30 @@ export default function TestConfigPage() {
                     </div>
                 </div>
 
-                {testType !== 'mock' && (
+                {testType === 'yearly_pyq' && (
+                    <div className="card mb-4 border-2 border-[var(--accent-primary)]">
+                        <h3 className="mb-4">Select PYQ Year</h3>
+                        {availableYears.length > 0 ? (
+                            <div className="flex gap-3 flex-wrap">
+                                {availableYears.map(year => (
+                                    <div key={year} className={`option-card ${selectedYear === year ? 'selected' : ''}`}
+                                        onClick={() => setSelectedYear(year)} style={{ flex: '1 1 120px', textAlign: 'center' }}>
+                                        <span className="font-bold text-xl">{year}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="p-6 text-center text-muted bg-[var(--bg-elevated)] rounded-xl border border-[var(--border-color)]">
+                                📅 No full yearly papers available yet. They are coming soon!
+                            </div>
+                        )}
+                        <p className="mt-4 text-sm text-muted">
+                            This will generate a full 180-question mock test containing all Botany, Zoology, Physics, and Chemistry questions exactly as they appeared in the {selectedYear} paper.
+                        </p>
+                    </div>
+                )}
+
+                {testType !== 'mock' && testType !== 'yearly_pyq' && (
                     <>
                         {/* Subject Selection */}
                         <div className="card mb-4">
@@ -168,22 +224,31 @@ export default function TestConfigPage() {
                                             {subject.icon} {subject.name}
                                         </h4>
                                         <div className="chapter-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
-                                            {subject.chapters.map(c => (
-                                                <div key={c.id}
-                                                    className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''}`}
-                                                    onClick={() => toggleChapter(c.id)}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', cursor: 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border-color)' }}
-                                                >
-                                                    <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                                        {selectedChapters.includes(c.id) && '✓'}
-                                                    </div>
-                                                    <div style={{ flex: 1 }}>
-                                                        <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? '#fff' : 'var(--text-secondary)' }}>
-                                                            {c.name}
+                                            {subject.chapters.map(c => {
+                                                const isDisabled = testType === 'pyq' && c.pyq_count === 0;
+                                                return (
+                                                    <div key={c.id}
+                                                        className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
+                                                        onClick={() => { if (!isDisabled) toggleChapter(c.id); }}
+                                                        style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', cursor: isDisabled ? 'not-allowed' : 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border-color)', opacity: isDisabled ? 0.5 : 1 }}
+                                                    >
+                                                        <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                                            {selectedChapters.includes(c.id) && '✓'}
+                                                            {isDisabled && '🚫'}
+                                                        </div>
+                                                        <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? '#fff' : 'var(--text-secondary)' }}>
+                                                                {c.name}
+                                                            </div>
+                                                            {testType === 'pyq' && (
+                                                                <div style={{ fontSize: '0.75rem', color: isDisabled ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                                                    {c.pyq_count} PYQs
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 ))}
@@ -227,11 +292,13 @@ export default function TestConfigPage() {
                 <button
                     className="btn btn-primary btn-lg w-full"
                     onClick={handleGenerate}
-                    disabled={generating}
+                    disabled={generating || (testType === 'yearly_pyq' && !selectedYear)}
                     style={{ fontSize: '1.1rem', padding: '18px 32px' }}
                 >
                     {generating ? (
                         <><div className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }}></div> Generating Test...</>
+                    ) : testType === 'yearly_pyq' && selectedYear ? (
+                        <>🚀 Generate {selectedYear} PYQ Paper</>
                     ) : (
                         <>🚀 Generate & Start Test</>
                     )}

@@ -13,15 +13,16 @@ export async function POST(request) {
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { subjects, chapters, topics, difficulty, questionCount, type } = await request.json();
+        const { subjects, chapters, topics, difficulty, questionCount, type, year } = await request.json();
 
         // Input validation
         if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
         if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
         if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
         if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
-        if (type && !validateEnum(type, ['custom', 'mock', 'chapter', 'ai_generated', 'pyq'])) return NextResponse.json({ error: 'Invalid test type' }, { status: 400 });
+        if (type && !validateEnum(type, ['custom', 'mock', 'chapter', 'ai_generated', 'pyq', 'yearly_pyq'])) return NextResponse.json({ error: 'Invalid test type' }, { status: 400 });
         if (difficulty && !validateEnum(difficulty, ['easy', 'medium', 'hard', 'all'])) return NextResponse.json({ error: 'Invalid difficulty' }, { status: 400 });
+        if (year && typeof year !== 'string') return NextResponse.json({ error: 'Invalid year format' }, { status: 400 });
 
         // Rate Limiting (10 req/hour per User) - Kept as DDoS protection
         // Rate limit based on User ID if available, else IP
@@ -56,25 +57,36 @@ export async function POST(request) {
         let query = 'SELECT * FROM questions WHERE 1=1';
         const params = [];
 
-        if (subjects && subjects.length > 0) {
+        if (subjects && subjects.length > 0 && type !== 'yearly_pyq') {
             query += ` AND subject_id IN (${subjects.map(() => '?').join(',')})`;
             params.push(...subjects);
         }
-        if (chapters && chapters.length > 0) {
+        if (chapters && chapters.length > 0 && type !== 'yearly_pyq') {
             query += ` AND chapter_id IN (${chapters.map(() => '?').join(',')})`;
             params.push(...chapters);
         }
-        if (topics && topics.length > 0) {
+        if (topics && topics.length > 0 && type !== 'yearly_pyq') {
             query += ` AND topic_id IN (${topics.map(() => '?').join(',')})`;
             params.push(...topics);
         }
-        if (difficulty && difficulty !== 'all') {
+        if (difficulty && difficulty !== 'all' && type !== 'yearly_pyq') {
             query += ' AND difficulty = ?';
             params.push(difficulty);
         }
+        if (type === 'yearly_pyq' && year) {
+            query += ' AND year_asked = ?';
+            params.push(year);
+        }
 
         query += ' ORDER BY RANDOM()';
-        const limit = questionCount || (type === 'mock' ? 180 : type === 'chapter' ? 30 : 20);
+
+        let limit = questionCount;
+        if (!limit) {
+            if (type === 'mock' || type === 'yearly_pyq') limit = 180; // or 200 depending on standard
+            else if (type === 'chapter') limit = 30;
+            else limit = 20;
+        }
+
         query += ' LIMIT ?';
         params.push(limit);
 

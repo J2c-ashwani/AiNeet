@@ -2,6 +2,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import ReactMarkdown from 'react-markdown';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -155,8 +156,7 @@ export default function PDFViewerClient({ book }) {
                                         <p className="text-sm text-gray-300 italic">"{selection?.text}"</p>
                                     </div>
                                     <div className="prose prose-invert max-w-none text-gray-200">
-                                        {/* Mock explanation formatting - in reality this would ideally be markdown rendered */}
-                                        <div dangerouslySetInnerHTML={{ __html: explanation.replace(/\n/g, '<br/>') }} />
+                                        <ReactMarkdown>{explanation}</ReactMarkdown>
                                     </div>
                                     <button className="btn btn-primary w-full mt-6 py-3 font-bold text-lg rounded-xl" onClick={() => setExplanation(null)}>
                                         Got it!

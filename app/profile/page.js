@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import ParentSettings from '@/components/ParentSettings';
 
 const ACHIEVEMENT_ICONS = {
     'first_test': '🎯', 'test_veteran': '🏆', 'perfect_score': '💯',
@@ -89,6 +90,19 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </div>
+
+                {/* Premium Banner (if not pro/premium) */}
+                {user?.subscription_tier === 'free' && (
+                    <div className="card mb-6 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/30 flex justify-between items-center p-6 rounded-xl hover:border-blue-400/50 transition-colors cursor-pointer" onClick={() => router.push('/pricing')}>
+                        <div>
+                            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">💎</span> Unlock Premium Features</h3>
+                            <p className="text-gray-400 text-sm">Get unlimited AI Doubts, Mock Tests, Parent Connect, and more.</p>
+                        </div>
+                        <button className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg font-bold text-white hover:opacity-90">
+                            View Plans
+                        </button>
+                    </div>
+                )}
 
                 {/* Stats */}
                 <div className="grid grid-4 mb-6">

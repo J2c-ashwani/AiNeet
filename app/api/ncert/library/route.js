@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NCERT_BOOKS, getChapterPdfUrl, getBookUrl } from '@/lib/ncert-data';
+import { getDb } from '@/lib/db';
+import { initializeDatabase } from '@/lib/schema';
 
 /**
  * GET /api/ncert/library — Returns all NCERT books with chapter-wise PDF links
@@ -7,6 +9,9 @@ import { NCERT_BOOKS, getChapterPdfUrl, getBookUrl } from '@/lib/ncert-data';
  */
 export async function GET(request) {
     try {
+        await initializeDatabase();
+        const db = getDb();
+
         const { searchParams } = new URL(request.url);
         const subject = searchParams.get('subject');
         const classNum = searchParams.get('class');
@@ -20,13 +25,31 @@ export async function GET(request) {
             books = books.filter(b => b.class === parseInt(classNum));
         }
 
-        // Enrich with URLs
+        // Fetch pyq counts from DB
+        const chapterList = await db.all("SELECT c.name, COUNT(q.id) as pyq_count FROM chapters c LEFT JOIN questions q ON c.id = q.chapter_id AND q.is_pyq = 1 GROUP BY c.id;");
+
+        const getPyqCount = (title) => {
+            const cleanTitle = title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+            
+            // Try exact match first
+            let match = chapterList.find(c => c.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim() === cleanTitle);
+            
+            // If no exact match, try matching the first few words
+            if (!match) {
+                const prefix = cleanTitle.split(' ').slice(0, 3).join(' ');
+                match = chapterList.find(c => c.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().startsWith(prefix));
+            }
+            return match ? match.pyq_count : 0;
+        }
+
+        // Enrich with URLs and PYQ counts
         const enriched = books.map(book => ({
             ...book,
             bookUrl: getBookUrl(book.code),
             chapters: book.chapters.map(ch => ({
                 ...ch,
                 pdfUrl: getChapterPdfUrl(book.code, ch.ch),
+                pyqCount: getPyqCount(ch.title)
             }))
         }));
 

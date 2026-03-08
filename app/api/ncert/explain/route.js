@@ -28,28 +28,20 @@ export async function POST(request) {
 
         const cleanBookId = bookId ? sanitizeString(bookId, 128) : null;
 
-        // Mock AI Logic
-        // In production, call Google Gemini API here
-        // const geminiResponse = await gemini.generateContent(prompt);
+        // Call AI Engine (RAG)
+        const { getAIResponse } = await import('@/lib/ai-engine');
 
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate latency
+        const systemPrompt = `You are a helpful and expert NEET Coach. A student has highlighted the following text from an NCERT Biology/Physics/Chemistry textbook (Book ID: ${cleanBookId}). 
+Please explain this concept simply but thoroughly, keeping in mind it is for the NEET exam. 
+Format your response with:
+1. A clear, easy-to-understand summary.
+2. Any important keywords they must remember.
+3. How this concept is typically tested in NEET (if applicable).
+Keep it concise and format with basic Markdown.`;
 
-        const explanation = `
-            **Concept Analysis:** "${cleanText}"
-            
-            This concept from Class 11 Physics relates to fundamental laws of nature.
-            
-            **Key Points:**
-            1. Scientific Method: Observation to Theory.
-            2. Reductionism vs Unification.
-            
-            **Related PYQ:**
-            - "Which of the following forces is the weakest in nature?" (NEET 2018)
-            
-            *(Simulated AI Response - Connect Gemini API for real-time analysis)*
-        `;
+        const explanationHtml = await getAIResponse(systemPrompt, `Highlighted Text: "${cleanText}"`);
 
-        return NextResponse.json({ explanation });
+        return NextResponse.json({ explanation: explanationHtml });
 
     } catch (error) {
         console.error('Explain error:', error);

@@ -102,7 +102,7 @@ export default function Dashboard() {
                     <div>
                         <h2 className="mb-4">🚀 Quick Actions</h2>
                         <div className="flex flex-col gap-3 stagger">
-                            <a href="/test/configure" className="quick-action">
+                            <a href="/test/configure?type=ai_generated" className="quick-action">
                                 <div className="quick-action-icon" style={{ background: 'rgba(99,102,241,0.1)' }}>🎯</div>
                                 <div className="quick-action-text">
                                     <h3>Generate AI Test</h3>
@@ -114,6 +114,13 @@ export default function Dashboard() {
                                 <div className="quick-action-text">
                                     <h3>Full Mock Test</h3>
                                     <p>180 questions • 720 marks • 3 hours</p>
+                                </div>
+                            </a>
+                            <a href="/test/configure?type=yearly_pyq" className="quick-action">
+                                <div className="quick-action-icon" style={{ background: 'rgba(56,189,248,0.1)' }}>📅</div>
+                                <div className="quick-action-text">
+                                    <h3>Year-wise PYQ Paper</h3>
+                                    <p>Practice past real exam papers directly</p>
                                 </div>
                             </a>
                             <a href="/doubts" className="quick-action">
