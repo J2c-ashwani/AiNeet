@@ -1,10 +1,9 @@
 import { ImageResponse } from '@vercel/og';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { calculateNEETScore } from '@/lib/scoring';
 import { sanitizeString } from '@/lib/validate';
 
-export const runtime = 'nodejs'; // Use nodejs because SQLite requires native modules
+export const runtime = 'edge';
 
 export async function GET(request) {
     try {
@@ -15,13 +14,24 @@ export async function GET(request) {
             return new Response('Missing or invalid testId', { status: 400 });
         }
 
-        initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
 
-        const test = await db.get('SELECT t.*, u.name, u.streak FROM tests t JOIN users u ON t.user_id = u.id WHERE t.id = ?', [testId]);
+        const { data: test } = await supabase
+            .from('tests')
+            .select(`
+                *,
+                users (name, streak)
+            `)
+            .eq('id', testId)
+            .single();
+
         if (!test) {
             return new Response('Test not found', { status: 404 });
         }
+
+        // flatten the relationship
+        test.name = test.users?.name;
+        test.streak = test.users?.streak;
 
         const score = test.score || 0;
         const totalMarks = (test.correct_count + test.incorrect_count + test.unanswered_count) * 4;

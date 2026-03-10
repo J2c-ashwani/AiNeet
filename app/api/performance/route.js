@@ -1,75 +1,151 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { predictRank } from '@/lib/ai-engine';
 import { calculateSuccessProbability } from '@/lib/scoring';
 
 export async function GET(request) {
   try {
-    initializeDatabase();
-    const db = getDb();
+    const supabase = getSupabase();
     const decoded = getUserFromRequest(request);
     if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-    const subjectPerformance = await db.all(`
-      SELECT s.id, s.name, s.icon, s.color,
-        COALESCE(AVG(up.accuracy), 0) as avg_accuracy,
-        COALESCE(SUM(up.total_attempted), 0) as total_attempted,
-        COALESCE(SUM(up.total_correct), 0) as total_correct
-      FROM subjects s
-      LEFT JOIN chapters c ON c.subject_id = s.id
-      LEFT JOIN topics t ON t.chapter_id = c.id
-      LEFT JOIN user_performance up ON up.topic_id = t.id AND up.user_id = ?
-      GROUP BY s.id
-    `, [decoded.id]);
+    // Fetch Base Metadata (Need all subjects regardless of performance)
+    const { data: subjects } = await supabase.from('subjects').select('*');
+    const { data: chapters } = await supabase.from('chapters').select('*, subjects(name, color)');
 
-    const chapterStrength = await db.all(`
-      SELECT c.id, c.name, s.name as subject_name, s.color,
-        COALESCE(AVG(up.accuracy), 0) as accuracy,
-        COALESCE(SUM(up.total_attempted), 0) as total_attempted
-      FROM chapters c
-      JOIN subjects s ON s.id = c.subject_id
-      LEFT JOIN topics t ON t.chapter_id = c.id
-      LEFT JOIN user_performance up ON up.topic_id = t.id AND up.user_id = ?
-      GROUP BY c.id HAVING total_attempted > 0 ORDER BY accuracy ASC
-    `, [decoded.id]);
+    // Fetch User Performance with relationships
+    const { data: performance } = await supabase
+      .from('user_performance')
+      .select(`
+        *,
+        topics!inner(
+          name, 
+          chapter_id,
+          chapters!inner(
+            name,
+            subject_id,
+            subjects!inner(name, color, icon)
+          )
+        )
+      `)
+      .eq('user_id', decoded.id);
 
-    const weakAreas = await db.all(`
-      SELECT t.name as topic_name, c.name as chapter_name, s.name as subject_name,
-        up.accuracy, up.total_attempted, up.total_correct
-      FROM user_performance up
-      JOIN topics t ON t.id = up.topic_id
-      JOIN chapters c ON c.id = t.chapter_id
-      JOIN subjects s ON s.id = c.subject_id
-      WHERE up.user_id = ? AND up.accuracy < 50 AND up.total_attempted >= 2
-      ORDER BY up.accuracy ASC LIMIT 10
-    `, [decoded.id]);
+    const perfArray = performance || [];
 
-    const strongAreas = await db.all(`
-      SELECT t.name as topic_name, c.name as chapter_name, s.name as subject_name,
-        up.accuracy, up.total_attempted
-      FROM user_performance up
-      JOIN topics t ON t.id = up.topic_id
-      JOIN chapters c ON c.id = t.chapter_id
-      JOIN subjects s ON s.id = c.subject_id
-      WHERE up.user_id = ? AND up.accuracy >= 80 AND up.total_attempted >= 2
-      ORDER BY up.accuracy DESC LIMIT 10
-    `, [decoded.id]);
+    // 1. subjectPerformance
+    const subjectPerformance = (subjects || []).map(s => {
+      const matchingPerf = perfArray.filter(p => p.topics?.chapters?.subject_id === s.id);
 
-    const testHistory = await db.all(`
-      SELECT id, type, score, total_marks, correct_count, incorrect_count, unanswered_count,
-        total_questions, time_taken_seconds, completed_at
-      FROM tests WHERE user_id = ? AND completed_at IS NOT NULL
-      ORDER BY completed_at DESC LIMIT 20
-    `, [decoded.id]);
+      const total_attempted = matchingPerf.reduce((sum, p) => sum + (p.total_attempted || 0), 0);
+      const total_correct = matchingPerf.reduce((sum, p) => sum + (p.total_correct || 0), 0);
+      const avg_accuracy = matchingPerf.length > 0
+        ? matchingPerf.reduce((sum, p) => sum + (p.accuracy || 0), 0) / matchingPerf.length
+        : 0;
 
-    const overallStats = await db.get(`
-      SELECT COUNT(*) as total_tests, COALESCE(AVG(score), 0) as avg_score,
-        COALESCE(MAX(score), 0) as best_score,
-        COALESCE(AVG(CAST(correct_count AS REAL) / NULLIF(total_questions, 0) * 100), 0) as avg_accuracy
-      FROM tests WHERE user_id = ? AND completed_at IS NOT NULL
-    `, [decoded.id]);
+      return {
+        id: s.id,
+        name: s.name,
+        icon: s.icon,
+        color: s.color,
+        avg_accuracy,
+        total_attempted,
+        total_correct
+      };
+    });
+
+    // 2. chapterStrength
+    // Group by chapter id
+    const chapterMap = {};
+    perfArray.forEach(p => {
+      const cId = p.topics?.chapter_id;
+      if (!cId) return;
+      if (!chapterMap[cId]) {
+        chapterMap[cId] = {
+          id: cId,
+          name: p.topics.chapters.name,
+          subject_name: p.topics.chapters.subjects.name,
+          color: p.topics.chapters.subjects.color,
+          accSum: 0,
+          count: 0,
+          total_attempted: 0
+        };
+      }
+      chapterMap[cId].accSum += (p.accuracy || 0);
+      chapterMap[cId].count += 1;
+      chapterMap[cId].total_attempted += (p.total_attempted || 0);
+    });
+
+    let chapterStrength = Object.values(chapterMap)
+      .filter(c => c.total_attempted > 0)
+      .map(c => ({
+        ...c,
+        accuracy: c.accSum / c.count
+      }))
+      .sort((a, b) => a.accuracy - b.accuracy);
+
+    // 3. Weak Areas
+    let weakAreas = perfArray
+      .filter(p => p.accuracy < 50 && p.total_attempted >= 2)
+      .map(p => ({
+        topic_name: p.topics.name,
+        chapter_name: p.topics.chapters.name,
+        subject_name: p.topics.chapters.subjects.name,
+        accuracy: p.accuracy,
+        total_attempted: p.total_attempted,
+        total_correct: p.total_correct
+      }))
+      .sort((a, b) => a.accuracy - b.accuracy)
+      .slice(0, 10);
+
+    // 4. Strong Areas
+    let strongAreas = perfArray
+      .filter(p => p.accuracy >= 80 && p.total_attempted >= 2)
+      .map(p => ({
+        topic_name: p.topics.name,
+        chapter_name: p.topics.chapters.name,
+        subject_name: p.topics.chapters.subjects.name,
+        accuracy: p.accuracy,
+        total_attempted: p.total_attempted
+      }))
+      .sort((a, b) => b.accuracy - a.accuracy)
+      .slice(0, 10);
+
+    // 5. Test History
+    const { data: testHistoryRows } = await supabase
+      .from('tests')
+      .select('id, type, score, total_marks, correct_count, incorrect_count, unanswered_count, total_questions, time_taken_seconds, completed_at')
+      .eq('user_id', decoded.id)
+      .not('completed_at', 'is', null)
+      .order('completed_at', { ascending: false })
+      .limit(20);
+
+    const testHistory = testHistoryRows || [];
+
+    // 6. Overall Stats
+    const { data: allTests } = await supabase
+      .from('tests')
+      .select('score, correct_count, total_questions')
+      .eq('user_id', decoded.id)
+      .not('completed_at', 'is', null);
+
+    const total_tests = (allTests || []).length;
+    let best_score = 0;
+    let sum_score = 0;
+    let sum_acc = 0;
+
+    (allTests || []).forEach(t => {
+      if (t.score > best_score) best_score = t.score;
+      sum_score += (t.score || 0);
+      sum_acc += t.total_questions > 0 ? (t.correct_count / t.total_questions) * 100 : 0;
+    });
+
+    const overallStats = {
+      total_tests,
+      avg_score: total_tests > 0 ? sum_score / total_tests : 0,
+      best_score,
+      avg_accuracy: total_tests > 0 ? sum_acc / total_tests : 0
+    };
 
     const rankPrediction = predictRank(overallStats.avg_score || 0, overallStats.total_tests || 0, overallStats.avg_accuracy || 0);
 
@@ -79,23 +155,26 @@ export async function GET(request) {
     rankPrediction.successProbability = successProb.probability;
     rankPrediction.trend = successProb.trend;
 
-    // Activity Data (Cross-DB Compatible)
+    // 7. Activity Data
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dateStr = sevenDaysAgo.toISOString().split('T')[0];
 
-    const rawActivity = await db.all(`
-      SELECT completed_at, total_questions
-      FROM tests 
-      WHERE user_id = ? AND completed_at >= ?
-    `, [decoded.id, dateStr]);
+    // We can rely on testHistory for the last 7 days since they are ordered by completed_at DESC
+    // To be perfectly accurate we fetch from tests again:
+    const { data: rawActivity } = await supabase
+      .from('tests')
+      .select('completed_at, total_questions')
+      .eq('user_id', decoded.id)
+      .gte('completed_at', dateStr);
 
-    // Aggregate in JS
     const activityMap = {};
-    for (const row of rawActivity) {
-      const date = row.completed_at.split('T')[0]; // Extract YYYY-MM-DD
-      activityMap[date] = (activityMap[date] || 0) + row.total_questions;
-    }
+    (rawActivity || []).forEach(row => {
+      if (!row.completed_at) return;
+      const date = row.completed_at.split('T')[0];
+      activityMap[date] = (activityMap[date] || 0) + (row.total_questions || 0);
+    });
+
     const activityData = Object.entries(activityMap).map(([date, count]) => ({ date, count }));
 
     return NextResponse.json({

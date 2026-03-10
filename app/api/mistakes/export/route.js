@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 
-export const runtime = 'nodejs';
+export const runtime = 'nodejs'; // Puppeteer requires nodejs
 
 export async function GET(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
 
         if (!decoded) {
@@ -20,18 +20,26 @@ export async function GET(request) {
         const blocked = await checkFeatureAccess(decoded.id, 'pdf_export_enabled', 'pro');
         if (blocked) return blocked;
 
-        const user = await db.get('SELECT name FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('name').eq('id', decoded.id).single();
 
         // Fetch User's mistakes
-        const mistakes = await db.all(`
-            SELECT q.text, q.option_a, q.option_b, q.option_c, q.option_d, q.correct_option, q.explanation, s.name as subject_name
-            FROM mistake_log ml
-            JOIN questions q ON ml.question_id = q.id
-            LEFT JOIN subjects s ON q.subject_id = s.id
-            WHERE ml.user_id = ?
-            ORDER BY ml.last_mistake_at DESC
-            LIMIT 100 -- Limit to 100 for performance/PDF size
-        `, [decoded.id]);
+        const { data: mistakeRows } = await supabase
+            .from('mistake_log')
+            .select(`
+                last_mistake_at,
+                questions!inner(
+                    text, option_a, option_b, option_c, option_d, correct_option, explanation,
+                    subjects(name)
+                )
+            `)
+            .eq('user_id', decoded.id)
+            .order('last_mistake_at', { ascending: false })
+            .limit(100);
+
+        const mistakes = (mistakeRows || []).map(m => ({
+            ...m.questions,
+            subject_name: m.questions?.subjects?.name
+        }));
 
         if (mistakes.length === 0) {
             return NextResponse.json({ error: 'No mistakes found. Take a test first!' }, { status: 400 });

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { calculateNEETScore, calculateXP, getLevelFromXP } from '@/lib/scoring';
 import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engine';
@@ -16,8 +15,7 @@ const ACHIEVEMENTS = [
 
 export async function POST(request) {
     try {
-        initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -30,126 +28,163 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Answers array is required' }, { status: 400 });
         }
 
-        const test = await db.get('SELECT * FROM tests WHERE id = ? AND user_id = ?', [testId, decoded.id]);
+        const { data: test } = await supabase
+            .from('tests')
+            .select('*')
+            .eq('id', testId)
+            .eq('user_id', decoded.id)
+            .single();
+
         if (!test) return NextResponse.json({ error: 'Test not found' }, { status: 404 });
         if (test.completed_at) return NextResponse.json({ error: 'Test already submitted' }, { status: 400 });
 
         const processedAnswers = [];
         let fastAnswerCount = 0;
 
-        const processTransaction = async () => {
-            return await db.transaction(async () => {
-                for (const answer of answers) {
-                    const question = await db.get('SELECT * FROM questions WHERE id = ?', [answer.questionId]);
-                    if (!question) continue;
+        // Fetch all questions related to the answers at once to avoid a loop query
+        const questionIds = Array.from(new Set(answers.map(a => String(a.questionId))));
+        const { data: questions } = await supabase.from('questions').select('*').in('id', questionIds);
+        const questionMap = {};
+        if (questions) {
+            questions.forEach(q => questionMap[String(q.id)] = q);
+        }
 
-                    const isCorrect = answer.selectedOption === question.correct_option ? 1 : 0;
-                    const timeSpent = answer.timeSpent || 0;
+        const testAnswersToInsert = [];
 
-                    if (isCorrect && timeSpent < 10) fastAnswerCount++;
+        for (const answer of answers) {
+            const question = questionMap[String(answer.questionId)];
+            if (!question) continue;
 
-                    await db.run(`INSERT INTO test_answers (test_id, question_id, selected_option, is_correct, time_spent_seconds) VALUES (?, ?, ?, ?, ?)`,
-                        [testId, answer.questionId, answer.selectedOption || null, answer.selectedOption ? isCorrect : null, timeSpent]);
+            const isCorrect = answer.selectedOption === question.correct_option ? 1 : 0;
+            const timeSpent = answer.timeSpent || 0;
 
-                    processedAnswers.push({
-                        question_id: answer.questionId, selected_option: answer.selectedOption,
-                        correct_option: question.correct_option, is_correct: isCorrect,
-                        time_spent_seconds: timeSpent, explanation: question.explanation,
-                        text: question.text, option_a: question.option_a, option_b: question.option_b,
-                        option_c: question.option_c, option_d: question.option_d, difficulty: question.difficulty
-                    });
+            if (isCorrect && timeSpent < 10) fastAnswerCount++;
 
-                    if (answer.selectedOption) {
-                        const upsertPerf = `
-                            INSERT INTO user_performance (user_id, topic_id, accuracy, total_attempted, total_correct, avg_time_seconds, last_attempted)
-                            VALUES (?, ?, ?, 1, ?, ?, CURRENT_TIMESTAMP)
-                            ON CONFLICT(user_id, topic_id) DO UPDATE SET
-                                total_attempted = total_attempted + 1,
-                                total_correct = total_correct + excluded.total_correct,
-                                accuracy = ROUND(CAST((total_correct + excluded.total_correct) AS REAL) / (total_attempted + 1) * 100, 1),
-                                avg_time_seconds = (avg_time_seconds * total_attempted + excluded.avg_time_seconds) / (total_attempted + 1),
-                                last_attempted = CURRENT_TIMESTAMP
-                        `;
-                        await db.run(upsertPerf, [decoded.id, question.topic_id, isCorrect * 100, isCorrect, timeSpent]);
-
-                        // Adaptive Learning Updates
-                        // 1. Get current user mastery
-                        const masteryRow = await db.get('SELECT mastery_score FROM user_topic_mastery WHERE user_id = ? AND topic_id = ?', [decoded.id, question.topic_id]);
-                        const currentMastery = masteryRow?.mastery_score || 1200;
-
-                        // 2. Update Question Difficulty
-                        await updateQuestionDifficulty(question.id, isCorrect, currentMastery);
-
-                        // 3. Update User Mastery (Topic)
-                        const diffRow = await db.get('SELECT difficulty_score FROM question_difficulty_dynamic WHERE question_id = ?', [question.id]);
-                        const qDiff = diffRow?.difficulty_score || 1200;
-                        await updateUserMastery(decoded.id, question.topic_id, isCorrect, qDiff);
-
-                        if (!isCorrect) {
-                            await db.run(`INSERT OR IGNORE INTO mistake_log (user_id, question_id, test_id, mistake_count, last_mistake_at) VALUES (?, ?, ?, 1, CURRENT_TIMESTAMP)`,
-                                [decoded.id, answer.questionId, testId]);
-                            await scheduleNewCard(decoded.id, answer.questionId);
-                        }
-                    }
-                }
-
-                const scoreData = calculateNEETScore(processedAnswers);
-                const xpEarned = calculateXP(scoreData);
-
-                await db.run(`UPDATE tests SET score = ?, correct_count = ?, incorrect_count = ?, unanswered_count = ?, time_taken_seconds = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?`,
-                    [scoreData.scaledScore, scoreData.correct, scoreData.incorrect, scoreData.unanswered, timeTaken || 0, testId]);
-
-                // Update XP and Level
-                await db.run('UPDATE users SET xp = xp + ? WHERE id = ?', [xpEarned, decoded.id]);
-                const user = await db.get('SELECT xp, streak, last_active_date FROM users WHERE id = ?', [decoded.id]);
-                const newLevel = getLevelFromXP(user.xp);
-                await db.run('UPDATE users SET level = ? WHERE id = ?', [newLevel.level, decoded.id]);
-
-                // Streak Logic
-                const today = new Date().toISOString().split('T')[0];
-                const lastActive = user.last_active_date ? user.last_active_date.split('T')[0] : null;
-                let newStreak = user.streak;
-
-                if (lastActive !== today) {
-                    const yesterday = new Date();
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-                    if (lastActive === yesterdayStr) {
-                        newStreak++;
-                    } else {
-                        newStreak = 1;
-                    }
-                    await db.run("UPDATE users SET streak = ?, last_active_date = CURRENT_TIMESTAMP WHERE id = ?", [newStreak, decoded.id]);
-                }
-
-                // Achievements Logic
-                const newBadges = [];
-                const checkAndAward = async (id) => {
-                    const existing = await db.get('SELECT id FROM user_achievements WHERE user_id = ? AND badge_type = ?', [decoded.id, id]);
-                    if (!existing) {
-                        const badge = ACHIEVEMENTS.find(b => b.id === id);
-                        if (badge) {
-                            await db.run('INSERT INTO user_achievements (user_id, badge_type, badge_name, description) VALUES (?, ?, ?, ?)', [decoded.id, id, badge.name, badge.description]);
-                            newBadges.push(badge);
-                        }
-                    }
-                };
-
-                const testCountRow = await db.get('SELECT COUNT(*) as c FROM tests WHERE user_id = ? AND completed_at IS NOT NULL', [decoded.id]);
-                const testCount = testCountRow.c;
-
-                if (testCount >= 1) await checkAndAward('first_test');
-                if (testCount >= 10) await checkAndAward('test_veteran');
-                if (scoreData.accuracy >= 100 && scoreData.attempted > 5) await checkAndAward('perfect_score');
-                if (fastAnswerCount >= 1) await checkAndAward('speed_demon');
-                if (newStreak >= 7) await checkAndAward('streak_7');
-
-                return { scoreData, xpEarned, newLevel, newStreak, newBadges };
+            testAnswersToInsert.push({
+                test_id: testId,
+                question_id: String(answer.questionId),
+                selected_option: answer.selectedOption || null,
+                is_correct: answer.selectedOption ? (isCorrect === 1) : null,
+                time_spent_seconds: timeSpent
             });
+
+            processedAnswers.push({
+                question_id: answer.questionId, selected_option: answer.selectedOption,
+                correct_option: question.correct_option, is_correct: isCorrect,
+                time_spent_seconds: timeSpent, explanation: question.explanation,
+                text: question.text, option_a: question.option_a, option_b: question.option_b,
+                option_c: question.option_c, option_d: question.option_d, difficulty: question.difficulty
+            });
+
+            if (answer.selectedOption) {
+                // Upsert user_performance 
+                const { data: pData } = await supabase.from('user_performance').select('*').eq('user_id', decoded.id).eq('topic_id', String(question.topic_id)).single();
+
+                if (pData) {
+                    const newTotal = (pData.total_attempted || 0) + 1;
+                    const newCorrect = (pData.total_correct || 0) + isCorrect;
+                    await supabase.from('user_performance').update({
+                        total_attempted: newTotal,
+                        total_correct: newCorrect,
+                        accuracy: Math.round((newCorrect / newTotal) * 100 * 10) / 10,
+                        avg_time_seconds: ((pData.avg_time_seconds || 0) * (pData.total_attempted || 0) + timeSpent) / newTotal,
+                        last_attempted: new Date().toISOString()
+                    }).eq('user_id', decoded.id).eq('topic_id', String(question.topic_id));
+                } else {
+                    await supabase.from('user_performance').insert({
+                        user_id: decoded.id, topic_id: String(question.topic_id),
+                        accuracy: isCorrect * 100, total_attempted: 1, total_correct: isCorrect,
+                        avg_time_seconds: timeSpent, last_attempted: new Date().toISOString()
+                    });
+                }
+
+                // Adaptive Learning
+                const { data: masteryRow } = await supabase.from('user_topic_mastery').select('mastery_score').eq('user_id', decoded.id).eq('topic_id', String(question.topic_id)).single();
+                const currentMastery = masteryRow?.mastery_score || 1200;
+
+                await updateQuestionDifficulty(question.id, isCorrect === 1, currentMastery);
+
+                const { data: diffRow } = await supabase.from('question_difficulty_dynamic').select('difficulty_score').eq('question_id', String(question.id)).single();
+                const qDiff = diffRow?.difficulty_score || 1200;
+                await updateUserMastery(decoded.id, question.topic_id, isCorrect === 1, qDiff);
+
+                if (!isCorrect) {
+                    // upsert mistake log
+                    const { data: mLog } = await supabase.from('mistake_log').select('*').eq('user_id', decoded.id).eq('question_id', String(answer.questionId)).single();
+                    if (mLog) {
+                        await supabase.from('mistake_log').update({
+                            test_id: testId, mistake_count: (mLog.mistake_count || 0) + 1, last_mistake_at: new Date().toISOString()
+                        }).eq('user_id', decoded.id).eq('question_id', String(answer.questionId));
+                    } else {
+                        await supabase.from('mistake_log').insert({
+                            user_id: decoded.id, question_id: String(answer.questionId), test_id: testId, mistake_count: 1, last_mistake_at: new Date().toISOString()
+                        });
+                    }
+                    await scheduleNewCard(decoded.id, answer.questionId);
+                }
+            }
+        }
+
+        if (testAnswersToInsert.length > 0) {
+            await supabase.from('test_answers').insert(testAnswersToInsert);
+        }
+
+        const scoreData = calculateNEETScore(processedAnswers);
+        const xpEarned = calculateXP(scoreData);
+
+        await supabase.from('tests').update({
+            score: scoreData.scaledScore, correct_count: scoreData.correct,
+            incorrect_count: scoreData.incorrect, unanswered_count: scoreData.unanswered,
+            time_taken_seconds: timeTaken || 0, completed_at: new Date().toISOString()
+        }).eq('id', testId);
+
+        // Update XP and Level
+        const { data: user } = await supabase.from('users').select('xp, streak, last_active_date').eq('id', decoded.id).single();
+        const newXp = (user?.xp || 0) + xpEarned;
+        const newLevel = getLevelFromXP(newXp);
+
+        // Streak Logic
+        const today = new Date().toISOString().split('T')[0];
+        const lastActive = user?.last_active_date ? user.last_active_date.split('T')[0] : null;
+        let newStreak = user?.streak || 0;
+
+        if (lastActive !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+            if (lastActive === yesterdayStr) {
+                newStreak++;
+            } else {
+                newStreak = 1;
+            }
+        }
+
+        await supabase.from('users').update({ xp: newXp, level: newLevel.level, streak: newStreak, last_active_date: new Date().toISOString() }).eq('id', decoded.id);
+
+        // Achievements Logic
+        const newBadges = [];
+        const checkAndAward = async (id) => {
+            const { data: existing } = await supabase.from('user_achievements').select('id').eq('user_id', decoded.id).eq('badge_type', id).single();
+            if (!existing) {
+                const badge = ACHIEVEMENTS.find(b => b.id === id);
+                if (badge) {
+                    await supabase.from('user_achievements').insert({
+                        user_id: decoded.id, badge_type: id, badge_name: badge.name, description: badge.description
+                    });
+                    newBadges.push(badge);
+                }
+            }
         };
 
-        const { scoreData, xpEarned, newLevel, newStreak, newBadges } = await processTransaction();
+        const { count: testCount } = await supabase.from('tests').select('*', { count: 'exact', head: true }).eq('user_id', decoded.id).not('completed_at', 'is', null);
+
+        if (testCount >= 1) await checkAndAward('first_test');
+        if (testCount >= 10) await checkAndAward('test_veteran');
+        if (scoreData.accuracy >= 100 && scoreData.attempted > 5) await checkAndAward('perfect_score');
+        if (fastAnswerCount >= 1) await checkAndAward('speed_demon');
+        if (newStreak >= 7) await checkAndAward('streak_7');
+
         return NextResponse.json({ score: scoreData, xpEarned, level: newLevel, streak: newStreak, badges: newBadges, answers: processedAnswers });
     } catch (error) {
         console.error('Submit error:', error);
