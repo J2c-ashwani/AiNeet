@@ -1,24 +1,20 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 
 export async function GET() {
     try {
-        const db = getDb();
-        let books = [];
-        try {
-            books = await db.all(`
-                SELECT b.*, s.name as subject_name, s.color as subject_color, s.icon as subject_icon
-                FROM ncert_books b
-                LEFT JOIN subjects s ON b.subject_id = s.id
-                ORDER BY b.subject_id, b.chapter_id
-            `);
-        } catch (e) {
-            // table may not exist yet
-            try {
-                books = await db.all('SELECT * FROM ncert_content ORDER BY subject_id, chapter_id');
-            } catch (e2) { /* */ }
+        const supabase = getSupabase();
+        let { data: books } = await supabase.from('ncert_books').select('*').order('subject_id').order('chapter_id');
+        const { data: subjects } = await supabase.from('subjects').select('id, name, color, icon');
+
+        if (books && subjects) {
+            books = books.map(b => {
+                const s = subjects.find(sub => sub.id === b.subject_id);
+                return { ...b, subject_name: s?.name, subject_color: s?.color, subject_icon: s?.icon };
+            });
         }
-        return NextResponse.json({ books });
+
+        return NextResponse.json({ books: books || [] });
     } catch (error) {
         return NextResponse.json({ books: [] });
     }

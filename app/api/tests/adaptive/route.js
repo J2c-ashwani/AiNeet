@@ -1,15 +1,13 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { getAdaptiveQuestion } from '@/lib/adaptive_engine';
 import { sanitizeString, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -44,15 +42,18 @@ export async function POST(request) {
         }
 
         // Create Test Record
-        const insertSql = `
-            INSERT INTO tests (user_id, type, subject_id, topic_id, total_questions, status, created_at)
-            VALUES (?, ?, ?, ?, ?, 'in_progress', ?)
-        `;
-        const result = await db.run(insertSql, [
-            decoded.id, 'adaptive', subjectId || null, topicId || null, selectedQuestions.length, new Date().toISOString()
-        ]);
+        const { data: result, error } = await supabase.from('tests').insert({
+            user_id: decoded.id,
+            type: 'adaptive',
+            subject_id: subjectId || null,
+            topic_id: topicId || null,
+            total_questions: selectedQuestions.length,
+            status: 'in_progress',
+            created_at: new Date().toISOString()
+        }).select('id').single();
 
-        const testId = result.lastInsertRowid;
+        if (error) throw error;
+        const testId = result.id;
 
         // Return questions (hide correct option)
         const clientQuestions = selectedQuestions.map(q => ({

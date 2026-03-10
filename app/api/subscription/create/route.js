@@ -1,16 +1,14 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { v4 as uuidv4 } from 'uuid';
-import { initializeDatabase } from '@/lib/schema';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
 
         // 1. Auth Check
         const decoded = await getUserFromRequest(request);
@@ -33,7 +31,7 @@ export async function POST(request) {
         }
 
         // 3. Get user details for Cashfree customer info
-        const user = await db.get('SELECT id, name, email FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('id, name, email').eq('id', decoded.id).single();
 
         // 4. Create Order via Cashfree
         const order = await PaymentService.createOrder(
@@ -50,11 +48,14 @@ export async function POST(request) {
 
         // 5. Log payment intent in DB
         const paymentId = uuidv4();
-        await db.run(
-            `INSERT INTO payments (id, user_id, amount, currency, status, provider_order_id)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [paymentId, decoded.id, plan.amount, 'INR', 'pending', order.orderId]
-        );
+        await supabase.from('payments').insert({
+            id: paymentId,
+            user_id: decoded.id,
+            amount: plan.amount,
+            currency: 'INR',
+            status: 'pending',
+            provider_order_id: order.orderId
+        });
 
         // 6. Return Cashfree session details to frontend
         return NextResponse.json({

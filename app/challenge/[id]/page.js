@@ -1,19 +1,22 @@
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
     const { id } = params;
-    initializeDatabase();
-    const db = getDb();
+    const supabase = getSupabase();
 
-    const challenge = await db.get(`
-        SELECT c.*, u.name as creator_name 
-        FROM challenges c 
-        JOIN users u ON c.creator_id = u.id 
-        WHERE c.id = ?
-    `, [id]);
+    // Query battles table, inner join users on user_id
+    const { data: battle } = await supabase
+        .from('battles')
+        .select(`
+            *,
+            users (name)
+        `)
+        .eq('id', id)
+        .single();
+
+    const challenge = battle ? { ...battle, creator_name: battle.users?.name } : null;
 
     if (!challenge) return { title: 'Challenge Not Found' };
 
@@ -42,16 +45,23 @@ export async function generateMetadata({ params }) {
 
 export default async function ChallengePage({ params }) {
     const { id } = params;
+    const supabase = getSupabase();
 
-    initializeDatabase();
-    const db = getDb();
+    const { data: battle } = await supabase
+        .from('battles')
+        .select(`
+            *,
+            users (name, xp, level)
+        `)
+        .eq('id', id)
+        .single();
 
-    const challenge = await db.get(`
-        SELECT c.*, u.name as creator_name, u.xp as creator_xp, u.level as creator_level
-        FROM challenges c 
-        JOIN users u ON c.creator_id = u.id 
-        WHERE c.id = ?
-    `, [id]);
+    const challenge = battle ? {
+        ...battle,
+        creator_name: battle.users?.name,
+        creator_xp: battle.users?.xp,
+        creator_level: battle.users?.level
+    } : null;
 
     if (!challenge) {
         notFound();

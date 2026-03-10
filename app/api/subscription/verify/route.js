@@ -1,16 +1,14 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
-import { initializeDatabase } from '@/lib/schema';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
 
         // 1. Auth Check
         const decoded = await getUserFromRequest(request);
@@ -38,10 +36,7 @@ export async function POST(request) {
 
         if (!verification.isPaid) {
             // Update payment status to failed
-            await db.run(
-                `UPDATE payments SET status = 'failed' WHERE provider_order_id = ?`,
-                [orderId]
-            );
+            await supabase.from('payments').update({ status: 'failed' }).eq('provider_order_id', orderId);
             return NextResponse.json({
                 error: 'Payment not completed',
                 orderStatus: verification.orderStatus
@@ -57,23 +52,17 @@ export async function POST(request) {
         const expiryIso = expiryDate.toISOString();
 
         // 5. Upgrade User Subscription
-        await db.run(
-            `UPDATE users 
-             SET subscription_tier = 'pro', 
-                 subscription_status = 'active', 
-                 subscription_expiry = ? 
-             WHERE id = ?`,
-            [expiryIso, decoded.id]
-        );
+        await supabase.from('users').update({
+            subscription_tier: 'pro',
+            subscription_status: 'active',
+            subscription_expiry: expiryIso
+        }).eq('id', decoded.id);
 
         // 6. Update Payment Status
-        await db.run(
-            `UPDATE payments 
-             SET status = 'completed', 
-                 provider_payment_id = ? 
-             WHERE provider_order_id = ?`,
-            [verification.cfOrderId || orderId, orderId]
-        );
+        await supabase.from('payments').update({
+            status: 'completed',
+            provider_payment_id: verification.cfOrderId || orderId
+        }).eq('provider_order_id', orderId);
 
         return NextResponse.json({
             success: true,

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { generateWeeklyReports } from '@/lib/reporting_engine';
-import { initializeDatabase } from '@/lib/schema';
 
 // This endpoint should be secured with a CRON_SECRET in production
 export async function GET(request) {
@@ -14,8 +13,6 @@ export async function GET(request) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
             }
         }
-
-        await initializeDatabase();
         const result = await generateWeeklyReports();
 
         return NextResponse.json({ success: true, environment: process.env.NODE_ENV, ...result });

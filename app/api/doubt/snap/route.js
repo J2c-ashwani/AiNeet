@@ -2,8 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { analyzeImageDoubt } from '@/lib/vision_engine';
-import { initializeDatabase } from '@/lib/schema';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
@@ -36,9 +35,8 @@ export async function POST(request) {
         }
 
         // 3. Check Subscription Tier from DB (Ensure fresh status)
-        await initializeDatabase();
-        const db = getDb();
-        const user = await db.get("SELECT subscription_tier FROM users WHERE id = ?", [decoded.id]);
+        const supabase = getSupabase();
+        const { data: user } = await supabase.from('users').select('subscription_tier').eq('id', decoded.id).single();
 
         if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 

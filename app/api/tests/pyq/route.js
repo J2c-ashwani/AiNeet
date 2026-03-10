@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { validateArray, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -24,8 +22,10 @@ export async function POST(request) {
         let chapterIds = chapters ? [...chapters] : [];
         if (chapter_name) {
             const cleanName = chapter_name.replace(/[^a-zA-Z0-9 ]/g, '');
+            // Simple approach: matching first few words
             const words = cleanName.split(' ').slice(0, 2).join('%');
-            const matchedChapter = await db.get('SELECT id FROM chapters WHERE name LIKE ?', [`%${words}%`]);
+            const { data: matchedChapter } = await supabase.from('chapters').select('id').ilike('name', `%${words}%`).limit(1).maybeSingle();
+
             if (matchedChapter) {
                 chapterIds.push(matchedChapter.id);
             } else {
@@ -33,40 +33,41 @@ export async function POST(request) {
             }
         }
 
-        let query = 'SELECT * FROM questions WHERE is_pyq = 1';
-        const params = [];
+        let query = supabase.from('questions').select('*').eq('is_pyq', true);
 
         if (subjects && subjects.length > 0) {
-            query += ` AND subject_id IN (${subjects.map(() => '?').join(',')})`;
-            params.push(...subjects);
+            query = query.in('subject_id', subjects);
         }
         if (chapterIds && chapterIds.length > 0) {
-            query += ` AND chapter_id IN (${chapterIds.map(() => '?').join(',')})`;
-            params.push(...chapterIds);
+            query = query.in('chapter_id', chapterIds);
         }
         if (topics && topics.length > 0) {
-            query += ` AND topic_id IN (${topics.map(() => '?').join(',')})`;
-            params.push(...topics);
+            query = query.in('topic_id', topics);
         }
 
-        query += ' ORDER BY RANDOM()';
-        query += ' LIMIT ?';
-        params.push(questionCount || 20);
+        // Supabase JS doesn't support ORDER BY RANDOM(). We fetch a larger pool and shuffle.
+        query = query.limit(2000);
+        const { data: rawQuestions } = await query;
 
-        const questions = await db.all(query, params);
-
-        if (questions.length === 0) {
+        if (!rawQuestions || rawQuestions.length === 0) {
             return NextResponse.json({ error: 'No PYQs available for the selected criteria. Try broadening your selection.' }, { status: 404 });
         }
+
+        const questions = rawQuestions.sort(() => 0.5 - Math.random()).slice(0, questionCount || 20);
 
         const testId = uuidv4();
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, type: 'pyq', questionCount: questions.length });
 
-        await db.run(
-            `INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, 'pyq', ?, ?, ?, ?)`,
-            [testId, decoded.id, config, questions.length, totalMarks, new Date().toISOString()]
-        );
+        await supabase.from('tests').insert({
+            id: testId,
+            user_id: decoded.id,
+            type: 'pyq',
+            config_json: config,
+            total_questions: questions.length,
+            total_marks: totalMarks,
+            started_at: new Date().toISOString()
+        });
 
         const clientQuestions = questions.map((q, idx) => ({
             id: q.id, index: idx + 1, text: q.text,

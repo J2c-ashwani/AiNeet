@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { checkUsageLimit } from '@/lib/plan_gate';
 
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
 
         if (!decoded) {
@@ -15,11 +15,14 @@ export async function POST(request) {
 
         // Plan gate: limit challenges per day based on tier
         const today = new Date().toISOString().split('T')[0];
-        const dailyCount = await db.get(
-            `SELECT COUNT(*) as count FROM battles WHERE user_id = ? AND created_at >= ?`,
-            [decoded.id, today]
-        );
-        const usage = await checkUsageLimit(decoded.id, 'challenges_per_day', dailyCount?.count || 0);
+
+        const { count: dailyCount } = await supabase
+            .from('battles')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', decoded.id)
+            .gte('created_at', today);
+
+        const usage = await checkUsageLimit(decoded.id, 'challenges_per_day', dailyCount || 0);
 
         if (!usage.allowed) {
             return NextResponse.json({
@@ -33,12 +36,12 @@ export async function POST(request) {
         }
 
         // Generate 10 random mixed questions for the challenge
-        const questions = await db.all(`
-            SELECT id, text, option_a, option_b, option_c, option_d, correct_option, subject_id
-            FROM questions 
-            ORDER BY RANDOM() 
-            LIMIT 10
-        `);
+        const { data: qPool } = await supabase
+            .from('questions')
+            .select('id, text, option_a, option_b, option_c, option_d, correct_option, subject_id')
+            .limit(100);
+
+        const questions = qPool ? qPool.sort(() => 0.5 - Math.random()).slice(0, 10) : [];
 
         if (!questions || questions.length < 10) {
             return NextResponse.json({ error: 'Not enough questions available to generate a challenge' }, { status: 500 });
@@ -46,10 +49,12 @@ export async function POST(request) {
 
         const challengeId = uuidv4();
 
-        await db.run(
-            `INSERT INTO battles (id, user_id, questions, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
-            [challengeId, decoded.id, JSON.stringify(questions)]
-        );
+        await supabase.from('battles').insert({
+            id: challengeId,
+            user_id: decoded.id,
+            questions: JSON.stringify(questions),
+            created_at: new Date().toISOString()
+        });
 
         return NextResponse.json({
             success: true,

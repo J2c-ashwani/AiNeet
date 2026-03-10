@@ -1,6 +1,5 @@
-
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 function requireAdmin(request) {
@@ -14,53 +13,88 @@ export async function GET(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const db = getDb();
+        const supabase = getSupabase();
 
-        const users = await db.get('SELECT COUNT(*) as count FROM users');
-        const questions = await db.get('SELECT COUNT(*) as count FROM questions');
-        const pyqs = await db.get('SELECT COUNT(*) as count FROM questions WHERE is_pyq = 1');
+        const { count: usersCount } = await supabase.from('users').select('*', { count: 'exact', head: true });
+        const { count: questionsCount } = await supabase.from('questions').select('*', { count: 'exact', head: true });
 
-        let reports = { count: 0 };
+        // Supabase schema might use boolean or integer 1 for is_pyq. Try both or check dynamically.
+        // Assuming it is boolean 'true' based on earlier boolean comparisons.
+        const { count: pyqsCount } = await supabase.from('questions').select('*', { count: 'exact', head: true }).eq('is_pyq', true);
+
+        let reportsCount = 0;
         try {
-            reports = await db.get("SELECT COUNT(*) as count FROM question_reports WHERE status = 'open'");
+            const { count } = await supabase.from('question_reports').select('*', { count: 'exact', head: true }).eq('status', 'open');
+            reportsCount = count || 0;
         } catch (e) { /* table may not exist */ }
 
         // Recent signups (last 10)
         let recentSignups = [];
         try {
-            recentSignups = await db.all(
-                'SELECT id, name, email, created_at, subscription_tier FROM users ORDER BY id DESC LIMIT 10'
-            );
+            const { data } = await supabase
+                .from('users')
+                .select('id, name, email, created_at, subscription_tier')
+                .order('id', { ascending: false })
+                .limit(10);
+            recentSignups = data || [];
         } catch (e) { /* */ }
 
         // Daily test activity (last 7 days)
+        // Note: SQLite used test_attempts, but the rest of app has migrated to `tests`.
         let dailyActivity = [];
         try {
-            dailyActivity = await db.all(`
-                SELECT DATE(completed_at) as date, COUNT(*) as tests, ROUND(AVG(accuracy),1) as avg_accuracy
-                FROM test_attempts
-                WHERE completed_at >= datetime('now', '-7 days')
-                GROUP BY DATE(completed_at)
-                ORDER BY date ASC
-            `);
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+            const { data: tests } = await supabase
+                .from('tests')
+                .select('completed_at, score, total_questions')
+                .gte('completed_at', sevenDaysAgo)
+                .not('completed_at', 'is', null);
+
+            if (tests) {
+                const activityMap = {};
+                tests.forEach(t => {
+                    if (!t.completed_at) return;
+                    // Format as YYYY-MM-DD
+                    const date = t.completed_at.split('T')[0];
+                    if (!activityMap[date]) activityMap[date] = { count: 0, accuracySum: 0 };
+
+                    activityMap[date].count++;
+                    const acc = t.total_questions > 0 ? (t.score / (t.total_questions * 4)) * 100 : 0; // naive accuracy
+                    activityMap[date].accuracySum += Math.max(0, acc);
+                });
+
+                dailyActivity = Object.keys(activityMap).sort().map(date => {
+                    const st = activityMap[date];
+                    return {
+                        date,
+                        tests: st.count,
+                        avg_accuracy: st.count > 0 ? Math.round((st.accuracySum / st.count) * 10) / 10 : 0
+                    };
+                });
+            }
         } catch (e) { /* */ }
 
         // Subscription breakdown
         let subscriptionBreakdown = { free: 0, pro: 0, premium: 0 };
         try {
-            const tiers = await db.all(
-                "SELECT COALESCE(subscription_tier, 'free') as tier, COUNT(*) as count FROM users GROUP BY tier"
-            );
-            tiers.forEach(t => {
-                subscriptionBreakdown[t.tier] = t.count;
-            });
+            const { data: tiers } = await supabase.from('users').select('subscription_tier');
+            if (tiers) {
+                tiers.forEach(t => {
+                    const tier = t.subscription_tier || 'free';
+                    if (subscriptionBreakdown[tier] !== undefined) {
+                        subscriptionBreakdown[tier]++;
+                    } else {
+                        subscriptionBreakdown[tier] = 1;
+                    }
+                });
+            }
         } catch (e) { /* */ }
 
         return NextResponse.json({
-            users: users.count,
-            questions: questions.count,
-            pyqs: pyqs.count,
-            reports: reports?.count || 0,
+            users: usersCount || 0,
+            questions: questionsCount || 0,
+            pyqs: pyqsCount || 0,
+            reports: reportsCount,
             recentSignups,
             dailyActivity,
             subscriptionBreakdown

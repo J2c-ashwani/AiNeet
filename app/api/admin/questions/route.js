@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { sanitizeString, validateEnum, validatePositiveInt, validateId } from '@/lib/validate';
 
@@ -18,7 +18,7 @@ export async function GET(request) {
     const admin = requireAdmin(request);
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-    const db = getDb();
+    const supabase = getSupabase();
     const { searchParams } = new URL(request.url);
     const mode = searchParams.get('mode') || 'reports'; // 'reports' or 'all'
 
@@ -26,18 +26,38 @@ export async function GET(request) {
         if (mode === 'reports') {
             // Fetch questions with open reports (Quality Control)
             const status = searchParams.get('status') || 'open';
-            const query = `
-                SELECT q.id, q.text, q.flag_count, q.correct_option,
-                       COUNT(qr.id) as report_count,
-                       GROUP_CONCAT(qr.reason) as reasons
-                FROM questions q
-                JOIN question_reports qr ON q.id = qr.question_id
-                WHERE qr.status = ?
-                GROUP BY q.id
-                ORDER BY q.flag_count DESC, report_count DESC
-                LIMIT 50
-            `;
-            const questions = await db.all(query, [status]);
+
+            const { data: reports } = await supabase.from('question_reports').select('id, question_id, reason').eq('status', status);
+
+            if (!reports || reports.length === 0) {
+                return NextResponse.json({ questions: [] });
+            }
+
+            const reportMap = {};
+            reports.forEach(r => {
+                if (!reportMap[r.question_id]) {
+                    reportMap[r.question_id] = { count: 0, reasons: [] };
+                }
+                reportMap[r.question_id].count++;
+                if (r.reason) reportMap[r.question_id].reasons.push(r.reason);
+            });
+
+            const qIds = Object.keys(reportMap);
+            const { data: qData } = await supabase.from('questions').select('id, text, flag_count, correct_option').in('id', qIds);
+
+            let questions = (qData || []).map(q => ({
+                ...q,
+                report_count: reportMap[q.id]?.count || 0,
+                reasons: (reportMap[q.id]?.reasons || []).join(',')
+            }));
+
+            // Sort by flag_count DESC, report_count DESC
+            questions.sort((a, b) => {
+                if (b.flag_count !== a.flag_count) return (b.flag_count || 0) - (a.flag_count || 0);
+                return b.report_count - a.report_count;
+            });
+
+            questions = questions.slice(0, 50);
             return NextResponse.json({ questions });
 
         } else if (mode === 'all') {
@@ -47,13 +67,20 @@ export async function GET(request) {
             const page = validatePositiveInt(searchParams.get('page'), 1, 10000) || 1;
             const offset = (page - 1) * limit;
 
-            let query = `SELECT * FROM questions WHERE text LIKE ? ORDER BY id DESC LIMIT ? OFFSET ?`;
-            const questions = await db.all(query, [`%${search}%`, limit, offset]);
+            const { data: questions } = await supabase
+                .from('questions')
+                .select('*')
+                .ilike('text', `%${search}%`)
+                .order('id', { ascending: false })
+                .range(offset, offset + limit - 1);
 
             // Get total count for pagination
-            const count = await db.get('SELECT COUNT(*) as total FROM questions WHERE text LIKE ?', [`%${search}%`]);
+            const { count } = await supabase
+                .from('questions')
+                .select('*', { count: 'exact', head: true })
+                .ilike('text', `%${search}%`);
 
-            return NextResponse.json({ questions, total: count.total, page });
+            return NextResponse.json({ questions: questions || [], total: count || 0, page });
         }
     } catch (error) {
         console.error('Admin API Error:', error);
@@ -66,7 +93,7 @@ export async function POST(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const body = await request.json();
 
         // Validation
@@ -92,24 +119,25 @@ export async function POST(request) {
         const explanation = sanitizeString(body.explanation || '', 5000);
         const tags = sanitizeString(body.tags || '', 500);
 
-        const insertSql = `
-            INSERT INTO questions (
-                subject_id, chapter_id, topic_id, text, 
-                option_a, option_b, option_c, option_d, 
-                correct_option, difficulty, explanation, 
-                is_pyq, exam_name, year_asked, tags,
-                flag_count, quality_score
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1.0)
-        `;
-
-        const result = await db.run(insertSql, [
-            body.subject_id, body.chapter_id, body.topic_id, text,
+        const { data: result, error } = await supabase.from('questions').insert({
+            subject_id: body.subject_id,
+            chapter_id: body.chapter_id,
+            topic_id: body.topic_id,
+            text,
             option_a, option_b, option_c, option_d,
-            body.correct_option.toUpperCase(), body.difficulty || 'medium', explanation,
-            body.is_pyq ? 1 : 0, body.exam_name || null, body.year_asked || null, tags
-        ]);
+            correct_option: body.correct_option.toUpperCase(),
+            difficulty: body.difficulty || 'medium',
+            explanation,
+            is_pyq: body.is_pyq ? true : false,
+            exam_name: body.exam_name || null,
+            year_asked: body.year_asked || null,
+            tags,
+            flag_count: 0,
+            quality_score: 1.0
+        }).select('id').single();
 
-        return NextResponse.json({ success: true, id: result.lastInsertRowid });
+        if (error) throw error;
+        return NextResponse.json({ success: true, id: result.id });
 
     } catch (error) {
         console.error('Add Question Error:', error);
@@ -122,13 +150,13 @@ export async function DELETE(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
         if (!id || !validateId(id)) return NextResponse.json({ error: 'Missing or invalid ID' }, { status: 400 });
 
-        await db.run('DELETE FROM questions WHERE id = ?', [id]);
+        await supabase.from('questions').delete().eq('id', id);
         return NextResponse.json({ success: true });
 
     } catch (error) {

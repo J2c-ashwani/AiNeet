@@ -1,17 +1,14 @@
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Head from 'next/head';
 
 export async function generateMetadata({ params }) {
     const { id: testId } = params;
-
-    initializeDatabase();
-    const db = getDb();
+    const supabase = getSupabase();
 
     // Fetch test details for metadata
-    const test = await db.get('SELECT t.score, u.name FROM tests t JOIN users u ON t.user_id = u.id WHERE t.id = ?', [testId]);
+    const { data: testRow } = await supabase.from('tests').select('score, users(name)').eq('id', testId).single();
+    const test = testRow ? { score: testRow.score, name: testRow.users?.name } : null;
 
     if (!test) {
         return { title: 'Test Not Found' };
@@ -49,16 +46,10 @@ export async function generateMetadata({ params }) {
 
 export default async function SharePage({ params }) {
     const { id: testId } = params;
+    const supabase = getSupabase();
 
-    initializeDatabase();
-    const db = getDb();
-
-    const test = await db.get(`
-        SELECT t.*, u.name, u.streak 
-        FROM tests t 
-        JOIN users u ON t.user_id = u.id 
-        WHERE t.id = ?
-    `, [testId]);
+    const { data: testRow } = await supabase.from('tests').select('*, users(name, streak)').eq('id', testId).single();
+    const test = testRow ? { ...testRow, name: testRow.users?.name, streak: testRow.users?.streak } : null;
 
     if (!test) {
         notFound();

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { generateDoubtResponse } from '@/lib/ai-engine';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,8 +8,7 @@ import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -30,20 +28,22 @@ export async function POST(request) {
         if (!convId) {
             convId = uuidv4();
             const title = cleanMessage.length > 50 ? cleanMessage.substring(0, 50) + '...' : cleanMessage;
-            await db.run('INSERT INTO doubt_conversations (id, user_id, title) VALUES (?, ?, ?)', [convId, decoded.id, title]);
+            await supabase.from('doubt_conversations').insert({ id: convId, user_id: decoded.id, title, created_at: new Date().toISOString() });
         }
 
-        await db.run('INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)', [convId, 'user', cleanMessage]);
+        await supabase.from('doubt_messages').insert({ conversation_id: convId, role: 'user', content: cleanMessage, created_at: new Date().toISOString() });
         // Generate AI Response
         // For now, context is an empty object. It can be populated with relevant information later.
         const context = {};
         const aiResponse = await generateDoubtResponse(cleanMessage, context, decoded);
 
         // Save AI message
-        await db.run(
-            'INSERT INTO doubt_messages (conversation_id, role, content) VALUES (?, ?, ?)',
-            [convId, 'assistant', aiResponse]
-        );
+        await supabase.from('doubt_messages').insert({
+            conversation_id: convId,
+            role: 'assistant',
+            content: aiResponse,
+            created_at: new Date().toISOString()
+        });
 
         return NextResponse.json({ conversationId: convId, response: aiResponse });
     } catch (error) {
@@ -54,8 +54,7 @@ export async function POST(request) {
 
 export async function GET(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -63,12 +62,12 @@ export async function GET(request) {
         const convId = searchParams.get('conversationId');
 
         if (convId) {
-            const messages = await db.all('SELECT * FROM doubt_messages WHERE conversation_id = ? ORDER BY created_at ASC', [convId]);
-            return NextResponse.json({ messages });
+            const { data: messages } = await supabase.from('doubt_messages').select('*').eq('conversation_id', convId).order('created_at', { ascending: true });
+            return NextResponse.json({ messages: messages || [] });
         }
 
-        const conversations = await db.all('SELECT * FROM doubt_conversations WHERE user_id = ? ORDER BY created_at DESC LIMIT 20', [decoded.id]);
-        return NextResponse.json({ conversations });
+        const { data: conversations } = await supabase.from('doubt_conversations').select('*').eq('user_id', decoded.id).order('created_at', { ascending: false }).limit(20);
+        return NextResponse.json({ conversations: conversations || [] });
     } catch (error) {
         console.error('Doubt GET error:', error);
         return NextResponse.json({ error: 'Failed to fetch doubts' }, { status: 500 });

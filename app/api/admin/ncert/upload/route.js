@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { uploadFile } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,15 +47,19 @@ export async function POST(request) {
         const { url, path: storagePath } = await uploadFile(buffer, fileName, file.type || 'application/pdf');
 
         // Save to DB
-        const db = getDb();
+        const supabase = getSupabase();
         const id = uuidv4();
 
-        const insertSql = `
-            INSERT INTO ncert_books (id, subject_id, chapter_id, title, file_path, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
+        const { error: dbError } = await supabase.from('ncert_books').insert({
+            id,
+            subject_id: subjectId,
+            chapter_id: chapterId,
+            title,
+            file_path: url,
+            created_at: new Date().toISOString()
+        });
 
-        await db.run(insertSql, [id, subjectId, chapterId, title, url, new Date().toISOString()]);
+        if (dbError) throw dbError;
 
         return NextResponse.json({ success: true, message: 'Book uploaded to cloud storage', bookId: id, url });
 

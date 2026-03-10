@@ -1,12 +1,11 @@
-
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { sanitizeString, validateId } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -28,13 +27,19 @@ export async function POST(request) {
         }
 
         // Insert report
-        await db.run(
-            'INSERT INTO question_reports (question_id, user_id, issue_type, description) VALUES (?, ?, ?, ?)',
-            [questionId, decoded.id, reason, comment || '']
-        );
+        await supabase.from('question_reports').insert({
+            question_id: questionId,
+            user_id: decoded.id,
+            issue_type: reason,
+            description: comment || '',
+            status: 'open',
+            created_at: new Date().toISOString()
+        });
 
         // Auto-flag the question if reported
-        await db.run('UPDATE questions SET flag_count = flag_count + 1 WHERE id = ?', [questionId]);
+        const { data: q } = await supabase.from('questions').select('flag_count').eq('id', questionId).single();
+        const flags = (q?.flag_count || 0) + 1;
+        await supabase.from('questions').update({ flag_count: flags }).eq('id', questionId);
 
         return NextResponse.json({ success: true, message: 'Report submitted successfully' });
 

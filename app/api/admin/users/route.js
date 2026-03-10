@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 function requireAdmin(request) {
@@ -13,12 +13,13 @@ export async function GET(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const db = getDb();
-        const users = await db.all(
-            'SELECT id, name, email, xp, subscription_tier, subscription_expires, created_at, role FROM users ORDER BY id DESC'
-        );
+        const supabase = getSupabase();
+        const { data: users } = await supabase
+            .from('users')
+            .select('id, name, email, xp, subscription_tier, subscription_expires, created_at, role')
+            .order('id', { ascending: false });
 
-        return NextResponse.json({ users });
+        return NextResponse.json({ users: users || [] });
     } catch (error) {
         console.error('Users API Error:', error);
         return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
