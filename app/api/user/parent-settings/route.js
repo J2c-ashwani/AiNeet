@@ -1,19 +1,21 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
-import { initializeDatabase } from '@/lib/schema';
 import { validateEmail, sanitizeString, sanitizePhone } from '@/lib/validate';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 
 export async function GET(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const user = await db.get("SELECT parent_email, parent_phone, subscription_tier FROM users WHERE id = ?", [decoded.id]);
+        const { data: user } = await supabase
+            .from('users')
+            .select('parent_email, parent_phone, subscription_tier')
+            .eq('id', decoded.id)
+            .single();
         return NextResponse.json({
             parent_email: user?.parent_email || '',
             parent_phone: user?.parent_phone || '',
@@ -28,8 +30,7 @@ export async function GET(request) {
 
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -48,10 +49,12 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
         }
 
-        await db.run(
-            "UPDATE users SET parent_email = ?, parent_phone = ? WHERE id = ?",
-            [parent_email, parent_phone, decoded.id]
-        );
+        const { error: updateError } = await supabase
+            .from('users')
+            .update({ parent_email, parent_phone })
+            .eq('id', decoded.id);
+
+        if (updateError) throw updateError;
 
         return NextResponse.json({ success: true });
 

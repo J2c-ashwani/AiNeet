@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { hashPassword, generateToken } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { getLevelFromXP } from '@/lib/scoring';
@@ -9,8 +8,7 @@ import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate'
 
 export async function POST(request) {
     try {
-        initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const { name, email, password, targetYear, referralCode } = await request.json();
 
         // Rate Limiting (5 req/min per IP)
@@ -37,7 +35,12 @@ export async function POST(request) {
             return NextResponse.json({ error: pwCheck.message }, { status: 400 });
         }
 
-        const existing = await db.get('SELECT id FROM users WHERE email = ?', [email]);
+        const { data: existing } = await supabase
+            .from('users')
+            .select('id')
+            .eq('email', email)
+            .single();
+
         if (existing) {
             return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
         }
@@ -48,20 +51,41 @@ export async function POST(request) {
 
         let referredBy = null;
         if (referralCode) {
-            const referrer = await db.get('SELECT id FROM users WHERE referral_code = ?', [referralCode.trim().toUpperCase()]);
+            const { data: referrer } = await supabase
+                .from('users')
+                .select('id, referrals_count')
+                .eq('referral_code', referralCode.trim().toUpperCase())
+                .single();
+
             if (referrer) {
                 referredBy = referrer.id;
                 // Increment referrer's count
-                await db.run('UPDATE users SET referrals_count = referrals_count + 1 WHERE id = ?', [referrer.id]);
+                await supabase
+                    .from('users')
+                    .update({ referrals_count: (referrer.referrals_count || 0) + 1 })
+                    .eq('id', referrer.id);
             }
         }
 
-        await db.run(
-            'INSERT INTO users (id, name, email, password_hash, target_year, referral_code, referred_by) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [id, cleanName, email.toLowerCase().trim(), hash, parseInt(targetYear) || 2026, myReferralCode, referredBy]
-        );
+        const { error: insertError } = await supabase
+            .from('users')
+            .insert({
+                id,
+                name: cleanName,
+                email: email.toLowerCase().trim(),
+                password_hash: hash,
+                target_year: parseInt(targetYear) || 2026,
+                referral_code: myReferralCode,
+                referred_by: referredBy
+            });
 
-        const user = await db.get('SELECT * FROM users WHERE id = ?', [id]);
+        if (insertError) throw insertError;
+
+        const { data: user } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', id)
+            .single();
         const token = generateToken(user);
         const levelInfo = getLevelFromXP(user.xp);
 

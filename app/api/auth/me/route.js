@@ -1,18 +1,21 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { getLevelFromXP } from '@/lib/scoring';
 import bcrypt from 'bcryptjs';
 
 export async function GET(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ user: null });
 
-        const user = await db.get('SELECT id, name, email, xp, level, streak, target_year, daily_goal, avatar FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase
+            .from('users')
+            .select('id, name, email, xp, level, streak, target_year, daily_goal, avatar')
+            .eq('id', decoded.id)
+            .single();
+
         if (!user) return NextResponse.json({ user: null });
 
         const levelInfo = getLevelFromXP(user.xp);
@@ -25,30 +28,29 @@ export async function GET(request) {
 
 export async function PUT(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { name, targetYear, dailyGoal, password } = await request.json();
 
-        const updates = [];
-        const values = [];
+        const updates = {};
 
-        if (name) { updates.push('name = ?'); values.push(name); }
-        if (targetYear) { updates.push('target_year = ?'); values.push(targetYear); }
-        if (dailyGoal) { updates.push('daily_goal = ?'); values.push(dailyGoal); }
+        if (name) updates.name = name;
+        if (targetYear) updates.target_year = targetYear;
+        if (dailyGoal) updates.daily_goal = dailyGoal;
         if (password) {
-            const hash = await bcrypt.hash(password, 10);
-            updates.push('password_hash = ?');
-            values.push(hash);
+            updates.password_hash = await bcrypt.hash(password, 10);
         }
 
-        if (updates.length === 0) return NextResponse.json({ success: true });
+        if (Object.keys(updates).length === 0) return NextResponse.json({ success: true });
 
-        values.push(decoded.id);
-        const query = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
-        await db.run(query, values);
+        const { error } = await supabase
+            .from('users')
+            .update(updates)
+            .eq('id', decoded.id);
+
+        if (error) throw error;
 
         return NextResponse.json({ success: true });
     } catch (error) {

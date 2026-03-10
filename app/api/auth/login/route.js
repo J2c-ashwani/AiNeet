@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { comparePassword, generateToken } from '@/lib/auth';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const { email, password } = await request.json();
 
         if (!email || !password) {
@@ -22,7 +20,12 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
         }
 
-        const user = await db.get('SELECT * FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+        const { data: user } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email.toLowerCase().trim())
+            .single();
+
         if (!user || !comparePassword(password, user.password_hash)) {
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
