@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { AI_OPPONENTS } from '@/lib/game_engine';
 import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
@@ -12,7 +12,7 @@ import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validat
  */
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -35,7 +35,7 @@ export async function POST(request) {
         const K_FACTOR = 32;
         const actualScore = outcome === 'win' ? 1 : (outcome === 'draw' ? 0.5 : 0);
 
-        const user = await db.get('SELECT battle_elo FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('battle_elo').eq('id', decoded.id).single();
         const currentElo = user?.battle_elo || 1000;
 
         // Get opponent's ELO from the AI opponents config
@@ -44,13 +44,19 @@ export async function POST(request) {
         const newElo = Math.round(currentElo + K_FACTOR * (actualScore - expectedScore));
 
         // Update user's ELO
-        await db.run('UPDATE users SET battle_elo = ? WHERE id = ?', [newElo, decoded.id]);
+        await supabase.from('users').update({ battle_elo: newElo }).eq('id', decoded.id);
 
         // Log battle to history
-        await db.run(`
-            INSERT INTO battles (id, user_id, opponent_id, opponent_name, user_score, opponent_score, outcome, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-        `, [battleId, decoded.id, opponentId, opponent.name || 'AI Opponent', userScore || 0, opponentScore || 0, outcome]);
+        await supabase.from('battles').insert({
+            id: battleId,
+            user_id: decoded.id,
+            opponent_id: opponentId,
+            opponent_name: opponent.name || 'AI Opponent',
+            user_score: userScore || 0,
+            opponent_score: opponentScore || 0,
+            outcome: outcome,
+            created_at: new Date().toISOString()
+        });
 
         return NextResponse.json({
             success: true,

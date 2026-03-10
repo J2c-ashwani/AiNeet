@@ -1,22 +1,25 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { battleId, answers, timeSpent } = await request.json();
 
-        const battle = await db.get('SELECT * FROM battlegrounds WHERE id = ?', [battleId]);
+        const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
         if (!battle) return NextResponse.json({ error: 'Battleground not found' }, { status: 404 });
 
-        const participant = await db.get(
-            'SELECT * FROM battleground_participants WHERE battleground_id = ? AND user_id = ?',
-            [battleId, decoded.id]
-        );
+        const { data: participant } = await supabase
+            .from('battleground_participants')
+            .select('*')
+            .eq('battleground_id', battleId)
+            .eq('user_id', decoded.id)
+            .single();
+
         if (!participant) return NextResponse.json({ error: 'You have not joined this battleground' }, { status: 403 });
         if (participant.submitted_at) return NextResponse.json({ error: 'Already submitted' }, { status: 400 });
 
@@ -33,10 +36,13 @@ export async function POST(request) {
 
         const score = (correct * 4) - (incorrect * 1); // NEET marking scheme
 
-        await db.run(
-            "UPDATE battleground_participants SET score = ?, correct_count = ?, incorrect_count = ?, time_spent_seconds = ?, submitted_at = CURRENT_TIMESTAMP WHERE battleground_id = ? AND user_id = ?",
-            [score, correct, incorrect, timeSpent || 0, battleId, decoded.id]
-        );
+        await supabase.from('battleground_participants').update({
+            score: score,
+            correct_count: correct,
+            incorrect_count: incorrect,
+            time_spent_seconds: timeSpent || 0,
+            submitted_at: new Date().toISOString()
+        }).eq('battleground_id', battleId).eq('user_id', decoded.id);
 
         return NextResponse.json({ success: true, score, correct, incorrect, timeSpent });
 

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 export async function GET(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -12,25 +12,33 @@ export async function GET(request) {
         const battleId = searchParams.get('battleId');
         if (!battleId) return NextResponse.json({ error: 'battleId required' }, { status: 400 });
 
-        const battle = await db.get('SELECT * FROM battlegrounds WHERE id = ?', [battleId]);
+        const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
         if (!battle) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-        const participants = await db.all(`
-            SELECT bp.*, u.name, u.level 
-            FROM battleground_participants bp 
-            JOIN users u ON bp.user_id = u.id 
-            WHERE bp.battleground_id = ? 
-            ORDER BY bp.score DESC, bp.time_spent_seconds ASC
-        `, [battleId]);
+        const { data: participantsRaw } = await supabase
+            .from('battleground_participants')
+            .select(`
+                *,
+                users (name, level)
+            `)
+            .eq('battleground_id', battleId)
+            .order('score', { ascending: false })
+            .order('time_spent_seconds', { ascending: true });
 
-        const creator = await db.get('SELECT name FROM users WHERE id = ?', [battle.creator_id]);
+        const participants = (participantsRaw || []).map(p => ({
+            ...p,
+            name: p.users?.name,
+            level: p.users?.level
+        }));
+
+        const { data: creator } = await supabase.from('users').select('name').eq('id', battle.creator_id).single();
 
         // Check if the current user has submitted
         const myParticipation = participants.find(p => p.user_id === decoded.id);
 
         // Auto-end if all participants have submitted
         if (battle.status === 'active' && participants.length > 0 && participants.every(p => p.submitted_at)) {
-            await db.run("UPDATE battlegrounds SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?", [battleId]);
+            await supabase.from('battlegrounds').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', battleId);
             battle.status = 'ended';
         }
 

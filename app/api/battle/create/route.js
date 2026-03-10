@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { getOpponentForElo } from '@/lib/game_engine';
@@ -19,8 +18,7 @@ import { sanitizeString } from '@/lib/validate';
  */
 export async function POST(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -34,22 +32,27 @@ export async function POST(request) {
         }
 
         // Get user's current ELO rating
-        const user = await db.get('SELECT battle_elo FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('battle_elo').eq('id', decoded.id).single();
         const userElo = user?.battle_elo || 1000;
 
         // Select an AI opponent matched to the user's skill level
         const opponent = getOpponentForElo(userElo);
 
-        // Fetch 5 random questions, optionally filtered by subject
-        let query = 'SELECT * FROM questions WHERE 1=1';
-        const params = [];
-        if (subjectId) {
-            query += ' AND subject_id = ?';
-            params.push(subjectId);
-        }
-        query += ' ORDER BY RANDOM() LIMIT 5';
+        // Fetch 5 random questions, optionally filtered by subject.
+        // Supabase JS doesn't have a direct ORDER BY RANDOM() easily without an RPC.
+        // Workaround: fetch a small pool of questions and shuffle in JS.
+        let query = supabase.from('questions').select('*').limit(50);
 
-        const questions = await db.all(query, params);
+        if (subjectId) {
+            query = query.eq('subject_id', subjectId);
+        }
+
+        const { data: questionPool } = await query;
+        let questions = questionPool || [];
+
+        // Shuffle and pick 5
+        questions.sort(() => 0.5 - Math.random());
+        questions = questions.slice(0, 5);
 
         if (questions.length < 5) {
             return NextResponse.json({ error: 'Not enough questions available for a battle. Try adding more questions first.' }, { status: 404 });

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { validatePositiveInt } from '@/lib/validate';
@@ -7,7 +7,7 @@ import { checkFeatureAccess } from '@/lib/plan_gate';
 
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -18,31 +18,43 @@ export async function POST(request) {
         const { questionCount: rawQC = 20, timeLimitMinutes: rawTL = 30 } = await request.json();
 
         // Generate questions
-        const questions = await db.all(
-            'SELECT id, text, option_a, option_b, option_c, option_d, correct_option, subject_id, difficulty FROM questions ORDER BY RANDOM() LIMIT ?',
-            [Math.min(questionCount, 50)]
-        );
+        // Limit query to pool, then shuffle in memory.
+        const { data: qPool } = await supabase
+            .from('questions')
+            .select('id, text, option_a, option_b, option_c, option_d, correct_option, subject_id, difficulty')
+            .limit(100);
 
-        if (questions.length < 10) {
+        if (!qPool || qPool.length < 10) {
             return NextResponse.json({ error: 'Not enough questions available' }, { status: 500 });
         }
+
+        let questions = qPool.sort(() => 0.5 - Math.random()).slice(0, Math.min(rawQC, 50));
 
         const battleId = uuidv4();
         const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-        await db.run(
-            `INSERT INTO battlegrounds (id, creator_id, invite_code, questions_json, question_count, time_limit_seconds, max_participants) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [battleId, decoded.id, inviteCode, JSON.stringify(questions), questions.length, timeLimitMinutes * 60, 200]
-        );
+        await supabase.from('battlegrounds').insert({
+            id: battleId,
+            creator_id: decoded.id,
+            invite_code: inviteCode,
+            questions_json: JSON.stringify(questions),
+            question_count: questions.length,
+            time_limit_seconds: rawTL * 60,
+            max_participants: 200,
+            status: 'waiting'
+        });
 
         // Auto-join the creator as participant
-        await db.run(
-            `INSERT INTO battleground_participants (id, battleground_id, user_id) VALUES (?, ?, ?)`,
-            [uuidv4(), battleId, decoded.id]
-        );
+        await supabase.from('battleground_participants').insert({
+            id: uuidv4(),
+            battleground_id: battleId,
+            user_id: decoded.id
+        });
 
         // Increment creates used
-        await db.run('UPDATE users SET battleground_creates_used = battleground_creates_used + 1 WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('battleground_creates_used').eq('id', decoded.id).single();
+        const newCount = (user?.battleground_creates_used || 0) + 1;
+        await supabase.from('users').update({ battleground_creates_used: newCount }).eq('id', decoded.id);
 
         return NextResponse.json({
             success: true,

@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 export async function GET(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const badges = await db.all('SELECT * FROM user_achievements WHERE user_id = ? ORDER BY earned_at DESC', [decoded.id]);
-        return NextResponse.json({ badges });
+        const { data: badges } = await supabase
+            .from('user_achievements')
+            .select('*')
+            .eq('user_id', decoded.id)
+            .order('earned_at', { ascending: false });
+
+        return NextResponse.json({ badges: badges || [] });
     } catch (error) {
         console.error('Achievements error:', error);
         return NextResponse.json({ error: 'Failed to fetch achievements' }, { status: 500 });

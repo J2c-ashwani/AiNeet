@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { validateInviteCode } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -16,7 +16,7 @@ export async function POST(request) {
         }
 
         // Freemium check: free users can join 1 battleground
-        const user = await db.get('SELECT subscription_tier, battleground_joins_used FROM users WHERE id = ?', [decoded.id]);
+        const { data: user } = await supabase.from('users').select('subscription_tier, battleground_joins_used').eq('id', decoded.id).single();
         const isFree = !user?.subscription_tier || user.subscription_tier === 'free';
 
         if (isFree && (user?.battleground_joins_used || 0) >= 1) {
@@ -27,28 +27,30 @@ export async function POST(request) {
             }, { status: 403 });
         }
 
-        const battle = await db.get('SELECT * FROM battlegrounds WHERE invite_code = ?', [inviteCode.trim().toUpperCase()]);
+        const { data: battle } = await supabase.from('battlegrounds').select('*').eq('invite_code', inviteCode.trim().toUpperCase()).single();
         if (!battle) return NextResponse.json({ error: 'Invalid invite code' }, { status: 404 });
         if (battle.status === 'ended') return NextResponse.json({ error: 'This battleground has already ended' }, { status: 400 });
 
         // Check participant count
-        const participantCount = await db.get('SELECT COUNT(*) as c FROM battleground_participants WHERE battleground_id = ?', [battle.id]);
-        if (participantCount.c >= battle.max_participants) {
+        const { count: participantCount } = await supabase.from('battleground_participants').select('*', { count: 'exact', head: true }).eq('battleground_id', battle.id);
+        if (participantCount >= battle.max_participants) {
             return NextResponse.json({ error: 'Battleground is full (max 200 participants)' }, { status: 400 });
         }
 
         // Check if already joined
-        const existing = await db.get('SELECT id FROM battleground_participants WHERE battleground_id = ? AND user_id = ?', [battle.id, decoded.id]);
+        const { data: existing } = await supabase.from('battleground_participants').select('id').eq('battleground_id', battle.id).eq('user_id', decoded.id).single();
         if (existing) {
             return NextResponse.json({ success: true, battleId: battle.id, message: 'Already joined' });
         }
 
-        await db.run(
-            `INSERT INTO battleground_participants (id, battleground_id, user_id) VALUES (?, ?, ?)`,
-            [uuidv4(), battle.id, decoded.id]
-        );
+        await supabase.from('battleground_participants').insert({
+            id: uuidv4(),
+            battleground_id: battle.id,
+            user_id: decoded.id
+        });
 
-        await db.run('UPDATE users SET battleground_joins_used = battleground_joins_used + 1 WHERE id = ?', [decoded.id]);
+        const newJoins = (user?.battleground_joins_used || 0) + 1;
+        await supabase.from('users').update({ battleground_joins_used: newJoins }).eq('id', decoded.id);
 
         return NextResponse.json({ success: true, battleId: battle.id });
 

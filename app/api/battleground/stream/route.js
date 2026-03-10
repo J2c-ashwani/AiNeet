@@ -1,4 +1,4 @@
-import { getDb } from '@/lib/db';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
 export const runtime = 'nodejs';
@@ -42,9 +42,9 @@ export async function GET(request) {
             // Send initial state immediately
             const fetchAndSend = async () => {
                 try {
-                    const db = getDb();
+                    const supabase = getSupabase();
 
-                    const battle = await db.get('SELECT * FROM battlegrounds WHERE id = ?', [battleId]);
+                    const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
                     if (!battle) {
                         sendEvent('error', { message: 'Battleground not found' });
                         isActive = false;
@@ -52,19 +52,27 @@ export async function GET(request) {
                         return null;
                     }
 
-                    const participants = await db.all(`
-                        SELECT bp.*, u.name, u.level 
-                        FROM battleground_participants bp 
-                        JOIN users u ON bp.user_id = u.id 
-                        WHERE bp.battleground_id = ? 
-                        ORDER BY bp.score DESC, bp.time_spent_seconds ASC
-                    `, [battleId]);
+                    const { data: participantsRaw } = await supabase
+                        .from('battleground_participants')
+                        .select(`
+                            *,
+                            users (name, level)
+                        `)
+                        .eq('battleground_id', battleId)
+                        .order('score', { ascending: false })
+                        .order('time_spent_seconds', { ascending: true });
 
-                    const creator = await db.get('SELECT name FROM users WHERE id = ?', [battle.creator_id]);
+                    const participants = (participantsRaw || []).map(p => ({
+                        ...p,
+                        name: p.users?.name,
+                        level: p.users?.level
+                    }));
+
+                    const { data: creator } = await supabase.from('users').select('name').eq('id', battle.creator_id).single();
 
                     // Auto-end if all participants submitted
                     if (battle.status === 'active' && participants.length > 0 && participants.every(p => p.submitted_at)) {
-                        await db.run("UPDATE battlegrounds SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?", [battleId]);
+                        await supabase.from('battlegrounds').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', battleId);
                         battle.status = 'ended';
                     }
 
