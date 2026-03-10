@@ -1,26 +1,31 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { generateStudyPlan } from '@/lib/ai-engine';
 
 export async function GET(request) {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const performance = await db.all(`
-      SELECT up.*, t.name as topic_name, c.name as chapter_name
-      FROM user_performance up
-      JOIN topics t ON t.id = up.topic_id
-      JOIN chapters c ON c.id = t.chapter_id
-      JOIN subjects s ON s.id = c.subject_id
-      WHERE up.user_id = ? ORDER BY up.accuracy ASC
-    `, [decoded.id]);
+        const { data: performance } = await supabase
+            .from('user_performance')
+            .select(`
+                *,
+                topics!inner(name, chapters!inner(name, subjects!inner(name)))
+            `)
+            .eq('user_id', decoded.id)
+            .order('accuracy', { ascending: true });
 
-        const plan = generateStudyPlan(performance);
+        // Map the relational data to match the old shape expected by generateStudyPlan
+        const mappedPerformance = (performance || []).map(p => ({
+            ...p,
+            topic_name: p.topics?.name,
+            chapter_name: p.topics?.chapters?.name
+        }));
+
+        const plan = generateStudyPlan(mappedPerformance);
         return NextResponse.json({ plan });
     } catch (error) {
         console.error('Study plan error:', error);
