@@ -1,19 +1,19 @@
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
 // Dynamically generate SEO metadata for each question page
 export async function generateMetadata({ params }) {
-    await initializeDatabase();
-    const db = getDb();
-    const question = await db.get(`
-        SELECT q.text, t.name as topic_name, c.name as chapter_name
-        FROM questions q
-        JOIN topics t ON q.topic_id = t.id
-        JOIN chapters c ON t.chapter_id = c.id
-        WHERE q.id = ?
-    `, [params.id]);
+    const supabase = getSupabase();
+    const { data: question } = await supabase
+        .from('questions')
+        .select(`
+            text,
+            topics!inner(name),
+            chapters!inner(name)
+        `)
+        .eq('id', params.id)
+        .single();
 
     if (!question) {
         return { title: 'Question Not Found | AI NEET Coach' };
@@ -25,8 +25,8 @@ export async function generateMetadata({ params }) {
 
     return {
         title: `${cleanText.substring(0, 60)}${cleanText.length > 60 ? '...' : ''} | NEET PYQ`,
-        description: `Practice this NEET Past Year Question on ${question.topic_name} (${question.chapter_name}). ${shortDesc}`,
-        keywords: ['NEET', 'PYQ', question.topic_name, question.chapter_name, 'MCQ'],
+        description: `Practice this NEET Past Year Question on ${question.topics?.name} (${question.chapters?.name}). ${shortDesc}`,
+        keywords: ['NEET', 'PYQ', question.topics?.name, question.chapters?.name, 'MCQ'],
         openGraph: {
             title: 'NEET Practice Question',
             description: shortDesc,
@@ -36,18 +36,19 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function QuestionPage({ params }) {
-    await initializeDatabase();
-    const db = getDb();
+    const supabase = getSupabase();
 
-    // Fetch question and its options
-    const question = await db.get(`
-        SELECT q.*, t.name as topic_name, c.name as chapter_name, s.name as subject_name
-        FROM questions q
-        JOIN topics t ON q.topic_id = t.id
-        JOIN chapters c ON t.chapter_id = c.id
-        JOIN subjects s ON c.subject_id = s.id
-        WHERE q.id = ?
-    `, [params.id]);
+    // Fetch question and its relational taxonomy
+    const { data: question } = await supabase
+        .from('questions')
+        .select(`
+            *,
+            topics!inner(name),
+            chapters!inner(name),
+            subjects!inner(name)
+        `)
+        .eq('id', params.id)
+        .single();
 
     if (!question) {
         return (
@@ -63,14 +64,18 @@ export default async function QuestionPage({ params }) {
 
     let options = [];
     try {
-        options = JSON.parse(question.options);
+        if (question.options) {
+            options = JSON.parse(question.options);
+        } else if (question.option_a) {
+            options = [question.option_a, question.option_b, question.option_c, question.option_d].filter(Boolean);
+        }
     } catch (e) { }
 
     // Generate JSON-LD Schema for rich snippets
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Quiz",
-        "name": `NEET Question on ${question.topic_name}`,
+        "name": `NEET Question on ${question.topics?.name}`,
         "description": "Practice NEET Past Year Questions (PYQs) online.",
         "hasPart": [
             {
@@ -104,17 +109,17 @@ export default async function QuestionPage({ params }) {
                 <nav className="text-sm text-secondary mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
                     <Link href="/" className="hover:text-white">Home</Link>
                     <span>›</span>
-                    <span className="text-muted">{question.subject_name}</span>
+                    <span className="text-muted">{question.subjects?.name}</span>
                     <span>›</span>
-                    <span className="text-muted hidden sm:inline">{question.chapter_name}</span>
+                    <span className="text-muted hidden sm:inline">{question.chapters?.name}</span>
                     <span className="hidden sm:inline">›</span>
-                    <span className="font-medium text-primary">{question.topic_name}</span>
+                    <span className="font-medium text-primary">{question.topics?.name}</span>
                 </nav>
 
                 <main className="card !p-8 relative overflow-hidden mb-8">
                     {/* Decorative Background */}
                     <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl pointer-events-none select-none">
-                        {question.subject_name === 'Physics' ? '⚡' : question.subject_name === 'Chemistry' ? '🧪' : '🧬'}
+                        {question.subjects?.name === 'Physics' ? '⚡' : question.subjects?.name === 'Chemistry' ? '🧪' : '🧬'}
                     </div>
 
                     <div className="relative z-10">
@@ -123,9 +128,9 @@ export default async function QuestionPage({ params }) {
                             <span className={`difficulty-badge ${question.difficulty || 'medium'}`}>
                                 {(question.difficulty || 'medium').charAt(0).toUpperCase() + (question.difficulty || 'medium').slice(1)}
                             </span>
-                            {question.year && (
+                            {question.year_asked && (
                                 <span className="difficulty-badge" style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--accent-primary)', borderColor: 'rgba(99,102,241,0.2)' }}>
-                                    NEET {question.year}
+                                    NEET {question.year_asked}
                                 </span>
                             )}
                         </div>
@@ -173,7 +178,7 @@ export default async function QuestionPage({ params }) {
 
                 {/* Related Questions Hook (Placeholder for future iteration, linking to topic page or similar) */}
                 <div className="text-center pb-20">
-                    <p className="text-secondary mb-4">Mastering <strong className="text-white">{question.topic_name}</strong> is crucial for NEET.</p>
+                    <p className="text-secondary mb-4">Mastering <strong className="text-white">{question.topics?.name}</strong> is crucial for NEET.</p>
                     <Link href={`/test/configure?type=topic`} className="btn btn-secondary">
                         Practice More Questions Like This
                     </Link>
