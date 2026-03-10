@@ -1,29 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        await initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+            .from('questions')
+            .select('year_asked')
+            .not('year_asked', 'is', null)
+            .neq('year_asked', '')
+            .eq('is_pyq', 1)
+            .order('year_asked', { ascending: false });
 
-        // Fetch distinct years from questions
-        // We ensure year_asked is not null and is_pyq = 1 if applicable
-        const query = `
-            SELECT DISTINCT year_asked 
-            FROM questions 
-            WHERE year_asked IS NOT NULL 
-              AND year_asked != ''
-              AND is_pyq = 1
-            ORDER BY year_asked DESC
-        `;
+        if (error) throw error;
 
-        const results = await db.all(query);
-
-        // Extract just the year strings into a flat array
-        const years = results.map(row => row.year_asked);
+        // Extract unique years
+        const yearsSet = new Set(data.map(row => row.year_asked));
+        const years = Array.from(yearsSet);
 
         return NextResponse.json({ years });
     } catch (error) {

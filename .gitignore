@@ -46,3 +46,6 @@ mobile/android/app/google-services.json
 # Mobile build output
 mobile/build/
 mobile/.dart_tool/
+scripts/*.pdf
+scripts/*.json
+scripts/*.txt

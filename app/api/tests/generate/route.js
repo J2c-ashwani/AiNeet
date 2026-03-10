@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { initializeDatabase } from '@/lib/schema';
+import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
@@ -8,8 +7,7 @@ import { validateArray, validateEnum, validatePositiveInt } from '@/lib/validate
 
 export async function POST(request) {
     try {
-        initializeDatabase();
-        const db = getDb();
+        const supabase = getSupabase();
         const decoded = getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -34,7 +32,7 @@ export async function POST(request) {
 
         // GROWTH ENGINE: Lock Grand Mock Test behind referrals
         if (type === 'mock') {
-            const user = await db.get('SELECT referrals_count FROM users WHERE id = ?', [decoded.id]);
+            const { data: user } = await supabase.from('users').select('referrals_count').eq('id', decoded.id).single();
             if ((user?.referrals_count || 0) < 1) {
                 return NextResponse.json({
                     error: 'Refer 1 friend to unlock the Grand Mock Test.',
@@ -54,97 +52,115 @@ export async function POST(request) {
             await UsageTracker.incrementUsage(decoded.id, 'test', 0);
         }
 
-        let query = 'SELECT * FROM questions WHERE 1=1';
-        const params = [];
-
-        if (subjects && subjects.length > 0 && type !== 'yearly_pyq') {
-            query += ` AND subject_id IN (${subjects.map(() => '?').join(',')})`;
-            params.push(...subjects);
-        }
-        if (chapters && chapters.length > 0 && type !== 'yearly_pyq') {
-            query += ` AND chapter_id IN (${chapters.map(() => '?').join(',')})`;
-            params.push(...chapters);
-        }
-        if (topics && topics.length > 0 && type !== 'yearly_pyq') {
-            query += ` AND topic_id IN (${topics.map(() => '?').join(',')})`;
-            params.push(...topics);
-        }
-        if (difficulty && difficulty !== 'all' && type !== 'yearly_pyq') {
-            query += ' AND difficulty = ?';
-            params.push(difficulty);
-        }
-        if (type === 'yearly_pyq' && year) {
-            query += ' AND year_asked = ?';
-            params.push(year);
-        }
-
-        query += ' ORDER BY RANDOM()';
-
         let limit = questionCount;
         if (!limit) {
-            if (type === 'mock' || type === 'yearly_pyq') limit = 180; // or 200 depending on standard
+            if (type === 'mock' || type === 'yearly_pyq') limit = 180;
             else if (type === 'chapter') limit = 30;
             else limit = 20;
         }
 
-        query += ' LIMIT ?';
-        params.push(limit);
+        // Build Supabase Query
+        let queryBuilder = supabase.from('questions').select('*');
 
-        const questions = await db.all(query, params);
+        if (subjects && subjects.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('subject_id', subjects);
+        }
+        if (chapters && chapters.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('chapter_id', chapters);
+        }
+        if (topics && topics.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('topic_id', topics);
+        }
+        if (difficulty && difficulty !== 'all' && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.eq('difficulty', difficulty);
+        }
+        if (type === 'yearly_pyq' && year) {
+            queryBuilder = queryBuilder.eq('year_asked', String(year));
+            queryBuilder = queryBuilder.eq('is_pyq', 1);
+        }
+
+        // Note: Supabase doesn't natively support ORDER BY RANDOM() easily without an RPC. 
+        // We will fetch up to 1000 and shuffle in JS.
+        const { data: fetchQuestions, error } = await queryBuilder.limit(1000);
+        if (error) throw error;
+
+        // Shuffle
+        let questions = fetchQuestions.sort(() => Math.random() - 0.5).slice(0, limit);
 
         if (questions.length < limit) {
-            console.log(`Insufficient questions (Found ${questions.length}, Needed ${limit}). Triggering AI RAG...`);
-            const { generateInstantQuestions } = await import('@/lib/rag_engine');
-
-            // Determine topic for generation (use first requested topic or 'General')
-            const topicId = (topics && topics.length > 0) ? topics[0] : 'General Science';
             const extraNeeded = limit - questions.length;
 
-            const aiQuestions = await generateInstantQuestions(`Topic ${topicId}`, extraNeeded);
+            if (type === 'yearly_pyq') {
+                console.log(`[yearly_pyq] Insufficient questions for ${year} (Found ${questions.length}, Needed ${limit}). Filling gap with ${extraNeeded} random PYQs...`);
 
-            // AI Quality Verification: verify each generated question before saving
-            const { verifyQuestion } = await import('@/lib/ai_verifier');
+                // Get IDs of questions already selected to avoid duplicates
+                const existingIds = questions.map(q => q.id);
 
-            // Save AI questions to DB for future use (with verification)
-            const insertSql = `
-                INSERT INTO questions (
-                    id, text, option_a, option_b, option_c, option_d, 
-                    correct_option, difficulty, explanation, 
-                    subject_id, chapter_id, topic_id, 
-                    is_ai_generated, source_context,
-                    confidence_score, verification_status, verified_answer
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
+                let gapQuery = supabase.from('questions').select('*').eq('is_pyq', 1);
+                if (existingIds.length > 0) {
+                    gapQuery = gapQuery.not('id', 'in', `(${existingIds.join(',')})`);
+                }
 
-            for (const q of aiQuestions) {
-                try {
-                    // Verify question quality using AI verifier
-                    const verification = await verifyQuestion(q, q.source_context || '');
+                // Fetch extra random PYQs
+                const { data: gapData } = await gapQuery.limit(1000);
+                if (gapData) {
+                    const gapQuestions = gapData.sort(() => Math.random() - 0.5).slice(0, extraNeeded);
+                    questions.push(...gapQuestions);
+                }
 
-                    // Skip rejected questions (confidence < 40)
-                    if (verification.verification_status === 'rejected') {
-                        console.warn(`Rejected AI question: ${q.text?.substring(0, 50)}... (confidence: ${verification.confidence_score})`);
-                        continue;
-                    }
+            } else {
+                console.log(`Insufficient questions (Found ${questions.length}, Needed ${limit}). Triggering AI RAG...`);
+                const { generateInstantQuestions } = await import('@/lib/rag_engine');
 
-                    // Use verified answer if verifier found a different correct answer
-                    const finalAnswer = verification.verified_answer || q.correct_option;
+                // Determine topic for generation (use first requested topic or 'General')
+                const topicId = (topics && topics.length > 0) ? topics[0] : 'General Science';
 
-                    await db.run(insertSql, [
-                        q.id, q.text, q.option_a, q.option_b, q.option_c, q.option_d,
-                        finalAnswer, q.difficulty, q.explanation,
-                        q.subject_id, q.chapter_id, q.topic_id,
-                        1, q.source_context,
-                        verification.confidence_score || 0, verification.verification_status || 'pending', finalAnswer
-                    ]);
+                const aiQuestions = await generateInstantQuestions(`Topic ${topicId}`, extraNeeded);
 
-                    // Update correct_option with verified answer for client response
-                    q.correct_option = finalAnswer;
-                    q.confidence_score = verification.confidence_score;
-                    q.verification_status = verification.verification_status;
+                // AI Quality Verification: verify each generated question before saving
+                const { verifyQuestion } = await import('@/lib/ai_verifier');
 
-                    questions.push(q);
-                } catch (e) { console.error('Failed to save/verify AI question', e); }
+                // Save AI questions to DB for future use (with verification)
+                const insertSql = `
+                    INSERT INTO questions (
+                        id, text, option_a, option_b, option_c, option_d, 
+                        correct_option, difficulty, explanation, 
+                        subject_id, chapter_id, topic_id, 
+                        is_ai_generated, source_context,
+                        confidence_score, verification_status, verified_answer
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `;
+
+                for (const q of aiQuestions) {
+                    try {
+                        // Verify question quality using AI verifier
+                        const verification = await verifyQuestion(q, q.source_context || '');
+
+                        // Skip rejected questions (confidence < 40)
+                        if (verification.verification_status === 'rejected') {
+                            console.warn(`Rejected AI question: ${q.text?.substring(0, 50)}... (confidence: ${verification.confidence_score})`);
+                            continue;
+                        }
+
+                        // Use verified answer if verifier found a different correct answer
+                        const finalAnswer = verification.verified_answer || q.correct_option;
+
+                        await supabase.from('questions').insert({
+                            id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
+                            correct_option: finalAnswer, difficulty: q.difficulty, explanation: q.explanation,
+                            subject_id: q.subject_id, chapter_id: q.chapter_id, topic_id: q.topic_id,
+                            is_ai_generated: 1, source_context: q.source_context,
+                            confidence_score: verification.confidence_score || 0, verification_status: verification.verification_status || 'pending', verified_answer: finalAnswer
+                        });
+
+                        // Update correct_option with verified answer for client response
+                        q.correct_option = finalAnswer;
+                        q.confidence_score = verification.confidence_score;
+                        q.verification_status = verification.verification_status;
+
+                        questions.push(q);
+                    } catch (e) { console.error('Failed to save/verify AI question', e); }
+                }
             }
         }
 
@@ -152,8 +168,14 @@ export async function POST(request) {
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, difficulty, questionCount: questions.length, type });
 
-        await db.run(`INSERT INTO tests (id, user_id, type, config_json, total_questions, total_marks, started_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-            [testId, decoded.id, type || 'custom', config, questions.length, totalMarks]);
+        await supabase.from('tests').insert({
+            id: testId,
+            user_id: decoded.id,
+            type: type || 'custom',
+            config_json: config,
+            total_questions: questions.length,
+            total_marks: totalMarks
+        });
 
         const clientQuestions = questions.map((q, idx) => ({
             id: q.id, index: idx + 1, text: q.text,
