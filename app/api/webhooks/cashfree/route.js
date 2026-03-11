@@ -44,36 +44,58 @@ export async function POST(request) {
                 { auth: { persistSession: false } }
             );
 
+            // Utility function for DB retries
+            const withRetry = async (operation, maxRetries = 3) => {
+                for (let i = 0; i < maxRetries; i++) {
+                    try { return await operation(); }
+                    catch (err) {
+                        if (i === maxRetries - 1) throw err;
+                        await new Promise(r => setTimeout(r, 1000 * (i + 1))); // exponential backoff
+                    }
+                }
+            };
+
             // Fetch payment record
-            const { data: payment } = await supabase
-                .from('payments')
-                .select('user_id, status, amount')
-                .eq('provider_order_id', orderId)
-                .single();
+            const { data: payment, error: fetchErr } = await withRetry(() =>
+                supabase.from('payments').select('user_id, status, amount').eq('provider_order_id', orderId).single()
+            );
 
-            if (payment && payment.status !== 'completed') {
-                // Determine Plan by amount to set correct expiry
-                const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.amount === payment.amount) || { duration_days: 30 };
+            if (fetchErr) {
+                console.error('Failed to fetch payment order:', fetchErr);
+                return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            }
 
-                const expiryDate = new Date();
-                expiryDate.setDate(expiryDate.getDate() + plan.duration_days);
+            // CTO Constraint: Strict Idempotency. If it's already completed, do NOT upgrade again.
+            if (payment.status === 'completed') {
+                console.log(`Webhook Idempotency matched: Order ${orderId} already processed. Ignoring.`);
+                return NextResponse.json({ success: true, message: "Already processed" });
+            }
 
-                await Promise.all([
-                    // Upgrade the user
-                    supabase.from('users').update({
-                        subscription_tier: 'pro',
-                        subscription_status: 'active',
-                        subscription_expiry: expiryDate.toISOString()
-                    }).eq('id', payment.user_id),
+            // Determine Plan by amount to set correct expiry
+            const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.amount === payment.amount) || { duration_days: 30 };
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + plan.duration_days);
 
-                    // Mark payment as completed
-                    supabase.from('payments').update({
-                        status: 'completed',
-                        provider_payment_id: String(payload.data.payment.cf_payment_id)
-                    }).eq('provider_order_id', orderId)
-                ]);
+            try {
+                // Execute updates with retry logic for DB locks
+                await withRetry(async () => {
+                    await Promise.all([
+                        supabase.from('users').update({
+                            subscription_tier: 'pro',
+                            subscription_status: 'active',
+                            subscription_expiry: expiryDate.toISOString()
+                        }).eq('id', payment.user_id),
 
+                        supabase.from('payments').update({
+                            status: 'completed',
+                            provider_payment_id: String(payload.data.payment.cf_payment_id)
+                        }).eq('provider_order_id', orderId)
+                    ]);
+                });
                 console.log(`Webhook successfully completed order ${orderId} for user ${payment.user_id}`);
+            } catch (updateErr) {
+                console.error(`Failed to update DB for order ${orderId} after retries:`, updateErr);
+                return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
             }
         }
 

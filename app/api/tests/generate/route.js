@@ -120,46 +120,70 @@ export async function POST(request) {
                 // AI Quality Verification: verify each generated question before saving
                 const { verifyQuestion } = await import('@/lib/ai_verifier');
 
-                // Save AI questions to DB for future use (with verification)
-                const insertSql = `
-                    INSERT INTO questions (
-                        id, text, option_a, option_b, option_c, option_d, 
-                        correct_option, difficulty, explanation, 
-                        subject_id, chapter_id, topic_id, 
-                        is_ai_generated, source_context,
-                        confidence_score, verification_status, verified_answer
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `;
+                for (let i = 0; i < aiQuestions.length; i++) {
+                    let q = aiQuestions[i];
+                    let retryCount = 0;
+                    let isVerified = false;
+                    let finalAnswer = q.correct_option;
+                    let confScore = 0;
+                    let vStatus = 'pending';
 
-                for (const q of aiQuestions) {
-                    try {
-                        // Verify question quality using AI verifier
-                        const verification = await verifyQuestion(q, q.source_context || '');
+                    // CTO Constraint: Maximum 3 retries for a failed verification to prevent infinite loops
+                    while (retryCount < 3 && !isVerified) {
+                        try {
+                            const verification = await verifyQuestion(q, q.source_context || '');
 
-                        // Skip rejected questions (confidence < 40)
-                        if (verification.verification_status === 'rejected') {
-                            console.warn(`Rejected AI question: ${q.text?.substring(0, 50)}... (confidence: ${verification.confidence_score})`);
-                            continue;
+                            if (verification.verification_status === 'rejected') {
+                                console.warn(`Rejected AI question (Attempt ${retryCount + 1}): ${q.text?.substring(0, 50)}...`);
+                                retryCount++;
+
+                                if (retryCount < 3) {
+                                    // Generate a completely new question for this slot to replace the bad one
+                                    const newQArray = await generateInstantQuestions(`Topic ${topicId}`, 1);
+                                    if (newQArray && newQArray.length > 0) {
+                                        q = newQArray[0];
+                                    }
+                                }
+                            } else {
+                                isVerified = true;
+                                finalAnswer = verification.verified_answer || q.correct_option;
+                                confScore = verification.confidence_score || 0;
+                                vStatus = verification.verification_status || 'verified';
+                            }
+                        } catch (e) {
+                            console.error('Verifier threw an error:', e);
+                            retryCount++;
                         }
+                    }
 
-                        // Use verified answer if verifier found a different correct answer
-                        const finalAnswer = verification.verified_answer || q.correct_option;
+                    if (isVerified) {
+                        // Save passed AI questions to DB
+                        try {
+                            await supabase.from('questions').insert({
+                                id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
+                                correct_option: finalAnswer, difficulty: q.difficulty, explanation: q.explanation,
+                                subject_id: q.subject_id, chapter_id: q.chapter_id, topic_id: q.topic_id,
+                                is_ai_generated: 1, source_context: q.source_context,
+                                confidence_score: confScore, verification_status: vStatus, verified_answer: finalAnswer
+                            });
 
-                        await supabase.from('questions').insert({
-                            id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
-                            correct_option: finalAnswer, difficulty: q.difficulty, explanation: q.explanation,
-                            subject_id: q.subject_id, chapter_id: q.chapter_id, topic_id: q.topic_id,
-                            is_ai_generated: 1, source_context: q.source_context,
-                            confidence_score: verification.confidence_score || 0, verification_status: verification.verification_status || 'pending', verified_answer: finalAnswer
-                        });
-
-                        // Update correct_option with verified answer for client response
-                        q.correct_option = finalAnswer;
-                        q.confidence_score = verification.confidence_score;
-                        q.verification_status = verification.verification_status;
-
-                        questions.push(q);
-                    } catch (e) { console.error('Failed to save/verify AI question', e); }
+                            q.correct_option = finalAnswer;
+                            q.confidence_score = confScore;
+                            q.verification_status = vStatus;
+                            questions.push(q);
+                        } catch (e) { console.error('Failed to save verified AI question to DB', e); }
+                    } else {
+                        // CTO Constraint Fallback: If 3 AI attempts failed, fallback to pulling a random verified PYQ
+                        console.warn(`AI generation failed 3 times for slot ${i}. Falling back to verified PYQ.`);
+                        const { data: fallbackPyq } = await supabase.from('questions').select('*').eq('is_pyq', 1).limit(100);
+                        if (fallbackPyq && fallbackPyq.length > 0) {
+                            // Pick random
+                            const randQ = fallbackPyq[Math.floor(Math.random() * fallbackPyq.length)];
+                            if (!questions.find(existing => existing.id === randQ.id)) {
+                                questions.push(randQ);
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -39,6 +39,36 @@ export async function GET(request) {
             recentSignups = data || [];
         } catch (e) { /* */ }
 
+        // AI Cost Telemetry
+        let aiTelemetry = {
+            totalTokensIn: 0,
+            totalTokensOut: 0,
+            estimatedCostUSD: 0,
+            estimatedCostINR: 0
+        };
+
+        try {
+            // Aggregate all tokens today
+            const { data: usageData } = await supabase
+                .from('users')
+                .select('daily_ai_tokens_input, daily_ai_tokens_output');
+
+            if (usageData) {
+                usageData.forEach(u => {
+                    aiTelemetry.totalTokensIn += (u.daily_ai_tokens_input || 0);
+                    aiTelemetry.totalTokensOut += (u.daily_ai_tokens_output || 0);
+                });
+
+                // Pricing reference: Gemini 1.5 Flash (for scale testing)
+                // Approx $0.075 / 1M input tokens, $0.30 / 1M output tokens
+                const costIn = (aiTelemetry.totalTokensIn / 1000000) * 0.075;
+                const costOut = (aiTelemetry.totalTokensOut / 1000000) * 0.30;
+
+                aiTelemetry.estimatedCostUSD = Number((costIn + costOut).toFixed(4));
+                aiTelemetry.estimatedCostINR = Number((aiTelemetry.estimatedCostUSD * 86).toFixed(2)); // Approx ₹86/$1
+            }
+        } catch (e) { console.error('Token fetch error:', e); }
+
         // Daily test activity (last 7 days)
         // Note: SQLite used test_attempts, but the rest of app has migrated to `tests`.
         let dailyActivity = [];
@@ -97,7 +127,8 @@ export async function GET(request) {
             reports: reportsCount,
             recentSignups,
             dailyActivity,
-            subscriptionBreakdown
+            subscriptionBreakdown,
+            aiTelemetry
         });
     } catch (error) {
         console.error('Stats API Error:', error);

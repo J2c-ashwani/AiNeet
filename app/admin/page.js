@@ -118,6 +118,44 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
+            {/* AI Telemetry Dashboard (CTO Requirement) */}
+            {stats?.aiTelemetry && (
+                <div style={{
+                    background: 'rgba(17,24,39,0.8)', border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 16, padding: 24, marginBottom: 32, backdropFilter: 'blur(20px)'
+                }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 20, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>🧠</span> AI API Telemetry (Today)
+                    </h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+                        <div style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: 4 }}>Tokens (In)</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#a78bfa' }}>
+                                {(stats.aiTelemetry.totalTokensIn / 1000).toFixed(1)}k
+                            </div>
+                        </div>
+                        <div style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: 4 }}>Tokens (Out)</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#34d399' }}>
+                                {(stats.aiTelemetry.totalTokensOut / 1000).toFixed(1)}k
+                            </div>
+                        </div>
+                        <div style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: 4 }}>Est. Cost (USD)</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#fbbf24' }}>
+                                ${stats.aiTelemetry.estimatedCostUSD.toFixed(4)}
+                            </div>
+                        </div>
+                        <div style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: 4 }}>Est. Cost (INR)</div>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f87171' }}>
+                                ₹{stats.aiTelemetry.estimatedCostINR.toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Main Content */}
             <AdminCharts chartData={chartData} pieData={pieData} totalSubs={totalSubs} />
 
