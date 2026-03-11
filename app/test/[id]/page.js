@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
+import MathRenderer from '@/components/MathRenderer';
 
 export default function TestPage({ params }) {
     const { id: testId } = use(params);
@@ -194,7 +195,7 @@ export default function TestPage({ params }) {
                                     {question.exam_name ? `${question.exam_name} ${question.year_asked}` : `NEET ${question.year_asked}`}
                                 </span>
                             )}
-                            {question.text}
+                            <MathRenderer>{question.text}</MathRenderer>
                         </div>
 
                         {/* Options */}
@@ -209,7 +210,7 @@ export default function TestPage({ params }) {
                                     className={`option-card ${answers[currentQ] === opt.key ? 'selected' : ''}`}
                                     onClick={() => handleAnswer(opt.key)}>
                                     <span className="option-label">{opt.key}</span>
-                                    <span style={{ flex: 1 }}>{opt.text}</span>
+                                    <span style={{ flex: 1 }}><MathRenderer>{opt.text}</MathRenderer></span>
                                 </div>
                             ))}
                         </div>

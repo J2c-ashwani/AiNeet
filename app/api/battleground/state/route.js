@@ -2,18 +2,28 @@ import { NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
-        if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const decoded = await getUserFromRequest(request);
+        if (!decoded) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
         const { searchParams } = new URL(request.url);
         const battleId = searchParams.get('battleId');
-        if (!battleId) return NextResponse.json({ error: 'battleId required' }, { status: 400 });
+
+        if (!battleId) {
+            return NextResponse.json({ error: 'Missing battleId' }, { status: 400 });
+        }
+
+        const supabase = getSupabase();
 
         const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
-        if (!battle) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+        if (!battle) {
+            return NextResponse.json({ error: 'Battleground not found' }, { status: 404 });
+        }
 
         const { data: participantsRaw } = await supabase
             .from('battleground_participants')
@@ -33,16 +43,13 @@ export async function GET(request) {
 
         const { data: creator } = await supabase.from('users').select('name').eq('id', battle.creator_id).single();
 
-        // Check if the current user has submitted
-        const myParticipation = participants.find(p => p.user_id === decoded.id);
-
-        // Auto-end if all participants have submitted
+        // Auto-end if all participants submitted
         if (battle.status === 'active' && participants.length > 0 && participants.every(p => p.submitted_at)) {
             await supabase.from('battlegrounds').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', battleId);
             battle.status = 'ended';
         }
 
-        return NextResponse.json({
+        const payload = {
             battle: {
                 id: battle.id,
                 inviteCode: battle.invite_code,
@@ -59,17 +66,19 @@ export async function GET(request) {
                 })) : undefined
             },
             participants: participants.map(p => ({
+                id: p.user_id,
                 name: p.name, level: p.level, score: p.score,
                 correct: p.correct_count, incorrect: p.incorrect_count,
                 timeSpent: p.time_spent_seconds, submitted: !!p.submitted_at,
                 isMe: p.user_id === decoded.id
             })),
-            mySubmission: myParticipation ? !!myParticipation.submitted_at : false,
+            mySubmission: participants.find(p => p.user_id === decoded.id)?.submitted_at ? true : false,
             participantCount: participants.length
-        });
+        };
 
-    } catch (error) {
-        console.error('Battleground status error:', error);
-        return NextResponse.json({ error: 'Failed to fetch status' }, { status: 500 });
+        return NextResponse.json(payload);
+    } catch (err) {
+        console.error('State fetch error:', err);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

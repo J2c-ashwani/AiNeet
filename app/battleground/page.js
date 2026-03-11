@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import { createSupabaseClient } from '@/utils/supabase/client';
 
 export default function BattlegroundPage() {
     const router = useRouter();
@@ -20,65 +21,79 @@ export default function BattlegroundPage() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
     const timerRef = useRef(null);
-    const sseRef = useRef(null);
+    const channelRef = useRef(null);
     const startTimeRef = useRef(null);
-    const [sseConnected, setSseConnected] = useState(false);
+    const [connected, setConnected] = useState(false);
+    const supabase = createSupabaseClient();
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
             if (!data.user) router.push('/login');
             else setUser(data.user);
         });
-        return () => { clearInterval(timerRef.current); if (sseRef.current) sseRef.current.close(); };
+        return () => {
+            clearInterval(timerRef.current);
+            if (channelRef.current) supabase.removeChannel(channelRef.current);
+        };
     }, [router]);
 
-    // Real-time SSE connection for lobby and results
+    // Real-time Supabase Broadcast connection
     useEffect(() => {
         if (!battleId || view === 'test') return;
 
-        // Close any existing SSE connection
-        if (sseRef.current) sseRef.current.close();
+        // Cleanup existing channel
+        if (channelRef.current) {
+            supabase.removeChannel(channelRef.current);
+        }
 
-        const eventSource = new EventSource(`/api/battleground/stream?battleId=${battleId}`);
-        sseRef.current = eventSource;
-
-        eventSource.addEventListener('update', (e) => {
+        const loadState = async () => {
             try {
-                const data = JSON.parse(e.data);
+                const res = await fetch(`/api/battleground/state?battleId=${battleId}`);
+                if (!res.ok) return;
+                const data = await res.json();
+
                 if (data.battle) setBattle(data.battle);
                 if (data.participants) setParticipants(data.participants);
-                setSseConnected(true);
 
-                // Auto-transition: if battle started and user hasn't submitted, go to test
+                // Auto-transition
                 if (data.battle?.status === 'active' && !data.mySubmission && view === 'lobby') {
                     setView('test');
                     startTimeRef.current = Date.now();
                     setTimeLeft(data.battle.timeLimitSeconds);
-                    eventSource.close(); // Close SSE during test, we don't need live updates
                 }
-                // Auto-transition: if ended, go to results
                 if (data.battle?.status === 'ended' && view !== 'results') {
                     setView('results');
                 }
             } catch (err) {
-                console.error('SSE parse error:', err);
+                console.error('State load error:', err);
+            }
+        };
+
+        // Load initial state
+        loadState();
+
+        // Subscribe to Broadcast
+        const channel = supabase.channel(`battle_${battleId}`, {
+            config: {
+                broadcast: { self: true }
             }
         });
 
-        eventSource.addEventListener('error', (e) => {
-            try { const data = JSON.parse(e.data); console.error('SSE error event:', data); } catch { }
-        });
+        channel
+            .on('broadcast', { event: 'state_update' }, (payload) => {
+                // When anyone updates the state, reload the state from API to ensure consistency
+                loadState();
+            })
+            .subscribe((status) => {
+                setConnected(status === 'SUBSCRIBED');
+            });
 
-        eventSource.onerror = () => {
-            setSseConnected(false);
-            // EventSource auto-reconnects by default
+        channelRef.current = channel;
+
+        return () => {
+            supabase.removeChannel(channel);
+            setConnected(false);
         };
-
-        eventSource.onopen = () => {
-            setSseConnected(true);
-        };
-
-        return () => { eventSource.close(); setSseConnected(false); };
     }, [battleId, view]);
 
     // Timer for the test
@@ -125,6 +140,7 @@ export default function BattlegroundPage() {
             if (!res.ok) { setError(data.error); return; }
             setBattleId(data.battleId);
             setView('lobby');
+            if (channelRef.current) channelRef.current.send({ type: 'broadcast', event: 'state_update', payload: {} });
         } catch { setError('Failed to join'); }
         finally { setJoining(false); }
     };
@@ -135,6 +151,7 @@ export default function BattlegroundPage() {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ battleId })
             });
+            if (channelRef.current) channelRef.current.send({ type: 'broadcast', event: 'state_update', payload: {} });
         } catch { setError('Failed to start'); }
     };
 
@@ -149,6 +166,8 @@ export default function BattlegroundPage() {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ battleId, answers: formatted, timeSpent })
             });
+            // Re-connect to broadcast to notify others of our submission and view results
+            supabase.channel(`battle_${battleId}`).send({ type: 'broadcast', event: 'state_update', payload: {} });
             setView('results');
         } catch { setError('Failed to submit'); }
         finally { setSubmitting(false); }
@@ -207,8 +226,8 @@ export default function BattlegroundPage() {
                 <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🏟️</div>
                 <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Battleground Lobby</h1>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: sseConnected ? '#10b981' : '#ef4444', animation: sseConnected ? 'pulse 2s infinite' : 'none', display: 'inline-block' }}></span>
-                    <span className="text-muted" style={{ fontSize: '0.85rem' }}>{sseConnected ? 'LIVE — Real-time updates active' : 'Connecting...'}</span>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: connected ? '#10b981' : '#ef4444', animation: connected ? 'pulse 2s infinite' : 'none', display: 'inline-block' }}></span>
+                    <span className="text-muted" style={{ fontSize: '0.85rem' }}>{connected ? 'LIVE — Real-time WebSockets active' : 'Connecting...'}</span>
                 </div>
 
                 {/* Invite Code Display */}

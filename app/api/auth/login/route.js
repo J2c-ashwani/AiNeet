@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { comparePassword, generateToken } from '@/lib/auth';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await createSupabaseServerClient();
         const { email, password } = await request.json();
 
         if (!email || !password) {
@@ -20,22 +19,31 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
         }
 
-        const { data: user } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', email.toLowerCase().trim())
-            .single();
+        // Supabase Native SignIn
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email.toLowerCase().trim(),
+            password: password
+        });
 
-        if (!user || !comparePassword(password, user.password_hash)) {
+        if (authError || !authData.user) {
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
 
-        const token = generateToken(user);
-        const levelInfo = getLevelFromXP(user.xp);
+        const authUserId = authData.user.id;
 
-        const response = NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } });
-        response.cookies.set('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', path: '/', maxAge: 604800, sameSite: 'lax' });
-        return response;
+        const { data: user } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', authUserId)
+            .single();
+
+        if (user) {
+            const levelInfo = getLevelFromXP(user.xp);
+            return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } });
+        }
+
+        // Failsafe returned minimal user
+        return NextResponse.json({ user: { id: authUserId, email: authData.user.email, name: authData.user.user_metadata?.full_name || 'User' } });
     } catch (error) {
         console.error('Login error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

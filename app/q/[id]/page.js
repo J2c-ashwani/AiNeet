@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import MathRenderer from '@/components/MathRenderer';
 
 // Dynamically generate SEO metadata for each question page
 export async function generateMetadata({ params }) {
@@ -137,7 +138,7 @@ export default async function QuestionPage({ params }) {
 
                         {/* H1 Question Text for SEO */}
                         <h1 className="text-xl sm:text-2xl font-bold leading-relaxed mb-8 text-white">
-                            {question.text}
+                            <MathRenderer>{question.text}</MathRenderer>
                         </h1>
 
                         {/* Options List */}
@@ -148,7 +149,7 @@ export default async function QuestionPage({ params }) {
                                         {String.fromCharCode(65 + idx)}
                                     </div>
                                     <div className="pt-1 text-gray-300">
-                                        {opt}
+                                        <MathRenderer>{opt}</MathRenderer>
                                     </div>
                                 </div>
                             ))}

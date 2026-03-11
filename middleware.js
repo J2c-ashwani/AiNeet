@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { updateSession } from './utils/supabase/middleware';
 
 /**
  * Next.js Edge Middleware — Runs before every request.
@@ -8,7 +9,7 @@ import { NextResponse } from 'next/server';
  * 2. Auth guard for protected routes
  * 3. Bot/crawler detection for rate limiting
  */
-export function middleware(request) {
+export async function middleware(request) {
     const { pathname } = request.nextUrl;
 
     // ─── Security Headers ───
@@ -22,29 +23,16 @@ export function middleware(request) {
     response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
     response.headers.set('X-DNS-Prefetch-Control', 'on');
 
-    // ─── Auth Guard: Redirect unauthenticated users from protected routes ───
-    const protectedPaths = ['/dashboard', '/test', '/analytics', '/profile', '/mistakes', '/battleground', '/study-plan', '/doubts', '/revision', '/leaderboard'];
-    const isProtected = protectedPaths.some(p => pathname.startsWith(p));
+    // ─── Auth Guard using Supabase Middleware ───
+    // updateSession handles route protection internally
+    const authResponse = await updateSession(request);
 
-    if (isProtected) {
-        const token = request.cookies.get('token')?.value;
-        if (!token) {
-            const loginUrl = new URL('/login', request.url);
-            loginUrl.searchParams.set('redirect', pathname);
-            return NextResponse.redirect(loginUrl);
-        }
-    }
+    // Merge security headers into the auth response
+    response.headers.forEach((value, key) => {
+        authResponse.headers.set(key, value);
+    });
 
-    // ─── Redirect logged-in users away from login/register ───
-    const authPaths = ['/login', '/register'];
-    if (authPaths.includes(pathname)) {
-        const token = request.cookies.get('token')?.value;
-        if (token) {
-            return NextResponse.redirect(new URL('/dashboard', request.url));
-        }
-    }
-
-    return response;
+    return authResponse;
 }
 
 export const config = {

@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getUserFromRequest } from '@/lib/auth';
 import { getLevelFromXP } from '@/lib/scoring';
-import bcrypt from 'bcryptjs';
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await createSupabaseServerClient();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ user: null });
 
         const { data: user } = await supabase
@@ -28,8 +27,8 @@ export async function GET(request) {
 
 export async function PUT(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await createSupabaseServerClient();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { name, targetYear, dailyGoal, password } = await request.json();
@@ -40,7 +39,9 @@ export async function PUT(request) {
         if (targetYear) updates.target_year = targetYear;
         if (dailyGoal) updates.daily_goal = dailyGoal;
         if (password) {
-            updates.password_hash = await bcrypt.hash(password, 10);
+            // Update auth password
+            const { error: pwdError } = await supabase.auth.updateUser({ password });
+            if (pwdError) throw pwdError;
         }
 
         if (Object.keys(updates).length === 0) return NextResponse.json({ success: true });

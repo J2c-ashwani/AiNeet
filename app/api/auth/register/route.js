@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { hashPassword, generateToken } from '@/lib/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await createSupabaseServerClient();
         const { name, email, password, targetYear, referralCode } = await request.json();
 
         // Rate Limiting (5 req/min per IP)
@@ -45,8 +43,22 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
         }
 
-        const id = uuidv4();
-        const hash = hashPassword(password);
+        // Supabase Native SignUp
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email.toLowerCase().trim(),
+            password,
+            options: {
+                data: {
+                    full_name: cleanName
+                }
+            }
+        });
+
+        if (authError || !authData.user) {
+            return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
+        }
+
+        const id = authData.user.id;
         const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
         let referredBy = null;
@@ -73,7 +85,6 @@ export async function POST(request) {
                 id,
                 name: cleanName,
                 email: email.toLowerCase().trim(),
-                password_hash: hash,
                 target_year: parseInt(targetYear) || 2026,
                 referral_code: myReferralCode,
                 referred_by: referredBy
@@ -86,12 +97,10 @@ export async function POST(request) {
             .select('*')
             .eq('id', id)
             .single();
-        const token = generateToken(user);
-        const levelInfo = getLevelFromXP(user.xp);
 
-        const response = NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } });
-        response.cookies.set('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', path: '/', maxAge: 604800, sameSite: 'lax' });
-        return response;
+        const levelInfo = user ? getLevelFromXP(user.xp) : null;
+
+        return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {
         console.error('Register error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
