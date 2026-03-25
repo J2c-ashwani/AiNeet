@@ -112,7 +112,7 @@ export default function Home() {
                             <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#10b981' }}>✓</span> Native camera access for doubt solving</li>
                             <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#10b981' }}>✓</span> Smooth, distraction-free environment</li>
                         </ul>
-                        <a href="/register" className="btn btn-primary" style={{ background: 'white', color: '#0a0e1a', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
+                        <a href="/downloads/neet-coach.apk" download="AI-NEET-Coach.apk" className="btn btn-primary" style={{ background: 'white', color: '#0a0e1a', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
                             Get the Android APK →
                         </a>
                     </div>
