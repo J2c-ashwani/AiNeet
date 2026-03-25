@@ -82,6 +82,6 @@ export async function middleware(request) {
 export const config = {
     matcher: [
         // Match all routes except static files, _next, and webhook routes
-        '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|og-image.png|monitoring).*)',
+        '/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|og-image.png|monitoring|downloads/).*)',
     ],
 };
