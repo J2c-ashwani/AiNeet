@@ -16,12 +16,17 @@ export async function generateMetadata({ params }) {
         .eq('id', id)
         .single();
 
-    const challenge = battle ? { ...battle, creator_name: battle.users?.name } : null;
+    const challenge = battle ? {
+        ...battle,
+        creator_name: battle.users?.name,
+        creator_xp: battle.users?.xp,
+        creator_level: battle.users?.level
+    } : null;
 
     if (!challenge) return { title: 'Challenge Not Found' };
 
-    const title = `${challenge.creator_name} challenged you to a NEET duel! ⚔️`;
-    const description = `Can you beat ${challenge.creator_name}'s score in this fast-paced 10-question AI Mock Test? Accept the challenge now.`;
+    const title = `🔥 ${challenge.creator_name} (Level ${challenge.creator_level}) challenged you to a NEET duel! ⚔️`;
+    const description = `${challenge.creator_name} (Level ${challenge.creator_level} • ${challenge.creator_xp} XP) just generated a high-difficulty 10-question AI Mock Test. Do you have what it takes to beat them?`;
 
     return {
         title,

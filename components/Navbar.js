@@ -33,7 +33,8 @@ export default function Navbar() {
     return (
         <nav className="navbar">
             <div className="container mx-auto flex justify-between items-center px-4">
-                <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+                <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text flex items-center gap-2">
+                    <img src="/logo.png" alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
                     NEET Coach
                 </div>
 

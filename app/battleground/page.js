@@ -240,7 +240,7 @@ export default function BattlegroundPage() {
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                             <button onClick={() => navigator.clipboard.writeText(inviteCode)} className="btn btn-secondary">📋 Copy Code</button>
                             <button onClick={() => {
-                                const text = `Join my NEET Battleground! ⚔️\n\nCode: ${inviteCode}\n\nOpen AI NEET Coach → Battleground → Enter code\nhttps://aineetcoach.com/battleground`;
+                                const text = `Join my 200-Player NEET Battleground Mega-Quiz! ⚔️\n\nCode: ${inviteCode}\n\nAccept the challenge here:\nhttps://aineetcoach.com/battleground/invite/${inviteCode}`;
                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                             }} className="btn btn-success">📱 WhatsApp</button>
                         </div>

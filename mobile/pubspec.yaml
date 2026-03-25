@@ -51,6 +51,7 @@ dependencies:
   # Security
   crypto: ^3.0.6
   webview_flutter: ^4.13.1
+  in_app_review: ^2.0.11
 
 dev_dependencies:
   sentry_dart_plugin: ^3.2.1
@@ -59,6 +60,13 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   build_runner: ^2.4.13
   riverpod_generator: ^2.6.3
+  flutter_launcher_icons: ^0.14.2
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true

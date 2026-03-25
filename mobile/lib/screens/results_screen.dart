@@ -3,12 +3,39 @@ import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 import '../router/app_router.dart';
 
-class ResultsScreen extends StatelessWidget {
+import 'package:in_app_review/in_app_review.dart';
+
+class ResultsScreen extends StatefulWidget {
   final TestResult result;
   const ResultsScreen({super.key, required this.result});
 
+  @override
+  State<ResultsScreen> createState() => _ResultsScreenState();
+}
+
+class _ResultsScreenState extends State<ResultsScreen> {
+  final InAppReview _inAppReview = InAppReview.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _triggerReviewIfExcellent();
+  }
+
+  Future<void> _triggerReviewIfExcellent() async {
+    // 💥 Dopamine Trigger: Only ask for 5 stars when they get >80% accuracy!
+    if (widget.result.accuracy >= 80) {
+      if (await _inAppReview.isAvailable()) {
+        // Add a slight delay so they can see their awesome score first
+        Future.delayed(const Duration(seconds: 2), () {
+          _inAppReview.requestReview();
+        });
+      }
+    }
+  }
+
   Color get _scoreColor {
-    final pct = result.score / result.maxScore;
+    final pct = widget.result.score / widget.result.maxScore;
     if (pct >= 0.8) return const Color(0xFF10b981);
     if (pct >= 0.6) return const Color(0xFFf59e0b);
     return const Color(0xFFef4444);
@@ -16,6 +43,7 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final result = widget.result;
     final grade = result.accuracy >= 80 ? 'Excellent! 🏆' : result.accuracy >= 60 ? 'Good Work! 👍' : 'Keep Practicing 💪';
 
     return Scaffold(

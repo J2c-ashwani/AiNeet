@@ -35,7 +35,7 @@ export default function Home() {
             {/* Navbar */}
             <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100, height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', background: 'rgba(10, 14, 26, 0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 800, color: '#f1f5f9' }}>
-                    <span style={{ fontSize: '1.6rem' }}>🧠</span>
+                    <img src="/logo.png" alt="AI NEET Coach Logo" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
                     <span style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
@@ -57,7 +57,7 @@ export default function Home() {
                         <span style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Unfair AI Advantage.</span>
                     </h1>
                     <p style={{ fontSize: '1.2rem', color: '#94a3b8', maxWidth: '700px', margin: '0 auto 40px', lineHeight: 1.6 }}>
-                        India's most advanced AI-powered NEET preparation platform. Generate personalized mock tests, get instant doubt resolutions via image upload, and follow a study plan tailored to your weak areas.
+                        Prepare for the NEET exam with AI NEET Coach—the <b>ONLY</b> platform offering fully customizable <strong style={{ color: '#f8fafc' }}>720-marks mock tests</strong> tailored to your unique preparation level!
                     </p>
 
                     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -119,14 +119,8 @@ export default function Home() {
                     <div style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center' }}>
                         <div style={{ width: '280px', height: '560px', borderRadius: '40px', background: '#0a0e1a', border: '8px solid #1e293b', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', position: 'relative', overflow: 'hidden' }}>
                             {/* Mock Mockup Screen */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(180deg, rgba(99,102,241,0.2) 0%, #0a0e1a 40%)', padding: '20px' }}>
-                                <div style={{ height: '24px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px', width: '40%', margin: '20px auto 40px' }} />
-                                <div style={{ height: '100px', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', marginBottom: '16px' }} />
-                                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                                    <div style={{ height: '80px', flex: 1, background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }} />
-                                    <div style={{ height: '80px', flex: 1, background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }} />
-                                </div>
-                                <div style={{ height: '200px', background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }} />
+                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+                                <img src="/mockup.png" alt="AI NEET Coach App" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
                         </div>
                     </div>
@@ -175,7 +169,7 @@ export default function Home() {
                 <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '48px', justifyContent: 'space-between' }}>
                     <div style={{ maxWidth: '300px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '16px' }}>
-                            <span>🧠</span> AI NEET Coach
+                            <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', display: 'inline', marginRight: '8px', borderRadius: '6px' }} /> AI NEET Coach
                         </div>
                         <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.6 }}>India's premier intelligent learning system designed exclusively to help students crack the National Eligibility cum Entrance Test.</p>
                     </div>
