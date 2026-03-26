@@ -1906,3 +1906,28 @@ select.input {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ---- Responsive Utilities for Landing Page ---- */
+@media (max-width: 768px) {
+  .hero-container { padding: 60px 0 40px !important; }
+  .hero-title { font-size: 2.2rem !important; }
+  .hero-buttons { flex-direction: column !important; width: 100%; padding: 0 16px; }
+  .hero-buttons > a { width: 100%; text-align: center; }
+  .features-grid { grid-template-columns: 1fr !important; padding: 0 16px !important; }
+  .app-section { padding: 32px 24px !important; gap: 32px !important; flex-direction: column !important; text-align: center; }
+  .app-section-content { width: 100% !important; flex: none !important; }
+  .app-section ul { margin: 0 auto 32px !important; width: fit-content; text-align: left; }
+  .app-mockup-wrapper { width: 100% !important; flex: none !important; justify-content: center !important; }
+  .faq-container { padding: 60px 16px !important; }
+  .cta-section { padding: 60px 16px !important; }
+  .cta-title { font-size: 2rem !important; }
+  .footer-container { gap: 40px !important; flex-direction: column !important; }
+  .footer-links-wrapper { gap: 40px !important; flex-direction: column !important; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .nav-brand-text { display: none !important; }
+  .nav-actions { gap: 8px !important; }
+  .nav-actions .btn-ghost { padding: 8px !important; width: max-content; }
+  .nav-actions .btn-primary { padding: 8px 12px !important; font-size: 0.85rem !important; }
+}
