@@ -32,9 +32,13 @@ void main() async {
   // Lock to portrait
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  // Firebase
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Firebase — wrapped in try-catch so the app launches even if Firebase fails
+  try {
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  } catch (e) {
+    debugPrint('⚠️ Firebase init failed: $e — app will continue without push notifications');
+  }
 
   // Sentry crash reporting
   await SentryFlutter.init(
@@ -110,56 +114,60 @@ class _NeetCoachAppState extends ConsumerState<NeetCoachApp> {
   }
 
   Future<void> _setupFCM() async {
-    final messaging = FirebaseMessaging.instance;
+    try {
+      final messaging = FirebaseMessaging.instance;
 
-    await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+      await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
 
-    await messaging.subscribeToTopic('all_users');
-    await messaging.subscribeToTopic('daily_reminders');
+      await messaging.subscribeToTopic('all_users');
+      await messaging.subscribeToTopic('daily_reminders');
 
-    // Get and sync FCM token
-    final token = await messaging.getToken();
-    if (token != null) {
-      await SecureStorage().saveFcmToken(token);
-      await ApiClient().updateFcmToken(token);
-    }
-
-    // Token refresh
-    messaging.onTokenRefresh.listen((newToken) async {
-      await SecureStorage().saveFcmToken(newToken);
-      await ApiClient().updateFcmToken(newToken);
-    });
-
-    // Foreground notifications
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Show in-app snackbar
-      final ctx = _router.routerDelegate.navigatorKey.currentContext;
-      if (ctx != null && message.notification != null) {
-        ScaffoldMessenger.of(ctx).showSnackBar(
-          SnackBar(
-            content: Text(message.notification!.title ?? 'Notification'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: const Color(0xFF6366f1),
-            action: SnackBarAction(
-              label: 'View',
-              textColor: Colors.white,
-              onPressed: () => _handleNotificationTap(message),
-            ),
-          ),
-        );
+      // Get and sync FCM token
+      final token = await messaging.getToken();
+      if (token != null) {
+        await SecureStorage().saveFcmToken(token);
+        await ApiClient().updateFcmToken(token);
       }
-    });
 
-    // Notification tap when app is in background
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
+      // Token refresh
+      messaging.onTokenRefresh.listen((newToken) async {
+        await SecureStorage().saveFcmToken(newToken);
+        await ApiClient().updateFcmToken(newToken);
+      });
 
-    // Notification tap when app was terminated
-    final initialMessage = await messaging.getInitialMessage();
-    if (initialMessage != null) _handleNotificationTap(initialMessage);
+      // Foreground notifications
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        // Show in-app snackbar
+        final ctx = _router.routerDelegate.navigatorKey.currentContext;
+        if (ctx != null && message.notification != null) {
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(
+              content: Text(message.notification!.title ?? 'Notification'),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: const Color(0xFF6366f1),
+              action: SnackBarAction(
+                label: 'View',
+                textColor: Colors.white,
+                onPressed: () => _handleNotificationTap(message),
+              ),
+            ),
+          );
+        }
+      });
+
+      // Notification tap when app is in background
+      FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
+
+      // Notification tap when app was terminated
+      final initialMessage = await messaging.getInitialMessage();
+      if (initialMessage != null) _handleNotificationTap(initialMessage);
+    } catch (e) {
+      debugPrint('⚠️ FCM setup failed: $e — push notifications disabled');
+    }
   }
 
   void _handleNotificationTap(RemoteMessage message) {
