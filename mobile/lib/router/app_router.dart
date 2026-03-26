@@ -37,7 +37,7 @@ class AppRoutes {
   static const ncert = '/ncert';
 }
 
-GoRouter createRouter(WidgetRef ref) {
+GoRouter createRouter(Ref ref) {
   return GoRouter(
     initialLocation: AppRoutes.splash,
     redirect: (BuildContext context, GoRouterState state) {
@@ -128,5 +128,5 @@ GoRouter createRouter(WidgetRef ref) {
 final routerProvider = Provider<GoRouter>((ref) {
   // Rebuild router when auth state changes
   ref.watch(authNotifierProvider);
-  return createRouter(ref as WidgetRef);
+  return createRouter(ref);
 });

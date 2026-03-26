@@ -32,12 +32,13 @@ void main() async {
   // Lock to portrait
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  // Firebase — wrapped in try-catch so the app launches even if Firebase fails
+  // Firebase — wrapped in try-catch with a timeout so the app launches even if Firebase hangs
   try {
-    await Firebase.initializeApp();
+    // Add a 3-second timeout to prevent infinite hanging on devices with broken Play Services
+    await Firebase.initializeApp().timeout(const Duration(seconds: 3));
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   } catch (e) {
-    debugPrint('⚠️ Firebase init failed: $e — app will continue without push notifications');
+    debugPrint('⚠️ Firebase init failed or timed out: $e — app will continue without push notifications');
   }
 
   // Sentry crash reporting
