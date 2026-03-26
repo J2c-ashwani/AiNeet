@@ -29,12 +29,12 @@ android {
 
     signingConfigs {
         create("release") {
-            // NOTE: Set these via environment variables or a local keystore.properties file
-            // Generate keystore: keytool -genkey -v -keystore neet-coach.jks -alias neetcoach -keyalg RSA -keysize 2048 -validity 10000
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "debug.keystore")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "androiddebugkey"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "android"
+            // NOTE: For CI/CD, set these via environment variables.
+            // Locally, the defaults below point to the generated neet-coach.jks keystore.
+            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "neet-coach.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "neetcoach123"
+            keyAlias = System.getenv("KEY_ALIAS") ?: "neetcoach"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: "neetcoach123"
         }
     }
 
