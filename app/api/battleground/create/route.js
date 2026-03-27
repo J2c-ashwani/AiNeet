@@ -61,7 +61,7 @@ export async function POST(request) {
             battleId,
             inviteCode,
             questionCount: questions.length,
-            timeLimitMinutes
+            timeLimitMinutes: rawTL
         });
 
     } catch (error) {
