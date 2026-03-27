@@ -75,7 +75,7 @@ export async function POST(request) {
             queryBuilder = queryBuilder.eq('difficulty', difficulty);
         }
         if (type === 'yearly_pyq' && year) {
-            queryBuilder = queryBuilder.eq('year_asked', String(year));
+            queryBuilder = queryBuilder.ilike('year_asked', `%${year}%`);
             queryBuilder = queryBuilder.eq('is_pyq', 1);
         }
 

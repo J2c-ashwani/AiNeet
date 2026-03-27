@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import { createSupabaseClient } from '@/utils/supabase/client';
+import { useAuth } from '@/context/AuthContext';
 
 export default function BattlegroundPage() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const { user, loading: authLoading } = useAuth();
     const [view, setView] = useState('home'); // home | lobby | test | results
     const [battleId, setBattleId] = useState(null);
     const [inviteCode, setInviteCode] = useState('');
@@ -27,15 +27,11 @@ export default function BattlegroundPage() {
     const supabase = createSupabaseClient();
 
     useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (!data.user) router.push('/login');
-            else setUser(data.user);
-        });
         return () => {
             clearInterval(timerRef.current);
             if (channelRef.current) supabase.removeChannel(channelRef.current);
         };
-    }, [router]);
+    }, []);
 
     // Real-time Supabase Broadcast connection
     useEffect(() => {
@@ -175,12 +171,31 @@ export default function BattlegroundPage() {
 
     const formatTime = (s) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
-    if (!user) return null;
+    if (authLoading) return (
+        <div style={{ maxWidth: 700, margin: '60px auto', padding: '0 24px' }}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                <div style={{ width: 120, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.05)', margin: '0 auto 12px' }} />
+                <div style={{ width: 260, height: 16, borderRadius: 8, background: 'rgba(255,255,255,0.04)', margin: '0 auto' }} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+                {[0,1].map(i => <div key={i} style={{ height: 200, borderRadius: 20, background: 'rgba(255,255,255,0.04)' }} />)}
+            </div>
+        </div>
+    );
+
+    if (!user) return (
+        <div style={{ maxWidth: 700, margin: '80px auto', padding: '0 24px', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚔️</div>
+            <h2 style={{ color: '#f8fafc', marginBottom: '12px' }}>Join the Battleground</h2>
+            <p style={{ color: '#94a3b8', marginBottom: '32px' }}>Sign in to create and join live NEET battles with other aspirants.</p>
+            <a href="/login" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '12px 28px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700 }}>Sign In to Battle</a>
+        </div>
+    );
 
     // ===== HOME VIEW =====
     if (view === 'home') return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 700 }}>
                 <div className="page-header" style={{ textAlign: 'center' }}>
                     <h1 className="page-title">⚔️ NEET Battleground</h1>
@@ -221,7 +236,7 @@ export default function BattlegroundPage() {
     // ===== LOBBY VIEW =====
     if (view === 'lobby') return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🏟️</div>
                 <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Battleground Lobby</h1>
@@ -341,7 +356,7 @@ export default function BattlegroundPage() {
     // ===== RESULTS VIEW =====
     if (view === 'results') return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
                 <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🏆</div>
                 <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '8px' }}>Battle Results</h1>

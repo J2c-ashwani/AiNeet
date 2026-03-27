@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import SnapSolver from '@/components/SnapSolver';
 import ReactMarkdown from 'react-markdown';
 
@@ -16,8 +15,7 @@ export default function DoubtSolver() {
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (!data.user) router.push('/login');
-            else setUser(data.user);
+            if (data.user) setUser(data.user);
         });
     }, [router]);
 
@@ -35,6 +33,10 @@ export default function DoubtSolver() {
     };
 
     const handleSend = async () => {
+        if (!user) {
+            router.push('/login?redirect=/doubts');
+            return;
+        }
         if (!input.trim() && !sending) return; // Changed 'loading' to 'sending' to match existing state
         const userMsg = input.trim();
         setInput('');
@@ -67,7 +69,7 @@ export default function DoubtSolver() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page" style={{ maxWidth: 800, margin: '0 auto', height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
 

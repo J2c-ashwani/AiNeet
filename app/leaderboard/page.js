@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 
 export default function LeaderboardPage() {
     const router = useRouter();
@@ -9,13 +8,11 @@ export default function LeaderboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(auth => {
-            if (!auth.user) { router.push('/login'); return; }
-            fetch('/api/leaderboard').then(r => r.json()).then(data => {
-                setLeaderboard(data.leaderboard || []);
-                setLoading(false);
-            });
-        }).catch(() => router.push('/login'));
+        fetch('/api/auth/me').then(r => r.json()).then(() => {});
+        fetch('/api/leaderboard').then(r => r.json()).then(data => {
+            setLeaderboard(data.leaderboard || []);
+            setLoading(false);
+        }).catch(() => setLoading(false));
     }, [router]);
 
     if (loading) return (
@@ -26,7 +23,7 @@ export default function LeaderboardPage() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page" style={{ maxWidth: 700 }}>
                 <div className="page-header">

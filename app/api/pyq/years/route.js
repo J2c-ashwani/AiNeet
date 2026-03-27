@@ -16,9 +16,19 @@ export async function GET() {
 
         if (error) throw error;
 
-        // Extract unique years
-        const yearsSet = new Set(data.map(row => row.year_asked));
-        const years = Array.from(yearsSet);
+        // Extract unique 4-digit years using regex
+        const yearsSet = new Set();
+        data.forEach(row => {
+            if (row.year_asked) {
+                const matches = row.year_asked.match(/\b(19|20)\d{2}\b/g);
+                if (matches) {
+                    matches.forEach(y => yearsSet.add(y));
+                }
+            }
+        });
+
+        // Sort descending
+        const years = Array.from(yearsSet).sort((a, b) => parseInt(b) - parseInt(a));
 
         return NextResponse.json({ years });
     } catch (error) {

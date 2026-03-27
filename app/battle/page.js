@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import Navbar from '@/components/Navbar';
 
 export default function BattlePage() {
     const [gameState, setGameState] = useState('lobby'); // lobby | matching | playing | calculating | result
@@ -146,7 +145,7 @@ export default function BattlePage() {
     // ===== LOBBY =====
     if (gameState === 'lobby') return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
                 <div className="page-header">
                     <h1 className="page-title">⚔️ 1v1 AI Battle Arena</h1>

@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import { ActivityHeatmap } from '@/components/Charts';
 import RevisionCard from '@/components/RevisionCard';
 import CoachWidget from '@/components/CoachWidget';
@@ -43,7 +42,7 @@ export default function Dashboard() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page">
                 {/* Welcome */}

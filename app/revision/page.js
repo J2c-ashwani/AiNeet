@@ -1,7 +1,6 @@
 
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 
 export default function RevisionPage() {
@@ -54,7 +53,7 @@ export default function RevisionPage() {
     if (reviews.length === 0) {
         return (
             <div className="min-h-screen flex flex-col">
-                <Navbar />
+                
                 <div className="flex-1 flex flex-col items-center justify-center p-4">
                     <div className="card text-center p-8 max-w-md">
                         <div className="text-4xl mb-4">🎉</div>
@@ -71,7 +70,7 @@ export default function RevisionPage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
-            <Navbar />
+            
             <div className="flex-1 flex flex-col items-center justify-center p-4">
                 <div className="w-full max-w-2xl">
                     <div className="flex justify-between items-center mb-4">

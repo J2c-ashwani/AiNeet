@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 
 export default function MistakesPage() {
     const router = useRouter();
@@ -13,13 +12,12 @@ export default function MistakesPage() {
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(auth => {
-            if (!auth.user) { router.push('/login'); return; }
-            setUser(auth.user);
+            if (auth.user) setUser(auth.user);
             fetch('/api/performance').then(r => r.json()).then(data => {
                 setMistakes(data.weakAreas || []);
                 setLoading(false);
             });
-        }).catch(() => router.push('/login'));
+        }).catch(() => setLoading(false));
     }, [router]);
 
     const handleExportPDF = async () => {
@@ -47,7 +45,7 @@ export default function MistakesPage() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page" style={{ maxWidth: 800 }}>
                 <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>

@@ -6,12 +6,15 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables before getting the DB
+dotenv.config({ path: path.join(__dirname, '../.env') });
+// We also try .env.local just in case
 dotenv.config({ path: path.join(__dirname, '../.env.local') });
 
-import pg from 'pg';
-const { Pool } = pg;
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-async function query(sql, params = []) { const { rows } = await pool.query(sql, params); return rows; }
+import { getDb } from '../lib/db.js';
+
+const db = getDb();
 
 const CHAPTER_NAME = 'Redox Reactions';
 const SUBJECT_NAME = 'Chemistry';
@@ -70,8 +73,8 @@ const QUESTIONS = [
     },
     {
         qNo: 9, topic: 'Balancing of Redox Reaction', year: '2019',
-        text: `Which of the following reactions are disproportionation reaction? (2019) A. 2 0 2Cu Cu Cu + +  → + B. 2 4 4 2 2 3MnO 4H 2MnO MnO 2H O − + − +  → + + C. 4 2 4 2 2 2KMnO K MnO MnO O ∆  → + + D. 2 ü 2MnO 3Mn 2H O 5MnO 4H − + ⊕ + +  → + Select the correct option from the following a.`,
-        A: `and`, B: `only b.`, C: `,`, D: `and`
+        text: `Which of the following reactions are disproportionation reaction? (2019) A. 2 0 2Cu Cu Cu + +  → + B. 2 4 4 2 2 3MnO 4H 2MnO MnO 2H O − + − +  → + + C. 4 2 4 2 2 2KMnO K MnO MnO O ∆  → + + D. 2 ü 2MnO 3Mn 2H O 5MnO 4H − + ⊕ + +  → + Select the correct option from the following`,
+        A: `(A) and (B) only`, B: `(A), (B) and (C)`, C: `(A), (C) and (D)`, D: `(A) and (D) only 7 C H A P T E R Redox Reactions Redox Reactions 2 1 2 3 4 5 6 7 8 9 10 b d a b b c c a a b Answer Key`
     },
     {
         qNo: 10, topic: 'Oxidation Number', year: '2018',
@@ -83,40 +86,38 @@ const QUESTIONS = [
 async function seed() {
     console.log(`Starting seeding for ${SUBJECT_NAME} - ${CHAPTER_NAME}...`);
     try {
-        // 1. Get Subject ID
-        let subjectRows = await query('SELECT id FROM subjects WHERE name = $1', [SUBJECT_NAME]);
-        if (subjectRows.length === 0) {
+        let subjectRow = await db.get('SELECT id FROM subjects WHERE name = ?', [SUBJECT_NAME]);
+        if (!subjectRow) {
             console.log(`Inserting Subject: ${SUBJECT_NAME}`);
-            subjectRows = await query('INSERT INTO subjects (name) VALUES ($1) RETURNING id', [SUBJECT_NAME]);
+            const info = await db.run('INSERT INTO subjects (name) VALUES (?) RETURNING id', [SUBJECT_NAME]);
+            subjectRow = { id: info.lastInsertRowid };
         }
-        const subjectId = subjectRows[0].id;
+        const subjectId = subjectRow.id;
 
-        // 2. Get Chapter ID
-        let chapterRows = await query('SELECT id FROM chapters WHERE subject_id = $1 AND name = $2', [subjectId, CHAPTER_NAME]);
-        if (chapterRows.length === 0) {
+        let chapterRow = await db.get('SELECT id FROM chapters WHERE subject_id = ? AND name = ?', [subjectId, CHAPTER_NAME]);
+        if (!chapterRow) {
             console.log(`Inserting Chapter: ${CHAPTER_NAME}`);
-            chapterRows = await query('INSERT INTO chapters (subject_id, name, class_level, order_index) VALUES ($1, $2, $3, $4) RETURNING id', [subjectId, CHAPTER_NAME, CLASS_LEVEL, 0]);
+            const info = await db.run('INSERT INTO chapters (subject_id, name, class_level, order_index) VALUES (?, ?, ?, ?) RETURNING id', [subjectId, CHAPTER_NAME, CLASS_LEVEL, 0]);
+            chapterRow = { id: info.lastInsertRowid };
         }
-        const chapterId = chapterRows[0].id;
+        const chapterId = chapterRow.id;
 
-        // 3. Insert Topics
         const topicIdMap = {};
         for (const topicName of TOPICS) {
-            let tRows = await query('SELECT id FROM topics WHERE chapter_id = $1 AND name = $2', [chapterId, topicName]);
-            if (tRows.length === 0) {
-                tRows = await query('INSERT INTO topics (chapter_id, name) VALUES ($1, $2) RETURNING id', [chapterId, topicName]);
+            let tRow = await db.get('SELECT id FROM topics WHERE chapter_id = ? AND name = ?', [chapterId, topicName]);
+            if (!tRow) {
+                const info = await db.run('INSERT INTO topics (chapter_id, name) VALUES (?, ?) RETURNING id', [chapterId, topicName]);
+                tRow = { id: info.lastInsertRowid };
             }
-            topicIdMap[topicName] = tRows[0].id;
+            topicIdMap[topicName] = tRow.id;
         }
 
-        // 4. Insert Questions
         let added = 0;
         let skipped = 0;
         for (const q of QUESTIONS) {
             const topicId = topicIdMap[q.topic];
-            // Check if exists
-            const existing = await query('SELECT id FROM questions WHERE chapter_id = $1 AND text = $2', [chapterId, q.text]);
-            if (existing.length > 0) {
+            const existing = await db.get('SELECT id FROM questions WHERE chapter_id = ? AND text = ?', [chapterId, q.text]);
+            if (existing) {
                 skipped++;
                 continue;
             }
@@ -124,17 +125,17 @@ async function seed() {
             const correctOption = ANSWER_KEY[q.qNo] || 'A';
             const examName = parseInt(q.year) < 2013 ? 'AIPMT' : 'NEET';
 
-            await query(`
+            await db.run(`
                 INSERT INTO questions (
                     subject_id, chapter_id, topic_id, text,
                     option_a, option_b, option_c, option_d,
                     correct_option, difficulty, explanation,
                     year_asked, is_pyq, exam_name
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
             `, [
                 subjectId, chapterId, topicId, q.text,
                 q.A, q.B, q.C, q.D,
-                correctOption, 'neet', 'Chemistry PYQ', q.year, 1, examName
+                correctOption, 'neet', 'Chemistry PYQ', q.year, examName
             ]);
             added++;
         }
@@ -142,8 +143,6 @@ async function seed() {
         console.log(`✅ Done! Added ${added} questions (Skipped ${skipped})`);
     } catch (e) {
         console.error('Failed to seed:', e);
-    } finally {
-        pool.end();
     }
 }
 

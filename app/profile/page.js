@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import ParentSettings from '@/components/ParentSettings';
 
 const ACHIEVEMENT_ICONS = {
@@ -48,7 +47,7 @@ export default function ProfilePage() {
 
     return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 700 }}>
                 {/* Profile Hero */}
                 <div className="card mb-6" style={{ textAlign: 'center', padding: '40px 24px', position: 'relative', overflow: 'hidden' }}>

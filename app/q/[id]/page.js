@@ -1,5 +1,4 @@
 import { getSupabase } from '@/lib/supabase';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import MathRenderer from '@/components/MathRenderer';
 
@@ -54,7 +53,7 @@ export default async function QuestionPage({ params }) {
     if (!question) {
         return (
             <div>
-                <Navbar />
+                
                 <div className="page text-center pb-20 pt-20">
                     <h1 className="text-2xl font-bold">Question not found</h1>
                     <Link href="/" className="text-secondary mt-4 block">Return Home</Link>
@@ -97,7 +96,7 @@ export default async function QuestionPage({ params }) {
 
     return (
         <div>
-            <Navbar />
+            
 
             {/* Inject JSON-LD */}
             <script

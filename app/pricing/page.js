@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 import { useRouter } from 'next/navigation';
 
 export default function PricingPage() {
@@ -67,7 +66,7 @@ export default function PricingPage() {
 
     return (
         <div>
-            <Navbar />
+            
             <div className="page" style={{ maxWidth: 1000 }}>
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-extrabold mb-4" style={{ background: 'linear-gradient(to right, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>

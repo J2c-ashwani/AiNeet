@@ -2,7 +2,6 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import Navbar from '@/components/Navbar';
 import { NCERT_BOOKS, getChapterPdfUrl } from '@/lib/ncert-data';
 
 // react-pdf uses DOM APIs (like DOMMatrix) which crash during SSR. Force client-side rendering.
@@ -104,7 +103,7 @@ function NCERTReaderContent() {
 export default function NCERTReaderPage() {
     return (
         <div className="h-screen flex flex-col bg-gray-950">
-            <Navbar />
+            
             <Suspense fallback={<div className="flex-1 flex justify-center items-center"><div className="spinner mx-auto w-8 h-8"></div></div>}>
                 <NCERTReaderContent />
             </Suspense>

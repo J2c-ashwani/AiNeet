@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 
 export default function StudyPlanPage() {
     const router = useRouter();
@@ -13,10 +12,9 @@ export default function StudyPlanPage() {
             fetch('/api/auth/me').then(r => r.json()),
             fetch('/api/study-plan').then(r => r.json())
         ]).then(([auth, planData]) => {
-            if (!auth.user) { router.push('/login'); return; }
             setPlan(planData.plan);
             setLoading(false);
-        }).catch(() => router.push('/login'));
+        }).catch(() => setLoading(false));
     }, [router]);
 
     if (loading) return (
@@ -27,7 +25,7 @@ export default function StudyPlanPage() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page" style={{ maxWidth: 800 }}>
                 <div className="page-header">

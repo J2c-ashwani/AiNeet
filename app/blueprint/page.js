@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 
 const SUBJECT_CONFIG = {
     physics: { icon: '⚡', color: '#6366f1', label: 'Physics', total: 45 },
@@ -38,7 +37,7 @@ export default function BlueprintPage() {
 
     if (loading) {
         return (
-            <div><Navbar />
+            <div>
                 <div className="page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
                     <div className="spinner" style={{ width: 40, height: 40 }}></div>
                 </div>
@@ -105,7 +104,7 @@ export default function BlueprintPage() {
 
     return (
         <div>
-            <Navbar />
+            
             <div className="page">
                 <div className="page-header">
                     <h1 className="page-title">📊 NEET Exam Blueprint</h1>

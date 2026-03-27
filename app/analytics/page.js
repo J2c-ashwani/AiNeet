@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import { ScoreTrendChart, SubjectRadarChart } from '@/components/Charts';
 
 export default function AnalyticsPage() {
@@ -32,7 +31,7 @@ export default function AnalyticsPage() {
 
     return (
         <div>
-            <Navbar />
+            
 
             <div className="page">
                 <div className="page-header">

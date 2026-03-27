@@ -1,4 +1,5 @@
 import './globals.css';
+import ClientLayout from '@/components/ClientLayout';
 
 const APP_NAME = 'AI NEET Coach';
 const APP_DESCRIPTION = 'India\'s #1 AI-powered NEET preparation platform. Get personalized mock tests, instant AI doubt solving, adaptive study plans, rank prediction, spaced repetition, and detailed performance analytics — all powered by Gemini AI. Free forever plan available.';
@@ -183,8 +184,10 @@ export default function RootLayout({ children }) {
                 <meta name="google-play-app" content="app-id=com.aineetcoach.app" />
                 <JsonLd />
             </head>
-            <body suppressHydrationWarning>
-                {children}
+            <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <ClientLayout>
+                    {children}
+                </ClientLayout>
             </body>
         </html>
     );

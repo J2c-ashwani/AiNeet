@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 
 const SUBJECT_ICONS = { physics: '⚡', chemistry: '🧪', biology: '🧬' };
@@ -14,6 +13,7 @@ export default function NCERTLibrary() {
     const [expandedBook, setExpandedBook] = useState(null);
 
     const [generating, setGenerating] = useState(null);
+    const [noPyqChapter, setNoPyqChapter] = useState(null);
 
     useEffect(() => {
         fetch('/api/ncert/library')
@@ -24,6 +24,7 @@ export default function NCERTLibrary() {
 
     const handleStartPyq = async (chapterName, pyqCount) => {
         setGenerating(chapterName);
+        setNoPyqChapter(null);
         try {
             const res = await fetch('/api/tests/pyq', {
                 method: 'POST',
@@ -37,6 +38,9 @@ export default function NCERTLibrary() {
             if (res.ok) {
                 sessionStorage.setItem('currentTest', JSON.stringify(data));
                 window.location.href = `/test/${data.testId}`;
+            } else if (res.status === 404) {
+                setNoPyqChapter(chapterName);
+                setTimeout(() => setNoPyqChapter(null), 4000);
             } else {
                 alert(data.error || 'Failed to generate PYQ test. Try another chapter.');
             }
@@ -52,7 +56,7 @@ export default function NCERTLibrary() {
 
     return (
         <div>
-            <Navbar />
+            
             <div className="page">
                 <div className="page-header">
                     <h1 className="page-title">📚 NCERT Smart Library</h1>
@@ -154,9 +158,9 @@ export default function NCERTLibrary() {
                                                             ) : (
                                                                 <button
                                                                     onClick={() => handleStartPyq(ch.title, ch.pyqCount)}
-                                                                    disabled={generating === ch.title}
-                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(245,158,11,0.1)`, color: '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: `1px solid rgba(245,158,11,0.3)`, cursor: generating === ch.title ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : `🎯 Solve PYQs (${ch.pyqCount})`}
+                                                                    disabled={generating === ch.title || noPyqChapter === ch.title}
+                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: noPyqChapter === ch.title ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)', color: noPyqChapter === ch.title ? '#ef4444' : '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(245,158,11,0.3)', cursor: (generating === ch.title || noPyqChapter === ch.title) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
+                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? '❌ No PYQs Available' : `🎯 Solve PYQs (${ch.pyqCount})`}
                                                                 </button>
                                                             )}
                                                         </div>

@@ -6,19 +6,22 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables before getting the DB
+dotenv.config({ path: path.join(__dirname, '../.env') });
+// We also try .env.local just in case
 dotenv.config({ path: path.join(__dirname, '../.env.local') });
 
-import pg from 'pg';
-const { Pool } = pg;
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-async function query(sql, params = []) { const { rows } = await pool.query(sql, params); return rows; }
+import { getDb } from '../lib/db.js';
+
+const db = getDb();
 
 const CHAPTER_NAME = 'Amines';
 const SUBJECT_NAME = 'Chemistry';
 const CLASS_LEVEL = 11;
 
 const TOPICS = [
-    'Chemical Reactions of Amines',
+    'Chemical Reactions of Amines & Anilines',
     'Preparation of Amines',
     'Diazonium Salts'
 ];
@@ -29,7 +32,7 @@ const ANSWER_KEY = {
 
 const QUESTIONS = [
     {
-        qNo: 1, topic: 'Chemical Reactions of Amines', year: '2020',
+        qNo: 1, topic: 'Chemical Reactions of Amines & Anilines', year: '2020',
         text: `Reaction of propanamide with ethanolic sodium hydroxide and bromine will give (2020-Covid)`,
         A: `Methylamine`, B: `Propylamine`, C: `Aniline`, D: `Ethylamine`
     },
@@ -44,7 +47,7 @@ const QUESTIONS = [
         A: `Statements I is incorrect but Statements II is correct.`, B: `Both Statements I and Statements II are correct`, C: `Both Statements I and Statements II are incorrect.`, D: `Statements I is correct but Statement II is incorrect.`
     },
     {
-        qNo: 4, topic: 'Chemical Reactions of Amines', year: '2021',
+        qNo: 4, topic: 'Chemical Reactions of Amines & Anilines', year: '2021',
         text: `Identify the compound that will react with Hinsberg’s reagent to give a solid which dissolves in alkali. (2021)`,
         A: `CH 3 CH 3 CH 2 NH`, B: `CH 3 CH 2 NH 2`, C: `CH 3 CH 3 CH 2 CH 3 CH 2 N`, D: `CH 3 CH 2 NO 2`
     },
@@ -59,7 +62,7 @@ const QUESTIONS = [
         A: `(CH 3 ) 2 NH > CH 3 NH 2 > (CH 3 ) 3 N`, B: `(CH 3 ) 3 N > CH 3 NH 2 > (CH 3 ) 2 NH`, C: `(CH 3 ) 3 N > (CH 3 ) 2 NH > CH 3 NH 2`, D: `CH 3 NH 2 > (CH 3 ) 2 NH > (CH 3 ) 3 N`
     },
     {
-        qNo: 7, topic: 'Chemical Reactions of Amines', year: '2018',
+        qNo: 7, topic: 'Chemical Reactions of Amines & Anilines', year: '2018',
         text: `Nitration of aniline in strong acidic medium also gives m-nitroaniline because: (2018)`,
         A: `Inspite of substituents nitro group always goes to only m-position.`, B: `In electrophilic substitution reactions, amino group is meta directive.`, C: `In acidic (strong) medium, aniline is present as anilinium ion.`, D: `In absence of substituents nitro group always goes to m-position.`
     },
@@ -74,7 +77,7 @@ const QUESTIONS = [
         A: `Arylamines are generally more basic than alkylamines, because the nitrogen atom in arylamines is sp-hybridised.`, B: `Arylamines are generally less basic than alkylamines because the nitrogen lone pair electrons are delocalized by interaction with the aromatic ring π electrons system.`, C: `Arylamines are generally more basic than alkylamines because the nitrogen lone pair electrons are not delocalised by interaction with the aromatic ring π electron system.`, D: `Arylamines are generally more basic than alkylamines because of aryl group`
     },
     {
-        qNo: 10, topic: 'Chemical Reactions of Amines', year: '2015 Re',
+        qNo: 10, topic: 'Chemical Reactions of Amines & Anilines', year: '2015 Re',
         text: `The following reaction is known by the name: [OS] (2015 Re)`,
         A: `Schotten-Baumen reaction`, B: `Friedel-Craft’s reaction`, C: `Perkin’s reaction`, D: `Acetylation reaction Diazonium Salt (Preparation, Physical & Chemical Properties)`
     },
@@ -89,14 +92,14 @@ const QUESTIONS = [
         A: `CH 3 CH 2 OH`, B: `HI`, C: `CuCN/KCN`, D: `H 2 O`
     },
     {
-        qNo: 13, topic: 'Chemical Reactions of Amines', year: '2016',
+        qNo: 13, topic: 'Chemical Reactions of Amines & Anilines', year: '2016',
         text: `A given nitrogen-containing aromatic compound A reacts with Sn/HCl, followed by HNO 2 to give an unstable compound B. B, on treatment with phenol, forms a beautiful coloured compound C with the molecular formula C 12 H 10 N 2 O. The structure of compound A is: (2016 - II)`,
         A: `CN`, B: `CONH 2`, C: `NH 2`, D: `NO 2`
     },
     {
-        qNo: 14, topic: 'Preparation of Amines', year: '2020',
-        text: `In the following reaction, the product`,
-        A: `(A) is: (2014) a. b. c. d.`, B: `Option B`, C: `Option C`, D: `Option D`
+        qNo: 14, topic: 'Preparation of Amines', year: '2014',
+        text: `In the following reaction, the product (A) is: (2014)`,
+        A: `a. b. c. d.`, B: `Option B`, C: `Option C`, D: `Option D`
     },
     {
         qNo: 15, topic: 'Diazonium Salts', year: '2014',
@@ -104,7 +107,7 @@ const QUESTIONS = [
         A: `C 6 H 5 N 2 + X –`, B: `CH 3 CH 2 N 2 + X –`, C: `C 6 H 5 CH 2 N 2 + H –`, D: `CH 3 N 2 + X –`
     },
     {
-        qNo: 16, topic: 'Chemical Reactions of Amines', year: '2013',
+        qNo: 16, topic: 'Chemical Reactions of Amines & Anilines', year: '2013',
         text: `In the reaction: (2013)`,
         A: `HgSO 4 /H 2 SO 4`, B: `Cu 2 Cl 2`, C: `H 3 PO 2 and H 2 O`, D: `H + /H 2 O Chapter & Topicwise NEET PYQ’s P W 3 Nitrobenzene (Preparation and Properties)`
     },
@@ -119,7 +122,7 @@ const QUESTIONS = [
         A: `Azobenzene`, B: `Aniline`, C: `p-aminophenol`, D: `Azoxybenzene`
     },
     {
-        qNo: 19, topic: 'Chemical Reactions of Amines', year: '2013',
+        qNo: 19, topic: 'Chemical Reactions of Amines & Anilines', year: '2013',
         text: `Nitrobenzene on reaction with conc. HNO 3 /H 2 SO 4 at 80° – 100°C forms which one of the following products? (2013)`,
         A: `1,2-Dinitrobenzene`, B: `1,3-Dinitrobenzene`, C: `1,4-Dinitrobenzene`, D: `1,2,4-Trinitrobenzene 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 d a d b d a c a b a a a d c a c a 18 19 c b Answer Key`
     },
@@ -128,40 +131,38 @@ const QUESTIONS = [
 async function seed() {
     console.log(`Starting seeding for ${SUBJECT_NAME} - ${CHAPTER_NAME}...`);
     try {
-        // 1. Get Subject ID
-        let subjectRows = await query('SELECT id FROM subjects WHERE name = $1', [SUBJECT_NAME]);
-        if (subjectRows.length === 0) {
+        let subjectRow = await db.get('SELECT id FROM subjects WHERE name = ?', [SUBJECT_NAME]);
+        if (!subjectRow) {
             console.log(`Inserting Subject: ${SUBJECT_NAME}`);
-            subjectRows = await query('INSERT INTO subjects (name) VALUES ($1) RETURNING id', [SUBJECT_NAME]);
+            const info = await db.run('INSERT INTO subjects (name) VALUES (?) RETURNING id', [SUBJECT_NAME]);
+            subjectRow = { id: info.lastInsertRowid };
         }
-        const subjectId = subjectRows[0].id;
+        const subjectId = subjectRow.id;
 
-        // 2. Get Chapter ID
-        let chapterRows = await query('SELECT id FROM chapters WHERE subject_id = $1 AND name = $2', [subjectId, CHAPTER_NAME]);
-        if (chapterRows.length === 0) {
+        let chapterRow = await db.get('SELECT id FROM chapters WHERE subject_id = ? AND name = ?', [subjectId, CHAPTER_NAME]);
+        if (!chapterRow) {
             console.log(`Inserting Chapter: ${CHAPTER_NAME}`);
-            chapterRows = await query('INSERT INTO chapters (subject_id, name, class_level, order_index) VALUES ($1, $2, $3, $4) RETURNING id', [subjectId, CHAPTER_NAME, CLASS_LEVEL, 0]);
+            const info = await db.run('INSERT INTO chapters (subject_id, name, class_level, order_index) VALUES (?, ?, ?, ?) RETURNING id', [subjectId, CHAPTER_NAME, CLASS_LEVEL, 0]);
+            chapterRow = { id: info.lastInsertRowid };
         }
-        const chapterId = chapterRows[0].id;
+        const chapterId = chapterRow.id;
 
-        // 3. Insert Topics
         const topicIdMap = {};
         for (const topicName of TOPICS) {
-            let tRows = await query('SELECT id FROM topics WHERE chapter_id = $1 AND name = $2', [chapterId, topicName]);
-            if (tRows.length === 0) {
-                tRows = await query('INSERT INTO topics (chapter_id, name) VALUES ($1, $2) RETURNING id', [chapterId, topicName]);
+            let tRow = await db.get('SELECT id FROM topics WHERE chapter_id = ? AND name = ?', [chapterId, topicName]);
+            if (!tRow) {
+                const info = await db.run('INSERT INTO topics (chapter_id, name) VALUES (?, ?) RETURNING id', [chapterId, topicName]);
+                tRow = { id: info.lastInsertRowid };
             }
-            topicIdMap[topicName] = tRows[0].id;
+            topicIdMap[topicName] = tRow.id;
         }
 
-        // 4. Insert Questions
         let added = 0;
         let skipped = 0;
         for (const q of QUESTIONS) {
             const topicId = topicIdMap[q.topic];
-            // Check if exists
-            const existing = await query('SELECT id FROM questions WHERE chapter_id = $1 AND text = $2', [chapterId, q.text]);
-            if (existing.length > 0) {
+            const existing = await db.get('SELECT id FROM questions WHERE chapter_id = ? AND text = ?', [chapterId, q.text]);
+            if (existing) {
                 skipped++;
                 continue;
             }
@@ -169,17 +170,17 @@ async function seed() {
             const correctOption = ANSWER_KEY[q.qNo] || 'A';
             const examName = parseInt(q.year) < 2013 ? 'AIPMT' : 'NEET';
 
-            await query(`
+            await db.run(`
                 INSERT INTO questions (
                     subject_id, chapter_id, topic_id, text,
                     option_a, option_b, option_c, option_d,
                     correct_option, difficulty, explanation,
                     year_asked, is_pyq, exam_name
-                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
             `, [
                 subjectId, chapterId, topicId, q.text,
                 q.A, q.B, q.C, q.D,
-                correctOption, 'neet', 'Chemistry PYQ', q.year, 1, examName
+                correctOption, 'neet', 'Chemistry PYQ', q.year, examName
             ]);
             added++;
         }
@@ -187,8 +188,6 @@ async function seed() {
         console.log(`✅ Done! Added ${added} questions (Skipped ${skipped})`);
     } catch (e) {
         console.error('Failed to seed:', e);
-    } finally {
-        pool.end();
     }
 }
 

@@ -1,204 +1,184 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Head from 'next/head';
+import Link from 'next/link';
 
 export default function Home() {
-    const router = useRouter();
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [activeFaq, setActiveFaq] = useState(null);
 
     useEffect(() => {
         fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (data.user) { setUser(data.user); router.push('/dashboard'); }
-            else setLoading(false);
-        }).catch(() => setLoading(false));
-    }, [router]);
+            if (data.user) setUser(data.user);
+        }).catch(err => console.error(err));
+    }, []);
 
-    if (loading) return (
-        <div className="loading-overlay" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="spinner" style={{ width: 40, height: 40, border: '4px solid rgba(255,255,255,0.1)', borderTopColor: '#6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-        </div>
-    );
-
-    const faqs = [
-        { q: 'Is AI NEET Coach free to use?', a: 'Yes! AI NEET Coach offers a free forever plan that includes AI-powered test generation, doubt solving, and performance analytics. Premium plans are available for advanced features like unlimited AI doubts and detailed rank predictions.' },
-        { q: 'How does AI NEET Coach generate personalized tests?', a: 'Our AI engine analyzes your performance history, weak areas, and target topics to generate custom NEET-format tests. Each test adapts to your preparation level, ensuring you practice the right questions at the right difficulty.' },
-        { q: 'Can I use AI NEET Coach on my mobile phone?', a: 'Absolutely! AI NEET Coach is available as a responsive web app, installable PWA, and a native Android app. Your progress syncs seamlessly across all devices.' },
-        { q: 'Does AI NEET Coach cover all NEET subjects?', a: 'Yes, AI NEET Coach covers all three NEET subjects — Physics, Chemistry, and Biology (Botany & Zoology) — with chapter-wise questions aligned to the NCERT syllabus and previous year patterns.' }
+    const features = [
+        {
+            title: 'Mock Test Generator',
+            desc: 'Configure and generate infinite AI-powered NEET mock tests.',
+            icon: '📝',
+            path: '/test/configure',
+            color: '#6366f1'
+        },
+        {
+            title: 'NEET Battleground',
+            desc: 'Compete in real-time 1v1 mock battles against friends or randoms.',
+            icon: '⚔️',
+            path: '/battleground',
+            color: '#f43f5e'
+        },
+        {
+            title: 'NCERT Blueprint',
+            desc: 'Track your line-by-line reading progress of the NCERT syllabus.',
+            icon: '📚',
+            path: '/blueprint',
+            color: '#38bdf8'
+        },
+        {
+            title: 'AI Doubt Solver',
+            desc: 'Stuck on a numeric? Ask our 24/7 AI tutor for step-by-step help.',
+            icon: '💡',
+            path: '/doubts',
+            color: '#10b981'
+        },
+        {
+            title: 'Mistake Book',
+            desc: 'Automatically tracks your incorrect answers for targeted revision.',
+            icon: '📓',
+            path: '/mistakes',
+            color: '#f59e0b'
+        },
+        {
+            title: 'Global Leaderboard',
+            desc: 'Check the real-time rankings and see where you stand globally.',
+            icon: '🏆',
+            path: '/leaderboard',
+            color: '#8b5cf6'
+        }
     ];
 
     return (
-        <div>
-            {/* Navbar */}
-            <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100, height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', background: 'rgba(10, 14, 26, 0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 800, color: '#f1f5f9' }}>
-                    <img src="/logo.png" alt="AI NEET Coach Logo" style={{ width: '40px', height: '40px', borderRadius: '8px' }} />
-                    <span className="nav-brand-text" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
-                </div>
-                <div className="nav-actions" style={{ display: 'flex', gap: '12px' }}>
-                    <a href="/login" className="btn btn-ghost" style={{ background: 'transparent', color: '#94a3b8', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', textDecoration: 'none', fontWeight: 600 }}>Sign In</a>
-                    <a href="/register" className="btn btn-primary" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', textDecoration: 'none', fontWeight: 600, boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)' }}>Get Started Free</a>
-                </div>
-            </nav>
-
-            {/* Main Page Container */}
-            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
-
-                {/* Hero Section */}
-                <header className="hero-container" style={{ textAlign: 'center', padding: '100px 0 80px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ padding: '8px 16px', borderRadius: '9999px', background: 'rgba(99, 102, 241, 0.1)', color: '#a78bfa', fontSize: '0.85rem', fontWeight: 600, border: '1px solid rgba(99, 102, 241, 0.3)', marginBottom: '32px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                        <span>🚀</span> NEW: Now available on Android!
-                    </div>
-                    <h1 className="hero-title" style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 900, lineHeight: 1.1, marginBottom: '24px', letterSpacing: '-0.03em', color: '#f8fafc' }}>
-                        Crack NEET 2026 with an<br />
-                        <span style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Unfair AI Advantage.</span>
+        <>
+        <div style={{ padding: '40px 24px', maxWidth: '1200px', margin: '0 auto', fontFamily: "'Inter', sans-serif" }}>
+            
+            
+            {/* Header / Welcome */}
+            <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '24px' }}>
+                <div>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '8px' }}>
+                        {user
+                            ? <>Welcome back, <span style={{ color: '#818cf8' }}>{user.full_name?.split(' ')[0] || 'Aspirant'}</span> 👋</>
+                            : <><span style={{ background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span> — Explore Features</>
+                        }
                     </h1>
-                    <p style={{ fontSize: '1.2rem', color: '#94a3b8', maxWidth: '700px', margin: '0 auto 40px', lineHeight: 1.6 }}>
-                        Prepare for the NEET exam with AI NEET Coach—the <b>ONLY</b> platform offering fully customizable <strong style={{ color: '#f8fafc' }}>720-marks mock tests</strong> tailored to your unique preparation level!
+                    <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>
+                        Explore all intelligent preparation features below.
                     </p>
-
-                    <div className="hero-buttons" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                        <a href="/register" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)', transition: 'transform 0.2s' }}>
-                            Start Preparing for Free →
-                        </a>
-                        <a href="#android-app" className="btn btn-secondary btn-lg" style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            📱 Download Android App
-                        </a>
-                    </div>
-
-                    <div style={{ marginTop: '48px', display: 'flex', alignItems: 'center', gap: '16px', color: '#64748b', fontSize: '0.9rem' }}>
-                        <div style={{ display: 'flex' }}>
-                            {[1, 2, 3, 4, 5].map(i => <span key={i}>⭐</span>)}
+                </div>
+                
+                {!user && (
+                    <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '16px 24px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div>
+                            <div style={{ color: '#e0e7ff', fontWeight: 600, marginBottom: '4px' }}>You are browsing as a Guest</div>
+                            <div style={{ color: '#818cf8', fontSize: '0.9rem' }}>Sign in to save test history and analytics.</div>
                         </div>
-                        <span>Trusted by <b>1,200+</b> NEET aspirants</span>
+                        <Link href="/login" style={{ background: '#6366f1', color: 'white', padding: '8px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
+                            Sign In
+                        </Link>
                     </div>
-                </header>
-
-                {/* Features Grid */}
-                <section style={{ padding: '80px 0' }} id="features">
-                    <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '16px', color: '#f8fafc' }}>Everything you need to score <span style={{ color: '#10b981' }}>720/720</span></h2>
-                        <p style={{ color: '#94a3b8', fontSize: '1.1rem' }}>Powered by Google Gemini AI, designed specifically for the latest NTA syllabus.</p>
-                    </div>
-
-                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
-                        {[
-                            { icon: '🎯', title: 'Adaptive AI Mock Tests', desc: 'Stop taking generic tests. Generate infinite mock papers that specifically target your weak areas in Physics, Chemistry, and Biology.' },
-                            { icon: '📸', title: 'Snap & Solve Doubts', desc: 'Stuck on a tricky Physics numerical? Just snap a photo. Our AI tutor will give you step-by-step solutions with NEET shortcuts.' },
-                            { icon: '📅', title: 'Personalized Study Plans', desc: 'Get a daily generated schedule based on your performance data. We tell you exactly what chapter to read and what questions to practice.' },
-                            { icon: '📈', title: 'Hyper-Detailed Analytics', desc: 'Track your accuracy, time spent per question, and subject-wise percentile. Predict your All India Rank (AIR) before the actual exam.' },
-                            { icon: '🧠', title: 'Spaced Repetition Flashcards', desc: 'Memorize complex biological terms and chemical reactions permanently using our scientifically proven AI spaced repetition engine.' },
-                            { icon: '📓', title: 'Auto Mistake Book', desc: 'Every incorrect answer is automatically saved to your private Mistake Book for rapid revision a week before the exam.' }
-                        ].map((f, i) => (
-                            <div key={i} style={{ padding: '32px', background: 'rgba(17, 24, 39, 0.6)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', transition: 'transform 0.3s, border-color 0.3s' }} onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)'; }} onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'; }}>
-                                <div style={{ fontSize: '2.5rem', marginBottom: '20px' }}>{f.icon}</div>
-                                <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: '#f8fafc' }}>{f.title}</h3>
-                                <p style={{ color: '#94a3b8', lineHeight: 1.6 }}>{f.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Mobile App Section */}
-                <section id="android-app" className="app-section" style={{ margin: '80px 0', padding: '64px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05))', borderRadius: '32px', border: '1px solid rgba(99, 102, 241, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '40px' }}>
-                    <div className="app-section-content" style={{ flex: '1 1 400px' }}>
-                        <div style={{ display: 'inline-block', padding: '6px 12px', borderRadius: '8px', background: '#10b981', color: 'white', fontWeight: 700, fontSize: '0.8rem', marginBottom: '16px' }}>100% NATIVE PERFORMANCE</div>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '24px', lineHeight: 1.2 }}>Take your NEET prep wherever you go.</h2>
-                        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', color: '#94a3b8', fontSize: '1.1rem', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#10b981' }}>✓</span> Daily push notifications for tests</li>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#10b981' }}>✓</span> Native camera access for doubt solving</li>
-                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ color: '#10b981' }}>✓</span> Smooth, distraction-free environment</li>
-                        </ul>
-                        <a href="/downloads/neet-coach.apk" download="AI-NEET-Coach.apk" className="btn btn-primary" style={{ background: 'white', color: '#0a0e1a', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
-                            Get the Android APK →
-                        </a>
-                    </div>
-                    <div className="app-mockup-wrapper" style={{ flex: '1 1 300px', display: 'flex', justifyContent: 'center' }}>
-                        <div style={{ width: '280px', height: '560px', borderRadius: '40px', background: '#0a0e1a', border: '8px solid #1e293b', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', position: 'relative', overflow: 'hidden' }}>
-                            {/* Mock Mockup Screen */}
-                            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-                                <img src="/mockup.png" alt="AI NEET Coach App" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* FAQ Section */}
-                <section className="faq-container" style={{ padding: '80px 0', maxWidth: '800px', margin: '0 auto' }} id="faq">
-                    <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc' }}>Frequently Asked Questions</h2>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        {faqs.map((faq, index) => (
-                            <div key={index} style={{ background: 'rgba(17, 24, 39, 0.8)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden' }}>
-                                <button
-                                    onClick={() => setActiveFaq(activeFaq === index ? null : index)}
-                                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px', background: 'transparent', border: 'none', color: '#f8fafc', fontSize: '1.1rem', fontWeight: 600, textAlign: 'left', cursor: 'pointer' }}
-                                >
-                                    {faq.q}
-                                    <span style={{ transform: activeFaq === index ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s', color: '#6366f1' }}>▼</span>
-                                </button>
-                                {activeFaq === index && (
-                                    <div style={{ padding: '0 24px 24px', color: '#94a3b8', lineHeight: 1.6, animation: 'fadeIn 0.3s ease' }}>
-                                        {faq.a}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Final CTA */}
-                <section className="cta-section" style={{ padding: '100px 0', textAlign: 'center' }}>
-                    <h2 className="cta-title" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, color: '#f8fafc', marginBottom: '24px' }}>
-                        Don't let your competition use AI <br /><span style={{ background: 'linear-gradient(135deg, #10b981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>while you study the old way.</span>
-                    </h2>
-                    <p style={{ fontSize: '1.2rem', color: '#94a3b8', marginBottom: '40px' }}>Join today for free and experience the future of medical entrance preparation.</p>
-                    <a href="/register" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '18px 40px', borderRadius: '12px', fontSize: '1.2rem', fontWeight: 700, textDecoration: 'none', boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)' }}>
-                        Create Your Free Account →
-                    </a>
-                </section>
-
+                )}
             </div>
 
-            {/* Footer */}
-            <footer style={{ background: '#050810', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '64px 24px 40px' }}>
-                <div className="footer-container" style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '48px', justifyContent: 'space-between' }}>
-                    <div style={{ maxWidth: '300px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', fontWeight: 800, color: '#f1f5f9', marginBottom: '16px' }}>
-                            <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', display: 'inline', marginRight: '8px', borderRadius: '6px' }} /> AI NEET Coach
+            {/* Feature Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+                {features.map((feature, i) => (
+                    <Link href={feature.path} key={i} style={{ textDecoration: 'none' }}>
+                        <div style={{ 
+                            background: '#111827', 
+                            border: '1px solid #1f2937', 
+                            borderRadius: '20px', 
+                            padding: '24px', 
+                            height: '100%',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-4px)';
+                            e.currentTarget.style.borderColor = feature.color;
+                            e.currentTarget.style.boxShadow = `0 10px 30px -10px ${feature.color}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.borderColor = '#1f2937';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }}
+                        >
+                            <div style={{ 
+                                width: '56px', 
+                                height: '56px', 
+                                borderRadius: '16px', 
+                                background: `${feature.color}15`, 
+                                color: feature.color, 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                fontSize: '1.8rem',
+                                marginBottom: '20px'
+                            }}>
+                                {feature.icon}
+                            </div>
+                            
+                            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}>
+                                {feature.title}
+                            </h3>
+                            
+                            <p style={{ color: '#94a3b8', lineHeight: 1.5, fontSize: '0.95rem', flexGrow: 1 }}>
+                                {feature.desc}
+                            </p>
+                            
+                            <div style={{ marginTop: '24px', color: feature.color, fontSize: '0.9rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                Open Feature 
+                                <span style={{ transform: 'translateX(2px)' }}>→</span>
+                            </div>
                         </div>
-                        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.6 }}>India's premier intelligent learning system designed exclusively to help students crack the National Eligibility cum Entrance Test.</p>
-                    </div>
+                    </Link>
+                ))}
+            </div>
 
-                    <div className="footer-links-wrapper" style={{ display: 'flex', gap: '64px', flexWrap: 'wrap' }}>
-                        <div>
-                            <h4 style={{ color: '#f8fafc', fontWeight: 600, marginBottom: '20px' }}>Features</h4>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <li><a href="#features" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>AI Mock Tests</a></li>
-                                <li><a href="#features" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>Snap Doubt Solver</a></li>
-                                <li><a href="#features" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>Rank Predictor</a></li>
-                                <li><a href="#features" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>NCERT Revision</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 style={{ color: '#f8fafc', fontWeight: 600, marginBottom: '20px' }}>Legal</h4>
-                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>Privacy Policy</a></li>
-                                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>Terms of Service</a></li>
-                                <li><a href="#" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.9rem' }}>Refund Policy</a></li>
-                            </ul>
-                        </div>
+            {/* Bottom Banner */}
+            <div style={{ marginTop: '48px', background: 'linear-gradient(135deg, #1e1b4b, #312e81)', borderRadius: '24px', padding: '32px', textAlign: 'center', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
+                    Download the Mobile App
+                </h3>
+                <p style={{ color: '#c7d2fe', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px' }}>
+                    Get the smoothest experience with push notifications, offline mode, and native camera integration for doubt solving.
+                </p>
+                <a href="#android" style={{ background: '#22c55e', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'inline-block' }}>
+                    📱 Get Android App
+                </a>
+            </div>
+
+        </div>
+
+            {/* Footer */}
+            <footer style={{ marginTop: '80px', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '40px 24px', maxWidth: '1200px', margin: '80px auto 0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontWeight: 600, fontSize: '1rem' }}>
+                        <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '6px' }} />
+                        <span>AI NEET Coach</span>
                     </div>
-                </div>
-                <div style={{ maxWidth: '1280px', margin: '48px auto 0', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#64748b', fontSize: '0.85rem' }}>
-                    <p>© 2026 AI NEET Coach. All rights reserved.</p>
-                    <p>Powered by Advanced Artificial Intelligence</p>
+                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                        <a href="#" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Privacy Policy</a>
+                        <a href="#" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Terms of Service</a>
+                        <a href="/pricing" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Pricing</a>
+                        <a href="/doubts" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</a>
+                    </div>
+                    <div style={{ color: '#64748b', fontSize: '0.85rem' }}>
+                        &copy; {new Date().getFullYear()} AI NEET Coach. All rights reserved.
+                    </div>
                 </div>
             </footer>
-        </div>
+        </>
     );
 }

@@ -33,7 +33,7 @@ export async function updateSession(request) {
     const pathname = request.nextUrl.pathname;
 
     // ─── Auth Guard: Redirect unauthenticated users from protected routes ───
-    const protectedPaths = ['/dashboard', '/test', '/analytics', '/profile', '/mistakes', '/battleground', '/study-plan', '/doubts', '/revision', '/leaderboard', '/admin'];
+    const protectedPaths = ['/dashboard', '/analytics', '/profile', '/revision', '/admin'];
     const isProtected = protectedPaths.some(p => pathname.startsWith(p));
 
     if (isProtected && !user) {
