@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
@@ -79,12 +80,15 @@ export async function POST(request) {
             }
         }
 
+        const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+
         const { error: insertError } = await supabase
             .from('users')
             .insert({
                 id,
                 name: cleanName,
                 email: email.toLowerCase().trim(),
+                password_hash: passwordHash,
                 target_year: parseInt(targetYear) || 2026,
                 referral_code: myReferralCode,
                 referred_by: referredBy
