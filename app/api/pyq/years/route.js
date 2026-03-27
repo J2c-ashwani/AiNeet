@@ -6,19 +6,33 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         const supabase = getSupabase();
-        const { data, error } = await supabase
-            .from('questions')
-            .select('year_asked')
-            .not('year_asked', 'is', null)
-            .neq('year_asked', '')
-            .eq('is_pyq', 1)
-            .order('year_asked', { ascending: false });
+        let allData = [];
+        let hasMore = true;
+        let offset = 0;
+        const limit = 1000;
 
-        if (error) throw error;
+        while (hasMore) {
+            const { data, error } = await supabase
+                .from('questions')
+                .select('year_asked')
+                .not('year_asked', 'is', null)
+                .neq('year_asked', '')
+                .eq('is_pyq', 1)
+                .range(offset, offset + limit - 1);
+
+            if (error) throw error;
+            if (data.length > 0) {
+                allData = allData.concat(data);
+                offset += limit;
+            }
+            if (data.length < limit) {
+                hasMore = false;
+            }
+        }
 
         // Extract unique 4-digit years using regex
         const yearsSet = new Set();
-        data.forEach(row => {
+        allData.forEach(row => {
             if (row.year_asked) {
                 const matches = row.year_asked.match(/\b(19|20)\d{2}\b/g);
                 if (matches) {
