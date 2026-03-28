@@ -155,25 +155,6 @@ export default function Home() {
             </div>
 
         </div>
-
-            {/* Footer */}
-            <footer style={{ marginTop: '80px', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '40px 24px', maxWidth: '1200px', margin: '80px auto 0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontWeight: 600, fontSize: '1rem' }}>
-                        <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '6px' }} />
-                        <span>AI NEET Coach</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-                        <a href="#" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Privacy Policy</a>
-                        <a href="#" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Terms of Service</a>
-                        <a href="/pricing" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Pricing</a>
-                        <a href="/doubts" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</a>
-                    </div>
-                    <div style={{ color: '#64748b', fontSize: '0.85rem' }}>
-                        &copy; {new Date().getFullYear()} AI NEET Coach. All rights reserved.
-                    </div>
-                </div>
-            </footer>
         </>
     );
 }
