@@ -11,6 +11,7 @@ import 'providers/providers.dart';
 import 'router/app_router.dart';
 import 'core/api_client.dart';
 import 'core/secure_storage.dart';
+import 'core/ad_service.dart';
 
 // Background FCM handler (top-level)
 @pragma('vm:entry-point')
@@ -39,6 +40,13 @@ void main() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   } catch (e) {
     debugPrint('⚠️ Firebase init failed or timed out: $e — app will continue without push notifications');
+  }
+
+  // AdMob — initialize after Firebase
+  try {
+    await AdService().initialize();
+  } catch (e) {
+    debugPrint('⚠️ AdMob init failed: $e — app will continue without ads');
   }
 
   // Sentry crash reporting

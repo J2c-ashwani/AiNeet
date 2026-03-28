@@ -1,25 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/models.dart';
 import '../router/app_router.dart';
-
+import '../core/ad_service.dart';
+import '../providers/providers.dart';
 import 'package:in_app_review/in_app_review.dart';
 
-class ResultsScreen extends StatefulWidget {
+class ResultsScreen extends ConsumerStatefulWidget {
   final TestResult result;
   const ResultsScreen({super.key, required this.result});
 
   @override
-  State<ResultsScreen> createState() => _ResultsScreenState();
+  ConsumerState<ResultsScreen> createState() => _ResultsScreenState();
 }
 
-class _ResultsScreenState extends State<ResultsScreen> {
+class _ResultsScreenState extends ConsumerState<ResultsScreen> {
   final InAppReview _inAppReview = InAppReview.instance;
 
   @override
   void initState() {
     super.initState();
+    _showInterstitialAd();
     _triggerReviewIfExcellent();
+  }
+
+  /// Show interstitial ad after test results (free tier only)
+  void _showInterstitialAd() {
+    final authState = ref.read(authNotifierProvider);
+    if (authState.user?.isPro == true) return; // No ads for paid users
+
+    // Delay 2 seconds so student sees their score first
+    Future.delayed(const Duration(seconds: 2), () {
+      AdService().showInterstitialAd(
+        onDismissed: () => debugPrint('📢 Interstitial dismissed'),
+      );
+    });
   }
 
   Future<void> _triggerReviewIfExcellent() async {

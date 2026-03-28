@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 import '../core/api_client.dart';
+import '../core/ad_service.dart';
 import '../router/app_router.dart';
 
 class TestScreen extends StatefulWidget {
@@ -22,6 +23,8 @@ class _TestScreenState extends State<TestScreen> {
     _session = widget.session;
     _timeLeft = 90 * 60; // 90 minutes default
     _startTimer();
+    // Pre-load interstitial ad so it's ready when test finishes
+    AdService().loadInterstitialAd();
   }
 
   void _startTimer() {
