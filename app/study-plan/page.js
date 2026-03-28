@@ -8,14 +8,11 @@ export default function StudyPlanPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        Promise.all([
-            fetch('/api/auth/me').then(r => r.json()),
-            fetch('/api/study-plan').then(r => r.json())
-        ]).then(([auth, planData]) => {
+        fetch('/api/study-plan').then(r => r.json()).then(planData => {
             setPlan(planData.plan);
             setLoading(false);
         }).catch(() => setLoading(false));
-    }, [router]);
+    }, []);
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>

@@ -8,12 +8,11 @@ export default function LeaderboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(() => {});
         fetch('/api/leaderboard').then(r => r.json()).then(data => {
             setLeaderboard(data.leaderboard || []);
             setLoading(false);
         }).catch(() => setLoading(false));
-    }, [router]);
+    }, []);
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>

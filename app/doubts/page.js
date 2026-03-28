@@ -3,21 +3,16 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import SnapSolver from '@/components/SnapSolver';
 import ReactMarkdown from 'react-markdown';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DoubtSolver() {
     const router = useRouter();
+    const { user } = useAuth();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [sending, setSending] = useState(false);
     const [conversationId, setConversationId] = useState(null);
-    const [user, setUser] = useState(null);
     const messagesEnd = useRef(null);
-
-    useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (data.user) setUser(data.user);
-        });
-    }, [router]);
 
     useEffect(() => {
         messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });

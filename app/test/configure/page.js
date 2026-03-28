@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
+import { useAuth } from '@/context/AuthContext';
 
 export default function TestConfigPage() {
     const router = useRouter();
@@ -21,15 +22,12 @@ export default function TestConfigPage() {
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false);
     const [error, setError] = useState('');
-    const [user, setUser] = useState(null);
+    const { user } = useAuth();
     const [showLockModal, setShowLockModal] = useState(false);
     const [lockMessage, setLockMessage] = useState('');
     const [showAppPromo, setShowAppPromo] = useState(false);
 
     useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (data.user) setUser(data.user);
-        });
         fetch('/api/syllabus').then(r => r.json()).then(data => {
             setSyllabus(data.subjects || []);
             setLoading(false);

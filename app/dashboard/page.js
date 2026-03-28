@@ -6,25 +6,23 @@ import RevisionCard from '@/components/RevisionCard';
 import CoachWidget from '@/components/CoachWidget';
 import AdBanner from "@/components/monetization/AdBanner";
 import PricingModal from "@/components/monetization/PricingModal";
+import { useAuth } from '@/context/AuthContext';
 
 export default function Dashboard() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const { user, loading: authLoading } = useAuth();
     const [performance, setPerformance] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showPricing, setShowPricing] = useState(false);
 
     useEffect(() => {
-        Promise.all([
-            fetch('/api/auth/me').then(r => r.json()),
-            fetch('/api/performance').then(r => r.json())
-        ]).then(([authData, perfData]) => {
-            if (!authData.user) { router.push('/login'); return; }
-            setUser(authData.user);
+        if (authLoading) return;
+        if (!user) { router.push('/login'); return; }
+        fetch('/api/performance').then(r => r.json()).then(perfData => {
             setPerformance(perfData);
             setLoading(false);
         }).catch(() => router.push('/login'));
-    }, [router]);
+    }, [user, authLoading, router]);
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>

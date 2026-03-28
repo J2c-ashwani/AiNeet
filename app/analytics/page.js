@@ -2,24 +2,22 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ScoreTrendChart, SubjectRadarChart } from '@/components/Charts';
+import { useAuth } from '@/context/AuthContext';
 
 export default function AnalyticsPage() {
     const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        Promise.all([
-            fetch('/api/auth/me').then(r => r.json()),
-            fetch('/api/performance').then(r => r.json())
-        ]).then(([auth, perf]) => {
-            if (!auth.user) { router.push('/login'); return; }
-            setUser(auth.user);
+        if (authLoading) return;
+        if (!user) { router.push('/login'); return; }
+        fetch('/api/performance').then(r => r.json()).then(perf => {
             setData(perf);
             setLoading(false);
         }).catch(() => router.push('/login'));
-    }, [router]);
+    }, [user, authLoading, router]);
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>

@@ -1,24 +1,22 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function MistakesPage() {
     const router = useRouter();
+    const { user } = useAuth();
     const [mistakes, setMistakes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [exporting, setExporting] = useState(false);
     const [showLockModal, setShowLockModal] = useState(false);
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(auth => {
-            if (auth.user) setUser(auth.user);
-            fetch('/api/performance').then(r => r.json()).then(data => {
-                setMistakes(data.weakAreas || []);
-                setLoading(false);
-            });
+        fetch('/api/performance').then(r => r.json()).then(data => {
+            setMistakes(data.weakAreas || []);
+            setLoading(false);
         }).catch(() => setLoading(false));
-    }, [router]);
+    }, []);
 
     const handleExportPDF = async () => {
         setExporting(true);

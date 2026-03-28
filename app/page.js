@@ -1,15 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Home() {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        fetch('/api/auth/me').then(r => r.json()).then(data => {
-            if (data.user) setUser(data.user);
-        }).catch(err => console.error(err));
-    }, []);
+    const { user } = useAuth();
 
     const features = [
         {

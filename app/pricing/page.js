@@ -1,21 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function PricingPage() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        fetch('/api/auth/me')
-            .then(res => res.json())
-            .then(data => {
-                if (data.user) setUser(data.user);
-            })
-            .catch(() => { });
-    }, []);
 
     const handleSubscribe = async (planId) => {
         if (!user) {

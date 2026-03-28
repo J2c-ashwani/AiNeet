@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ParentSettings from '@/components/ParentSettings';
+import { useAuth } from '@/context/AuthContext';
 
 const ACHIEVEMENT_ICONS = {
     'first_test': '🎯', 'test_veteran': '🏆', 'perfect_score': '💯',
@@ -12,29 +13,26 @@ const ACHIEVEMENT_ICONS = {
 
 export default function ProfilePage() {
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    const { user, loading: authLoading, logout } = useAuth();
     const [stats, setStats] = useState(null);
     const [badges, setBadges] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (authLoading) return;
+        if (!user) { router.push('/login'); return; }
         Promise.all([
-            fetch('/api/auth/me').then(r => r.json()),
             fetch('/api/performance').then(r => r.json()),
             fetch('/api/achievements').then(r => r.json())
-        ]).then(([auth, perf, achv]) => {
-            if (!auth.user) { router.push('/login'); return; }
-            setUser(auth.user);
+        ]).then(([perf, achv]) => {
             setStats(perf.overallStats || {});
             setBadges(achv.badges || []);
             setLoading(false);
         }).catch(() => router.push('/login'));
-    }, [router]);
+    }, [user, authLoading, router]);
 
     const handleLogout = async () => {
-        await fetch('/api/auth/logout', { method: 'POST' });
-        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        router.push('/');
+        await logout();
     };
 
     if (loading) return (
