@@ -149,8 +149,8 @@ export default function Home() {
                 <p style={{ color: '#c7d2fe', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px' }}>
                     Get the smoothest experience with push notifications, offline mode, and native camera integration for doubt solving.
                 </p>
-                <a href="#android" style={{ background: '#22c55e', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'inline-block' }}>
-                    📱 Get Android App
+                <a href="/download" style={{ background: '#22c55e', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'inline-block' }}>
+                    📱 Download Android App
                 </a>
             </div>
 

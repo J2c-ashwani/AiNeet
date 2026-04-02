@@ -112,8 +112,8 @@ export default async function ChallengePage({ params }) {
             {/* Download App CTA */}
             <div style={{ marginTop: '60px', textAlign: 'center' }}>
                 <div style={{ color: '#94a3b8', marginBottom: '16px', fontWeight: 600 }}>Or play the native experience</div>
-                <a href="#android" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '12px', color: '#f8fafc', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 600 }}>
-                    📱 Get the Android App
+                <a href="/download" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '12px', color: '#f8fafc', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '10px', fontWeight: 600 }}>
+                    📱 Download Android App
                 </a>
             </div>
         </div>
