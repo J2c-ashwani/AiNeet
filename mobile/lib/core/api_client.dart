@@ -14,7 +14,7 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  static const _baseUrl = 'https://aineetcoach.com';
+  static const _baseUrl = 'https://ai-neet.vercel.app';
   static const _timeout = Duration(seconds: 30);
 
   static final ApiClient _instance = ApiClient._internal();

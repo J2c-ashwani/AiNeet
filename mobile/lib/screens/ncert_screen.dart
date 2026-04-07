@@ -12,7 +12,7 @@ class _NcertScreenState extends State<NcertScreen> {
   late final WebViewController _webCtrl;
   bool _loading = true;
 
-  static const _ncertUrl = 'https://aineetcoach.com/ncert';
+  static const _ncertUrl = 'https://ai-neet.vercel.app/ncert';
 
   @override
   void initState() {
