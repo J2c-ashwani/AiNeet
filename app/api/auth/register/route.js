@@ -45,17 +45,26 @@ export async function POST(request) {
         }
 
         // Supabase Native SignUp
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-            email: email.toLowerCase().trim(),
-            password,
-            options: {
-                data: {
-                    full_name: cleanName
+        let authData, authError;
+        try {
+            const result = await supabase.auth.signUp({
+                email: email.toLowerCase().trim(),
+                password,
+                options: {
+                    data: {
+                        full_name: cleanName
+                    }
                 }
-            }
-        });
+            });
+            authData = result.data;
+            authError = result.error;
+        } catch (signUpCrash) {
+            console.error('Supabase signUp crashed:', signUpCrash);
+            return NextResponse.json({ error: 'Authentication service unavailable. Please try again later.' }, { status: 503 });
+        }
 
         if (authError || !authData.user) {
+            console.error('Supabase signUp error:', authError);
             return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
         }
 

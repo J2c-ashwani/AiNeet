@@ -21,8 +21,16 @@ export default function RegisterPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, referralCode: refCode || undefined })
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
+            // Defensive: handle non-JSON responses gracefully
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                console.error('Non-JSON response from /api/auth/register:', text);
+                throw new Error('Server error. Please try again in a few minutes.');
+            }
+            if (!res.ok) throw new Error(data.error || 'Registration failed');
             // Redirect to challenge if coming from a challenge link
             if (challengeId) {
                 router.push(`/challenge/${challengeId}`);
