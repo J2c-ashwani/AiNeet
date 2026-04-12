@@ -17,6 +17,7 @@ export default function DownloadPage() {
         { icon: '💬', title: 'Instant Doubt Solving', desc: 'Snap a photo, get AI explanations in seconds' },
         { icon: '📊', title: 'Rank Prediction', desc: 'Know exactly where you stand among lakhs of aspirants' },
         { icon: '📅', title: 'Smart Study Plans', desc: 'AI-crafted daily plans based on your goal date' },
+        { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests instantly into your phone' },
         { icon: '🔄', title: 'Spaced Repetition', desc: 'Never forget what you\'ve learned with smart revision' },
         { icon: '⚔️', title: 'Battle Mode', desc: 'Compete with friends in real-time quiz battles' },
     ];
@@ -39,7 +40,7 @@ export default function DownloadPage() {
             <section style={styles.hero}>
                 <div style={styles.badge}>
                     <span style={styles.badgeDot} />
-                    v1.0 — Free Download
+                    v1.1 — Fully Updated Framework
                 </div>
 
                 <h1 style={styles.h1}>
@@ -70,7 +71,7 @@ export default function DownloadPage() {
                 <div style={styles.meta}>
                     <span style={styles.metaItem}>📱 Android 7.0+</span>
                     <span style={styles.metaDivider}>•</span>
-                    <span style={styles.metaItem}>📦 49 MB</span>
+                    <span style={styles.metaItem}>📦 43 MB</span>
                     <span style={styles.metaDivider}>•</span>
                     <span style={styles.metaItem}>🔒 Safe & Secure</span>
                 </div>
