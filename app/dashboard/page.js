@@ -134,6 +134,13 @@ export default function Dashboard() {
                                     <p>AI-generated personalized schedule</p>
                                 </div>
                             </a>
+                            <a href="/omr" className="quick-action">
+                                <div className="quick-action-icon" style={{ background: 'rgba(255,255,255,0.1)' }}>📸</div>
+                                <div className="quick-action-text">
+                                    <h3>OMR Scanner</h3>
+                                    <p>Scan physical offline mock tests</p>
+                                </div>
+                            </a>
                             <button
                                 onClick={async (e) => {
                                     e.currentTarget.disabled = true;
