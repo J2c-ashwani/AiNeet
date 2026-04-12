@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function RegisterPage() {
@@ -11,35 +11,68 @@ export default function RegisterPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // MD Mandate: Pre-Signup Database Wake Call (Silent)
+    useEffect(() => {
+        fetch('/api/cron/keepalive').catch(() => null); 
+    }, []);
+
+    const performRegistration = async (retryCount = 0) => {
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...form, referralCode: refCode || undefined })
+        });
+        
+        let data;
+        const text = await res.text();
+        try {
+            data = JSON.parse(text);
+        } catch {
+            throw new Error('Server starting. Please try again in 5 seconds.');
+        }
+
+        if (!res.ok) {
+            if (res.status === 500 && retryCount < 1) {
+                // Supabase cold start detected. Throw specific error to trigger auto-retry
+                throw new Error('COLD_START');
+            }
+            throw new Error(data.error || 'Registration failed');
+        }
+        return data;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
+        
         try {
-            const res = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, referralCode: refCode || undefined })
-            });
-            // Defensive: handle non-JSON responses gracefully
-            const text = await res.text();
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch {
-                console.error('Non-JSON response from /api/auth/register:', text);
-                throw new Error('Server error. Please try again in a few minutes.');
-            }
-            if (!res.ok) throw new Error(data.error || 'Registration failed');
-            // Redirect to challenge if coming from a challenge link
+            await performRegistration(0);
+            
             if (challengeId) {
                 router.push(`/challenge/${challengeId}`);
             } else {
                 router.push('/dashboard');
             }
         } catch (err) {
-            setError(err.message);
-        } finally { setLoading(false); }
+            if (err.message === 'COLD_START') {
+                setError('Waking secure servers... retrying (5–10 seconds)');
+                
+                // MD Safety Net: Auto-retry after 6 seconds to allow Supabase to boot
+                setTimeout(async () => {
+                    try {
+                        await performRegistration(1);
+                        router.push(challengeId ? `/challenge/${challengeId}` : '/dashboard');
+                    } catch (finalErr) {
+                        setError(finalErr.message === 'COLD_START' ? 'System timeout. Please refresh and try again.' : finalErr.message);
+                        setLoading(false);
+                    }
+                }, 6000);
+            } else {
+                setError(err.message);
+                setLoading(false);
+            }
+        }
     };
 
     return (

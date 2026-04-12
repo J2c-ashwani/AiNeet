@@ -1,0 +1,23 @@
+name: Supabase Keep-Alive Engine
+
+on:
+  schedule:
+    # MD Mandate 1: Execute every 6 hours to drastically minimize cold start probabilities
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger testing
+
+jobs:
+  ping_supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Keepalive API (Database Touch)
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/cron/keepalive
+      
+      - name: Simulate Health Feature Request
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/health/features
+          
+      - name: Simulate Leaderboard Read
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/leaderboard
