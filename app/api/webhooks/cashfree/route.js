@@ -35,12 +35,20 @@ export async function POST(request) {
         // Process successful payments
         if (payload.type === 'PAYMENT_SUCCESS_WEBHOOK') {
             const orderId = payload.data.order.order_id;
+            
+            // Add Logging Layer (MD requirement)
+            console.log(`[WEBHOOK START] Received valid payload for Order: ${orderId}`);
 
-            // Webhooks run without user cookies, so we instantiate a service client 
-            // Here using ANON key as fallback since RLS allows updates via anon in this architecture
+            // MD Strategy: Stage Webhook Service Role rollout before locking down RLS
+            const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+            if (!serviceKey) {
+                console.warn('⚠️ CRITICAL: SUPABASE_SERVICE_ROLE_KEY is missing! Falling back to ANON key. RLS vulnerability active!');
+            }
+            const activeKey = serviceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+            
             const supabase = createClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL,
-                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+                activeKey,
                 { auth: { persistSession: false } }
             );
 
@@ -61,13 +69,14 @@ export async function POST(request) {
             );
 
             if (fetchErr) {
-                console.error('Failed to fetch payment order:', fetchErr);
+                console.error(`[WEBHOOK ERROR] Failed to fetch payment order ${orderId}:`, fetchErr);
                 return NextResponse.json({ error: 'Order not found' }, { status: 404 });
             }
 
-            // CTO Constraint: Strict Idempotency. If it's already completed, do NOT upgrade again.
+            // CTO Constraint: Strict Idempotency + Replay Protection. 
+            // If it's already completed, do NOT upgrade again.
             if (payment.status === 'completed') {
-                console.log(`Webhook Idempotency matched: Order ${orderId} already processed. Ignoring.`);
+                console.warn(`[WEBHOOK IDEMPOTENCY] Replay blocked: Order ${orderId} already processed.`);
                 return NextResponse.json({ success: true, message: "Already processed" });
             }
 
@@ -92,9 +101,9 @@ export async function POST(request) {
                         }).eq('provider_order_id', orderId)
                     ]);
                 });
-                console.log(`Webhook successfully completed order ${orderId} for user ${payment.user_id}`);
+                console.log(`[WEBHOOK SUCCESS] Upgraded User: ${payment.user_id} to PRO. Order: ${orderId}, Expiry: ${expiryDate.toISOString()}`);
             } catch (updateErr) {
-                console.error(`Failed to update DB for order ${orderId} after retries:`, updateErr);
+                console.error(`[WEBHOOK ERROR] Failed to update DB for order ${orderId} after retries:`, updateErr);
                 return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
             }
         }

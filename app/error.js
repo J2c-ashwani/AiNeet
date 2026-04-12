@@ -1,6 +1,14 @@
 'use client';
 
-export default function GlobalError({ error, reset }) {
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
+
+export default function ErrorBoundary({ error, reset }) {
+    useEffect(() => {
+        // Log the error to Sentry automatically
+        Sentry.captureException(error);
+    }, [error]);
+
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0a0e1a', color: '#f1f5f9', padding: '40px 20px', textAlign: 'center' }}>
             <div style={{ fontSize: '5rem', marginBottom: '24px' }}>💥</div>

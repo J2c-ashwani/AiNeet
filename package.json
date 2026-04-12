@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "analyze": "next build && node scripts/check_bundle_size.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -17,11 +19,10 @@
     "@upstash/redis": "^1.36.4",
     "@vercel/og": "^0.8.6",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.6.2",
     "chart.js": "^4.5.1",
     "dotenv": "^17.3.1",
     "jsonwebtoken": "^9.0.3",
-    "katex": "^0.16.44",
+    "katex": "^0.16.45",
     "next": "16.1.6",
     "next-pwa": "^5.6.0",
     "pdf-parse": "^2.4.5",
@@ -37,11 +38,15 @@
     "react-markdown": "^10.1.0",
     "react-pdf": "^10.3.0",
     "recharts": "^3.8.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
     "resend": "^6.9.2",
     "tesseract.js": "^7.0.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.3",
     "puppeteer": "^24.40.0"
   }
 }

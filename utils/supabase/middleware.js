@@ -1,6 +1,9 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
+const sessionMicroCache = new Map();
+const CACHE_TTL_MS = 60000;
+
 export async function updateSession(request) {
     let supabaseResponse = NextResponse.next({
         request,
@@ -27,9 +30,23 @@ export async function updateSession(request) {
         }
     )
 
-    // refreshing the auth token
-    const { data: { user } } = await supabase.auth.getUser()
+    // refreshing the auth token and verifying
+    let user = null;
+    const tokenStr = request.cookies.getAll().find(c => c.name.includes('-auth-token'))?.value;
 
+    if (tokenStr) {
+        const cached = sessionMicroCache.get(tokenStr);
+        if (cached && cached.expiry > Date.now()) {
+            user = cached.user;
+        } else {
+            const { data } = await supabase.auth.getUser();
+            user = data.user;
+            if (user) {
+                sessionMicroCache.set(tokenStr, { user, expiry: Date.now() + CACHE_TTL_MS });
+                if (sessionMicroCache.size > 5000) sessionMicroCache.clear();
+            }
+        }
+    }
     const pathname = request.nextUrl.pathname;
 
     // ─── Auth Guard: Redirect unauthenticated users from protected routes ───

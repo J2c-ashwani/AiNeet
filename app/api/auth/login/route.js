@@ -6,7 +6,7 @@ import { rateLimit } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         const supabase = await createSupabaseServerClient();
-        const { email, password } = await request.json();
+        const { email, password, tracking } = await request.json();
 
         if (!email || !password) {
             return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
@@ -36,6 +36,14 @@ export async function POST(request) {
             .select('*')
             .eq('id', authUserId)
             .single();
+
+        // Log session for journey analytics
+        if (tracking?.utmSource || tracking?.acquiredVia) {
+            await supabase.from('user_sessions').insert({
+                user_id: authUserId,
+                source: tracking.acquiredVia || tracking.utmSource
+            });
+        }
 
         if (user) {
             const levelInfo = getLevelFromXP(user.xp);

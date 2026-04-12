@@ -23,7 +23,7 @@ export default function ResultsPage({ params }) {
         </div>
     );
 
-    const { score, xpEarned, level, answers } = results;
+    const { score, xpEarned, level, answers, referralRewardUnlocked } = results;
 
     const toggleExplanation = (idx) => {
         setShowExplanation(prev => ({ ...prev, [idx]: !prev[idx] }));
@@ -79,6 +79,29 @@ export default function ResultsPage({ params }) {
                     </div>
                 </div>
 
+                {/* DOPAMINE UI: Referral Reward Loop */}
+                {referralRewardUnlocked && (
+                    <div className="mb-6 animate-fade-in-up" style={{
+                        padding: '24px', borderRadius: '16px',
+                        background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))',
+                        border: '1px solid rgba(168,85,247,0.4)',
+                        position: 'relative', overflow: 'hidden', textAlign: 'center'
+                    }}>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '12px' }}>
+                            🎉 Referral Validated!
+                        </h3>
+                        <p style={{ color: '#cbd5e1', marginBottom: '20px', fontSize: '1.1rem' }}>
+                            You and your friend both earned <strong style={{ color: '#4ade80' }}>+20 Trust Score</strong> and unlocked <strong style={{ color: '#c084fc' }}>24h of Premium AI!</strong>
+                        </p>
+                        
+                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '12px', display: 'inline-block' }}>
+                            <p style={{ margin: 0, fontWeight: 700, color: '#e2e8f0', fontSize: '0.95rem' }}>
+                                🔥 Invite 3 more friends → Unlock 7 days premium!
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* XP & Level */}
                 <div className="grid grid-2 gap-4 mb-6 stagger">
                     <div className="stat-card">
@@ -93,6 +116,18 @@ export default function ResultsPage({ params }) {
                     </div>
                 </div>
 
+                {/* MD Transparency: Trust Status Hint */}
+                {results.trustHint && (
+                    <div className="mb-6 animate-fade-in" style={{
+                        padding: '14px 20px', borderRadius: 12,
+                        background: results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.08)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)',
+                        border: `1px solid ${results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.25)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.25)' : 'rgba(239,68,68,0.25)'}`,
+                        color: results.trustHint.severity === 'success' ? '#4ade80' : results.trustHint.severity === 'warning' ? '#fbbf24' : '#f87171',
+                        fontSize: '0.85rem', fontWeight: 500
+                    }}>
+                        {results.trustHint.severity === 'success' ? '🌟' : results.trustHint.severity === 'warning' ? '⚠️' : '🔒'} {results.trustHint.message}
+                    </div>
+                )}
                 {/* Actions */}
                 <div className="flex gap-3 mb-6 flex-wrap">
                     <a href="/test/configure" className="btn btn-primary">📝 Take Another Test</a>

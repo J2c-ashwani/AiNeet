@@ -128,7 +128,8 @@ export async function GET(request) {
             recentSignups,
             dailyActivity,
             subscriptionBreakdown,
-            aiTelemetry
+            aiTelemetry,
+            killSwitchesActive: process.env.DISABLE_AI !== 'true' && process.env.DISABLE_PAYMENTS !== 'true'
         });
     } catch (error) {
         console.error('Stats API Error:', error);

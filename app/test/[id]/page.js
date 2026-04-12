@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
+import { OfflineStorage } from '@/lib/idb';
 
 export default function TestPage({ params }) {
     const { id: testId } = use(params);
@@ -15,6 +16,7 @@ export default function TestPage({ params }) {
     const [questionTimes, setQuestionTimes] = useState({});
     const [lastQTime, setLastQTime] = useState(Date.now());
     const [submitting, setSubmitting] = useState(false);
+    const [offlineSyncPending, setOfflineSyncPending] = useState(false);
     const [showNav, setShowNav] = useState(false);
     const [initialReportState, setReportState] = useState({ show: false, reason: 'error', comment: '' });
 
@@ -49,15 +51,29 @@ export default function TestPage({ params }) {
             if (data.testId === testId) {
                 setTestData(data);
                 setTimeLeft(data.timeLimit);
+                
+                // MD Recovery: Native Draft Restore Check
+                OfflineStorage.getItem(`draft_${testId}`).then(draft => {
+                    if (draft) {
+                        setAnswers(draft.answers || {});
+                        setOfflineSyncPending(draft.pendingSubmit || false);
+                    }
+                });
                 return;
             }
         }
         router.push('/test/configure');
     }, [testId, router]);
 
+    // Continuously backup state locally to prevent RAM crashes bleeding data
+    useEffect(() => {
+        if (!testData || Object.keys(answers).length === 0) return;
+        OfflineStorage.setItem(`draft_${testId}`, { answers, pendingSubmit: offlineSyncPending });
+    }, [answers, testData, testId, offlineSyncPending]);
+
     // Timer
     useEffect(() => {
-        if (!testData || timeLeft <= 0) return;
+        if (!testData || timeLeft <= 0 || offlineSyncPending) return;
         const timer = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) { handleSubmit(); return 0; }
@@ -65,7 +81,7 @@ export default function TestPage({ params }) {
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [testData]);
+    }, [testData, offlineSyncPending]);
 
     const trackTime = useCallback(() => {
         const now = Date.now();
@@ -101,7 +117,6 @@ export default function TestPage({ params }) {
 
     const handleSubmit = async () => {
         if (submitting) return;
-
         setSubmitting(true);
         trackTime();
 
@@ -111,23 +126,40 @@ export default function TestPage({ params }) {
             timeSpent: questionTimes[idx] || 0
         }));
 
+        const payload = {
+            testId,
+            answers: answerPayload,
+            timeTaken: Math.round((Date.now() - startTime) / 1000),
+            idempotencyKey: crypto.randomUUID()
+        };
+
         try {
             const res = await fetch('/api/tests/submit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    testId,
-                    answers: answerPayload,
-                    timeTaken: Math.round((Date.now() - startTime) / 1000)
-                })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
+            
+            // Native Idempotency Trap: If the backend successfully consumed it before our network dropped
+            if (res.status === 400 && data.error === 'Test already submitted') {
+                await OfflineStorage.removeItem(`draft_${testId}`);
+                router.push(`/test/${testId}/results`);
+                return;
+            }
+            
+            if (!res.ok) throw new Error(data.error || 'Network Drop');
+            
             sessionStorage.setItem('testResults', JSON.stringify(data));
             sessionStorage.removeItem('currentTest');
+            await OfflineStorage.removeItem(`draft_${testId}`);
             router.push(`/test/${testId}/results`);
+            
         } catch (err) {
-            alert('Failed to submit: ' + err.message);
+            console.error('Submission Failed:', err);
+            // Operations Layer: Failsafe offline trigger
+            setOfflineSyncPending(true);
+            await OfflineStorage.setItem(`draft_${testId}`, { answers, pendingSubmit: true, payload });
             setSubmitting(false);
         }
     };
@@ -151,6 +183,16 @@ export default function TestPage({ params }) {
 
     return (
         <div style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
+            {/* Network Fallback Recovery Banner */}
+            {offlineSyncPending && (
+                <div className="bg-orange-600 text-white px-4 py-3 text-center sm:px-6 lg:px-8 flex items-center justify-between z-50 relative shadow-xl">
+                    <p className="text-sm font-medium">⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
+                    <button onClick={handleSubmit} disabled={submitting} className="bg-white/20 hover:bg-white/30 text-white border-white px-4 py-1.5 rounded-full text-xs font-bold transition-all">
+                        {submitting ? 'Syncing...' : 'Retry Submission Sync'}
+                    </button>
+                </div>
+            )}
+
             {/* Test Header */}
             <div className="test-header" style={{ margin: 0 }}>
                 <div className="flex items-center gap-4">

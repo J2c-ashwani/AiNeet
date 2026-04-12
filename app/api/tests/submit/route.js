@@ -4,6 +4,7 @@ import { getUserFromRequest } from '@/lib/auth';
 import { calculateNEETScore, calculateXP, getLevelFromXP } from '@/lib/scoring';
 import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engine';
 import { scheduleNewCard } from '@/lib/spaced_repetition';
+import { applyTrustXpModifier, calculateTrustRecovery, getTrustHint } from '@/lib/trust-engine';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -138,10 +139,57 @@ export async function POST(request) {
             time_taken_seconds: timeTaken || 0, completed_at: new Date().toISOString()
         }).eq('id', testId);
 
-        // Update XP and Level
-        const { data: user } = await supabase.from('users').select('xp, streak, last_active_date').eq('id', decoded.id).single();
-        const newXp = (user?.xp || 0) + xpEarned;
-        const newLevel = getLevelFromXP(newXp);
+        // Update XP, Level, and Risk Telemetry
+        const { data: user } = await supabase.from('users').select('xp, streak, last_active_date, referred_by, trust_score').eq('id', decoded.id).single();
+
+        // [GROWTH ENGINE] Diminishing Returns Math
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { count: dailyTestCount } = await supabase.from('tests').select('*', { count: 'exact', head: true })
+             .eq('user_id', decoded.id).gte('completed_at', todayStr + 'T00:00:00.000Z');
+
+        let xpMultiplier = 1;
+        if (dailyTestCount >= 5 && dailyTestCount < 10) xpMultiplier = 0.5; // Soft Cap
+        if (dailyTestCount >= 10) xpMultiplier = 0; // Hard Cap for farming limits
+
+        // [GROWTH ENGINE] Adaptive Risk Profiler
+        const timePerQuestion = (timeTaken || 1) / (processedAnswers.length || 1);
+        let trustPenalty = 0;
+
+        if (processedAnswers.length >= 5 && timePerQuestion < 3) {
+             trustPenalty = 15;
+             xpMultiplier = 0; // Destroy ROI of speedrunning bots
+             console.warn(`[SECURITY] User ${decoded.id} submitted ${processedAnswers.length} Qs in ${timeTaken}s. Trust -15.`);
+        } else if (processedAnswers.length >= 5 && timePerQuestion < 6 && scoreData.accuracy > 90) {
+             trustPenalty = 5;
+             xpMultiplier = 0.5; // Suspiciously perfect and fast
+        }
+
+        const actualXpEarned = applyTrustXpModifier(
+            Math.floor(xpEarned * xpMultiplier), 
+            user?.trust_score
+        );
+
+        if (trustPenalty > 0) {
+             await supabase.rpc('decrement_trust_score', { target_user_id: decoded.id, penalty: trustPenalty });
+        }
+
+        // MD Trust Recovery: Reward positive actions to enable trust restoration
+        if (trustPenalty === 0 && processedAnswers.length >= 3) {
+            const recoveryPoints = calculateTrustRecovery('test_completed', user?.trust_score);
+            if (recoveryPoints > 0) {
+                await supabase.from('users').update({
+                    trust_score: Math.min(100, (user?.trust_score || 100) + recoveryPoints)
+                }).eq('id', decoded.id);
+            }
+        }
+
+        if (actualXpEarned > 0) {
+             await supabase.rpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: actualXpEarned });
+        }
+
+        // Calculate predicted new XP and Level for frontend without an expensive refetch
+        const predictedXp = (user?.xp || 0) + actualXpEarned;
+        const newLevel = getLevelFromXP(predictedXp);
 
         // Streak Logic
         const today = new Date().toISOString().split('T')[0];
@@ -160,7 +208,18 @@ export async function POST(request) {
             }
         }
 
-        await supabase.from('users').update({ xp: newXp, level: newLevel.level, streak: newStreak, last_active_date: new Date().toISOString() }).eq('id', decoded.id);
+        // Update user state using atomic streak math instead of overwriting XP blindly
+        await supabase.from('users').update({ streak: newStreak, last_active_date: new Date().toISOString() }).eq('id', decoded.id);
+
+        // MD Trust Recovery: Streak milestones give bonus trust recovery
+        if (newStreak >= 3 && trustPenalty === 0) {
+            const streakRecovery = calculateTrustRecovery('streak_maintained', user?.trust_score);
+            if (streakRecovery > 0) {
+                await supabase.from('users').update({
+                    trust_score: Math.min(100, (user?.trust_score || 100) + streakRecovery)
+                }).eq('id', decoded.id);
+            }
+        }
 
         // Achievements Logic
         const newBadges = [];
@@ -179,13 +238,54 @@ export async function POST(request) {
 
         const { count: testCount } = await supabase.from('tests').select('*', { count: 'exact', head: true }).eq('user_id', decoded.id).not('completed_at', 'is', null);
 
-        if (testCount >= 1) await checkAndAward('first_test');
+        // [GROWTH ENGINE] Meaningful Action Referral Unlock & Atomic Dopamine Reward
+        let referralRewardUnlocked = false;
+        if (testCount === 1 && user?.referred_by) {
+            // Log the attempt immediately for analytics
+            await supabase.rpc('increment_referrals', { target_user_id: user.referred_by });
+            
+            // Acquire Idempotency Lock
+            const { data: claimed } = await supabase.rpc('claim_referral_reward', { target_user_id: decoded.id });
+            
+            if (claimed) {
+                // Fetch the late-evaluated Fraud Risk Score
+                const { data: riskProfile } = await supabase.from('users').select('fraud_risk_score').eq('id', decoded.id).single();
+                
+                if (riskProfile && riskProfile.fraud_risk_score < 80) {
+                    console.log(`[GROWTH ENGINE] Validation passed. Dispensing 24h Premium & +20 Trust to ${decoded.id} and ${user.referred_by}`);
+                    const premiumTime = new Date(Date.now() + 86400000).toISOString();
+                    
+                    // Reward New User (Self)
+                    await supabase.from('users').update({ 
+                        premium_until: premiumTime,
+                        trust_score: Math.min(100, (user.trust_score || 100) + 20)
+                    }).eq('id', decoded.id);
+                    
+                    // Reward Referrer
+                    await supabase.from('users').update({ premium_until: premiumTime }).eq('id', user.referred_by);
+                    
+                    referralRewardUnlocked = true;
+                } else {
+                    console.warn(`[GROWTH ENGINE] REFERRAL BLOCKED. Risk Score (${riskProfile?.fraud_risk_score}) exceeded threshold for user ${decoded.id}.`);
+                }
+            }
+        }
+
+        if (testCount === 1) await checkAndAward('first_test');
         if (testCount >= 10) await checkAndAward('test_veteran');
         if (scoreData.accuracy >= 100 && scoreData.attempted > 5) await checkAndAward('perfect_score');
         if (fastAnswerCount >= 1) await checkAndAward('speed_demon');
         if (newStreak >= 7) await checkAndAward('streak_7');
 
-        return NextResponse.json({ score: scoreData, xpEarned, level: newLevel, streak: newStreak, badges: newBadges, answers: processedAnswers });
+        // MD Transparency: Include trust hint so frontend can show context
+        const trustHint = getTrustHint(user?.trust_score);
+
+        return NextResponse.json({ 
+            score: scoreData, xpEarned: actualXpEarned, level: newLevel, 
+            streak: newStreak, badges: newBadges, answers: processedAnswers,
+            trustHint: trustHint.show ? trustHint : undefined,
+            referralRewardUnlocked
+        });
     } catch (error) {
         console.error('Submit error:', error);
         return NextResponse.json({ error: 'Failed to submit test' }, { status: 500 });

@@ -104,7 +104,7 @@ export default async function QuestionPage({ params }) {
         }
     }
 
-    // 3. Generate Schema (QAPage + FAQPage)
+    // 3. Generate Schema (QAPage + FAQPage + Educational)
     const schemas = [
         {
             "@context": "https://schema.org",
@@ -114,6 +114,23 @@ export default async function QuestionPage({ params }) {
                 "name": cleanQuestionText(question.text),
                 "text": question.text,
                 "answerCount": 1,
+                "about": {
+                    "@type": "Thing",
+                    "name": question.topics?.name || 'NEET Syllabus'
+                },
+                "educationalAlignment": [
+                    {
+                        "@type": "AlignmentObject",
+                        "alignmentType": "educationalSubject",
+                        "targetName": question.subjects?.name || 'Science'
+                    },
+                    {
+                        "@type": "AlignmentObject",
+                        "alignmentType": "educationalLevel",
+                        "targetName": "NEET Exam Difficulty: " + (question.difficulty || 'Medium').toUpperCase()
+                    }
+                ],
+                "timeRequired": `PT${question.difficulty === 'hard' ? '90' : question.difficulty === 'easy' ? '30' : '60'}S`,
                 "acceptedAnswer": {
                     "@type": "Answer",
                     "text": `${correctAnswerText}. ${question.explanation || ''}`

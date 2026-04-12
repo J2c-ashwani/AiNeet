@@ -8,13 +8,26 @@ import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate'
 export async function POST(request) {
     try {
         const supabase = await createSupabaseServerClient();
-        const { name, email, password, targetYear, referralCode } = await request.json();
+        const { name, email, password, targetYear, referralCode, tracking } = await request.json();
 
         // Rate Limiting (5 req/min per IP)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
+        const userAgent = request.headers.get('user-agent') || 'unknown-device';
         const limitPos = rateLimit(`${ip}:register`, 5, 60000);
         if (!limitPos.success) {
             return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
+        }
+
+        // Anti-Abuse Feature: Risk Scoring (MD Mandate)
+        let fraudRiskScore = 0;
+        const deviceHash = crypto.createHash('sha256').update(`${ip}:${userAgent}`).digest('hex');
+
+        // Rapid signup penalty
+        if (limitPos.remaining < 3) fraudRiskScore += 20;
+
+        const { data: matchedDevice } = await supabase.from('users').select('id').eq('device_hash', deviceHash).limit(1).single();
+        if (matchedDevice) {
+            fraudRiskScore += 50; // High probability of self-referral farming
         }
 
         if (!name || !email || !password) {
@@ -81,11 +94,9 @@ export async function POST(request) {
 
             if (referrer) {
                 referredBy = referrer.id;
-                // Increment referrer's count
-                await supabase
-                    .from('users')
-                    .update({ referrals_count: (referrer.referrals_count || 0) + 1 })
-                    .eq('id', referrer.id);
+                // MD Feature: Do NOT instantly increment referral counts here to prevent abuse.
+                // The referral reward will only unlock organically in `tests/submit` 
+                // when this newly registered student completes their first meaningful Mock Test.
             }
         }
 
@@ -100,7 +111,13 @@ export async function POST(request) {
                 password_hash: passwordHash,
                 target_year: parseInt(targetYear) || 2026,
                 referral_code: myReferralCode,
-                referred_by: referredBy
+                referred_by: referredBy,
+                utm_source: tracking?.utmSource || null,
+                utm_medium: tracking?.utmMedium || null,
+                utm_campaign: tracking?.utmCampaign || null,
+                acquired_via: tracking?.acquiredVia || (referredBy ? 'referral' : 'organic'),
+                device_hash: deviceHash,
+                fraud_risk_score: fraudRiskScore
             });
 
         if (insertError) throw insertError;
