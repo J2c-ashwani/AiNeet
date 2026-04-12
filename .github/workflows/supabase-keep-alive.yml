@@ -11,13 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Keepalive API (Database Touch)
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://lfwnrehqjiwpfoylhmby.supabase.co' }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxmd25yZWhxaml3cGZveWxobWJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1OTA2MTksImV4cCI6MjA4NzE2NjYxOX0.YcjsYzLpNGHKSpPm2QqIQjdCFLHSr-aGkhhtBFRRnnI' }}
         run: |
-          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/cron/keepalive
-      
-      - name: Simulate Health Feature Request
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/health/features
-          
-      - name: Simulate Leaderboard Read
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" https://aineetcoach.com/api/leaderboard
+          # Bypassing the Vercel DNS resolution error completely by touching the Supabase Engine directly
+          curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/users?select=id&limit=1"
