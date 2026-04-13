@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
@@ -9,8 +9,8 @@ export const runtime = 'nodejs'; // Puppeteer requires nodejs
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
 
         if (!decoded) {
             return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });

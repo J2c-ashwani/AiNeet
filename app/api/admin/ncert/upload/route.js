@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { uploadFile } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
 import { sanitizeString } from '@/lib/validate';
 
 // Helper for RBAC
-function requireAdmin(request) {
-    const user = getUserFromRequest(request);
+async function requireAdmin(request) {
+    const user = await getUserFromRequest(request);
     if (!user || user.role !== 'admin') return null;
     return user;
 }
 
 export async function POST(request) {
-    const admin = requireAdmin(request);
+    const admin = await requireAdmin(request);
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
@@ -47,7 +47,7 @@ export async function POST(request) {
         const { url, path: storagePath } = await uploadFile(buffer, fileName, file.type || 'application/pdf');
 
         // Save to DB
-        const supabase = getSupabase();
+        const supabase = await getDb();
         const id = uuidv4();
 
         const { error: dbError } = await supabase.from('ncert_books').insert({

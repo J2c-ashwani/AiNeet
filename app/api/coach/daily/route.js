@@ -1,11 +1,11 @@
 
 import { NextResponse } from 'next/server';
 import { generateDailyGuidance } from '@/lib/ai_coach';
-import { getUserFromRequest } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/core/auth';
 
 export async function GET(request) {
     try {
-        const decoded = getUserFromRequest(request);
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const guidance = await generateDailyGuidance(decoded.id);

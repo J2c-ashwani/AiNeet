@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { generateStudyPlan } from '@/lib/ai-engine';
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { data: performance } = await supabase

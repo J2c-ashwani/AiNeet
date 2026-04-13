@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { Redis } from '@upstash/redis';
 
 export async function GET(request) {
@@ -9,7 +9,7 @@ export async function GET(request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const supabase = getSupabase();
+    const supabase = await getDb();
     const today = new Date().toISOString().split('T')[0];
 
     // ─── 1. Kill Switch Status ───

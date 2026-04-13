@@ -1,14 +1,14 @@
 
 import { NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { analyzeImageDoubt } from '@/lib/vision_engine';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
         // 1. Auth Check
-        const decoded = getUserFromRequest(request);
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         // Rate limit: 5 image analysis requests per minute (expensive AI)
@@ -35,7 +35,7 @@ export async function POST(request) {
         }
 
         // 3. Check Subscription Tier from DB (Ensure fresh status)
-        const supabase = getSupabase();
+        const supabase = await getDb();
         const { data: user } = await supabase.from('users').select('subscription_tier').eq('id', decoded.id).single();
 
         if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });

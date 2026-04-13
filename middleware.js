@@ -48,6 +48,19 @@ export async function middleware(request) {
     try {
         const { pathname } = request.nextUrl;
 
+        // ─── MD Resilience: Global Pre-Launch Kill Switch ───
+        if (process.env.SAFE_MODE === 'true') {
+            // Do not block static assets, only intercept actual pages and APIs
+            if (!pathname.startsWith('/_next') && !pathname.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
+                 return new NextResponse(
+                     JSON.stringify({ 
+                         message: 'NEET Coach is temporarily in Safe Mode for emergency maintenance. We will be back online shortly.' 
+                     }), 
+                     { status: 503, headers: { 'content-type': 'application/json' } }
+                 );
+            }
+        }
+
         // ─── MD Resilience: Global Feature Kill Switches ───
         if (process.env.DISABLE_AI === 'true' && pathname.startsWith('/api/ncert/explain')) {
             return NextResponse.json({ error: 'AI features are temporarily offline for planned maintenance.' }, { status: 503 });

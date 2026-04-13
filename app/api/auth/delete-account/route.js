@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 
 /**
  * Handles the 'Delete Account' request from the frontend.
@@ -8,7 +8,7 @@ import { getUserFromRequest } from '@/lib/auth';
  */
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
         
         // 1. Verify User Session Security
         const decoded = await getUserFromRequest(request);

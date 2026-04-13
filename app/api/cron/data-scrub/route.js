@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 
 // Category B Analytics & Intelligence Tables
 const TABLES_TO_ANONYMIZE = [
@@ -22,7 +22,7 @@ export async function GET(request) {
             return new Response('Unauthorized', { status: 401 });
         }
 
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         // 1. Find all soft-deleted users pending scrub
         const { data: users, error: fetchErr } = await supabase

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { generateDoubtResponse } from '@/lib/ai-engine';
 import { v4 as uuidv4 } from 'uuid';
 import { sanitizeString } from '@/lib/validate';
@@ -8,8 +8,8 @@ import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         // Rate limit: 20 AI doubt requests per minute per user
@@ -54,8 +54,8 @@ export async function POST(request) {
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { searchParams } = new URL(request.url);

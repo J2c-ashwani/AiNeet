@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NCERT_BOOKS, getChapterPdfUrl, getBookUrl } from '@/lib/ncert-data';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 
 /**
  * GET /api/ncert/library — Returns all NCERT books with chapter-wise PDF links
@@ -8,7 +8,7 @@ import { getSupabase } from '@/lib/supabase';
  */
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         const { searchParams } = new URL(request.url);
         const subject = searchParams.get('subject');

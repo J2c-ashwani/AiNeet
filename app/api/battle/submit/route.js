@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { AI_OPPONENTS } from '@/lib/game_engine';
 import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
 
@@ -12,8 +12,8 @@ import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validat
  */
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const body = await request.json();

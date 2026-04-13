@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { getLevelFromXP } from '@/lib/scoring';
 
 export async function GET(request) {
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ user: null });
 
@@ -27,7 +27,7 @@ export async function GET(request) {
 
 export async function PUT(request) {
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 import { getLevelFromXP } from '@/lib/scoring';
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         // 1. Fetch top 20 users by XP
         const { data: topUsers } = await supabase

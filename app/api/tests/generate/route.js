@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
 import { validateArray, validateEnum, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { subjects, chapters, topics, difficulty, questionCount, type, year } = await request.json();

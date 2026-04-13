@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 import { callAIWithFallback } from '@/lib/ai-engine';
 
 // This route feeds your external n8n automation pipeline
@@ -10,7 +10,7 @@ export async function GET(request) {
     }
 
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         
         // 1. Fetch Yesterday's Worst Performing Question
         const yesterday = new Date(Date.now() - 86400000).toISOString();

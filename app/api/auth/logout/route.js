@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 
 export async function POST() {
-    const supabase = await createSupabaseServerClient();
+    const supabase = await getDb();
     await supabase.auth.signOut();
     const response = NextResponse.json({ success: true });
     // Clear old token if it exists

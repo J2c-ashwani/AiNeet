@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         const { email, password, tracking } = await request.json();
 
         if (!email || !password) {

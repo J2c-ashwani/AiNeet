@@ -1,12 +1,12 @@
 
 import { NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const decoded = getUserFromRequest(request);
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         // Rate limit: 20 requests per minute per user

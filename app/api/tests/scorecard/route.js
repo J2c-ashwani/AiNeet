@@ -1,5 +1,5 @@
 import { ImageResponse } from '@vercel/og';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 import { calculateNEETScore } from '@/lib/scoring';
 import { sanitizeString } from '@/lib/validate';
 
@@ -14,7 +14,7 @@ export async function GET(request) {
             return new Response('Missing or invalid testId', { status: 400 });
         }
 
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         const { data: test } = await supabase
             .from('tests')

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 
 export async function GET() {
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         
         // MD Mandate 3: Keepalive MUST Touch DB. Just fetching 'id' limits memory load.
         const { data, error } = await supabase.from('users').select('id').limit(1);

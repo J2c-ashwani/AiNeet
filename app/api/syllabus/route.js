@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 
 export async function GET(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         // 1. Fetch subjects, chapters, topics
         const { data: subjectsData, error: subjectsErr } = await supabase.from('subjects').select('*').order('id');

@@ -1,14 +1,14 @@
 
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         // 1. Auth Check
         const decoded = await getUserFromRequest(request);

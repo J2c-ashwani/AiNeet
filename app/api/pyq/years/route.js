@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/core/db';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
         let allData = [];
         let hasMore = true;
         let offset = 0;

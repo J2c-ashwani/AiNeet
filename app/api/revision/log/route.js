@@ -1,12 +1,12 @@
 
 import { NextResponse } from 'next/server';
 import { logReview } from '@/lib/spaced_repetition';
-import { getUserFromRequest } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { validateId, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const decoded = getUserFromRequest(request);
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { questionId, quality } = await request.json();

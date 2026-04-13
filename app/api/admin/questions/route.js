@@ -1,12 +1,12 @@
 
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { sanitizeString, validateEnum, validatePositiveInt, validateId } from '@/lib/validate';
 
 // Helper for RBAC
-function requireAdmin(request) {
-    const user = getUserFromRequest(request);
+async function requireAdmin(request) {
+    const user = await getUserFromRequest(request);
     // Strict check: must have role === 'admin'
     if (!user || user.role !== 'admin') {
         return null;
@@ -15,10 +15,10 @@ function requireAdmin(request) {
 }
 
 export async function GET(request) {
-    const admin = requireAdmin(request);
+    const admin = await requireAdmin(request);
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-    const supabase = getSupabase();
+    const supabase = await getDb();
     const { searchParams } = new URL(request.url);
     const mode = searchParams.get('mode') || 'reports'; // 'reports' or 'all'
 
@@ -89,11 +89,11 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-    const admin = requireAdmin(request);
+    const admin = await requireAdmin(request);
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
         const body = await request.json();
 
         // Validation
@@ -146,11 +146,11 @@ export async function POST(request) {
 }
 
 export async function DELETE(request) {
-    const admin = requireAdmin(request);
+    const admin = await requireAdmin(request);
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const supabase = getSupabase();
+        const supabase = await getDb();
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 

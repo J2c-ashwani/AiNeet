@@ -1,12 +1,12 @@
 
 import { NextResponse } from 'next/server';
 import { getDueReviews } from '@/lib/spaced_repetition';
-import { getUserFromRequest } from '@/lib/auth';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { checkUsageLimit } from '@/lib/plan_gate';
 
 export async function GET(request) {
     try {
-        const decoded = getUserFromRequest(request);
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const reviews = await getDueReviews(decoded.id);

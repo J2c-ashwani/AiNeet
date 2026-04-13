@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && next build",
     "start": "next start",
     "lint": "next lint",
     "analyze": "next build && node scripts/check_bundle_size.mjs"
@@ -47,6 +48,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.3",
-    "puppeteer": "^24.40.0"
+    "@types/react": "19.2.14",
+    "puppeteer": "^24.40.0",
+    "typescript": "^6.0.2"
   }
 }

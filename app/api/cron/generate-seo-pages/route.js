@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 import { callAIWithFallback } from '@/lib/ai-engine';
 
 export async function GET(request) {
@@ -10,7 +10,7 @@ export async function GET(request) {
     }
 
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         
         // 1. Fetch High-Mistake Candidates (MD Guardrail: Only fetch quality failures)
         let { data: candidates, error } = await supabase.rpc('get_top_mistakes_for_seo', { limit_num: 5 });

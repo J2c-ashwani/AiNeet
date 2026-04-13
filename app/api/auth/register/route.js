@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
+import { getDb } from '@/lib/core/db';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const supabase = await createSupabaseServerClient();
+        const supabase = await getDb();
         const { name, email, password, targetYear, referralCode, tracking } = await request.json();
 
         // Rate Limiting (5 req/min per IP)

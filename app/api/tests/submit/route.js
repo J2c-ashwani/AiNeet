@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 import { calculateNEETScore, calculateXP, getLevelFromXP } from '@/lib/scoring';
 import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engine';
 import { scheduleNewCard } from '@/lib/spaced_repetition';
 import { applyTrustXpModifier, calculateTrustRecovery, getTrustHint } from '@/lib/trust-engine';
+import * as Sentry from '@sentry/nextjs';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -16,8 +17,8 @@ const ACHIEVEMENTS = [
 
 export async function POST(request) {
     try {
-        const supabase = getSupabase();
-        const decoded = getUserFromRequest(request);
+        const supabase = await getDb();
+        const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         const { testId, answers, timeTaken } = await request.json();
@@ -287,7 +288,11 @@ export async function POST(request) {
             referralRewardUnlocked
         });
     } catch (error) {
-        console.error('Submit error:', error);
+        console.error('CRITICAL Submit error:', error);
+        Sentry.captureException(error, {
+            tags: { flow: 'test-submit' },
+            extra: { decodedUser: !!decoded } // don't log entire event, just flag
+        });
         return NextResponse.json({ error: 'Failed to submit test' }, { status: 500 });
     }
 }

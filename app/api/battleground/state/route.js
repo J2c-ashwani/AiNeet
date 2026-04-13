@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { getDb } from '@/lib/core/db';
+import { getUserFromRequest } from '@/lib/core/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +18,7 @@ export async function GET(request) {
             return NextResponse.json({ error: 'Missing battleId' }, { status: 400 });
         }
 
-        const supabase = getSupabase();
+        const supabase = await getDb();
 
         const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
         if (!battle) {
