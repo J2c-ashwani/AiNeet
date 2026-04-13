@@ -23,7 +23,11 @@ export async function POST(request) {
         }
 
         // 2. Parse & Sanitize Request
-        const body = await request.json();
+        let _body;
+        try { _body = await request.json(); } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const body = _body;
         const orderId = sanitizeString(body.orderId || '', 256);
         const planId = sanitizeString(body.planId || '', 128);
 

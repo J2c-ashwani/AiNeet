@@ -39,7 +39,15 @@ export async function POST(request) {
         // const blocked = await checkFeatureAccess(decoded.id, 'parent_connect_enabled', 'premium');
         // if (blocked) return blocked;
 
-        const body = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const body = _body;
 
         // Sanitize and validate
         const parent_email = body.parent_email ? sanitizeString(body.parent_email, 320) : '';

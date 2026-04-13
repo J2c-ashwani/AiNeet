@@ -6,7 +6,11 @@ import { rateLimit } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const { email, password, tracking } = await request.json();
+        let _body;
+        try { _body = await request.json(); } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const { email, password, tracking } = _body;
 
         if (!email || !password) {
             return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });

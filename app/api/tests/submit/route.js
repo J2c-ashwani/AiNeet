@@ -21,7 +21,15 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { testId, answers, timeTaken } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { testId, answers, timeTaken } = _body;
 
         if (!testId || typeof testId !== 'string') {
             return NextResponse.json({ error: 'Valid test ID is required' }, { status: 400 });

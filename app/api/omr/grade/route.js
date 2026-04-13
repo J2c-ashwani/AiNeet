@@ -10,7 +10,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { verifiedAnswers, testId } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { verifiedAnswers, testId } = _body;
 
         if (!verifiedAnswers || !testId) {
             return NextResponse.json({ error: 'Missing grading payload' }, { status: 400 });

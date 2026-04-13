@@ -10,7 +10,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { platform, topicDetected, originalDoubtText, selectedVariantText } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { platform, topicDetected, originalDoubtText, selectedVariantText } = _body;
 
         // 1. Silent Tracking into Postgres
         const { error: insertError } = await supabase.from('social_growth_logs').insert({

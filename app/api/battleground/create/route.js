@@ -15,7 +15,15 @@ export async function POST(request) {
         const blocked = await checkFeatureAccess(decoded.id, 'battleground_enabled', 'pro');
         if (blocked) return blocked;
 
-        const { questionCount: rawQC = 20, timeLimitMinutes: rawTL = 30 } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { questionCount: rawQC = 20, timeLimitMinutes: rawTL = 30 } = _body;
 
         // Generate questions
         // Limit query to pool, then shuffle in memory.

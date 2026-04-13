@@ -1,0 +1,580 @@
+{
+  "api_routes": [
+    {
+      "path": "app/api/achievements/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/growth/log/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/growth/solve/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/ncert/list/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/ncert/upload/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/ops/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/questions/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/stats/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/admin/users/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/analytics/funnel/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/auth/delete-account/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/auth/login/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/auth/logout/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/auth/me/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/auth/register/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battle/create/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battle/submit/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battleground/create/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battleground/join/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battleground/start/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battleground/state/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/battleground/submit/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/blueprint/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/challenge/create/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/classroom/create/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/classroom/join/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/coach/daily/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/cron/data-scrub/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/cron/generate-seo-pages/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/cron/keepalive/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/cron/weekly-report/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/doubt/image/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/doubt/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/doubt/snap/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/health/features/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/leaderboard/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/mistakes/export/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/ncert/explain/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/ncert/library/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/ncert/proxy/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/omr/grade/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/omr/scan/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/performance/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/pyq/years/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/questions/report/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/revision/due/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/revision/log/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/social/daily-mistake/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/study-plan/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/subscription/create/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/subscription/verify/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/syllabus/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/tests/adaptive/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/tests/generate/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/tests/pyq/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/tests/scorecard/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/tests/submit/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/user/parent-settings/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/user/update-fcm-token/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/api/webhooks/cashfree/route.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    }
+  ],
+  "pages": [
+    {
+      "path": "app/admin/growth/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/ncert/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/ops/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/questions/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/revenue/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/admin/users/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/analytics/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/battle/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/battleground/invite/[code]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/battleground/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/blueprint/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/challenge/[id]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/dashboard/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/doubts/[slug]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/doubts/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/download/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/educator/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/leaderboard/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/login/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/mistakes/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/ncert/[bookId]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/ncert/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/offline/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/omr/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/pricing/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/profile/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/q/[id]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/register/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/revision/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/study-plan/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/test/[id]/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/test/[id]/results/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/test/[id]/share/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "app/test/configure/page.js",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    }
+  ],
+  "database_tables": [
+    {
+      "name": "users",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "tests",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "payments",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "leaderboard",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "mistake_log",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "questions",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "user_performance",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "battles",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "question_reports",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "user_achievements",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "ncert_books",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "doubt_conversations",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "battleground_participants",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    }
+  ],
+  "integrations": [
+    {
+      "name": "Supabase Auth",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "Supabase Database",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "Sentry",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "Cashfree",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    },
+    {
+      "name": "Gemini/Groq AI",
+      "status": "ACTIVE",
+      "criticality": "CRITICAL"
+    }
+  ]
+}

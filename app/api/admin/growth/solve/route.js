@@ -14,7 +14,15 @@ export async function POST(request) {
         // Extremely strict auth: For a real production app, ensure user.role === 'admin'
         // For staging we will allow any authenticated session but ideally protected.
 
-        const { textContent, imageBase64, mimeType } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { textContent, imageBase64, mimeType } = _body;
 
         if (!textContent && !imageBase64) {
             return NextResponse.json({ error: 'Provide at least text or an image' }, { status: 400 });

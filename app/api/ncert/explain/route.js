@@ -15,7 +15,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many requests. Please wait a moment.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }
 
-        const { text, bookId } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { text, bookId } = _body;
 
         if (!text || typeof text !== 'string') {
             return NextResponse.json({ error: 'Text is required' }, { status: 400 });

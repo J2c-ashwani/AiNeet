@@ -16,7 +16,15 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const body = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const body = _body;
         const battleId = sanitizeString(body.battleId || '', 128);
         const opponentId = sanitizeString(body.opponentId || '', 128);
         const userScore = validatePositiveInt(body.userScore, 0, 1000) || 0;

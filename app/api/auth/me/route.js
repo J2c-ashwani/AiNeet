@@ -31,7 +31,15 @@ export async function PUT(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { name, targetYear, dailyGoal, password } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { name, targetYear, dailyGoal, password } = _body;
 
         const updates = {};
 

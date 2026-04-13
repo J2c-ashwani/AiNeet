@@ -7,7 +7,15 @@ export async function POST(request) {
             return NextResponse.json({ success: true, bypassed: true });
         }
 
-        const payload = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const body = _body;
         const { event_name, user_id, device_session_id, metadata, timestamp } = payload;
 
         if (!event_name || !device_session_id) {

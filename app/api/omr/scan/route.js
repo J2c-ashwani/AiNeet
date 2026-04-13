@@ -11,7 +11,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { imageBase64, mimeType, testId } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { imageBase64, mimeType, testId } = _body;
 
         if (!imageBase64 || !testId) {
             return NextResponse.json({ error: 'Missing image or test ID' }, { status: 400 });

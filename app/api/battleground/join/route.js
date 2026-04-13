@@ -10,7 +10,15 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { inviteCode } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { inviteCode } = _body;
         if (!inviteCode || !validateInviteCode(inviteCode)) {
             return NextResponse.json({ error: 'Valid invite code required (4-8 alphanumeric characters)' }, { status: 400 });
         }

@@ -94,7 +94,11 @@ export async function POST(request) {
 
     try {
         const supabase = await getDb();
-        const body = await request.json();
+        let _body;
+        try { _body = await request.json(); } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const body = _body;
 
         // Validation
         const required = ['subject_id', 'chapter_id', 'topic_id', 'text', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option'];

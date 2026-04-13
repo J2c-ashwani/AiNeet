@@ -5,7 +5,11 @@ import { rateLimit } from '@/lib/rate-limit';
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const { code } = await request.json();
+        let _body;
+        try { _body = await request.json(); } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const { code } = _body;
 
         // 1. JWT Assurance
         const authHeader = request.headers.get('authorization');

@@ -8,7 +8,14 @@ import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate'
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const { name, email, password, targetYear, referralCode, tracking } = await request.json();
+        
+        let body;
+        try {
+            body = await request.json();
+        } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const { name, email, password, targetYear, referralCode, tracking } = body;
 
         // Rate Limiting (5 req/min per IP)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';

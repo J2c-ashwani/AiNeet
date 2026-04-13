@@ -8,7 +8,15 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const { battleId, answers, timeSpent } = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const { battleId, answers, timeSpent } = _body;
 
         const { data: battle } = await supabase.from('battlegrounds').select('*').eq('id', battleId).single();
         if (!battle) return NextResponse.json({ error: 'Battleground not found' }, { status: 404 });

@@ -11,7 +11,15 @@ export async function POST(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        const body = await request.json();
+        let _body;
+
+        try { _body = await request.json(); } catch (parseErr) {
+
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+
+        }
+
+        const body = _body;
         const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
         const topicId = body.topicId ? sanitizeString(String(body.topicId), 128) : null;
         const count = validatePositiveInt(body.count, 1, 50) || 10;

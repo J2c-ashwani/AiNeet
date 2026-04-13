@@ -23,7 +23,11 @@ export async function POST(request) {
         }
 
         // 2. Parse Request
-        const { planId } = await request.json();
+        let _body;
+        try { _body = await request.json(); } catch (parseErr) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+        const { planId } = _body;
         const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.id === planId);
 
         if (!plan) {
