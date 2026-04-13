@@ -18,7 +18,6 @@ export async function GET() {
         ];
 
         // 2. Fetch all Question IDs for the pSEO pages
-        console.log("Sitemap Generation - Postgres Mode:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
 
         // Select only the ID to keep the query fast. Fetch all questions.
         // We will paginate through Supabase to get all IDs if it exceeds 1000 limit.
@@ -46,7 +45,6 @@ export async function GET() {
                 hasMore = false;
             }
         }
-        console.log("Questions found for sitemap:", questions.length);
 
         // 3. Build the XML String
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
