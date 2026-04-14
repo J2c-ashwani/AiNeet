@@ -70,6 +70,6 @@ export async function GET(request) {
         return NextResponse.json({ books: enriched });
     } catch (error) {
         console.error('NCERT Library API error:', error);
-        return NextResponse.json({ error: 'Failed to fetch NCERT library' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch NCERT library. Please try again in a moment.' }, { status: 500 });
     }
 }

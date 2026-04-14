@@ -112,6 +112,6 @@ export async function GET(request) {
         );
     } catch (e) {
         console.error(e);
-        return new Response('Failed to generate image', { status: 500 });
+        return new Response('Failed to generate image. Please try again in a moment.', { status: 500 });
     }
 }

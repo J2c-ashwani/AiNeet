@@ -83,7 +83,7 @@ export async function POST(request) {
 
         if (joinError) {
             console.error('Join Insertion Error', joinError);
-            return NextResponse.json({ error: 'Failed to join classroom.', code: 'SYSTEM_ERROR' }, { status: 500 });
+            return NextResponse.json({ error: 'Failed to join classroom.. Please try again in a moment.', code: 'SYSTEM_ERROR' }, { status: 500 });
         }
 
         return NextResponse.json({ 
@@ -94,6 +94,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Classroom Join error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Classroom operation failed. Please try again.' }, { status: 500 });
     }
 }

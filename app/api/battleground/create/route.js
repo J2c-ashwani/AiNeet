@@ -74,6 +74,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Battleground create error:', error);
-        return NextResponse.json({ error: 'Failed to create battleground' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to create battleground. Please try again in a moment.' }, { status: 500 });
     }
 }

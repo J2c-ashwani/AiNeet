@@ -31,7 +31,7 @@ export async function POST(request) {
 
         if (insertError) {
             console.error('Tracking Insert Error:', insertError);
-            return NextResponse.json({ error: 'Failed to record tracking' }, { status: 500 });
+            return NextResponse.json({ error: 'Failed to record tracking. Please try again in a moment.' }, { status: 500 });
         }
 
         return NextResponse.json({ success: true });

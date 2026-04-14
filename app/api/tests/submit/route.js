@@ -305,6 +305,6 @@ export async function POST(request) {
         // Backup DB logger (survives Sentry quota exhaustion)
         const supabase = await getDb();
         await logError(supabase, { userId: decoded?.id, route: '/api/tests/submit', method: 'POST', error });
-        return NextResponse.json({ error: 'Failed to submit test' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to submit test. Please try again in a moment.' }, { status: 500 });
     }
 }

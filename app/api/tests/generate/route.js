@@ -179,7 +179,7 @@ export async function POST(request) {
                             q.confidence_score = confScore;
                             q.verification_status = vStatus;
                             questions.push(q);
-                        } catch (e) { console.error('Failed to save verified AI question to DB', e); }
+                        } catch (e) { console.error('Failed to save verified AI question to DB. Please try again in a moment.', e); }
                     } else {
                         // CTO Constraint Fallback: If 3 AI attempts failed, fallback to pulling a random verified PYQ
                         console.warn(`AI generation failed 3 times for slot ${i}. Falling back to verified PYQ.`);
@@ -223,6 +223,6 @@ export async function POST(request) {
         });
     } catch (error) {
         console.error('Test generation error:', error);
-        return NextResponse.json({ error: 'Failed to generate test' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to generate test. Please try again in a moment.' }, { status: 500 });
     }
 }

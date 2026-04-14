@@ -46,7 +46,7 @@ export async function GET() {
 
         return NextResponse.json({ years });
     } catch (error) {
-        console.error('Failed to fetch available PYQ years:', error);
-        return NextResponse.json({ error: 'Failed to fetch years' }, { status: 500 });
+        console.error('Failed to fetch available PYQ years:. Please try again in a moment.', error);
+        return NextResponse.json({ error: 'Failed to fetch years. Please try again in a moment.' }, { status: 500 });
     }
 }

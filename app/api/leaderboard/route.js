@@ -58,6 +58,6 @@ export async function GET(request) {
         return NextResponse.json({ leaderboard });
     } catch (error) {
         console.error('Leaderboard error:', error);
-        return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch leaderboard. Please try again in a moment.' }, { status: 500 });
     }
 }

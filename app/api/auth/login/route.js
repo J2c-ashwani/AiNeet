@@ -58,6 +58,6 @@ export async function POST(request) {
         return NextResponse.json({ user: { id: authUserId, email: authData.user.email, name: authData.user.user_metadata?.full_name || 'User' } });
     } catch (error) {
         console.error('Login error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Login failed. Please check your connection and try again.' }, { status: 500 });
     }
 }

@@ -46,6 +46,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Classroom Creation Error:', error);
-        return new NextResponse('Internal server error', { status: 500 });
+        return new NextResponse('Classroom operation failed. Please try again.', { status: 500 });
     }
 }

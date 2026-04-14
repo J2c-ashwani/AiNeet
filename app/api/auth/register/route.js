@@ -140,6 +140,6 @@ export async function POST(request) {
         return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {
         console.error('Register error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Something went wrong during signup. Please try again.' }, { status: 500 });
     }
 }

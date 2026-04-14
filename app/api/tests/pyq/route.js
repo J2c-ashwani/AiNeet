@@ -90,6 +90,6 @@ export async function POST(request) {
         });
     } catch (error) {
         console.error('PYQ Test generation error:', error);
-        return NextResponse.json({ error: 'Failed to generate PYQ test' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to generate PYQ test. Please try again in a moment.' }, { status: 500 });
     }
 }

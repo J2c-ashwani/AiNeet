@@ -65,6 +65,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Challenge Creation Error:', error);
-        return NextResponse.json({ error: 'Failed to create challenge' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to create challenge. Please try again in a moment.' }, { status: 500 });
     }
 }

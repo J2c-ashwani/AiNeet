@@ -22,6 +22,6 @@ export async function GET(request) {
         return NextResponse.json({ users: users || [] });
     } catch (error) {
         console.error('Users API Error:', error);
-        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch users. Please try again in a moment.' }, { status: 500 });
     }
 }

@@ -53,6 +53,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Report submission error:', error);
-        return NextResponse.json({ error: 'Failed to submit report' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to submit report. Please try again in a moment.' }, { status: 500 });
     }
 }

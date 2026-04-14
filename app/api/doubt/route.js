@@ -59,7 +59,7 @@ export async function POST(request) {
         console.error('Doubt error:', error);
         const supabase = await getDb();
         await logError(supabase, { userId: decoded?.id, route: '/api/doubt', method: 'POST', error });
-        return NextResponse.json({ error: 'Failed to process doubt' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to process doubt. Please try again in a moment.' }, { status: 500 });
     }
 }
 
@@ -83,6 +83,6 @@ export async function GET(request) {
         console.error('Doubt GET error:', error);
         const supabase = await getDb();
         await logError(supabase, { route: '/api/doubt', method: 'GET', error });
-        return NextResponse.json({ error: 'Failed to fetch doubts' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch doubts. Please try again in a moment.' }, { status: 500 });
     }
 }

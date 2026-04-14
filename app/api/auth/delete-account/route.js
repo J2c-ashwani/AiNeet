@@ -43,8 +43,8 @@ export async function POST(request) {
             .eq('id', userId);
 
         if (updateErr) {
-            console.error('Failed to update soft delete flag:', updateErr);
-            return NextResponse.json({ error: 'Failed to process deletion' }, { status: 500 });
+            console.error('Failed to update soft delete flag:. Please try again in a moment.', updateErr);
+            return NextResponse.json({ error: 'Failed to process deletion. Please try again in a moment.' }, { status: 500 });
         }
 
         // 4. Force Admin Wipe of Auth Tokens (Logs the user out globally)

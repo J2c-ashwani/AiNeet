@@ -29,6 +29,6 @@ export async function GET(request) {
         return NextResponse.json({ plan });
     } catch (error) {
         console.error('Study plan error:', error);
-        return NextResponse.json({ error: 'Failed to generate study plan' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to generate study plan. Please try again in a moment.' }, { status: 500 });
     }
 }

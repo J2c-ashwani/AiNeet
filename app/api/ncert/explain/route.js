@@ -53,6 +53,6 @@ Keep it concise and format with basic Markdown.`;
 
     } catch (error) {
         console.error('Explain error:', error);
-        return NextResponse.json({ error: 'Failed to explain' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to explain. Please try again in a moment.' }, { status: 500 });
     }
 }

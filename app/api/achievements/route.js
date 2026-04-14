@@ -17,6 +17,6 @@ export async function GET(request) {
         return NextResponse.json({ badges: badges || [] });
     } catch (error) {
         console.error('Achievements error:', error);
-        return NextResponse.json({ error: 'Failed to fetch achievements' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch achievements. Please try again in a moment.' }, { status: 500 });
     }
 }

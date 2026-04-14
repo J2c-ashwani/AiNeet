@@ -64,6 +64,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Battleground join error:', error);
-        return NextResponse.json({ error: 'Failed to join battleground' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to join battleground. Please try again in a moment.' }, { status: 500 });
     }
 }

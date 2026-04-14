@@ -121,6 +121,6 @@ export async function GET(request) {
 
     } catch (error) {
         console.error('PDF generation error:', error);
-        return NextResponse.json({ error: 'Failed to generate PDF' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to generate PDF. Please try again in a moment.' }, { status: 500 });
     }
 }

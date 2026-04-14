@@ -42,7 +42,7 @@ export async function POST(request) {
             console.log(`[OCR] Extracted ${extractedText.length} characters.`);
         } catch (ocrError) {
             console.error('OCR Extraction failed:', ocrError);
-            return NextResponse.json({ error: 'Failed to read text from image. Please ensure the image is clear and contains printed text.' }, { status: 400 });
+            return NextResponse.json({ error: 'Failed to read text from image. Please ensure the image is clear and contains printed text.. Please try again in a moment.' }, { status: 400 });
         }
 
         if (extractedText.length < 5) {
@@ -87,6 +87,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Image Doubt error:', error);
-        return NextResponse.json({ error: 'Failed to process image doubt' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to process image doubt. Please try again in a moment.' }, { status: 500 });
     }
 }

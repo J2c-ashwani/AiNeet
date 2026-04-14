@@ -37,6 +37,6 @@ export async function GET(request) {
         return NextResponse.json({ subjects: result });
     } catch (error) {
         console.error('Syllabus error:', error);
-        return NextResponse.json({ error: 'Failed to fetch syllabus' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch syllabus. Please try again in a moment.' }, { status: 500 });
     }
 }

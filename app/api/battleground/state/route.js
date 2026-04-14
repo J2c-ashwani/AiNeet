@@ -79,6 +79,6 @@ export async function GET(request) {
         return NextResponse.json(payload);
     } catch (err) {
         console.error('State fetch error:', err);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: 'Battle operation failed. Please try again.' }, { status: 500 });
     }
 }

@@ -20,7 +20,7 @@ export async function GET(request) {
 
         if (!response.ok) {
             console.error(`Failed to fetch from NCERT: ${response.status} ${response.statusText}`);
-            return NextResponse.json({ error: 'Failed to fetch PDF from NCERT' }, { status: response.status });
+            return NextResponse.json({ error: 'Failed to fetch PDF from NCERT. Please try again in a moment.' }, { status: response.status });
         }
 
         // Return the PDF buffer with appropriate content type and CORS headers

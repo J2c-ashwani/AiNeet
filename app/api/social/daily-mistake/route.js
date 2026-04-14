@@ -80,6 +80,6 @@ export async function GET(request) {
 
     } catch (error) {
         console.error('N8N Social Hook Failed:', error);
-        return NextResponse.json({ error: 'Failed to generate social script' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to generate social script. Please try again in a moment.' }, { status: 500 });
     }
 }

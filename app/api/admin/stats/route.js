@@ -133,6 +133,6 @@ export async function GET(request) {
         });
     } catch (error) {
         console.error('Stats API Error:', error);
-        return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch stats. Please try again in a moment.' }, { status: 500 });
     }
 }

@@ -184,6 +184,6 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Performance error:', error);
-    return NextResponse.json({ error: 'Failed to fetch performance' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch performance. Please try again in a moment.' }, { status: 500 });
   }
 }

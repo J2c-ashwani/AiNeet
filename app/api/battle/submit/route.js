@@ -75,6 +75,6 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Battle submit error:', error);
-        return NextResponse.json({ error: 'Failed to submit battle results' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to submit battle results. Please try again in a moment.' }, { status: 500 });
     }
 }

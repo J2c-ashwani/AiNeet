@@ -56,7 +56,7 @@ export async function POST(request) {
     } catch (error) {
         console.error('Snap API Error:', error);
         return NextResponse.json({
-            error: error.message || 'Failed to analyze image'
+            error: error.message || 'Failed to analyze image. Please try again in a moment.'
         }, { status: 500 });
     }
 }

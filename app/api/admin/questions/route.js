@@ -164,6 +164,6 @@ export async function DELETE(request) {
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to delete. Please try again in a moment.' }, { status: 500 });
     }
 }
