@@ -5,6 +5,7 @@ import { generateDoubtResponse } from '@/lib/ai-engine';
 import { v4 as uuidv4 } from 'uuid';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
+import { logError } from '@/lib/error-logger';
 
 export async function POST(request) {
     try {
@@ -56,6 +57,8 @@ export async function POST(request) {
         return NextResponse.json({ conversationId: convId, response: aiResponse });
     } catch (error) {
         console.error('Doubt error:', error);
+        const supabase = await getDb();
+        await logError(supabase, { userId: decoded?.id, route: '/api/doubt', method: 'POST', error });
         return NextResponse.json({ error: 'Failed to process doubt' }, { status: 500 });
     }
 }
@@ -78,6 +81,8 @@ export async function GET(request) {
         return NextResponse.json({ conversations: conversations || [] });
     } catch (error) {
         console.error('Doubt GET error:', error);
+        const supabase = await getDb();
+        await logError(supabase, { route: '/api/doubt', method: 'GET', error });
         return NextResponse.json({ error: 'Failed to fetch doubts' }, { status: 500 });
     }
 }

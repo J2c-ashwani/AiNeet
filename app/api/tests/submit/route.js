@@ -6,6 +6,7 @@ import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engi
 import { scheduleNewCard } from '@/lib/spaced_repetition';
 import { applyTrustXpModifier, calculateTrustRecovery, getTrustHint } from '@/lib/trust-engine';
 import * as Sentry from '@sentry/nextjs';
+import { logError } from '@/lib/error-logger';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -299,8 +300,11 @@ export async function POST(request) {
         console.error('CRITICAL Submit error:', error);
         Sentry.captureException(error, {
             tags: { flow: 'test-submit' },
-            extra: { decodedUser: !!decoded } // don't log entire event, just flag
+            extra: { decodedUser: !!decoded }
         });
+        // Backup DB logger (survives Sentry quota exhaustion)
+        const supabase = await getDb();
+        await logError(supabase, { userId: decoded?.id, route: '/api/tests/submit', method: 'POST', error });
         return NextResponse.json({ error: 'Failed to submit test' }, { status: 500 });
     }
 }
