@@ -24,22 +24,22 @@ export default function Dashboard() {
         }).catch(() => router.push('/login'));
     }, [user, authLoading, router]);
 
+    const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
+
+    // Signal the mobile app (Flutter WebView) about premium status
+    // This disables all ads for paying users inside the native wrapper
+    useEffect(() => {
+        if (!loading && typeof window.setPremiumUser === 'function') {
+            window.setPremiumUser(!isFree);
+        }
+    }, [loading, isFree]);
+
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>
             <div className="spinner" style={{ width: 40, height: 40 }}></div>
             <p>Loading your dashboard...</p>
         </div>
     );
-
-    const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
-
-    // Signal the mobile app (Flutter WebView) about premium status
-    // This disables all ads for paying users inside the native wrapper
-    useEffect(() => {
-        if (typeof window.setPremiumUser === 'function') {
-            window.setPremiumUser(!isFree);
-        }
-    }, [isFree]);
 
     const stats = performance?.overallStats || {};
     const rankPrediction = performance?.rankPrediction || {};
