@@ -32,6 +32,7 @@ export async function POST(request) {
         });
 
         if (authError || !authData.user) {
+            console.error('Supabase Login Error:', authError);
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
 

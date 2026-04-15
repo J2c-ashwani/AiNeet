@@ -24,7 +24,8 @@ export function AuthProvider({ children }) {
         try {
             await fetch('/api/auth/logout', { method: 'POST' });
             setUser(null);
-            router.push('/login');
+            // Hard navigate to completely purge local active session state memory
+            window.location.href = '/login';
         } catch (err) {
             console.error('Logout failed:', err);
         }
