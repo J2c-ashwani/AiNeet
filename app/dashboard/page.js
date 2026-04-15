@@ -33,6 +33,14 @@ export default function Dashboard() {
 
     const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
 
+    // Signal the mobile app (Flutter WebView) about premium status
+    // This disables all ads for paying users inside the native wrapper
+    useEffect(() => {
+        if (typeof window.setPremiumUser === 'function') {
+            window.setPremiumUser(!isFree);
+        }
+    }, [isFree]);
+
     const stats = performance?.overallStats || {};
     const rankPrediction = performance?.rankPrediction || {};
     const weakAreas = performance?.weakAreas || [];

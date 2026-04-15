@@ -12,6 +12,11 @@ export default function ResultsPage({ params }) {
         const stored = sessionStorage.getItem('testResults');
         if (stored) {
             setResults(JSON.parse(stored));
+            // Trigger interstitial ad on mobile app (natural pause point after test)
+            // Only fires inside the Flutter WebView — no-op on desktop browsers
+            if (typeof window.showInterstitialAd === 'function') {
+                setTimeout(() => window.showInterstitialAd(), 1500);
+            }
             return;
         }
         router.push('/dashboard');
