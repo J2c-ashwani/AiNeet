@@ -15,6 +15,16 @@ export async function GET() {
             '/contact', // Add if exists
             '/login',
             '/register',
+            '/topic/neet-biology-preparation',
+            '/topic/neet-physics-formulas',
+            '/topic/neet-chemistry-tricks',
+            '/topic/neet-mock-test-free',
+            '/topic/neet-pyq-chapterwise',
+            '/topic/how-to-crack-neet',
+            '/topic/neet-syllabus-2026',
+            '/topic/best-books-for-neet',
+            '/topic/neet-online-coaching',
+            '/topic/neet-admit-card',
         ];
 
         // 2. Fetch all Question IDs for the pSEO pages
