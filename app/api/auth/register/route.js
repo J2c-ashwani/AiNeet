@@ -64,16 +64,17 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
         }
 
-        // Supabase Native SignUp
+        // Supabase Native SignUp via Admin API
+        // CRITICAL FIX: Using admin.createUser prevents the backend 'supabase' client from accidentally modifying its Bearer
+        // token and locking itself out via RLS.
         let authData, authError;
         try {
-            const result = await supabase.auth.signUp({
+            const result = await supabase.auth.admin.createUser({
                 email: email.toLowerCase().trim(),
                 password,
-                options: {
-                    data: {
-                        full_name: cleanName
-                    }
+                email_confirm: true,
+                user_metadata: {
+                    full_name: cleanName
                 }
             });
             authData = result.data;
@@ -140,6 +141,6 @@ export async function POST(request) {
         return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {
         console.error('Register error:', error);
-        return NextResponse.json({ error: 'Something went wrong during signup. Please try again.' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Something went wrong during signup.', details: JSON.stringify(error) }, { status: 500 });
     }
 }
