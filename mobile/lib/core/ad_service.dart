@@ -5,8 +5,8 @@ import 'dart:io';
 /// Strategic AdMob service for AI NEET Coach.
 ///
 /// Ad placements (free tier only):
-///   - Banner: Above bottom nav on Dashboard/Home
-///   - Interstitial: After test results (natural pause point)
+///   - Banner: Bottom of screen, below WebView
+///   - Interstitial: After test results (triggered via JS bridge)
 ///
 /// NO ads shown:
 ///   - During live tests (sacred UX)
@@ -23,6 +23,7 @@ class AdService {
   InterstitialAd? _interstitialAd;
   bool _isBannerLoaded = false;
   bool _isInterstitialLoaded = false;
+  bool _isPremiumUser = false;
 
   // Test Ad Unit IDs (replace with real ones before production)
   // These are Google's official test ad unit IDs
@@ -52,14 +53,30 @@ class AdService {
       _initialized = true;
       debugPrint('✅ AdMob initialized');
     } catch (e) {
-      debugPrint('⚠️ AdMob init failed: $e');
+      debugPrint('⚠️ AdMob init failed: $e — app will continue without ads');
     }
   }
+
+  /// Set premium status — premium users see zero ads
+  void setPremiumUser(bool isPremium) {
+    _isPremiumUser = isPremium;
+    if (_isPremiumUser) {
+      disposeBanner();
+      _interstitialAd?.dispose();
+      _interstitialAd = null;
+      _isInterstitialLoaded = false;
+      debugPrint('👑 Premium user — all ads disabled');
+    }
+  }
+
+  bool get isPremiumUser => _isPremiumUser;
 
   // ─── Banner Ad ───────────────────────────────────────────────────────
 
   /// Load a banner ad (320x50, standard size).
   void loadBannerAd({required Function(BannerAd) onLoaded}) {
+    if (_isPremiumUser) return;
+
     _bannerAd = BannerAd(
       adUnitId: _bannerAdUnitId,
       size: AdSize.banner,
@@ -92,6 +109,8 @@ class AdService {
 
   /// Pre-load an interstitial ad (call early, show later).
   void loadInterstitialAd() {
+    if (_isPremiumUser) return;
+
     InterstitialAd.load(
       adUnitId: _interstitialAdUnitId,
       request: const AdRequest(),
@@ -112,6 +131,7 @@ class AdService {
   /// Show the interstitial ad (e.g. after test results).
   /// Returns true if shown, false if not available.
   bool showInterstitialAd({VoidCallback? onDismissed}) {
+    if (_isPremiumUser) return false;
     if (!_isInterstitialLoaded || _interstitialAd == null) return false;
 
     _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
@@ -120,7 +140,7 @@ class AdService {
         _interstitialAd = null;
         _isInterstitialLoaded = false;
         onDismissed?.call();
-        // Pre-load next one
+        // Pre-load next one immediately
         loadInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {

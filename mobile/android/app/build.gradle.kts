@@ -1,13 +1,14 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.aineetcoach.app"
-    compileSdk = 36
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -20,37 +21,21 @@ android {
     }
 
     defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.aineetcoach.app"
-        minSdk = 24        // Android 7.0+ (covers 99%+ of active devices)
-        targetSdk = 36     // Android 16
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    signingConfigs {
-        create("release") {
-            // NOTE: For CI/CD, set these via environment variables.
-            // Locally, the defaults below point to the generated neet-coach.jks keystore.
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "neet-coach.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "neetcoach123"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "neetcoach"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "neetcoach123"
-        }
-    }
-
     buildTypes {
-        debug {
-            isMinifyEnabled = false
-            isDebuggable = true
-        }
         release {
-            signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true       // Enable R8 code shrinking and obfuscation
-            isShrinkResources = true     // Remove unused resources
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
