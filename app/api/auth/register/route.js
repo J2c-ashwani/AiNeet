@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/core/db';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
@@ -8,6 +9,7 @@ import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate'
 export async function POST(request) {
     try {
         const supabase = await getDb();
+        const supabaseAuth = await createSupabaseServerClient();
         
         let body;
         try {
@@ -137,6 +139,12 @@ export async function POST(request) {
             .single();
 
         const levelInfo = user ? getLevelFromXP(user.xp) : null;
+
+        // CRITICAL FIX: Automatically sign the user in via SSR Auth Client to attach browser cookies
+        await supabaseAuth.auth.signInWithPassword({
+            email: email.toLowerCase().trim(),
+            password
+        });
 
         return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {

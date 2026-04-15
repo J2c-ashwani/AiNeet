@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
     try {
-        const supabase = await getDb();
+        const supabaseAdmin = await getDb();
+        const supabaseAuth = await createSupabaseServerClient();
         let _body;
         try { _body = await request.json(); } catch (parseErr) {
             return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
@@ -23,8 +25,8 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
         }
 
-        // Supabase Native SignIn
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        // Supabase Native SignIn via SSR Cookies
+        const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
             email: email.toLowerCase().trim(),
             password: password
         });
@@ -35,7 +37,7 @@ export async function POST(request) {
 
         const authUserId = authData.user.id;
 
-        const { data: user } = await supabase
+        const { data: user } = await supabaseAdmin
             .from('users')
             .select('*')
             .eq('id', authUserId)
@@ -43,7 +45,7 @@ export async function POST(request) {
 
         // Log session for journey analytics
         if (tracking?.utmSource || tracking?.acquiredVia) {
-            await supabase.from('user_sessions').insert({
+            await supabaseAdmin.from('user_sessions').insert({
                 user_id: authUserId,
                 source: tracking.acquiredVia || tracking.utmSource
             });
