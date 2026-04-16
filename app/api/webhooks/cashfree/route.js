@@ -86,21 +86,33 @@ export async function POST(request) {
             expiryDate.setDate(expiryDate.getDate() + plan.duration_days);
 
             try {
-                // Execute updates with retry logic for DB locks
-                await withRetry(async () => {
-                    await Promise.all([
-                        supabase.from('users').update({
-                            subscription_tier: 'pro',
-                            subscription_status: 'active',
-                            subscription_expiry: expiryDate.toISOString()
-                        }).eq('id', payment.user_id),
+                // ATOMIC LOCK: Execute payment status transition first
+                // Using .eq('status', 'pending') guarantees only ONE concurrent thread can claim this transition lock
+                const { data: updatedPayment, error: paymentUpdateErr } = await supabase.from('payments').update({
+                    status: 'completed',
+                    provider_payment_id: String(payload.data.payment.cf_payment_id)
+                })
+                .eq('provider_order_id', orderId)
+                .eq('status', 'pending')
+                .select();
 
-                        supabase.from('payments').update({
-                            status: 'completed',
-                            provider_payment_id: String(payload.data.payment.cf_payment_id)
-                        }).eq('provider_order_id', orderId)
-                    ]);
-                });
+                if (paymentUpdateErr) throw paymentUpdateErr;
+
+                // Idempotency Enforcement: If 0 rows are returned, a concurrent request beat us to the lock. Abort silently.
+                if (!updatedPayment || updatedPayment.length === 0) {
+                    console.log(`[WEBHOOK MUTEX] Replay gracefully ignored. Concurrent lock claimed elsewhere for order: ${orderId}`);
+                    return NextResponse.json({ success: true, message: "Race condition mitigated safely" });
+                }
+
+                // Lock successfully acquired. Process the payload.
+                const { error: userUpdateErr } = await supabase.from('users').update({
+                    subscription_tier: 'pro',
+                    subscription_status: 'active',
+                    subscription_expiry: expiryDate.toISOString()
+                }).eq('id', payment.user_id);
+
+                if (userUpdateErr) throw userUpdateErr;
+                
                 console.log(`[WEBHOOK SUCCESS] Upgraded User: ${payment.user_id} to PRO. Order: ${orderId}, Expiry: ${expiryDate.toISOString()}`);
             } catch (updateErr) {
                 console.error(`[WEBHOOK ERROR] Failed to update DB for order ${orderId} after retries:`, updateErr);
