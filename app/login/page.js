@@ -1,12 +1,24 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // MD UX Fix: Catch bad links
+    useEffect(() => {
+        const errorParam = searchParams.get('error');
+        if (errorParam === 'reset_link_invalid') {
+            setError('This reset link is expired or invalid. Please request a new one.');
+        } else if (errorParam === 'auth_failed') {
+            setError('Authentication failed. Please try again.');
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,7 +61,10 @@ export default function LoginPage() {
                             onChange={(e) => setForm({ ...form, email: e.target.value })} />
                     </div>
                     <div className="input-group">
-                        <label>Password</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <label style={{ margin: 0 }}>Password</label>
+                            <Link href="/forgot-password" style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</Link>
+                        </div>
                         <input className="input" type="password" placeholder="Enter your password" required value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })} />
                     </div>
