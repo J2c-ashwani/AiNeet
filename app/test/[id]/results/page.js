@@ -36,18 +36,7 @@ export default function ResultsPage({ params }) {
 
     return (
         <div>
-            <nav className="navbar">
-                <a href="/dashboard" className="nav-brand" style={{ textDecoration: 'none' }}>
-                    <span style={{ fontSize: '1.4rem' }}>🧠</span>
-                    <span>AI NEET Coach</span>
-                </a>
-                <div className="nav-links">
-                    <a href="/dashboard">📊 Dashboard</a>
-                    <a href="/test/configure">📝 New Test</a>
-                    <a href="/analytics">📈 Analytics</a>
-                </div>
-                <div></div>
-            </nav>
+
 
             <div className="page" style={{ maxWidth: 900 }}>
                 {/* Score Display */}

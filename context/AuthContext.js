@@ -14,7 +14,21 @@ export function AuthProvider({ children }) {
         fetch('/api/auth/me')
             .then(r => r.json())
             .then(data => {
-                if (data.user) setUser(data.user);
+                if (data.user) {
+                    setUser(data.user);
+                    
+                    // ACQUISITION ENGINE FLAG: Seamlessly map pending stateless diagnostics to this new user profile
+                    const storedDiagnostic = localStorage.getItem('pending_diagnostic_grade');
+                    if (storedDiagnostic) {
+                        fetch('/api/tests/diagnostic/claim', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: storedDiagnostic
+                        }).then(r => {
+                            if (r.ok) localStorage.removeItem('pending_diagnostic_grade');
+                        }).catch(e => console.error('Acquisition merge failed:', e));
+                    }
+                }
             })
             .catch(err => console.error('Auth check failed:', err))
             .finally(() => setLoading(false));
@@ -25,7 +39,7 @@ export function AuthProvider({ children }) {
             await fetch('/api/auth/logout', { method: 'POST' });
             setUser(null);
             // Hard navigate to completely purge local active session state memory
-            window.location.href = '/login';
+            window.location.href = '/';
         } catch (err) {
             console.error('Logout failed:', err);
         }
