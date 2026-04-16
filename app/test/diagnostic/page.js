@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function DiagnosticTestEngine() {
+function DiagnosticComponent() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,6 +11,11 @@ export default function DiagnosticTestEngine() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [submitting, setSubmitting] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    
+    // Challenger Variables
+    const challengerScore = searchParams.get('c_score');
+    const challengerChap = searchParams.get('c_chap');
 
     useEffect(() => {
         // Fast, cheap device fingerprint for Level-2 Rate Limiting
@@ -109,11 +114,15 @@ export default function DiagnosticTestEngine() {
         <div style={{ minHeight: '100vh', background: '#080c18', color: '#fff', padding: '40px 20px', display: 'flex', justifyContent: 'center' }}>
             <div style={{ maxWidth: 800, width: '100%' }}>
                 
-                {/* Frictionless Header */}
+                {/* Frictionless Header dynamically reacting to Challenger URI bounds */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 20 }}>
                     <div>
-                        <span style={{ color: '#818cf8', fontWeight: 700, letterSpacing: 1, fontSize: '0.85rem' }}>AI DIAGNOSTIC PROTOCOL</span>
-                        <h1 style={{ margin: 0, fontSize: '1.5rem', marginTop: 4 }}>Find Your Weakest Chapter</h1>
+                        <span style={{ color: '#818cf8', fontWeight: 700, letterSpacing: 1, fontSize: '0.85rem' }}>
+                            {challengerScore ? 'CHALLENGE ACCEPTED' : 'AI DIAGNOSTIC PROTOCOL'}
+                        </span>
+                        <h1 style={{ margin: 0, fontSize: '1.5rem', marginTop: 4 }}>
+                            {challengerScore ? `Your friend scored ${challengerScore}% in ${challengerChap || 'Biology'}. Try to beat it.` : 'Find Your Weakest Chapter'}
+                        </h1>
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: 20, fontSize: '0.9rem', fontWeight: 600 }}>
                         {currentIndex + 1} <span style={{ color: '#64748b' }}>/ {questions.length}</span>
@@ -193,5 +202,13 @@ export default function DiagnosticTestEngine() {
 
             </div>
         </div>
+    );
+}
+
+export default function DiagnosticTestEngine() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#080c18' }}></div>}>
+            <DiagnosticComponent />
+        </Suspense>
     );
 }

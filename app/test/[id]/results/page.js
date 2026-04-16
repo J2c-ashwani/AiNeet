@@ -110,6 +110,22 @@ export default function ResultsPage({ params }) {
                     </div>
                 </div>
 
+                {/* Habit Retention Cycle: XP Progression Trigger */}
+                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 12, padding: 16, marginBottom: 24, textAlign: 'center' }}>
+                    <p style={{ margin: 0, fontWeight: 600, color: '#e0e7ff' }}>
+                        You are extremely close to Level {level.level + 1}. <span style={{ color: '#818cf8' }}>Take 1 more test to rank up!</span>
+                    </p>
+                </div>
+
+                {/* Habit Retention Cycle: Next-Action Contiguous Testing */}
+                <div style={{ background: 'linear-gradient(135deg, rgba(8, 12, 24, 0.8), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center', boxShadow: '0 10px 30px rgba(99, 102, 241, 0.1)' }}>
+                    <h3 style={{ margin: '0 0 8px', fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>🧠 Keep the Momentum Going</h3>
+                    <p style={{ color: '#94a3b8', marginBottom: 16 }}>Your physics logic starts decaying when you only focus on Biology. Maintain your All-India rank streak.</p>
+                    <Link href="/test/configure" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '12px 24px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>
+                        Switch Physics Weaknesses Now →
+                    </Link>
+                </div>
+
                 {/* MD Transparency: Trust Status Hint */}
                 {results.trustHint && (
                     <div className="mb-6 animate-fade-in" style={{

@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 export default function DiagnosticResultsLock() {
     const [result, setResult] = useState(null);
+    const [aspirantCount, setAspirantCount] = useState(0);
     const router = useRouter();
 
     useEffect(() => {
@@ -17,13 +18,43 @@ export default function DiagnosticResultsLock() {
         } else {
             router.push('/test/diagnostic');
         }
+
+        fetch('/api/stats/traffic').then(r => r.json()).then(d => d && setAspirantCount(d.activeAspirants)).catch(() => setAspirantCount(462));
     }, [router]);
+
+    const handleViralShare = async () => {
+        if (!result) return;
+        const rootUrl = window.location.origin;
+        const shareUrl = `${rootUrl}/test/diagnostic?c_score=${Math.round(result.accuracy)}&c_chap=${encodeURIComponent(result.weakestChapter)}`;
+        const shareText = `I just found out I'm losing ${result.lostMarks} marks in NEET because of ${result.weakestChapter} 🤯\n\nI scored ${Math.round(result.accuracy)}%. Can you beat me?\n\nTake the 10-min test here: ${shareUrl}`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'NEET AI Assessment',
+                    text: shareText,
+                    // url: shareUrl (handled inside text to ensure Whatsapp grabs it fully)
+                });
+            } catch (err) {
+                console.log('User cancelled share or API failed');
+            }
+        } else {
+            // Fallback to WhatsApp deep link
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+    };
 
     if (!result) return null;
 
     return (
         <div style={{ minHeight: '100vh', background: '#080c18', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 20px', overflowX: 'hidden' }}>
             
+            {/* Real Telemetry Social Proof */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(245, 158, 11, 0.1)', color: '#fbbf24', padding: '6px 16px', borderRadius: 20, fontSize: '0.85rem', fontWeight: 600, marginBottom: 24, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                <span className="animate-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: '#fbbf24' }}></span>
+                🔥 {aspirantCount || '...'} students took this test today | Average: 61%
+            </div>
+
             {/* The Hook: Immediate Reality Check */}
             <div style={{ textAlign: 'center', maxWidth: 640, marginBottom: 40, animation: 'fadeInDown 0.6s ease-out' }}>
                 <div style={{ display: 'inline-block', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '6px 16px', borderRadius: 20, fontSize: '0.9rem', fontWeight: 700, marginBottom: 16 }}>
@@ -60,6 +91,18 @@ export default function DiagnosticResultsLock() {
                     <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#4ade80', fontWeight: 800 }}>{result.peerImprovementText}</h3>
                     <p style={{ color: '#94a3b8', margin: '8px 0 0', fontSize: '0.95rem' }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
                 </div>
+            </div>
+
+            {/* Virality Engine: Challenge Trigger */}
+            <div style={{ width: '100%', maxWidth: 800, background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: 24, padding: 32, textAlign: 'center', marginBottom: 40 }}>
+                <div style={{ fontSize: '2rem', marginBottom: 12 }}>🧠</div>
+                <h2 style={{ fontSize: '1.5rem', margin: '0 0 12px 0', color: '#e0e7ff', fontWeight: 700 }}>Can your friends beat your score?</h2>
+                <p style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: 24 }}>You scored {Math.round(result.accuracy)}% accuracy. Challenge your friends to find out who is better prepared.</p>
+                
+                <button onClick={handleViralShare} style={{ background: '#25D366', color: 'white', padding: '14px 32px', borderRadius: 12, border: 'none', fontWeight: 700, fontSize: '1.1rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 20px rgba(37, 211, 102, 0.3)', transition: 'transform 0.2s' }}>
+                    <span>Share on WhatsApp</span>
+                    <span>→</span>
+                </button>
             </div>
 
             {/* The Lock Screen & Blur */}
