@@ -71,14 +71,24 @@ export default function Home() {
                 </div>
                 
                 {!user && (
-                    <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '16px 24px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                        <div>
-                            <div style={{ color: '#e0e7ff', fontWeight: 600, marginBottom: '4px' }}>You are browsing as a Guest</div>
-                            <div style={{ color: '#818cf8', fontSize: '0.9rem' }}>Sign in to save test history and analytics.</div>
+                    <div style={{ width: '100%', marginTop: 24, background: 'linear-gradient(145deg, rgba(8, 12, 24, 0.8), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(99, 102, 241, 0.4)', padding: '40px 32px', borderRadius: '24px', textAlign: 'center', boxShadow: '0 20px 40px rgba(99, 102, 241, 0.1)' }}>
+                        <div style={{ display: 'inline-block', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '4px 12px', borderRadius: 12, fontSize: '0.8rem', fontWeight: 700, marginBottom: 16 }}>
+                            NEW: AI DIAGNOSTIC ENGINE
                         </div>
-                        <Link href="/login" style={{ background: '#6366f1', color: 'white', padding: '8px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem' }}>
-                            Sign In
-                        </Link>
+                        <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', marginBottom: 16 }}>
+                            Are you scoring below 600 in mock tests?
+                        </h2>
+                        <p style={{ color: '#94a3b8', fontSize: '1.1rem', maxWidth: 600, margin: '0 auto 32px' }}>
+                            Don't guess what's wrong. Take our 10-minute AI diagnostic test to find the exact chapter destroying your NEET score. No account required.
+                        </p>
+                        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <Link href="/test/diagnostic" style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '16px 32px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, fontSize: '1.1rem', boxShadow: '0 8px 20px rgba(99, 102, 241, 0.3)' }}>
+                                Find Your Weakest Chapter (10 min) →
+                            </Link>
+                            <Link href="/register" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', padding: '16px 32px', borderRadius: '12px', textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem' }}>
+                                Already know? Create Account
+                            </Link>
+                        </div>
                     </div>
                 )}
             </div>
