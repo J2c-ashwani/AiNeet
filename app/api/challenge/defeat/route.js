@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
     try {
-        const { ghost_id, new_score, subject } = await request.json();
+        const { ghost_id, new_score, original_score, subject } = await request.json();
         if (!ghost_id || !new_score) return NextResponse.json({ error: 'Missing challenge payload' }, { status: 400 });
 
         const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -21,7 +21,7 @@ export async function POST(request) {
             }
 
             // Write Defeat State with 48h (172800 seconds) Ephemeral TTL to prevent DB bloat
-            const payload = JSON.stringify({ defeated: true, new_score, subject: subject || 'Biology' });
+            const payload = JSON.stringify({ defeated: true, new_score, original_score, subject: subject || 'Biology' });
             await fetch(`${upstashUrl}/set/defeat:${ghost_id}/${encodeURIComponent(payload)}/EX/172800`, {
                 headers: { Authorization: `Bearer ${upstashToken}` }
             });

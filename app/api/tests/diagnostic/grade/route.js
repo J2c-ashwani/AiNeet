@@ -102,7 +102,7 @@ export async function POST(request) {
                 fetch(`${originUrl}/api/challenge/defeat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ghost_id: c_ghost, new_score: Math.round(accuracyRate), subject: c_chap || 'Biology' })
+                    body: JSON.stringify({ ghost_id: c_ghost, new_score: Math.round(accuracyRate), original_score: Number(c_score), subject: c_chap || 'Biology' })
                 }).catch(()=>{});
             } catch (err) {
                 // Fail silently, don't crash the grader
