@@ -7,7 +7,16 @@ import Link from 'next/link';
 export default function DiagnosticResultsLock() {
     const [result, setResult] = useState(null);
     const [aspirantCount, setAspirantCount] = useState(0);
+    const [ghostPhone, setGhostPhone] = useState('');
+    const [unlocked, setUnlocked] = useState(false);
     const router = useRouter();
+
+    // 1. Ghost ID provision for Symmetrical Flywheel
+    useEffect(() => {
+        if (!localStorage.getItem('ghost_id')) {
+            localStorage.setItem('ghost_id', 'ghost_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36));
+        }
+    }, []);
 
     useEffect(() => {
         const stored = localStorage.getItem('pending_diagnostic_grade');
@@ -25,22 +34,36 @@ export default function DiagnosticResultsLock() {
     const handleViralShare = async () => {
         if (!result) return;
         const rootUrl = window.location.origin;
-        const shareUrl = `${rootUrl}/test/diagnostic?c_score=${Math.round(result.accuracy)}&c_chap=${encodeURIComponent(result.weakestChapter)}`;
-        const shareText = `I just found out I'm losing ${result.lostMarks} marks in NEET because of ${result.weakestChapter} 🤯\n\nI scored ${Math.round(result.accuracy)}%. Can you beat me?\n\nTake the 10-min test here: ${shareUrl}`;
+        const ghostId = localStorage.getItem('ghost_id');
+        
+        // Push notification hook logic:
+        if (ghostPhone && ghostPhone.length > 5) {
+            // Silently attach optional contact to ghost trace in background API
+            fetch('/api/challenge/contact', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ghost_id: ghostId, contact: ghostPhone }) 
+            }).catch(()=>{});
+        }
+
+        const shareUrl = `${rootUrl}/test/diagnostic?c_score=${Math.round(result.accuracy)}&c_chap=${encodeURIComponent(result.weakestChapter)}&c_ghost=${ghostId}`;
+        const pct = 100 - result.percentile; // Inverse logic to show Top %
+        const shareText = `Top ${pct}% in NEET ${result.weakestChapter} 🔥\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
 
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: 'NEET AI Assessment',
-                    text: shareText,
-                    // url: shareUrl (handled inside text to ensure Whatsapp grabs it fully)
+                    text: shareText
                 });
+                setUnlocked(true); // MD Directive: Unlock upon successful share
             } catch (err) {
-                console.log('User cancelled share or API failed');
+                console.log('User cancelled share');
             }
         } else {
             // Fallback to WhatsApp deep link
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+            setUnlocked(true); // Fallback assumption unlock
         }
     };
 
@@ -93,45 +116,67 @@ export default function DiagnosticResultsLock() {
                 </div>
             </div>
 
-            {/* Virality Engine: Challenge Trigger */}
-            <div style={{ width: '100%', maxWidth: 800, background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: 24, padding: 32, textAlign: 'center', marginBottom: 40 }}>
-                <div style={{ fontSize: '2rem', marginBottom: 12 }}>🧠</div>
-                <h2 style={{ fontSize: '1.5rem', margin: '0 0 12px 0', color: '#e0e7ff', fontWeight: 700 }}>Can your friends beat your score?</h2>
-                <p style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: 24 }}>You scored {Math.round(result.accuracy)}% accuracy. Challenge your friends to find out who is better prepared.</p>
-                
-                <button onClick={handleViralShare} style={{ background: '#25D366', color: 'white', padding: '14px 32px', borderRadius: 12, border: 'none', fontWeight: 700, fontSize: '1.1rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 10, boxShadow: '0 8px 20px rgba(37, 211, 102, 0.3)', transition: 'transform 0.2s' }}>
-                    <span>Share on WhatsApp</span>
-                    <span>→</span>
-                </button>
+            {/* MD Original Challenge Engine logic merged into the main Lock block above natively. Removing redundancy. */}
             </div>
 
-            {/* The Lock Screen & Blur */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+            {/* The Lock Screen & Blur (Dynamically clears on unlock state!) */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.5s ease' }}>
                 {/* Fake Blurred Dashboard content to trigger FOMO */}
-                <div style={{ padding: 40, background: '#0f172a', filter: 'blur(12px)', opacity: 0.5, pointerEvents: 'none', userSelect: 'none' }}>
+                <div style={{ padding: 40, background: '#0f172a', filter: unlocked ? 'none' : 'blur(12px)', opacity: unlocked ? 1 : 0.5, pointerEvents: unlocked ? 'auto' : 'none', userSelect: unlocked ? 'auto' : 'none', transition: 'all 0.5s ease' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 30 }}>
-                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16 }} />
-                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16 }} />
+                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {unlocked && <h3 style={{ color: '#818cf8' }}>Deep Analysis Active</h3>}
+                        </div>
+                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {unlocked && <h3 style={{ color: '#4ade80' }}>Action Plan Active</h3>}
+                        </div>
                     </div>
                     <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8, marginBottom: 16 }} />
                     <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8 }} />
-                </div>
-
-                {/* The Hard CTA Override */}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(8, 12, 24, 0.6)' }}>
-                    <div style={{ background: '#1e293b', padding: 40, borderRadius: 24, textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-                        <div style={{ width: 64, height: 64, background: 'rgba(99, 102, 241, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                            <span style={{ fontSize: '1.8rem' }}>🔒</span>
-                        </div>
-                        <h2 style={{ fontSize: '1.6rem', marginBottom: 12, fontWeight: 700 }}>Unlock Your Improvement Plan</h2>
-                        <p style={{ color: '#94a3b8', marginBottom: 32, maxWidth: 320, margin: '0 auto 32px' }}>
-                            Save your diagnosis permanently and join 500+ aspirants fixing their weaknesses daily.
-                        </p>
-                        <Link href="/register?claim_diagnostic=true" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', textDecoration: 'none', padding: '16px 36px', borderRadius: 12, fontWeight: 700, fontSize: '1.1rem', transition: 'all 0.2s', boxShadow: '0 10px 20px rgba(99, 102, 241, 0.3)' }}>
-                            Claim Results & Fix {result.weakestChapter} →
-                        </Link>
+                    <div style={{ textAlign: 'center', marginTop: 40 }}>
+                         {unlocked && <Link href="/register?claim_diagnostic=true" style={{ display: 'inline-block', background: '#6366f1', color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 700, textDecoration: 'none' }}>Permanently Save This State →</Link>}
                     </div>
                 </div>
+
+                {/* The Soft CTA Override (The Share/Register Gate) */}
+                {!unlocked && (
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(8, 12, 24, 0.7)' }}>
+                        <div style={{ background: '#1e293b', padding: '40px 32px', borderRadius: 24, textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', maxWidth: 440, width: '100%' }}>
+                            <div style={{ width: 64, height: 64, background: 'rgba(99, 102, 241, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                                <span style={{ fontSize: '1.8rem' }}>🔒</span>
+                            </div>
+                            <h2 style={{ fontSize: '1.6rem', marginBottom: 12, fontWeight: 700 }}>Unlock your full improvement plan</h2>
+                            <p style={{ color: '#94a3b8', marginBottom: 24, fontSize: '0.95rem' }}>
+                                Choose one of the following to reveal your complete analytics.
+                            </p>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>1. The Viral Path</div>
+                                    <button onClick={handleViralShare} style={{ width: '100%', background: '#25D366', color: 'white', padding: '14px 20px', borderRadius: 10, border: 'none', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 4px 14px rgba(37, 211, 102, 0.2)', transition: 'transform 0.2s', marginBottom: 12 }}>
+                                        📱 Share your score with friends
+                                    </button>
+                                    <input 
+                                        type="tel" 
+                                        placeholder="WhatsApp # (Optional: Alert me if beaten)" 
+                                        value={ghostPhone}
+                                        onChange={(e) => setGhostPhone(e.target.value)}
+                                        style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: '#080c18', border: '1px solid #334155', color: 'white', fontSize: '0.9rem', outline: 'none' }}
+                                    />
+                                </div>
+                                
+                                <div style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 600 }}>OR</div>
+
+                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
+                                    <Link href="/register?claim_diagnostic=true" style={{ display: 'inline-block', width: '100%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', textDecoration: 'none', padding: '14px 20px', borderRadius: 10, fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)' }}>
+                                        Create Free Account
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
         </div>

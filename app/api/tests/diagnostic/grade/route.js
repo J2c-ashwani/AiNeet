@@ -5,7 +5,7 @@ import crypto from 'crypto';
 export async function POST(request) {
     try {
         const payload = await request.json();
-        const { answers } = payload; 
+        const { answers, c_score, c_ghost, c_chap } = payload; 
         
         if (!answers || Object.keys(answers).length === 0) {
             return NextResponse.json({ error: 'No answers provided' }, { status: 400 });
@@ -93,6 +93,21 @@ export async function POST(request) {
         // Cryptographically sign the payload so the frontend cannot forge scores during the Signup Phase!
         const secret = process.env.CASHFREE_SECRET_KEY || 'FATAL_SECRET_MISSING';
         const signature = crypto.createHmac('sha256', secret).update(JSON.stringify(finalGradeData)).digest('hex');
+
+        // ==== VIRAL FLYWHEEL: SILENT DEFEAT TRIGGER ====
+        if (c_ghost && c_score && accuracyRate > Number(c_score)) {
+            // The challenger beat the ghost. Log the defeat to Upstash Ephemerally!
+            try {
+                const originUrl = request.nextUrl ? request.nextUrl.origin : (request.headers.get('origin') || 'http://localhost:3000');
+                fetch(`${originUrl}/api/challenge/defeat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ghost_id: c_ghost, new_score: Math.round(accuracyRate), subject: c_chap || 'Biology' })
+                }).catch(()=>{});
+            } catch (err) {
+                // Fail silently, don't crash the grader
+            }
+        }
 
         return NextResponse.json({
             success: true,

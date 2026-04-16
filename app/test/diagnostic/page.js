@@ -13,9 +13,10 @@ function DiagnosticComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     
-    // Challenger Variables
+    // Challenger Variables (Catch c_ghost)
     const challengerScore = searchParams.get('c_score');
     const challengerChap = searchParams.get('c_chap');
+    const challengerGhost = searchParams.get('c_ghost');
 
     useEffect(() => {
         // Fast, cheap device fingerprint for Level-2 Rate Limiting
@@ -62,11 +63,18 @@ function DiagnosticComponent() {
         if (Object.keys(answers).length === 0) return;
         setSubmitting(true);
         try {
-            // Send exactly what the user picked to the Silent Tracker
+            // Send exactly what the user picked to the Silent Tracker + Challenger Context
+            const payloadData = { 
+                answers,
+                c_score: challengerScore,
+                c_chap: challengerChap,
+                c_ghost: challengerGhost
+            };
+
             const verifyRes = await fetch('/api/tests/diagnostic/grade', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers })
+                body: JSON.stringify(payloadData)
             });
 
             const verifyData = await verifyRes.json();
