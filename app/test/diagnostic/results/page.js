@@ -116,8 +116,6 @@ export default function DiagnosticResultsLock() {
                 </div>
             </div>
 
-            {/* MD Original Challenge Engine logic merged into the main Lock block above natively. Removing redundancy. */}
-            </div>
 
             {/* The Lock Screen & Blur (Dynamically clears on unlock state!) */}
             <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.5s ease' }}>
