@@ -40,13 +40,12 @@ function NCERTReaderContent() {
         }
 
         const originalPdfUrl = getChapterPdfUrl(bookCode, chapter.ch);
-        // Proxy URL to bypass CORS and load in react-pdf
-        const proxiedPdfUrl = `/api/ncert/proxy?url=${encodeURIComponent(originalPdfUrl)}`;
-
+        // Use direct NCERT URL — browser fetch is permitted; server-side proxy is blocked by ncert.nic.in CDN
         setBookData({
-            id: `${bookCode}_${chapter.ch}`, // required for AI explain tracking
+            id: `${bookCode}_${chapter.ch}`,
             title: `${book.book} - ${chapter.title}`,
-            file_path: proxiedPdfUrl
+            file_path: originalPdfUrl,
+            directUrl: originalPdfUrl
         });
 
         setLoading(false);
@@ -95,6 +94,14 @@ function NCERTReaderContent() {
 
             <div className="flex-1 overflow-hidden relative">
                 <PDFViewerClient book={bookData} />
+                {/* Fallback: always give user a direct escape hatch */}
+                <div style={{ textAlign: 'center', padding: '12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ color: '#64748b', fontSize: '0.8rem' }}>PDF not loading? </span>
+                    <a href={bookData.directUrl} target="_blank" rel="noopener noreferrer"
+                        style={{ color: '#60a5fa', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
+                        Open in New Tab ↗
+                    </a>
+                </div>
             </div>
         </div>
     );

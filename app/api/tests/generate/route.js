@@ -33,7 +33,7 @@ export async function POST(request) {
         // Rate Limiting (10 req/hour per User) - Kept as DDoS protection
         // Rate limit based on User ID if available, else IP
         const rateKey = decoded ? `user:${decoded.id}:gen` : `ip:${request.headers.get('x-forwarded-for')}:gen`;
-        const limitPos = rateLimit(rateKey, 10, 3600000); // 10 per hour
+        const limitPos = await rateLimit(rateKey, 10, 3600000, 'open'); // 10 per hour
         if (!limitPos.success) {
             return NextResponse.json({ error: 'You have reached the test generation limit for this hour.' }, { status: 429 });
         }

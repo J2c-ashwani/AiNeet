@@ -7,6 +7,7 @@ function DiagnosticComponent() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [limitReached, setLimitReached] = useState(false);
     const [answers, setAnswers] = useState({});
     const [currentIndex, setCurrentIndex] = useState(0);
     const [submitting, setSubmitting] = useState(false);
@@ -38,7 +39,10 @@ function DiagnosticComponent() {
                 });
                 
                 const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'Failed to initialize system.');
+                if (!res.ok) {
+                    if (data.limitReached) setLimitReached(true);
+                    throw new Error(data.error || 'Failed to initialize system.');
+                }
                 
                 setQuestions(data.questions);
             } catch (err) {
@@ -100,6 +104,16 @@ function DiagnosticComponent() {
             <div className="spinner" style={{ width: 50, height: 50, marginBottom: 20 }}></div>
             <h2 style={{ fontFamily: 'Inter', fontWeight: 600 }}>Analyzing Brain Pathways...</h2>
             <p style={{ color: '#94a3b8' }}>Generating your custom diagnostic panel</p>
+        </div>
+    );
+
+    if (limitReached) return (
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff' }}>
+            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: 40, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)', maxWidth: 500 }}>
+                <h2>🎉 You\'ve unlocked today\'s free diagnostics!</h2>
+                <p style={{ color: '#94a3b8', marginTop: 12 }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
+                <button onClick={() => router.push('/login')} style={{ marginTop: 24, padding: '12px 32px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>Sign Up Free</button>
+            </div>
         </div>
     );
 

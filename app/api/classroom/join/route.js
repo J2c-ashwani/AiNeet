@@ -26,7 +26,7 @@ export async function POST(request) {
 
         // 2. MD Mandate: Prevent Join Guessing Attack
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
-        const limitPos = rateLimit(`${ip}:classroom_join`, 3, 60000); // 3 tries per minute
+        const limitPos = await rateLimit(`${ip}:classroom_join`, 3, 60000, 'open'); // 3 tries per minute
         if (!limitPos.success) {
             return NextResponse.json({ 
                 error: 'Too many attempts. Please wait 60 seconds.',

@@ -8,13 +8,14 @@ import { rateLimit } from '@/lib/rate-limit';
 import { logError } from '@/lib/error-logger';
 
 export async function POST(request) {
+    let decoded = null;
     try {
         const supabase = await getDb();
-        const decoded = await getUserFromRequest(request);
+        decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         // Rate limit: 20 AI doubt requests per minute per user
-        const rl = rateLimit(`user:${decoded.id}:doubt`, 20, 60000);
+        const rl = await rateLimit(`user:${decoded.id}:doubt`, 20, 60000, 'soft');
         if (!rl.success) {
             return NextResponse.json({ error: 'Too many requests. Please wait a moment.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }
@@ -57,9 +58,14 @@ export async function POST(request) {
         return NextResponse.json({ conversationId: convId, response: aiResponse });
     } catch (error) {
         console.error('Doubt error:', error);
-        const supabase = await getDb();
-        await logError(supabase, { userId: decoded?.id, route: '/api/doubt', method: 'POST', error });
-        return NextResponse.json({ error: 'Failed to process doubt. Please try again in a moment.' }, { status: 500 });
+        // P0-4: Isolated logging — logger crash must never mask primary error
+        try {
+            const supabase = await getDb();
+            await logError(supabase, { userId: decoded?.id, route: '/api/doubt', method: 'POST', error });
+        } catch (logErr) {
+            console.error('[DOUBT_LOGGER_FAILED]', logErr.message);
+        }
+        return NextResponse.json({ error: 'Our AI is a little overloaded right now. Please try again in a moment.' }, { status: 500 });
     }
 }
 

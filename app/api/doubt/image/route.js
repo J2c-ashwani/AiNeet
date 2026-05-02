@@ -13,7 +13,7 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         // User Rate limit: 5 AI image requests per minute
-        const rl = rateLimit(`user:${decoded.id}:doubt:image`, 5, 60000);
+        const rl = await rateLimit(`user:${decoded.id}:doubt:image`, 5, 60000, 'soft');
         if (!rl.success) {
             return NextResponse.json({ error: 'Too many image requests. Please wait a moment.' }, { status: 429 });
         }

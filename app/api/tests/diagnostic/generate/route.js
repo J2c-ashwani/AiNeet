@@ -8,12 +8,11 @@ export async function POST(request) {
         const deviceHash = request.headers.get('x-device-print') || 'unknown';
 
         // 1. Multi-Layer Cost Protection (Hostel Support vs Bot Block)
-        const ipLimit = rateLimit(`diag:ip:${ip}`, 10, 86400000); // 10 per day per IP
-        if (!ipLimit.success) return NextResponse.json({ error: 'Daily IP limit reached' }, { status: 429 });
-
+        // IP-level limit removed: shared NAT/school networks share IPs — would block legitimate users.
+        // Device fingerprint limit is the effective abuse gate for the acquisition funnel.
         if (deviceHash !== 'unknown') {
-            const deviceLimit = rateLimit(`diag:device:${deviceHash}`, 2, 86400000); // 2 per day per exact device
-            if (!deviceLimit.success) return NextResponse.json({ error: 'Daily device limit reached' }, { status: 429 });
+            const deviceLimit = await rateLimit(`diag:device:${deviceHash}`, 5, 86400000, 'open'); // fail-open: prefer access over blocking on Redis failure
+            if (!deviceLimit.success) return NextResponse.json({ error: 'You\'ve reached today\'s diagnostic limit. Come back tomorrow or sign up to get unlimited tests!', limitReached: true }, { status: 429 });
         }
 
         const supabase = await getDb();

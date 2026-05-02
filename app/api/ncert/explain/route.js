@@ -10,7 +10,7 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         // Rate limit: 20 requests per minute per user
-        const rl = rateLimit(`user:${decoded.id}:explain`, 20, 60000);
+        const rl = await rateLimit(`user:${decoded.id}:explain`, 20, 60000, 'soft');
         if (!rl.success) {
             return NextResponse.json({ error: 'Too many requests. Please wait a moment.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }

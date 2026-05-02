@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/core/db';
-import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
@@ -9,7 +8,6 @@ import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate'
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const supabaseAuth = await createSupabaseServerClient();
         
         let body;
         try {
@@ -22,7 +20,7 @@ export async function POST(request) {
         // Rate Limiting (5 req/min per IP)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
         const userAgent = request.headers.get('user-agent') || 'unknown-device';
-        const limitPos = rateLimit(`${ip}:register`, 5, 60000);
+        const limitPos = await rateLimit(`${ip}:register`, 5, 60000, 'closed');
         if (!limitPos.success) {
             return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
         }
@@ -140,12 +138,8 @@ export async function POST(request) {
 
         const levelInfo = user ? getLevelFromXP(user.xp) : null;
 
-        // CRITICAL FIX: Automatically sign the user in via SSR Auth Client to attach browser cookies
-        await supabaseAuth.auth.signInWithPassword({
-            email: email.toLowerCase().trim(),
-            password
-        });
-
+        // P0-2 Trust Fix: Server only creates account. Client will handle login separately.
+        // This eliminates SSR cookie propagation ambiguity that caused forced double-login.
         return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {
         console.error('Register error:', error);

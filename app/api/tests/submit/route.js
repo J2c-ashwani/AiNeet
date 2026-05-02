@@ -17,9 +17,10 @@ const ACHIEVEMENTS = [
 ];
 
 export async function POST(request) {
+    let decoded = null;
     try {
         const supabase = await getDb();
-        const decoded = await getUserFromRequest(request);
+        decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
         let _body;
@@ -49,18 +50,21 @@ export async function POST(request) {
         if (!test) return NextResponse.json({ error: 'Test not found' }, { status: 404 });
         if (test.completed_at) return NextResponse.json({ error: 'Test already submitted' }, { status: 400 });
 
+        // ─── PHASE 1: Score all answers in pure memory — zero DB calls ─────────────
         const processedAnswers = [];
+        const testAnswersToInsert = [];
         let fastAnswerCount = 0;
 
-        // Fetch all questions related to the answers at once to avoid a loop query
+        // Fetch all questions at once (already optimal)
         const questionIds = Array.from(new Set(answers.map(a => String(a.questionId))));
         const { data: questions } = await supabase.from('questions').select('*').in('id', questionIds);
         const questionMap = {};
-        if (questions) {
-            questions.forEach(q => questionMap[String(q.id)] = q);
-        }
+        if (questions) questions.forEach(q => questionMap[String(q.id)] = q);
 
-        const testAnswersToInsert = [];
+        // Collect affected topic_ids and wrong answers — computed in memory, no DB
+        const topicIds = new Set();
+        const answeredQuestions = []; // { question, answer, isCorrect, timeSpent }
+        const wrongAnswerQuestionIds = [];
 
         for (const answer of answers) {
             const question = questionMap[String(answer.questionId)];
@@ -88,57 +92,124 @@ export async function POST(request) {
             });
 
             if (answer.selectedOption) {
-                // Upsert user_performance 
-                const { data: pData } = await supabase.from('user_performance').select('*').eq('user_id', decoded.id).eq('topic_id', String(question.topic_id)).single();
-
-                if (pData) {
-                    const newTotal = (pData.total_attempted || 0) + 1;
-                    const newCorrect = (pData.total_correct || 0) + isCorrect;
-                    await supabase.from('user_performance').update({
-                        total_attempted: newTotal,
-                        total_correct: newCorrect,
-                        accuracy: Math.round((newCorrect / newTotal) * 100 * 10) / 10,
-                        avg_time_seconds: ((pData.avg_time_seconds || 0) * (pData.total_attempted || 0) + timeSpent) / newTotal,
-                        last_attempted: new Date().toISOString()
-                    }).eq('user_id', decoded.id).eq('topic_id', String(question.topic_id));
-                } else {
-                    await supabase.from('user_performance').insert({
-                        user_id: decoded.id, topic_id: String(question.topic_id),
-                        accuracy: isCorrect * 100, total_attempted: 1, total_correct: isCorrect,
-                        avg_time_seconds: timeSpent, last_attempted: new Date().toISOString()
-                    });
-                }
-
-                // Adaptive Learning
-                const { data: masteryRow } = await supabase.from('user_topic_mastery').select('mastery_score').eq('user_id', decoded.id).eq('topic_id', String(question.topic_id)).single();
-                const currentMastery = masteryRow?.mastery_score || 1200;
-
-                await updateQuestionDifficulty(question.id, isCorrect === 1, currentMastery);
-
-                const { data: diffRow } = await supabase.from('question_difficulty_dynamic').select('difficulty_score').eq('question_id', String(question.id)).single();
-                const qDiff = diffRow?.difficulty_score || 1200;
-                await updateUserMastery(decoded.id, question.topic_id, isCorrect === 1, qDiff);
-
-                if (!isCorrect) {
-                    // upsert mistake log
-                    const { data: mLog } = await supabase.from('mistake_log').select('*').eq('user_id', decoded.id).eq('question_id', String(answer.questionId)).single();
-                    if (mLog) {
-                        await supabase.from('mistake_log').update({
-                            test_id: testId, mistake_count: (mLog.mistake_count || 0) + 1, last_mistake_at: new Date().toISOString()
-                        }).eq('user_id', decoded.id).eq('question_id', String(answer.questionId));
-                    } else {
-                        await supabase.from('mistake_log').insert({
-                            user_id: decoded.id, question_id: String(answer.questionId), test_id: testId, mistake_count: 1, last_mistake_at: new Date().toISOString()
-                        });
-                    }
-                    await scheduleNewCard(decoded.id, answer.questionId);
-                }
+                if (question.topic_id) topicIds.add(String(question.topic_id));
+                answeredQuestions.push({ question, answer, isCorrect, timeSpent });
+                if (!isCorrect) wrongAnswerQuestionIds.push(String(answer.questionId));
             }
         }
 
-        if (testAnswersToInsert.length > 0) {
-            await supabase.from('test_answers').insert(testAnswersToInsert);
+        // ─── PHASE 2: Batch-fetch all required DB state in parallel ──────────────
+        const topicIdArray = Array.from(topicIds);
+
+        const [
+            { data: existingPerformance },
+            { data: existingMastery },
+            { data: existingDifficulty },
+            { data: existingMistakes }
+        ] = await Promise.all([
+            topicIdArray.length
+                ? supabase.from('user_performance').select('*').eq('user_id', decoded.id).in('topic_id', topicIdArray)
+                : Promise.resolve({ data: [] }),
+            topicIdArray.length
+                ? supabase.from('user_topic_mastery').select('mastery_score, topic_id').eq('user_id', decoded.id).in('topic_id', topicIdArray)
+                : Promise.resolve({ data: [] }),
+            questionIds.length
+                ? supabase.from('question_difficulty_dynamic').select('difficulty_score, question_id').in('question_id', questionIds)
+                : Promise.resolve({ data: [] }),
+            wrongAnswerQuestionIds.length
+                ? supabase.from('mistake_log').select('*').eq('user_id', decoded.id).in('question_id', wrongAnswerQuestionIds)
+                : Promise.resolve({ data: [] }),
+        ]);
+
+        // Index fetched data for O(1) lookups
+        const performanceMap = {};
+        (existingPerformance || []).forEach(p => performanceMap[String(p.topic_id)] = p);
+        const masteryMap = {};
+        (existingMastery || []).forEach(m => masteryMap[String(m.topic_id)] = m);
+        const difficultyMap = {};
+        (existingDifficulty || []).forEach(d => difficultyMap[String(d.question_id)] = d);
+        const mistakeMap = {};
+        (existingMistakes || []).forEach(m => mistakeMap[String(m.question_id)] = m);
+
+        // ─── PHASE 3: Compute all updates in memory ───────────────────────────────
+        const now = new Date().toISOString();
+        const performanceUpserts = [];
+        const mistakeUpserts = [];
+        const adaptiveUpdates = []; // { questionId, isCorrect, topicId, currentMastery, qDiff }
+
+        // Track running aggregates per topic (multiple questions can share a topic)
+        const topicRunningAgg = {}; // topic_id -> { totalAttempted, totalCorrect, totalTimeSum }
+
+        for (const { question, answer, isCorrect, timeSpent } of answeredQuestions) {
+            const topicId = String(question.topic_id);
+
+            // Aggregate per-topic stats in memory
+            if (!topicRunningAgg[topicId]) {
+                const existing = performanceMap[topicId];
+                topicRunningAgg[topicId] = {
+                    total_attempted: existing?.total_attempted || 0,
+                    total_correct: existing?.total_correct || 0,
+                    total_time_sum: (existing?.avg_time_seconds || 0) * (existing?.total_attempted || 0),
+                    exists: !!existing
+                };
+            }
+            const agg = topicRunningAgg[topicId];
+            agg.total_attempted += 1;
+            agg.total_correct += isCorrect;
+            agg.total_time_sum += timeSpent;
+
+            // Collect adaptive engine inputs
+            const currentMastery = masteryMap[topicId]?.mastery_score || 1200;
+            const qDiff = difficultyMap[String(question.id)]?.difficulty_score || 1200;
+            adaptiveUpdates.push({ questionId: question.id, isCorrect: isCorrect === 1, topicId: question.topic_id, currentMastery, qDiff });
+
+            // Collect mistake log upserts
+            if (!isCorrect) {
+                const existing = mistakeMap[String(answer.questionId)];
+                mistakeUpserts.push({
+                    user_id: decoded.id,
+                    question_id: String(answer.questionId),
+                    test_id: testId,
+                    mistake_count: (existing?.mistake_count || 0) + 1,
+                    last_mistake_at: now
+                });
+            }
         }
+
+        // Build final user_performance upsert rows
+        for (const [topicId, agg] of Object.entries(topicRunningAgg)) {
+            performanceUpserts.push({
+                user_id: decoded.id,
+                topic_id: topicId,
+                total_attempted: agg.total_attempted,
+                total_correct: agg.total_correct,
+                accuracy: agg.total_attempted > 0 ? Math.round((agg.total_correct / agg.total_attempted) * 100 * 10) / 10 : 0,
+                avg_time_seconds: agg.total_attempted > 0 ? agg.total_time_sum / agg.total_attempted : 0,
+                last_attempted: now
+            });
+        }
+
+        // ─── PHASE 4: Batch-write all updates in parallel ─────────────────────────
+        const writeOps = [];
+
+        if (testAnswersToInsert.length > 0) {
+            writeOps.push(supabase.from('test_answers').insert(testAnswersToInsert));
+        }
+        if (performanceUpserts.length > 0) {
+            writeOps.push(supabase.from('user_performance').upsert(performanceUpserts, { onConflict: 'user_id,topic_id' }));
+        }
+        if (mistakeUpserts.length > 0) {
+            writeOps.push(supabase.from('mistake_log').upsert(mistakeUpserts, { onConflict: 'user_id,question_id' }));
+        }
+
+        await Promise.all(writeOps);
+
+        // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
+        await Promise.all([
+            ...adaptiveUpdates.map(u => updateQuestionDifficulty(u.questionId, u.isCorrect, u.currentMastery).catch(() => {})),
+            ...adaptiveUpdates.map(u => updateUserMastery(decoded.id, u.topicId, u.isCorrect, u.qDiff).catch(() => {})),
+            ...wrongAnswerQuestionIds.map(qId => scheduleNewCard(decoded.id, qId).catch(() => {})),
+        ]);
 
         const scoreData = calculateNEETScore(processedAnswers);
         const xpEarned = calculateXP(scoreData);
@@ -298,13 +369,18 @@ export async function POST(request) {
         });
     } catch (error) {
         console.error('CRITICAL Submit error:', error);
-        Sentry.captureException(error, {
-            tags: { flow: 'test-submit' },
-            extra: { decodedUser: !!decoded }
-        });
-        // Backup DB logger (survives Sentry quota exhaustion)
-        const supabase = await getDb();
-        await logError(supabase, { userId: decoded?.id, route: '/api/tests/submit', method: 'POST', error });
+        // P0-4: Isolated logging — logger crash must never mask primary error
+        try {
+            Sentry.captureException(error, {
+                tags: { flow: 'test-submit' },
+                extra: { decodedUser: !!decoded }
+            });
+            // Backup DB logger (survives Sentry quota exhaustion)
+            const supabase = await getDb();
+            await logError(supabase, { userId: decoded?.id, route: '/api/tests/submit', method: 'POST', error });
+        } catch (logErr) {
+            console.error('[SUBMIT_LOGGER_FAILED]', logErr.message);
+        }
         return NextResponse.json({ error: 'Failed to submit test. Please try again in a moment.' }, { status: 500 });
     }
 }

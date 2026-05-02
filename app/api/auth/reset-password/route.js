@@ -17,7 +17,7 @@ export async function POST(request) {
 
         // MD SECURITY FIX 2: Strict Rate Limiting (3 requests per hour)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
-        const limitPos = rateLimit(`${ip}:password_reset`, 3, 3600000); 
+        const limitPos = await rateLimit(`${ip}:password_reset`, 3, 3600000, 'closed');
         if (!limitPos.success) {
             return NextResponse.json({ error: 'Too many reset requests limit reached. Please wait.' }, { status: 429 });
         }

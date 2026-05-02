@@ -31,7 +31,7 @@ export async function POST(request) {
 
         // 3. Strict Rate Limiting (Prevent Brute-Forcing Update Endpoint)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
-        const limitPos = rateLimit(`${ip}:password_update`, 10, 60000); 
+        const limitPos = await rateLimit(`${ip}:password_update`, 10, 60000, 'closed');
         if (!limitPos.success) {
             return NextResponse.json({ error: 'Too many attempts. Please slow down.' }, { status: 429 });
         }

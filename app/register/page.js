@@ -1,6 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
+
+/**
+ * P0-2 Trust Fix: Registration Page
+ * 
+ * Two-step auth flow:
+ * 1. Server creates account via /api/auth/register (admin.createUser)
+ * 2. Client performs login via Supabase browser client (owns cookies/session)
+ * 3. Hard navigate to dashboard after confirmed client auth success
+ * 
+ * This eliminates SSR cookie propagation ambiguity entirely.
+ */
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -41,14 +53,36 @@ export default function RegisterPage() {
         return data;
     };
 
+    const performClientLogin = async () => {
+        // P0-2: Client owns session establishment — no SSR cookie ambiguity
+        const supabase = createBrowserClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        );
+
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+            email: form.email.toLowerCase().trim(),
+            password: form.password
+        });
+
+        if (loginError) {
+            throw new Error('Account created but login failed. Please sign in manually.');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         
         try {
+            // Step 1: Server creates the account
             await performRegistration(0);
+
+            // Step 2: Client establishes auth session (owns cookies)
+            await performClientLogin();
             
+            // Step 3: Hard navigate after confirmed auth
             if (challengeId) {
                 window.location.href = `/challenge/${challengeId}`;
             } else {
@@ -62,6 +96,7 @@ export default function RegisterPage() {
                 setTimeout(async () => {
                     try {
                         await performRegistration(1);
+                        await performClientLogin();
                         window.location.href = challengeId ? `/challenge/${challengeId}` : '/dashboard';
                     } catch (finalErr) {
                         setError(finalErr.message === 'COLD_START' ? 'System timeout. Please refresh and try again.' : finalErr.message);

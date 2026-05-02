@@ -17,7 +17,7 @@ export async function POST(request) {
         }
 
         // Rate limit: 5 payment attempts per 5 minutes (fraud prevention)
-        const rl = rateLimit(`user:${decoded.id}:payment`, 5, 300000);
+        const rl = await rateLimit(`user:${decoded.id}:payment`, 5, 300000, 'closed');
         if (!rl.success) {
             return NextResponse.json({ error: 'Too many payment attempts. Please wait.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }

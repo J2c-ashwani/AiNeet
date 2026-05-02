@@ -26,7 +26,7 @@ export async function POST(request) {
         const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
 
         // Rate Limiting (20 battles/hour per user)
-        const limitResult = rateLimit(`user:${decoded.id}:battle`, 20, 3600000);
+        const limitResult = await rateLimit(`user:${decoded.id}:battle`, 20, 3600000, 'open');
         if (!limitResult.success) {
             return NextResponse.json({ error: 'Battle limit reached. Take a break and come back in an hour!' }, { status: 429 });
         }

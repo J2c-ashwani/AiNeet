@@ -1,7 +1,11 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 export default function BattlePage() {
+    const { user } = useAuth();
+    const router = useRouter();
     const [gameState, setGameState] = useState('lobby'); // lobby | matching | playing | calculating | result
     const [opponent, setOpponent] = useState(null);
     const [questions, setQuestions] = useState([]);
@@ -19,6 +23,11 @@ export default function BattlePage() {
     const countdownRef = useRef(null);
 
     const startBattle = async () => {
+        // Guard: redirect unauthenticated users to login
+        if (!user) {
+            router.push('/login?redirect=/battle');
+            return;
+        }
         setGameState('matching');
         setUserScore(0);
         setOppScore(0);
@@ -38,11 +47,12 @@ export default function BattlePage() {
                 setQuestions(data.questions);
                 setTimeout(() => setGameState('playing'), 2000);
             } else {
-                alert(data.error);
+                alert(data.error || 'Could not start battle. Please try again.');
                 setGameState('lobby');
             }
         } catch (e) {
-            console.error(e);
+            console.error('Battle start error:', e);
+            alert('Connection error. Please check your network and try again.');
             setGameState('lobby');
         }
     };

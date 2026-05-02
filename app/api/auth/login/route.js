@@ -20,7 +20,7 @@ export async function POST(request) {
 
         // Rate Limiting (5 req/min per IP)
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
-        const limitPos = rateLimit(`${ip}:login`, 5, 60000);
+        const limitPos = await rateLimit(`${ip}:login`, 5, 60000, 'closed');
         if (!limitPos.success) {
             return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
         }

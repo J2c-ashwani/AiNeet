@@ -12,7 +12,7 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         // Rate limit: 5 image analysis requests per minute (expensive AI)
-        const rl = rateLimit(`user:${decoded.id}:snap`, 5, 60000);
+        const rl = await rateLimit(`user:${decoded.id}:snap`, 5, 60000, 'soft');
         if (!rl.success) {
             return NextResponse.json({ error: 'Too many image requests. Please wait.', retryAfter: Math.ceil((rl.reset - Date.now()) / 1000) }, { status: 429 });
         }
