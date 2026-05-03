@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ResultsPage({ params }) {
     const { id: testId } = use(params);
