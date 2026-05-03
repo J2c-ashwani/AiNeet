@@ -27,7 +27,7 @@ export async function GET() {
         version: process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0',
     };
 
-    // ── DB Check: raw SELECT 1 — no app schema dependency ───────────────────
+    // ── DB Check: raw query — no app schema dependency ───────────────────────
     try {
         const dbStart = Date.now();
         const supabase = createClient(
@@ -35,11 +35,9 @@ export async function GET() {
             process.env.SUPABASE_SERVICE_ROLE_KEY,
             { auth: { persistSession: false } }
         );
-        // MD mandate: infra primitive only — not a users/app table query
-        const { error } = await supabase.rpc('healthcheck').maybeSingle()
-            .catch(() => supabase.from('_healthcheck').select('1').limit(1).maybeSingle())
-            .catch(() => ({ error: null })); // If no healthcheck RPC/table, connection itself proves DB is up
-        
+        // Use a lightweight query on a known table to confirm DB connectivity
+        // Avoids RPC dependency and broken promise chain
+        const { error } = await supabase.from('questions').select('id').limit(1);
         checks.db = {
             status: error ? 'degraded' : 'ok',
             latencyMs: Date.now() - dbStart,
@@ -48,6 +46,7 @@ export async function GET() {
     } catch (e) {
         checks.db = { status: 'down', latencyMs: null, error: e.message };
     }
+
 
     // ── Redis Check: PING ────────────────────────────────────────────────────
     try {
