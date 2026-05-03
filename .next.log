@@ -1140,3 +1140,3253 @@ Verifier Error: Error: [GoogleGenerativeAI Error]: Error fetching from https://g
  GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1455ms (compile: 326ms, proxy.ts: 79ms, render: 1050ms)
 ✓ Compiled in 4.2s
 ✓ Compiled in 1363ms
+ GET /dashboard 200 in 6.4s (compile: 1330ms, proxy.ts: 3.9s, render: 1207ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 6.4s (compile: 628ms, proxy.ts: 3.8s, render: 1963ms)
+ GET /ncert/kebo1?ch=1 200 in 6.4s (compile: 1713ms, proxy.ts: 4.0s, render: 761ms)
+ GET /dashboard 200 in 1039ms (compile: 65ms, proxy.ts: 390ms, render: 585ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1209ms (compile: 510ms, proxy.ts: 58ms, render: 641ms)
+ GET /ncert/kebo1?ch=1 200 in 912ms (compile: 211ms, proxy.ts: 38ms, render: 663ms)
+ GET /dashboard 200 in 551ms (compile: 41ms, proxy.ts: 41ms, render: 469ms)
+ GET /dashboard 200 in 416ms (compile: 48ms, proxy.ts: 16ms, render: 352ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 540ms (compile: 135ms, proxy.ts: 6ms, render: 399ms)
+ GET /ncert/kebo1?ch=1 200 in 567ms (compile: 139ms, proxy.ts: 31ms, render: 397ms)
+ GET /dashboard 200 in 383ms (compile: 18ms, proxy.ts: 15ms, render: 351ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 423ms (compile: 97ms, proxy.ts: 8ms, render: 317ms)
+ GET /ncert/kebo1?ch=1 200 in 440ms (compile: 30ms, proxy.ts: 10ms, render: 400ms)
+ GET /dashboard 200 in 420ms (compile: 32ms, proxy.ts: 91ms, render: 298ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 370ms (compile: 79ms, proxy.ts: 30ms, render: 260ms)
+ GET /ncert/kebo1?ch=1 200 in 380ms (compile: 77ms, proxy.ts: 48ms, render: 255ms)
+ GET /dashboard 200 in 283ms (compile: 60ms, proxy.ts: 20ms, render: 203ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 301ms (compile: 71ms, proxy.ts: 11ms, render: 219ms)
+ GET /dashboard 200 in 415ms (compile: 10ms, proxy.ts: 4ms, render: 401ms)
+ GET /ncert/kebo1?ch=1 200 in 465ms (compile: 52ms, proxy.ts: 9ms, render: 403ms)
+ GET /dashboard 200 in 416ms (compile: 12ms, proxy.ts: 8ms, render: 396ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 621ms (compile: 77ms, proxy.ts: 5ms, render: 539ms)
+ GET /ncert/kebo1?ch=1 200 in 651ms (compile: 61ms, proxy.ts: 13ms, render: 577ms)
+ GET /dashboard 200 in 646ms (compile: 24ms, proxy.ts: 21ms, render: 601ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 575ms (compile: 76ms, proxy.ts: 13ms, render: 487ms)
+ GET /ncert/kebo1?ch=1 200 in 559ms (compile: 203ms, proxy.ts: 14ms, render: 342ms)
+ GET /dashboard 200 in 516ms (compile: 101ms, proxy.ts: 154ms, render: 261ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 404ms (compile: 113ms, proxy.ts: 13ms, render: 278ms)
+ GET /ncert/kebo1?ch=1 200 in 340ms (compile: 92ms, proxy.ts: 30ms, render: 217ms)
+ GET /dashboard 200 in 257ms (compile: 66ms, proxy.ts: 16ms, render: 175ms)
+ GET /dashboard 200 in 395ms (compile: 9ms, proxy.ts: 8ms, render: 378ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 469ms (compile: 41ms, proxy.ts: 10ms, render: 418ms)
+ GET /ncert/kebo1?ch=1 200 in 482ms (compile: 65ms, proxy.ts: 13ms, render: 404ms)
+ GET /dashboard 200 in 492ms (compile: 39ms, proxy.ts: 10ms, render: 443ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1399ms (compile: 72ms, proxy.ts: 16ms, render: 1311ms)
+ GET /ncert/kebo1?ch=1 200 in 1408ms (compile: 129ms, proxy.ts: 21ms, render: 1259ms)
+ GET /dashboard 200 in 1203ms (compile: 35ms, proxy.ts: 46ms, render: 1122ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1142ms (compile: 59ms, proxy.ts: 93ms, render: 991ms)
+ GET /dashboard 200 in 1057ms (compile: 147ms, proxy.ts: 5ms, render: 906ms)
+ GET /ncert/kebo1?ch=1 200 in 1101ms (compile: 116ms, proxy.ts: 19ms, render: 966ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 635ms (compile: 17ms, proxy.ts: 11ms, render: 606ms)
+ GET /ncert/kebo1?ch=1 200 in 633ms (compile: 40ms, proxy.ts: 4ms, render: 590ms)
+ GET /dashboard 200 in 640ms (compile: 12ms, proxy.ts: 8ms, render: 619ms)
+ GET /dashboard 200 in 595ms (compile: 14ms, proxy.ts: 14ms, render: 566ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 649ms (compile: 64ms, proxy.ts: 12ms, render: 574ms)
+ GET /ncert/kebo1?ch=1 200 in 653ms (compile: 214ms, proxy.ts: 11ms, render: 428ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 648ms (compile: 16ms, proxy.ts: 13ms, render: 618ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 724ms (compile: 36ms, proxy.ts: 7ms, render: 681ms)
+ GET /ncert/kebo1?ch=1 200 in 700ms (compile: 13ms, proxy.ts: 6ms, render: 681ms)
+ GET /dashboard 200 in 661ms (compile: 21ms, proxy.ts: 12ms, render: 627ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 712ms (compile: 300ms, proxy.ts: 4ms, render: 408ms)
+ GET /ncert/kebo1?ch=1 200 in 669ms (compile: 414ms, proxy.ts: 50ms, render: 205ms)
+ GET /dashboard 200 in 196ms (compile: 7ms, proxy.ts: 10ms, render: 179ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 665ms (compile: 13ms, proxy.ts: 8ms, render: 643ms)
+ GET /dashboard 200 in 671ms (compile: 10ms, proxy.ts: 5ms, render: 657ms)
+ GET /ncert/kebo1?ch=1 200 in 686ms (compile: 44ms, proxy.ts: 7ms, render: 635ms)
+ GET /dashboard 200 in 628ms (compile: 8ms, proxy.ts: 9ms, render: 611ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 732ms (compile: 232ms, proxy.ts: 6ms, render: 494ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1063ms (compile: 430ms, proxy.ts: 96ms, render: 537ms)
+ GET /dashboard 200 in 572ms (compile: 6ms, proxy.ts: 7ms, render: 558ms)
+ GET /ncert/kebo1?ch=1 200 in 597ms (compile: 42ms, proxy.ts: 10ms, render: 545ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 602ms (compile: 21ms, proxy.ts: 7ms, render: 574ms)
+ GET /dashboard 200 in 526ms (compile: 33ms, proxy.ts: 8ms, render: 485ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 861ms (compile: 332ms, proxy.ts: 9ms, render: 519ms)
+ GET /dashboard 200 in 522ms (compile: 33ms, proxy.ts: 4ms, render: 485ms)
+ GET /ncert/kebo1?ch=1 200 in 540ms (compile: 25ms, proxy.ts: 6ms, render: 509ms)
+ GET /dashboard 200 in 517ms (compile: 13ms, proxy.ts: 5ms, render: 499ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 545ms (compile: 60ms, proxy.ts: 7ms, render: 478ms)
+ GET /ncert/kebo1?ch=1 200 in 545ms (compile: 73ms, proxy.ts: 15ms, render: 457ms)
+ GET /dashboard 200 in 183ms (compile: 6ms, proxy.ts: 10ms, render: 167ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 532ms (compile: 17ms, proxy.ts: 10ms, render: 505ms)
+ GET /ncert/kebo1?ch=1 200 in 524ms (compile: 34ms, proxy.ts: 5ms, render: 485ms)
+ GET /dashboard 200 in 534ms (compile: 16ms, proxy.ts: 4ms, render: 514ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 564ms (compile: 39ms, proxy.ts: 5ms, render: 521ms)
+ GET /ncert/kebo1?ch=1 200 in 565ms (compile: 41ms, proxy.ts: 27ms, render: 497ms)
+ GET /dashboard 200 in 464ms (compile: 210ms, proxy.ts: 9ms, render: 245ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 577ms (compile: 19ms, proxy.ts: 11ms, render: 546ms)
+ GET /ncert/kebo1?ch=1 200 in 570ms (compile: 40ms, proxy.ts: 4ms, render: 525ms)
+ GET /dashboard 200 in 547ms (compile: 5ms, proxy.ts: 9ms, render: 533ms)
+ GET /dashboard 200 in 597ms (compile: 25ms, proxy.ts: 7ms, render: 564ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 626ms (compile: 62ms, proxy.ts: 10ms, render: 555ms)
+ GET /ncert/kebo1?ch=1 200 in 628ms (compile: 86ms, proxy.ts: 13ms, render: 529ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 350ms (compile: 14ms, proxy.ts: 11ms, render: 325ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 743ms (compile: 51ms, proxy.ts: 5ms, render: 687ms)
+ GET /ncert/kebo1?ch=1 200 in 727ms (compile: 48ms, proxy.ts: 12ms, render: 667ms)
+ GET /dashboard 200 in 665ms (compile: 16ms, proxy.ts: 8ms, render: 641ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 737ms (compile: 142ms, proxy.ts: 6ms, render: 589ms)
+ GET /ncert/kebo1?ch=1 200 in 738ms (compile: 84ms, proxy.ts: 35ms, render: 620ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 718ms (compile: 236ms, proxy.ts: 34ms, render: 447ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 729ms (compile: 24ms, proxy.ts: 6ms, render: 699ms)
+ GET /dashboard 200 in 676ms (compile: 9ms, proxy.ts: 8ms, render: 659ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 815ms (compile: 53ms, proxy.ts: 44ms, render: 719ms)
+ GET /dashboard 200 in 765ms (compile: 59ms, proxy.ts: 6ms, render: 700ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1148ms (compile: 193ms, proxy.ts: 12ms, render: 943ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 719ms (compile: 20ms, proxy.ts: 12ms, render: 688ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 754ms (compile: 14ms, proxy.ts: 5ms, render: 736ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 780ms (compile: 33ms, proxy.ts: 12ms, render: 735ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 772ms (compile: 91ms, proxy.ts: 6ms, render: 675ms)
+ GET /dashboard 200 in 545ms (compile: 95ms, proxy.ts: 130ms, render: 320ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 707ms (compile: 17ms, proxy.ts: 8ms, render: 682ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 672ms (compile: 25ms, proxy.ts: 60ms, render: 587ms)
+ GET /dashboard 200 in 626ms (compile: 35ms, proxy.ts: 6ms, render: 584ms)
+ GET /ncert/kebo1?ch=1 200 in 603ms (compile: 19ms, proxy.ts: 4ms, render: 580ms)
+ GET /dashboard 200 in 594ms (compile: 33ms, proxy.ts: 31ms, render: 530ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 609ms (compile: 41ms, proxy.ts: 8ms, render: 560ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 607ms (compile: 13ms, proxy.ts: 7ms, render: 587ms)
+ GET /dashboard 200 in 575ms (compile: 7ms, proxy.ts: 12ms, render: 556ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 626ms (compile: 51ms, proxy.ts: 10ms, render: 566ms)
+ GET /dashboard 200 in 599ms (compile: 16ms, proxy.ts: 4ms, render: 578ms)
+ GET /ncert/kebo1?ch=1 200 in 635ms (compile: 73ms, proxy.ts: 7ms, render: 555ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 749ms (compile: 382ms, proxy.ts: 7ms, render: 360ms)
+ GET /dashboard 200 in 344ms (compile: 13ms, proxy.ts: 8ms, render: 324ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 560ms (compile: 21ms, proxy.ts: 8ms, render: 531ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 564ms (compile: 49ms, proxy.ts: 5ms, render: 510ms)
+ GET /dashboard 200 in 510ms (compile: 16ms, proxy.ts: 18ms, render: 476ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 601ms (compile: 55ms, proxy.ts: 84ms, render: 462ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 491ms (compile: 121ms, proxy.ts: 9ms, render: 361ms)
+ GET /dashboard 200 in 412ms (compile: 150ms, proxy.ts: 47ms, render: 214ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 572ms (compile: 15ms, proxy.ts: 6ms, render: 551ms)
+ GET /dashboard 200 in 550ms (compile: 8ms, proxy.ts: 25ms, render: 517ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 669ms (compile: 94ms, proxy.ts: 26ms, render: 548ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 657ms (compile: 26ms, proxy.ts: 7ms, render: 624ms)
+ GET /dashboard 200 in 643ms (compile: 34ms, proxy.ts: 7ms, render: 602ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 732ms (compile: 58ms, proxy.ts: 10ms, render: 665ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 599ms (compile: 52ms, proxy.ts: 12ms, render: 535ms)
+ GET /dashboard 200 in 549ms (compile: 89ms, proxy.ts: 8ms, render: 452ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 576ms (compile: 35ms, proxy.ts: 33ms, render: 508ms)
+ GET /dashboard 200 in 466ms (compile: 11ms, proxy.ts: 22ms, render: 433ms)
+ GET /ncert/kebo1?ch=1 200 in 508ms (compile: 55ms, proxy.ts: 5ms, render: 448ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 710ms (compile: 55ms, proxy.ts: 30ms, render: 625ms)
+ GET /dashboard 200 in 476ms (compile: 15ms, proxy.ts: 7ms, render: 454ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 630ms (compile: 85ms, proxy.ts: 11ms, render: 533ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 526ms (compile: 20ms, proxy.ts: 8ms, render: 498ms)
+ GET /dashboard 200 in 514ms (compile: 40ms, proxy.ts: 4ms, render: 470ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 634ms (compile: 132ms, proxy.ts: 99ms, render: 403ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 396ms (compile: 12ms, proxy.ts: 7ms, render: 376ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 521ms (compile: 33ms, proxy.ts: 52ms, render: 437ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 530ms (compile: 14ms, proxy.ts: 5ms, render: 511ms)
+ GET /dashboard 200 in 493ms (compile: 10ms, proxy.ts: 44ms, render: 440ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 510ms (compile: 77ms, proxy.ts: 42ms, render: 392ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 690ms (compile: 28ms, proxy.ts: 11ms, render: 651ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 681ms (compile: 150ms, proxy.ts: 39ms, render: 492ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 584ms (compile: 31ms, proxy.ts: 5ms, render: 548ms)
+ GET /dashboard 200 in 579ms (compile: 9ms, proxy.ts: 6ms, render: 564ms)
+ GET /ncert/kebo1?ch=1 200 in 664ms (compile: 45ms, proxy.ts: 4ms, render: 614ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 722ms (compile: 16ms, proxy.ts: 59ms, render: 647ms)
+ GET /dashboard 200 in 415ms (compile: 29ms, proxy.ts: 7ms, render: 379ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 546ms (compile: 72ms, proxy.ts: 12ms, render: 462ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 434ms (compile: 19ms, proxy.ts: 9ms, render: 406ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 534ms (compile: 83ms, proxy.ts: 25ms, render: 426ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 634ms (compile: 46ms, proxy.ts: 5ms, render: 582ms)
+ GET /dashboard 200 in 568ms (compile: 77ms, proxy.ts: 4ms, render: 487ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 616ms (compile: 26ms, proxy.ts: 4ms, render: 586ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 554ms (compile: 22ms, proxy.ts: 5ms, render: 527ms)
+ GET /dashboard 200 in 315ms (compile: 13ms, proxy.ts: 10ms, render: 292ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 466ms (compile: 152ms, proxy.ts: 39ms, render: 276ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 618ms (compile: 13ms, proxy.ts: 7ms, render: 598ms)
+ GET /dashboard 200 in 583ms (compile: 9ms, proxy.ts: 42ms, render: 531ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 581ms (compile: 31ms, proxy.ts: 12ms, render: 538ms)
+ GET /dashboard 200 in 563ms (compile: 85ms, proxy.ts: 11ms, render: 467ms)
+ GET /ncert/kebo1?ch=1 200 in 582ms (compile: 30ms, proxy.ts: 11ms, render: 541ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 632ms (compile: 405ms, proxy.ts: 6ms, render: 222ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 534ms (compile: 28ms, proxy.ts: 6ms, render: 500ms)
+ GET /ncert/kebo1?ch=1 200 in 549ms (compile: 14ms, proxy.ts: 7ms, render: 528ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 610ms (compile: 13ms, proxy.ts: 5ms, render: 593ms)
+ GET /dashboard 200 in 574ms (compile: 11ms, proxy.ts: 11ms, render: 552ms)
+ GET /ncert/kebo1?ch=1 200 in 623ms (compile: 286ms, proxy.ts: 11ms, render: 326ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 491ms (compile: 86ms, proxy.ts: 107ms, render: 298ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 501ms (compile: 10ms, proxy.ts: 6ms, render: 486ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 674ms (compile: 84ms, proxy.ts: 7ms, render: 583ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 640ms (compile: 18ms, proxy.ts: 9ms, render: 613ms)
+ GET /dashboard 200 in 628ms (compile: 36ms, proxy.ts: 9ms, render: 582ms)
+ GET /ncert/kebo1?ch=1 200 in 615ms (compile: 72ms, proxy.ts: 10ms, render: 533ms)
+ GET /dashboard 200 in 350ms (compile: 110ms, proxy.ts: 5ms, render: 235ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 613ms (compile: 212ms, proxy.ts: 61ms, render: 340ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 704ms (compile: 51ms, proxy.ts: 7ms, render: 645ms)
+ GET /dashboard 200 in 661ms (compile: 5ms, proxy.ts: 12ms, render: 645ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 701ms (compile: 38ms, proxy.ts: 8ms, render: 656ms)
+ GET /ncert/kebo1?ch=1 200 in 726ms (compile: 24ms, proxy.ts: 7ms, render: 695ms)
+ GET /dashboard 200 in 709ms (compile: 162ms, proxy.ts: 10ms, render: 537ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 803ms (compile: 487ms, proxy.ts: 40ms, render: 276ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 628ms (compile: 16ms, proxy.ts: 7ms, render: 604ms)
+ GET /dashboard 200 in 625ms (compile: 7ms, proxy.ts: 6ms, render: 612ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 672ms (compile: 13ms, proxy.ts: 4ms, render: 654ms)
+ GET /dashboard 200 in 615ms (compile: 10ms, proxy.ts: 14ms, render: 592ms)
+ GET /ncert/kebo1?ch=1 200 in 664ms (compile: 145ms, proxy.ts: 11ms, render: 508ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 528ms (compile: 251ms, proxy.ts: 42ms, render: 235ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 288ms (compile: 14ms, proxy.ts: 8ms, render: 266ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 635ms (compile: 36ms, proxy.ts: 9ms, render: 590ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 585ms (compile: 17ms, proxy.ts: 7ms, render: 560ms)
+ GET /dashboard 200 in 597ms (compile: 7ms, proxy.ts: 9ms, render: 581ms)
+ GET /ncert/kebo1?ch=1 200 in 653ms (compile: 21ms, proxy.ts: 31ms, render: 601ms)
+ GET /dashboard 200 in 543ms (compile: 10ms, proxy.ts: 11ms, render: 522ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 784ms (compile: 48ms, proxy.ts: 51ms, render: 685ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 2.6s (compile: 20ms, proxy.ts: 11ms, render: 2.5s)
+ GET /dashboard 200 in 2.9s (compile: 12ms, proxy.ts: 5ms, render: 2.9s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 3.8s (compile: 35ms, proxy.ts: 7ms, render: 3.8s)
+ GET /dashboard 200 in 3.8s (compile: 1409ms, proxy.ts: 98ms, render: 2.3s)
+ GET /ncert/kebo1?ch=1 200 in 4.0s (compile: 1140ms, proxy.ts: 25ms, render: 2.8s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 3.2s (compile: 273ms, proxy.ts: 485ms, render: 2.5s)
+ GET /dashboard 200 in 2.3s (compile: 516ms, proxy.ts: 47ms, render: 1735ms)
+ GET /ncert/kebo1?ch=1 200 in 2.4s (compile: 175ms, proxy.ts: 41ms, render: 2.2s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1823ms (compile: 50ms, proxy.ts: 23ms, render: 1749ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1754ms (compile: 20ms, proxy.ts: 13ms, render: 1720ms)
+ GET /ncert/kebo1?ch=1 200 in 1990ms (compile: 236ms, proxy.ts: 42ms, render: 1712ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1676ms (compile: 118ms, proxy.ts: 67ms, render: 1491ms)
+ GET /dashboard 200 in 1650ms (compile: 378ms, proxy.ts: 33ms, render: 1239ms)
+ GET /ncert/kebo1?ch=1 200 in 1762ms (compile: 179ms, proxy.ts: 303ms, render: 1279ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1356ms (compile: 442ms, proxy.ts: 101ms, render: 813ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1679ms (compile: 444ms, proxy.ts: 8ms, render: 1228ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1702ms (compile: 595ms, proxy.ts: 15ms, render: 1091ms)
+ GET /dashboard 200 in 1116ms (compile: 185ms, proxy.ts: 31ms, render: 900ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1194ms (compile: 134ms, proxy.ts: 31ms, render: 1030ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1247ms (compile: 202ms, proxy.ts: 163ms, render: 882ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1179ms (compile: 7ms, proxy.ts: 18ms, render: 1155ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1382ms (compile: 132ms, proxy.ts: 6ms, render: 1244ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1470ms (compile: 20ms, proxy.ts: 16ms, render: 1435ms)
+ GET /dashboard 200 in 1404ms (compile: 23ms, proxy.ts: 30ms, render: 1351ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1961ms (compile: 403ms, proxy.ts: 12ms, render: 1546ms)
+ GET /dashboard 200 in 1344ms (compile: 300ms, proxy.ts: 29ms, render: 1015ms)
+ GET /ncert/kebo1?ch=1 200 in 1746ms (compile: 478ms, proxy.ts: 15ms, render: 1252ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1561ms (compile: 26ms, proxy.ts: 144ms, render: 1390ms)
+ GET /dashboard 200 in 1295ms (compile: 110ms, proxy.ts: 18ms, render: 1168ms)
+ GET /ncert/kebo1?ch=1 200 in 1405ms (compile: 54ms, proxy.ts: 48ms, render: 1303ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1132ms (compile: 111ms, proxy.ts: 25ms, render: 995ms)
+ GET /dashboard 200 in 1082ms (compile: 131ms, proxy.ts: 80ms, render: 871ms)
+ GET /ncert/kebo1?ch=1 200 in 1180ms (compile: 570ms, proxy.ts: 15ms, render: 595ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 903ms (compile: 19ms, proxy.ts: 7ms, render: 877ms)
+ GET /dashboard 200 in 873ms (compile: 12ms, proxy.ts: 8ms, render: 853ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 954ms (compile: 55ms, proxy.ts: 12ms, render: 887ms)
+ GET /dashboard 200 in 625ms (compile: 46ms, proxy.ts: 70ms, render: 509ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 919ms (compile: 288ms, proxy.ts: 66ms, render: 564ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 903ms (compile: 167ms, proxy.ts: 170ms, render: 565ms)
+ GET /dashboard 200 in 618ms (compile: 9ms, proxy.ts: 6ms, render: 604ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 738ms (compile: 29ms, proxy.ts: 51ms, render: 658ms)
+ GET /ncert/kebo1?ch=1 200 in 694ms (compile: 70ms, proxy.ts: 7ms, render: 616ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 639ms (compile: 146ms, proxy.ts: 57ms, render: 437ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 804ms (compile: 20ms, proxy.ts: 13ms, render: 771ms)
+ GET /dashboard 200 in 718ms (compile: 64ms, proxy.ts: 10ms, render: 644ms)
+ GET /ncert/kebo1?ch=1 200 in 782ms (compile: 49ms, proxy.ts: 17ms, render: 715ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 791ms (compile: 130ms, proxy.ts: 7ms, render: 654ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 776ms (compile: 155ms, proxy.ts: 57ms, render: 563ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 899ms (compile: 180ms, proxy.ts: 10ms, render: 709ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1865ms (compile: 15ms, proxy.ts: 12ms, render: 1838ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 2.1s (compile: 7ms, proxy.ts: 10ms, render: 2.1s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 2.7s (compile: 51ms, proxy.ts: 5ms, render: 2.6s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 4.6s (compile: 1323ms, proxy.ts: 12ms, render: 3.3s)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 4.9s (compile: 1474ms, proxy.ts: 67ms, render: 3.3s)
+ GET /ncert/kebo1?ch=1 200 in 4.5s (compile: 167ms, proxy.ts: 957ms, render: 3.3s)
+ GET /dashboard 200 in 3.4s (compile: 155ms, proxy.ts: 142ms, render: 3.1s)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 4.3s (compile: 404ms, proxy.ts: 413ms, render: 3.5s)
+ GET /ncert/kebo1?ch=1 200 in 3.7s (compile: 1719ms, proxy.ts: 63ms, render: 1908ms)
+ GET /dashboard 200 in 1473ms (compile: 20ms, proxy.ts: 33ms, render: 1420ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1679ms (compile: 117ms, proxy.ts: 60ms, render: 1502ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1800ms (compile: 28ms, proxy.ts: 156ms, render: 1616ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1971ms (compile: 333ms, proxy.ts: 170ms, render: 1467ms)
+ GET /dashboard 200 in 987ms (compile: 11ms, proxy.ts: 12ms, render: 964ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1356ms (compile: 84ms, proxy.ts: 17ms, render: 1255ms)
+ GET /ncert/kebo1?ch=1 200 in 1251ms (compile: 110ms, proxy.ts: 23ms, render: 1118ms)
+ GET /dashboard 200 in 1063ms (compile: 295ms, proxy.ts: 119ms, render: 649ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1312ms (compile: 79ms, proxy.ts: 17ms, render: 1215ms)
+ GET /ncert/kebo1?ch=1 200 in 1277ms (compile: 124ms, proxy.ts: 22ms, render: 1131ms)
+ GET /dashboard 200 in 1063ms (compile: 69ms, proxy.ts: 153ms, render: 842ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1269ms (compile: 16ms, proxy.ts: 5ms, render: 1248ms)
+ GET /dashboard 200 in 1205ms (compile: 488ms, proxy.ts: 13ms, render: 704ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1491ms (compile: 283ms, proxy.ts: 8ms, render: 1199ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1624ms (compile: 21ms, proxy.ts: 17ms, render: 1586ms)
+ GET /dashboard 200 in 1597ms (compile: 143ms, proxy.ts: 20ms, render: 1434ms)
+ GET /ncert/kebo1?ch=1 200 in 1663ms (compile: 138ms, proxy.ts: 10ms, render: 1515ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1616ms (compile: 17ms, proxy.ts: 11ms, render: 1588ms)
+ GET /dashboard 200 in 1250ms (compile: 369ms, proxy.ts: 96ms, render: 785ms)
+ GET /ncert/kebo1?ch=1 200 in 1548ms (compile: 672ms, proxy.ts: 164ms, render: 712ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1161ms (compile: 45ms, proxy.ts: 20ms, render: 1097ms)
+ GET /dashboard 200 in 1080ms (compile: 32ms, proxy.ts: 21ms, render: 1027ms)
+ GET /ncert/kebo1?ch=1 200 in 1197ms (compile: 80ms, proxy.ts: 35ms, render: 1082ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1321ms (compile: 48ms, proxy.ts: 33ms, render: 1240ms)
+ GET /dashboard 200 in 1307ms (compile: 141ms, proxy.ts: 14ms, render: 1152ms)
+ GET /ncert/kebo1?ch=1 200 in 1435ms (compile: 457ms, proxy.ts: 18ms, render: 960ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1319ms (compile: 30ms, proxy.ts: 15ms, render: 1274ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1402ms (compile: 130ms, proxy.ts: 9ms, render: 1263ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1820ms (compile: 160ms, proxy.ts: 69ms, render: 1592ms)
+ GET /dashboard 200 in 1362ms (compile: 25ms, proxy.ts: 70ms, render: 1267ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1454ms (compile: 202ms, proxy.ts: 52ms, render: 1201ms)
+ GET /ncert/kebo1?ch=1 200 in 1110ms (compile: 155ms, proxy.ts: 113ms, render: 842ms)
+ GET /dashboard 200 in 901ms (compile: 161ms, proxy.ts: 7ms, render: 734ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1536ms (compile: 384ms, proxy.ts: 20ms, render: 1132ms)
+ GET /dashboard 200 in 1163ms (compile: 9ms, proxy.ts: 10ms, render: 1144ms)
+ GET /ncert/kebo1?ch=1 200 in 1218ms (compile: 74ms, proxy.ts: 27ms, render: 1118ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1334ms (compile: 19ms, proxy.ts: 13ms, render: 1302ms)
+ GET /dashboard 200 in 1271ms (compile: 376ms, proxy.ts: 180ms, render: 716ms)
+ GET /ncert/kebo1?ch=1 200 in 1118ms (compile: 484ms, proxy.ts: 25ms, render: 609ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 884ms (compile: 60ms, proxy.ts: 24ms, render: 800ms)
+ GET /dashboard 200 in 672ms (compile: 23ms, proxy.ts: 19ms, render: 630ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1042ms (compile: 51ms, proxy.ts: 10ms, render: 980ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /dashboard 200 in 1090ms (compile: 15ms, proxy.ts: 9ms, render: 1066ms)
+ GET /test/5d84dccc-2f05-4bc8-8a10-637cc1f81d74/results 200 in 1317ms (compile: 98ms, proxy.ts: 8ms, render: 1211ms)
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+AuthApiError: Request rate limit reached
+    at ignore-listed frames {
+  __isAuthError: true,
+  status: 429,
+  code: 'over_request_rate_limit'
+}
+ GET /ncert/kebo1?ch=1 200 in 1543ms (compile: 34ms, proxy.ts: 53ms, render: 1456ms)
+ GET /dashboard 200 in 1579ms (compile: 15ms, proxy.ts: 15ms, render: 1549ms)
