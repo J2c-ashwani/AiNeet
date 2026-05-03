@@ -13,13 +13,33 @@ export async function POST(request) {
 
         const supabase = await getDb();
         const questionIds = Object.keys(answers);
-        
-        // Fetch ground truth securely from backend
-        const { data: realQuestions, error: fetchErr } = await supabase.from('questions')
-            .select('id, correct_option, chapter_id, topic_id')
-            .in('id', questionIds);
-            
-        if (fetchErr) throw fetchErr;
+
+        // CRITICAL FIX: AI-generated questions have UUID string IDs.
+        // The DB `questions` table uses integer IDs. Passing UUIDs to .in('id', ...)
+        // causes Postgres error 22P02: invalid input syntax for type integer.
+        // We must split: only query integer IDs; UUID (AI-gen) IDs are counted as
+        // attempted but cannot be server-graded (correct_option was never sent to client).
+        const isIntegerId = (id) => /^\d+$/.test(String(id));
+        const dbQuestionIds = questionIds.filter(isIntegerId);
+        const aiGenQuestionIds = questionIds.filter(id => !isIntegerId(id));
+
+        // Count AI-gen answered questions as incorrect (safest conservative assumption)
+        // since we cannot verify correct_option server-side without the original session.
+        const aiGenAttempted = aiGenQuestionIds.filter(id => {
+            const ans = answers[id];
+            return ans !== null && ans !== undefined && ans !== '';
+        }).length;
+
+        // Fetch ground truth securely from backend (integer IDs only)
+        let realQuestions = [];
+        if (dbQuestionIds.length > 0) {
+            const { data, error: fetchErr } = await supabase.from('questions')
+                .select('id, correct_option, chapter_id, topic_id')
+                .in('id', dbQuestionIds);
+            if (fetchErr) throw fetchErr;
+            realQuestions = data || [];
+        }
+
 
         let totalScore = 0;
         let correctCount = 0;
@@ -46,6 +66,10 @@ export async function POST(request) {
             }
         });
 
+        // AI-gen questions that were attempted count as incorrect (cannot be verified server-side)
+        incorrectCount += aiGenAttempted;
+        totalScore -= aiGenAttempted; // -1 per wrong attempt
+
         // Identify the weakest chapter
         let weakestChapterId = null;
         let lowestAccuracy = 100;
@@ -69,7 +93,8 @@ export async function POST(request) {
 
         // Generate the Psychology Emotion triggers (MD Request)
         // Simulated percentiles to inject immediate FOMO/Urgency
-        const accuracyRate = (correctCount / questionIds.length) * 100;
+        const totalQCount = questionIds.length;
+        const accuracyRate = totalQCount > 0 ? (correctCount / totalQCount) * 100 : 0;
         let percentile = 15;
         if (accuracyRate > 80) percentile = 82;
         else if (accuracyRate > 60) percentile = 56;
@@ -79,7 +104,7 @@ export async function POST(request) {
 
         const finalGradeData = {
             score: totalScore,
-            maxScore: questionIds.length * 4,
+            maxScore: totalQCount * 4,
             correct: correctCount,
             incorrect: incorrectCount,
             accuracy: accuracyRate,
