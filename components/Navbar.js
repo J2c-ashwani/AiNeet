@@ -11,10 +11,7 @@ export default function Navbar() {
     const loggedInItems = [
         { name: 'Home', path: '/' },
         { name: 'Practice', path: '/test/configure' },
-        { name: 'Battle', path: '/battle' },
-        { name: 'Battleground', path: '/battleground' },
         { name: 'NCERT', path: '/ncert' },
-        { name: 'Blueprint', path: '/blueprint' },
         { name: 'Dashboard', path: '/dashboard' },
         { name: 'Premium', path: '/pricing' },
     ];
@@ -22,10 +19,7 @@ export default function Navbar() {
     const guestItems = [
         { name: 'Home', path: '/' },
         { name: 'Practice', path: '/test/configure' },
-        { name: 'Battle', path: '/battle' },
-        { name: 'Battleground', path: '/battleground' },
         { name: 'NCERT', path: '/ncert' },
-        { name: 'Leaderboard', path: '/leaderboard' },
         { name: 'Premium', path: '/pricing' },
     ];
 
@@ -117,7 +111,7 @@ export default function Navbar() {
                 {[
                     { name: 'Home', path: '/', icon: '🏠' },
                     { name: 'Practice', path: '/test/configure', icon: '📝' },
-                    { name: 'Battle', path: '/battleground', icon: '⚔️' },
+                    { name: 'Doubt', path: '/doubt', icon: '💬' },
                     { name: 'NCERT', path: '/ncert', icon: '📚' },
                     { name: user ? 'Profile' : 'Login', path: user ? '/profile' : '/login', icon: user ? '👤' : '🔑' },
                 ].map(item => (

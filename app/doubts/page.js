@@ -27,29 +27,44 @@ export default function DoubtSolver() {
         messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    const handleSend = async () => {
+    const handleSend = async (retryMsg = null) => {
         if (!user) {
             router.push('/login?redirect=/doubts');
             return;
         }
-        if (!input.trim() && !sending) return; // Changed 'loading' to 'sending' to match existing state
-        const userMsg = input.trim();
-        setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+        const userMsg = retryMsg || input.trim();
+        if (!userMsg || sending) return;
+        if (!retryMsg) setInput('');
+        if (!retryMsg) setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
         setSending(true);
+
+        // 20-second timeout — if AI hangs longer, student gets a clear retry option
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
 
         try {
             const res = await fetch('/api/doubt', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMsg, conversationId })
+                body: JSON.stringify({ message: userMsg, conversationId }),
+                signal: controller.signal
             });
+            clearTimeout(timeout);
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error);
+            if (!res.ok) throw new Error(data.error || 'AI returned an error');
             setConversationId(data.conversationId);
             setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
         } catch (err) {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
+            clearTimeout(timeout);
+            const isTimeout = err.name === 'AbortError';
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: isTimeout
+                    ? '⏱️ Our AI is a bit busy right now. Please try again in a moment.'
+                    : '⚠️ Something went wrong. Please try again.',
+                isError: true,
+                retryMsg: userMsg
+            }]);
         } finally { setSending(false); }
     };
 
@@ -102,6 +117,14 @@ export default function DoubtSolver() {
                                     {msg.role === 'assistant' ? (
                                         <div className="prose prose-invert max-w-none text-gray-200">
                                             <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                            {msg.isError && (
+                                                <button
+                                                    onClick={() => handleSend(msg.retryMsg)}
+                                                    style={{ marginTop: 10, padding: '6px 14px', background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 8, color: '#818cf8', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+                                                >
+                                                    🔄 Retry
+                                                </button>
+                                            )}
                                         </div>
                                     ) : (
                                         msg.content

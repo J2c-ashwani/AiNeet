@@ -3,13 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DiagnosticResultsLock() {
     const [result, setResult] = useState(null);
     const [aspirantCount, setAspirantCount] = useState(0);
     const [ghostPhone, setGhostPhone] = useState('');
     const [unlocked, setUnlocked] = useState(false);
+    const [noResult, setNoResult] = useState(false);
     const router = useRouter();
+    const { user } = useAuth(); // Detect if already logged in
 
     // 1. Ghost ID provision for Symmetrical Flywheel
     useEffect(() => {
@@ -23,13 +26,17 @@ export default function DiagnosticResultsLock() {
         if (stored) {
             try {
                 setResult(JSON.parse(stored).scoreData);
-            } catch (e) {}
+                // If user is already logged in, unlock the results immediately — no wall needed
+                if (user) setUnlocked(true);
+            } catch (e) {
+                setNoResult(true);
+            }
         } else {
-            router.push('/test/diagnostic');
+            setNoResult(true);
         }
 
         fetch('/api/stats/traffic').then(r => r.json()).then(d => d && setAspirantCount(d.activeAspirants)).catch(() => setAspirantCount(462));
-    }, [router]);
+    }, [router, user]);
 
     const handleViralShare = async () => {
         if (!result) return;
@@ -66,6 +73,19 @@ export default function DiagnosticResultsLock() {
             setUnlocked(true); // Fallback assumption unlock
         }
     };
+
+    if (noResult) return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff', padding: 40, textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: 16 }}>⏱️</div>
+            <h2 style={{ fontWeight: 700, marginBottom: 12 }}>Your session expired</h2>
+            <p style={{ color: '#94a3b8', marginBottom: 28, maxWidth: 400 }}>
+                Your diagnostic results are no longer available in this browser. Retake the test — it only takes 3 minutes.
+            </p>
+            <Link href="/test/diagnostic" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '14px 32px', borderRadius: 10, fontWeight: 700, textDecoration: 'none', fontSize: '1.05rem' }}>
+                Retake Diagnostic →
+            </Link>
+        </div>
+    );
 
     if (!result) return null;
 
