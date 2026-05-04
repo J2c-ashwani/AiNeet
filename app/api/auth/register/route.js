@@ -72,7 +72,7 @@ export async function POST(request) {
             const result = await supabase.auth.admin.createUser({
                 email: email.toLowerCase().trim(),
                 password,
-                email_confirm: true,
+                email_confirm: false,
                 user_metadata: {
                     full_name: cleanName
                 }
