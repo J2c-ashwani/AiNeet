@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/core/db';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
@@ -103,16 +104,19 @@ export async function POST(request) {
         }
 
         // IMPORTANT: admin.createUser() does NOT send any email by itself.
-        // We must explicitly trigger the OTP confirmation email via generateLink.
-        // This fires the "Confirm signup" Supabase email template containing {{ .Token }}.
+        // We use supabase.auth.resend() with the anon-key SSR client to trigger
+        // the actual "Confirm signup" email containing the {{ .Token }} OTP code.
+        // Note: generateLink() only generates a token — it does NOT send an email.
         try {
-            await supabase.auth.admin.generateLink({
+            const anonClient = await createSupabaseServerClient();
+            const { error: resendError } = await anonClient.auth.resend({
                 type: 'signup',
                 email: email.toLowerCase().trim(),
-                password,
             });
+            if (resendError) {
+                console.error('OTP email resend failed (non-fatal):', resendError.message);
+            }
         } catch (emailErr) {
-            // Non-fatal: account is created, email may just be delayed. Log and continue.
             console.error('OTP email trigger failed (non-fatal):', emailErr);
         }
 
