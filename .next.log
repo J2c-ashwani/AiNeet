@@ -7729,3 +7729,4 @@ AuthApiError: Request rate limit reached
 ✓ Finished filesystem cache database compaction in 22.9s
 ✓ Compiled in 87ms
 ✓ Compiled in 584ms
+✓ Compiled in 5ms

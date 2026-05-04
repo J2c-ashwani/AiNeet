@@ -37,6 +37,7 @@ export default function Navbar() {
     if (['/login', '/register'].includes(pathname)) return null;
 
     return (
+        <>
         <nav style={{
             position: 'sticky',
             top: 0,
@@ -113,6 +114,7 @@ export default function Navbar() {
                     </>
                 )}
             </div>
+        </nav>
 
             {/* Mobile Bottom Nav */}
             <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(8,12,24,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.06)', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 1000 }} className="mobile-nav">
@@ -220,6 +222,6 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-        </nav>
+        </>
     );
 }
