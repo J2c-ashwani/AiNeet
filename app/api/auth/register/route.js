@@ -54,14 +54,27 @@ export async function POST(request) {
             return NextResponse.json({ error: pwCheck.message }, { status: 400 });
         }
 
+        // Check if email already exists in our users table
         const { data: existing } = await supabase
             .from('users')
             .select('id')
-            .eq('email', email)
+            .eq('email', email.toLowerCase().trim())
             .single();
 
         if (existing) {
-            return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
+            // Check if the Supabase auth user is confirmed or still pending verification
+            const { data: authUserData } = await supabase.auth.admin.getUserById(existing.id);
+            const isConfirmed = authUserData?.user?.email_confirmed_at;
+
+            if (isConfirmed) {
+                // Fully registered user — reject
+                return NextResponse.json({ error: 'This email is already registered. Please sign in instead.' }, { status: 409 });
+            } else {
+                // Zombie: account created but OTP never completed — clean up and allow fresh re-registration
+                console.log(`Cleaning up zombie unconfirmed account for ${email}`);
+                await supabase.auth.admin.deleteUser(existing.id);
+                await supabase.from('users').delete().eq('id', existing.id);
+            }
         }
 
         // Supabase Native SignUp via Admin API
