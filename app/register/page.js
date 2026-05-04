@@ -86,7 +86,7 @@ export default function RegisterPage() {
             if (challengeId) {
                 window.location.href = `/challenge/${challengeId}`;
             } else {
-                window.location.href = '/dashboard';
+                window.location.href = '/';
             }
         } catch (err) {
             if (err.message === 'COLD_START') {
@@ -97,7 +97,7 @@ export default function RegisterPage() {
                     try {
                         await performRegistration(1);
                         await performClientLogin();
-                        window.location.href = challengeId ? `/challenge/${challengeId}` : '/dashboard';
+                        window.location.href = challengeId ? `/challenge/${challengeId}` : '/';
                     } catch (finalErr) {
                         setError(finalErr.message === 'COLD_START' ? 'System timeout. Please refresh and try again.' : finalErr.message);
                         setLoading(false);

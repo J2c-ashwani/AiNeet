@@ -33,7 +33,7 @@ export default function LoginPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
             // Hard navigate to dashboard to force SSR to read the freshly baked session cookies
-            window.location.href = '/dashboard';
+            window.location.href = '/';
         } catch (err) {
             setError(err.message);
         } finally { setLoading(false); }
