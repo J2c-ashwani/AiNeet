@@ -183,11 +183,70 @@ export default function RootLayout({ children }) {
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
                 <meta name="google-play-app" content="app-id=com.aineetcoach.app" />
                 <JsonLd />
+                {/* Inline splash screen styles — renders BEFORE any JS/CSS loads */}
+                <style dangerouslySetInnerHTML={{__html: `
+                    #app-splash {
+                        position: fixed; inset: 0; z-index: 99999;
+                        display: flex; flex-direction: column;
+                        align-items: center; justify-content: center;
+                        background: #080c18;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        transition: opacity 0.4s ease;
+                    }
+                    #app-splash.hide { opacity: 0; pointer-events: none; }
+                    #app-splash .splash-ring {
+                        width: 80px; height: 80px;
+                        border: 3px solid transparent;
+                        border-top-color: #6366f1; border-right-color: #a855f7;
+                        border-radius: 50%;
+                        animation: splashSpin 0.9s linear infinite;
+                    }
+                    #app-splash .splash-logo {
+                        position: absolute;
+                        font-size: 1.6rem; font-weight: 800;
+                        background: linear-gradient(135deg, #818cf8, #c084fc);
+                        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                    }
+                    #app-splash .splash-title {
+                        margin-top: 20px; font-size: 1.1rem; font-weight: 700;
+                        color: #f8fafc; letter-spacing: 2px; text-transform: uppercase;
+                    }
+                    #app-splash .splash-sub {
+                        margin-top: 6px; font-size: 0.8rem; color: #64748b;
+                        animation: splashPulse 2s ease-in-out infinite;
+                    }
+                    @keyframes splashSpin { to { transform: rotate(360deg); } }
+                    @keyframes splashPulse {
+                        0%, 100% { opacity: 1; } 50% { opacity: 0.5; }
+                    }
+                `}} />
             </head>
             <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                {/* Inline splash — first thing painted by browser, zero JS dependency */}
+                <div id="app-splash">
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div className="splash-ring"></div>
+                        <span className="splash-logo">AI</span>
+                    </div>
+                    <div className="splash-title">NEET Coach</div>
+                    <div className="splash-sub">Loading...</div>
+                </div>
+
                 <ClientLayout>
                     {children}
                 </ClientLayout>
+
+                {/* Auto-dismiss splash after React hydration completes */}
+                <script dangerouslySetInnerHTML={{__html: `
+                    (function(){
+                        function dismissSplash() {
+                            var s = document.getElementById('app-splash');
+                            if (s) { s.classList.add('hide'); setTimeout(function(){ s.remove(); }, 500); }
+                        }
+                        if (document.readyState === 'complete') { dismissSplash(); }
+                        else { window.addEventListener('load', function(){ setTimeout(dismissSplash, 300); }); }
+                    })();
+                `}} />
             </body>
         </html>
     );

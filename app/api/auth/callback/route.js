@@ -5,7 +5,7 @@ export async function GET(request) {
     const { searchParams, origin } = new URL(request.url);
     const code = searchParams.get('code');
     // next is the default URL to redirect to after sign in
-    const next = searchParams.get('next') ?? '/dashboard';
+    const next = searchParams.get('next') ?? '/';
 
     if (code) {
         const supabase = await createSupabaseServerClient();
