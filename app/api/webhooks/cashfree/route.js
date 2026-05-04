@@ -15,7 +15,7 @@ export async function POST(request) {
 
         const secretKey = process.env.CASHFREE_SECRET_KEY;
         if (!secretKey) {
-            console.error('CASHFREE_SECRET_KEY is fully missing');
+            console.error('CASHFREE_SECRET_KEY is missing');
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         }
 
@@ -32,92 +32,67 @@ export async function POST(request) {
 
         const payload = JSON.parse(rawBody);
 
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        const supabase = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            serviceKey,
+            { auth: { persistSession: false } }
+        );
+
         // Process successful payments
         if (payload.type === 'PAYMENT_SUCCESS_WEBHOOK') {
             const orderId = payload.data.order.order_id;
             
-            // Add Logging Layer (MD requirement)
+            // Generate deterministic event ID for idempotency
+            const eventId = `cashfree_${timestamp}_${orderId}_${payload.type}`;
+
             console.log(`[WEBHOOK START] Received valid payload for Order: ${orderId}`);
 
-            // MD Strategy: Stage Webhook Service Role rollout before locking down RLS
-            const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-            if (!serviceKey) {
-                console.warn('⚠️ CRITICAL: SUPABASE_SERVICE_ROLE_KEY is missing! Falling back to ANON key. RLS vulnerability active!');
-            }
-            const activeKey = serviceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-            
-            const supabase = createClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL,
-                activeKey,
-                { auth: { persistSession: false } }
-            );
-
-            // Utility function for DB retries
-            const withRetry = async (operation, maxRetries = 3) => {
-                for (let i = 0; i < maxRetries; i++) {
-                    try { return await operation(); }
-                    catch (err) {
-                        if (i === maxRetries - 1) throw err;
-                        await new Promise(r => setTimeout(r, 1000 * (i + 1))); // exponential backoff
-                    }
-                }
-            };
-
-            // Fetch payment record
-            const { data: payment, error: fetchErr } = await withRetry(() =>
-                supabase.from('payments').select('user_id, status, amount').eq('provider_order_id', orderId).single()
-            );
+            // 1. Fetch payment intent from old payments table to map to user_id
+            const { data: payment, error: fetchErr } = await supabase
+                .from('payments')
+                .select('user_id, status, amount')
+                .eq('provider_order_id', orderId)
+                .single();
 
             if (fetchErr) {
                 console.error(`[WEBHOOK ERROR] Failed to fetch payment order ${orderId}:`, fetchErr);
                 return NextResponse.json({ error: 'Order not found' }, { status: 404 });
             }
 
-            // CTO Constraint: Strict Idempotency + Replay Protection. 
-            // If it's already completed, do NOT upgrade again.
-            if (payment.status === 'completed') {
-                console.warn(`[WEBHOOK IDEMPOTENCY] Replay blocked: Order ${orderId} already processed.`);
-                return NextResponse.json({ success: true, message: "Already processed" });
-            }
-
-            // Determine Plan by amount to set correct expiry
-            const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.amount === payment.amount) || { duration_days: 30 };
+            const plan = Object.values(SUBSCRIPTION_PLANS).find(p => p.amount === payment.amount) || { duration_days: 30, id: 'pro' };
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + plan.duration_days);
 
-            try {
-                // ATOMIC LOCK: Execute payment status transition first
-                // Using .eq('status', 'pending') guarantees only ONE concurrent thread can claim this transition lock
-                const { data: updatedPayment, error: paymentUpdateErr } = await supabase.from('payments').update({
-                    status: 'completed',
-                    provider_payment_id: String(payload.data.payment.cf_payment_id)
-                })
-                .eq('provider_order_id', orderId)
-                .eq('status', 'pending')
-                .select();
+            // 2. Insert into the new Dual-Rail Subscriptions table (History-Preserving)
+            const { error: insertErr } = await supabase.from('subscriptions').insert({
+                user_id: payment.user_id,
+                plan_tier: plan.id === 'premium' ? 'premium' : 'pro',
+                billing_source: 'web',
+                billing_provider: 'cashfree',
+                billing_status: 'active',
+                external_subscription_id: orderId, // Cashfree links order ID to the subscription intent usually
+                external_customer_id: payment.user_id,
+                provider_event_id: eventId,
+                provider_event_type: payload.type,
+                provider_payload: payload,
+                started_at: new Date().toISOString(),
+                expires_at: expiryDate.toISOString()
+            });
 
-                if (paymentUpdateErr) throw paymentUpdateErr;
-
-                // Idempotency Enforcement: If 0 rows are returned, a concurrent request beat us to the lock. Abort silently.
-                if (!updatedPayment || updatedPayment.length === 0) {
-                    console.log(`[WEBHOOK MUTEX] Replay gracefully ignored. Concurrent lock claimed elsewhere for order: ${orderId}`);
-                    return NextResponse.json({ success: true, message: "Race condition mitigated safely" });
+            if (insertErr) {
+                // If the error is a unique constraint violation on provider_event_id, it's a duplicate webhook replay.
+                if (insertErr.code === '23505') {
+                    console.log(`[WEBHOOK IDEMPOTENCY] Replay blocked: Event ${eventId} already processed.`);
+                    return NextResponse.json({ success: true, message: "Duplicate event safely ignored" });
                 }
-
-                // Lock successfully acquired. Process the payload.
-                const { error: userUpdateErr } = await supabase.from('users').update({
-                    subscription_tier: 'pro',
-                    subscription_status: 'active',
-                    subscription_expiry: expiryDate.toISOString()
-                }).eq('id', payment.user_id);
-
-                if (userUpdateErr) throw userUpdateErr;
-                
-                console.log(`[WEBHOOK SUCCESS] Upgraded User: ${payment.user_id} to PRO. Order: ${orderId}, Expiry: ${expiryDate.toISOString()}`);
-            } catch (updateErr) {
-                console.error(`[WEBHOOK ERROR] Failed to update DB for order ${orderId} after retries:`, updateErr);
-                return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+                throw insertErr;
             }
+
+            // Optional: Mark legacy payment intent as completed so old checks don't break immediately
+            await supabase.from('payments').update({ status: 'completed' }).eq('provider_order_id', orderId);
+            
+            console.log(`[WEBHOOK SUCCESS] Upgraded User: ${payment.user_id} via Cashfree to ${plan.id}. Expiry: ${expiryDate.toISOString()}`);
         }
 
         return NextResponse.json({ success: true });

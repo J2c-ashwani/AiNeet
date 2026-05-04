@@ -16,23 +16,49 @@ export default function ProfilePage() {
     const { user, loading: authLoading, logout } = useAuth();
     const [stats, setStats] = useState(null);
     const [badges, setBadges] = useState([]);
+    const [entitlement, setEntitlement] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isRestoring, setIsRestoring] = useState(false);
 
     useEffect(() => {
         if (authLoading) return;
         if (!user) { router.push('/login'); return; }
         Promise.all([
             fetch('/api/performance').then(r => r.json()),
-            fetch('/api/achievements').then(r => r.json())
-        ]).then(([perf, achv]) => {
+            fetch('/api/achievements').then(r => r.json()),
+            fetch('/api/subscription/status').then(r => r.json())
+        ]).then(([perf, achv, ent]) => {
             setStats(perf.overallStats || {});
             setBadges(achv.badges || []);
+            setEntitlement(ent || { current_plan: 'free', active_status: 'free' });
             setLoading(false);
         }).catch(() => router.push('/login'));
     }, [user, authLoading, router]);
 
     const handleLogout = async () => {
         await logout();
+    };
+
+    const handleRestorePurchases = async () => {
+        if (typeof window !== 'undefined' && window.NeetCoachAds && window.NeetCoachAds.restorePurchases) {
+            setIsRestoring(true);
+            try {
+                // Tell flutter app to fetch purchases and post them to our backend
+                window.NeetCoachAds.restorePurchases();
+                alert('Restoring purchases... please wait.');
+                // Refresh state after 3 seconds
+                setTimeout(() => {
+                    fetch('/api/subscription/status').then(r => r.json()).then(ent => setEntitlement(ent));
+                    setIsRestoring(false);
+                }, 3000);
+            } catch (err) {
+                console.error(err);
+                alert('Failed to restore purchases. Please try again.');
+                setIsRestoring(false);
+            }
+        } else {
+            alert('Restore purchases is only available on the Android app.');
+        }
     };
 
     if (loading) return (
@@ -95,8 +121,10 @@ export default function ProfilePage() {
                             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '4px' }}>Subscription Details</h3>
                             <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Manage your billing and plan settings.</p>
                         </div>
-                        {user?.subscription_tier !== 'free' ? (
-                            <span style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(16,185,129,0.3)' }}>Active</span>
+                        {entitlement?.is_premium ? (
+                            <span style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(16,185,129,0.3)', textTransform: 'capitalize' }}>
+                                {entitlement.active_status}
+                            </span>
                         ) : (
                             <span style={{ background: 'rgba(148,163,184,0.15)', color: '#94a3b8', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(148,163,184,0.3)' }}>Free Plan</span>
                         )}
@@ -105,34 +133,41 @@ export default function ProfilePage() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px', marginBottom: '24px', background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px' }}>
                         <div>
                             <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Current Plan</div>
-                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
-                                {user?.subscription_tier === 'free' ? 'Basic (Free)' : 'Pro Premium'}
+                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem', textTransform: 'capitalize' }}>
+                                {entitlement?.current_plan === 'free' ? 'Basic (Free)' : entitlement?.current_plan}
                             </div>
                         </div>
                         <div>
-                            <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Renewal Date</div>
+                            <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Renewal / Expiry</div>
                             <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
-                                {user?.subscription_tier === 'free' ? '—' : 'Oct 15, 2026'}
+                                {entitlement?.current_plan === 'free' ? '—' : (entitlement?.expires_at ? new Date(entitlement.expires_at).toLocaleDateString() : '—')}
                             </div>
                         </div>
                         <div>
                             <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Billing Source</div>
-                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
-                                {user?.subscription_tier === 'free' ? '—' : (typeof window !== 'undefined' && window.showInterstitialAd ? 'Google Play' : 'Cashfree (Web)')}
+                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem', textTransform: 'capitalize' }}>
+                                {entitlement?.current_plan === 'free' ? '—' : (entitlement?.billing_source === 'play' ? 'Google Play' : 'Cashfree (Web)')}
                             </div>
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                        {user?.subscription_tier === 'free' ? (
-                            <button onClick={() => router.push('/pricing')} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', flex: 1, minWidth: '200px', boxShadow: '0 4px 12px rgba(99,102,241,0.2)' }}>
-                                Upgrade to Pro / Premium
-                            </button>
+                        {!entitlement?.is_premium ? (
+                            <>
+                                <button onClick={() => router.push('/pricing')} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', flex: 1, minWidth: '200px', boxShadow: '0 4px 12px rgba(99,102,241,0.2)' }}>
+                                    Upgrade to Pro / Premium
+                                </button>
+                                {typeof window !== 'undefined' && window.showInterstitialAd && (
+                                    <button onClick={handleRestorePurchases} disabled={isRestoring} style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', flex: 1, minWidth: '150px' }}>
+                                        {isRestoring ? 'Restoring...' : 'Restore Purchases'}
+                                    </button>
+                                )}
+                            </>
                         ) : (
                             <>
                                 <button onClick={() => {
-                                    if (typeof window !== 'undefined' && window.showInterstitialAd) {
-                                        alert('Redirecting to Google Play Subscriptions...');
+                                    if (entitlement?.billing_source === 'play') {
+                                        window.location.href = 'https://play.google.com/store/account/subscriptions';
                                     } else {
                                         alert('Redirecting to Cashfree Billing Portal...');
                                     }
