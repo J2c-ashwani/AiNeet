@@ -167,7 +167,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   void _initWebView() {
     // Testing deployment on Vercel. Update when custom domain goes live.
-    const url = 'https://ai-neet.vercel.app';
+    // Pointing to /login to bypass the desktop landing page for mobile users
+    const url = 'https://ai-neet.vercel.app/login';
 
     // Configure specific Android features
     late final PlatformWebViewControllerCreationParams params;
@@ -287,12 +288,17 @@ class _WebViewScreenState extends State<WebViewScreen> {
             ),
             // Banner Ad at bottom (only for free tier, hidden on sacred pages)
             if (_isBannerReady && _bannerAd != null && !_hideAdsOnCurrentPage && !_adService.isPremiumUser)
-              Container(
-                color: const Color(0xFF0a0e1a), // Match app dark theme
-                width: double.infinity,
-                height: _bannerAd!.size.height.toDouble(),
-                alignment: Alignment.center,
-                child: AdWidget(ad: _bannerAd!),
+              Builder(
+                builder: (context) {
+                  final ad = _bannerAd!;
+                  return Container(
+                    color: const Color(0xFF0a0e1a), // Match app dark theme
+                    width: double.infinity,
+                    height: ad.size.height.toDouble(),
+                    alignment: Alignment.center,
+                    child: AdWidget(ad: ad),
+                  );
+                }
               ),
           ],
         ),

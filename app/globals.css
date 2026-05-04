@@ -1672,8 +1672,8 @@ select.input {
     padding: 0 16px;
   }
 
-  .nav-links {
-    display: none;
+  .nav-links, .desktop-auth-actions {
+    display: none !important;
   }
 
   .mobile-nav {

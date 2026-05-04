@@ -5,6 +5,14 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function Home() {
     const { user } = useAuth();
+    const [isMobileApp, setIsMobileApp] = useState(false);
+
+    useEffect(() => {
+        // Our mobile flutter wrapper injects NeetCoachAds / showInterstitialAd
+        if (typeof window !== 'undefined' && window.showInterstitialAd) {
+            setIsMobileApp(true);
+        }
+    }, []);
 
     const features = [
         {
@@ -151,18 +159,20 @@ export default function Home() {
                 ))}
             </div>
 
-            {/* Bottom Banner */}
-            <div style={{ marginTop: '48px', background: 'linear-gradient(135deg, #1e1b4b, #312e81)', borderRadius: '24px', padding: '32px', textAlign: 'center', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
-                    Download the Mobile App
-                </h3>
-                <p style={{ color: '#c7d2fe', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px' }}>
-                    Get the smoothest experience with push notifications, offline mode, and native camera integration for doubt solving.
-                </p>
-                <a href="/download" style={{ background: '#22c55e', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'inline-block' }}>
-                    📱 Download Android App
-                </a>
-            </div>
+            {/* Bottom Banner - Hidden if already in mobile app */}
+            {!isMobileApp && (
+                <div style={{ marginTop: '48px', background: 'linear-gradient(135deg, #1e1b4b, #312e81)', borderRadius: '24px', padding: '32px', textAlign: 'center', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginBottom: '12px' }}>
+                        Download the Mobile App
+                    </h3>
+                    <p style={{ color: '#c7d2fe', marginBottom: '24px', maxWidth: '600px', margin: '0 auto 24px' }}>
+                        Get the smoothest experience with push notifications, offline mode, and native camera integration for doubt solving.
+                    </p>
+                    <a href="/download" style={{ background: '#22c55e', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700, display: 'inline-block' }}>
+                        📱 Download Android App
+                    </a>
+                </div>
+            )}
 
         </div>
         </>

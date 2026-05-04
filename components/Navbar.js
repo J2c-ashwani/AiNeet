@@ -76,7 +76,7 @@ export default function Navbar() {
             </ul>
 
             {/* Auth Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <div className="desktop-auth-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 {loading ? (
                     <div style={{ width: '80px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', animation: 'pulse 1.5s infinite' }} />
                 ) : user ? (
@@ -107,11 +107,11 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Bottom Nav */}
-            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(8,12,24,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'none', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 1000 }} className="mobile-nav">
+            <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'rgba(8,12,24,0.97)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.06)', justifyContent: 'space-around', padding: '8px 0 12px', zIndex: 1000 }} className="mobile-nav">
                 {[
                     { name: 'Home', path: '/', icon: '🏠' },
                     { name: 'Practice', path: '/test/configure', icon: '📝' },
-                    { name: 'Doubt', path: '/doubt', icon: '💬' },
+                    { name: 'Doubt', path: '/doubts', icon: '💬' },
                     { name: 'NCERT', path: '/ncert', icon: '📚' },
                     { name: user ? 'Profile' : 'Login', path: user ? '/profile' : '/login', icon: user ? '👤' : '🔑' },
                 ].map(item => (
