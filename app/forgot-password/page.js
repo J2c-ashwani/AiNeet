@@ -177,7 +177,7 @@ export default function ForgotPasswordPage() {
                 {step === 'otp' && (
                     <form onSubmit={handleVerifyOtp}>
                         <div className="input-group">
-                            <label>6-Digit Code</label>
+                            <label>Verification Code</label>
                             <input 
                                 className="input" 
                                 type="text"

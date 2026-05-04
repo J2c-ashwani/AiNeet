@@ -19,8 +19,9 @@ export default function RegisterPage() {
     const refCode = searchParams.get('ref') || '';
     const challengeId = searchParams.get('challenge') || '';
     const [form, setForm] = useState({ name: '', email: '', password: '', targetYear: '2026' });
-    const [otp, setOtp] = useState('');
     const [step, setStep] = useState('form'); // 'form' | 'otp' | 'done'
+    const [resendCooldown, setResendCooldown] = useState(0);
+    const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -136,21 +137,29 @@ export default function RegisterPage() {
         }
     };
 
-    // Resend OTP
+    // Resend OTP via API (avoids Supabase client-side rate limits)
     const handleResendOtp = async () => {
+        if (resendCooldown > 0) return;
         setError('');
         setLoading(true);
         try {
-            const supabase = createBrowserClient(
-                process.env.NEXT_PUBLIC_SUPABASE_URL,
-                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-            );
-            await supabase.auth.resend({ type: 'signup', email: form.email.toLowerCase().trim() });
-            setError(''); // Clear any previous error
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...form, referralCode: refCode || undefined })
+            });
+            // This will cleanup zombie + re-create + resend OTP
+            // Start 60s cooldown
+            setResendCooldown(60);
+            const timer = setInterval(() => {
+                setResendCooldown(prev => {
+                    if (prev <= 1) { clearInterval(timer); return 0; }
+                    return prev - 1;
+                });
+            }, 1000);
             setOtp('');
-            // Show a temporary success note
-            setError('✅ New code sent! Check your email.');
-            setTimeout(() => setError(''), 3000);
+            setError('✅ New code sent! Check your inbox.');
+            setTimeout(() => setError(''), 4000);
         } catch {
             setError('Failed to resend. Please try again.');
         } finally {
@@ -245,7 +254,7 @@ export default function RegisterPage() {
                 {step === 'otp' && (
                     <form onSubmit={handleVerifyOtp}>
                         <div className="input-group">
-                            <label>6-Digit Verification Code</label>
+                            <label>Verification Code</label>
                             <input 
                                 className="input" 
                                 type="text"
@@ -262,7 +271,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 6}>
+                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 4}>
                             {loading ? 'Verifying...' : 'Verify & Continue →'}
                         </button>
 
@@ -273,7 +282,7 @@ export default function RegisterPage() {
                                 disabled={loading}
                                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'underline' }}
                             >
-                                Didn&apos;t receive it? Resend code
+                                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Didn't receive it? Resend code"}
                             </button>
                         </div>
                     </form>
