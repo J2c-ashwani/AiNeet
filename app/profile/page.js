@@ -118,7 +118,7 @@ export default function ProfilePage() {
                         <div>
                             <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Billing Source</div>
                             <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
-                                {user?.subscription_tier === 'free' ? '—' : (typeof window !== 'undefined' && window.showInterstitialAd ? 'Google Play' : 'Stripe (Web)')}
+                                {user?.subscription_tier === 'free' ? '—' : (typeof window !== 'undefined' && window.showInterstitialAd ? 'Google Play' : 'Cashfree (Web)')}
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export default function ProfilePage() {
                                     if (typeof window !== 'undefined' && window.showInterstitialAd) {
                                         alert('Redirecting to Google Play Subscriptions...');
                                     } else {
-                                        alert('Redirecting to Stripe Billing Portal...');
+                                        alert('Redirecting to Cashfree Billing Portal...');
                                     }
                                 }} style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', flex: 1, minWidth: '150px' }}>
                                     Manage Subscription
