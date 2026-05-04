@@ -44,7 +44,7 @@ function CoachingHome({ user, stats, statsLoading }) {
     const yearProgress = getYearProgress();
     const firstName = user?.name?.split(' ')[0] || user?.full_name?.split(' ')[0] || 'Aspirant';
     const streak = user?.streak || 0;
-    const isNewUser = !statsLoading && stats?.total_tests === 0;
+    const isNewUser = !statsLoading && (!stats || stats.total_tests === 0);
 
     return (
         <div style={{ padding: '24px 20px 100px', maxWidth: '600px', margin: '0 auto' }}>
