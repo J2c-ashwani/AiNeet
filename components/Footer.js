@@ -1,8 +1,15 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    // Hide footer on full-screen app experiences
+    const hideOnRoutes = ['/doubts', '/battleground'];
+    if (hideOnRoutes.includes(pathname)) return null;
+
     return (
         <footer style={{
             borderTop: '1px solid rgba(255,255,255,0.06)',

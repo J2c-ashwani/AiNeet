@@ -12,10 +12,12 @@ export default function DoubtSolver() {
     const [input, setInput] = useState('');
     const [sending, setSending] = useState(false);
     const [conversationId, setConversationId] = useState(null);
-    const messagesEnd = useRef(null);
+    const chatContainerRef = useRef(null);
 
     useEffect(() => {
-        messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
     }, [messages]);
 
     const handleSnapshotSolution = (solutionText) => {
@@ -24,7 +26,6 @@ export default function DoubtSolver() {
         const aiMsg = { role: 'assistant', content: solutionText };
 
         setMessages(prev => [...prev, userMsg, aiMsg]);
-        messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     const handleSend = async (retryMsg = null) => {
@@ -92,7 +93,7 @@ export default function DoubtSolver() {
                 />
 
                 <div className="card flex-1 flex flex-col overflow-hidden" style={{ padding: 0 }}>
-                    <div className="chat-messages">
+                    <div className="chat-messages" ref={chatContainerRef} style={{ scrollBehavior: 'smooth' }}>
                         {messages.length === 0 && (
                             <div className="text-center animate-fade-in" style={{ padding: '40px 0' }}>
                                 <div style={{ fontSize: '3rem', marginBottom: 16 }}>🤖</div>
@@ -144,8 +145,6 @@ export default function DoubtSolver() {
                                 </div>
                             </div>
                         )}
-
-                        <div ref={messagesEnd} />
                     </div>
 
                     <div className="chat-input-area">
