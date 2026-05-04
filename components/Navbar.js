@@ -60,7 +60,7 @@ export default function Navbar() {
             </Link>
 
             {/* Nav Links */}
-            <ul style={{ display: 'flex', alignItems: 'center', gap: '2px', listStyle: 'none', margin: 0, padding: 0, overflow: 'hidden' }}>
+            <ul className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2px', listStyle: 'none', margin: 0, padding: 0, overflow: 'hidden' }}>
                 {navItems.map(item => (
                     <li key={item.path}>
                         <Link
