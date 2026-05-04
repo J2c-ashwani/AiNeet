@@ -102,6 +102,21 @@ export async function POST(request) {
             return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
         }
 
+        // IMPORTANT: admin.createUser() does NOT send any email by itself.
+        // We must explicitly trigger the OTP confirmation email via generateLink.
+        // This fires the "Confirm signup" Supabase email template containing {{ .Token }}.
+        try {
+            await supabase.auth.admin.generateLink({
+                type: 'signup',
+                email: email.toLowerCase().trim(),
+                password,
+            });
+        } catch (emailErr) {
+            // Non-fatal: account is created, email may just be delayed. Log and continue.
+            console.error('OTP email trigger failed (non-fatal):', emailErr);
+        }
+
+
         const id = authData.user.id;
         const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
