@@ -44,8 +44,8 @@ export default function ForgotPasswordPage() {
         e.preventDefault();
         setError('');
 
-        if (!otp || otp.length < 6) {
-            setError('Please enter the 6-digit code from your email.');
+        if (!otp || otp.length < 4) {
+            setError('Please enter the verification code from your email.');
             return;
         }
 
@@ -183,11 +183,11 @@ export default function ForgotPasswordPage() {
                                 type="text"
                                 inputMode="numeric"
                                 pattern="[0-9]*"
-                                maxLength={6}
+                                maxLength={8}
                                 placeholder="Enter code from email" 
                                 required 
                                 value={otp}
-                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))} 
+                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
                                 disabled={loading}
                                 autoFocus
                                 style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
