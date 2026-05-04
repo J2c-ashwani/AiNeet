@@ -88,18 +88,64 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Premium Banner (if not pro/premium) */}
-                {user?.subscription_tier === 'free' && (
-                    <div className="card mb-6 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/30 flex justify-between items-center p-6 rounded-xl hover:border-blue-400/50 transition-colors cursor-pointer" onClick={() => router.push('/pricing')}>
+                {/* Subscription Management Card */}
+                <div className="card mb-6" style={{ padding: '24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2"><span className="text-2xl">💎</span> Unlock Premium Features</h3>
-                            <p className="text-gray-400 text-sm">Get unlimited AI Doubts, Mock Tests, Parent Connect, and more.</p>
+                            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '4px' }}>Subscription Details</h3>
+                            <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Manage your billing and plan settings.</p>
                         </div>
-                        <button className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg font-bold text-white hover:opacity-90">
-                            View Plans
-                        </button>
+                        {user?.subscription_tier !== 'free' ? (
+                            <span style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(16,185,129,0.3)' }}>Active</span>
+                        ) : (
+                            <span style={{ background: 'rgba(148,163,184,0.15)', color: '#94a3b8', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(148,163,184,0.3)' }}>Free Plan</span>
+                        )}
                     </div>
-                )}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px', marginBottom: '24px', background: 'rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px' }}>
+                        <div>
+                            <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Current Plan</div>
+                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
+                                {user?.subscription_tier === 'free' ? 'Basic (Free)' : 'Pro Premium'}
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Renewal Date</div>
+                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
+                                {user?.subscription_tier === 'free' ? '—' : 'Oct 15, 2026'}
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{ color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Billing Source</div>
+                            <div style={{ fontWeight: 600, color: '#f8fafc', fontSize: '1rem' }}>
+                                {user?.subscription_tier === 'free' ? '—' : (typeof window !== 'undefined' && window.showInterstitialAd ? 'Google Play' : 'Stripe (Web)')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        {user?.subscription_tier === 'free' ? (
+                            <button onClick={() => router.push('/pricing')} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', flex: 1, minWidth: '200px', boxShadow: '0 4px 12px rgba(99,102,241,0.2)' }}>
+                                Upgrade to Pro / Premium
+                            </button>
+                        ) : (
+                            <>
+                                <button onClick={() => {
+                                    if (typeof window !== 'undefined' && window.showInterstitialAd) {
+                                        alert('Redirecting to Google Play Subscriptions...');
+                                    } else {
+                                        alert('Redirecting to Stripe Billing Portal...');
+                                    }
+                                }} style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', flex: 1, minWidth: '150px' }}>
+                                    Manage Subscription
+                                </button>
+                                <button onClick={() => alert('Redirecting to Support Chat...')} style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', flex: 1, minWidth: '150px' }}>
+                                    Billing Help
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
 
                 {/* Stats */}
                 <div className="grid grid-4 mb-6">

@@ -119,13 +119,13 @@ export default function Navbar() {
                 {[
                     { name: 'Home', path: '/', icon: '🏠' },
                     { name: 'Practice', path: '/test/configure', icon: '📝' },
-                    { name: 'Menu', path: '#menu', icon: '🎛️' },
+                    { name: 'Tools', path: '#tools', icon: '🧰' },
                     { name: 'Doubt', path: '/doubts', icon: '💬' },
                     { name: user ? 'Profile' : 'Login', path: user ? '/profile' : '/login', icon: user ? '👤' : '🔑' },
                 ].map(item => {
-                    if (item.name === 'Menu') {
+                    if (item.name === 'Tools') {
                         return (
-                            <button key="menu" onClick={() => { handleHaptic(); setIsDrawerOpen(true); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', fontSize: '0.65rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer' }}>
+                            <button key="tools" onClick={() => { handleHaptic(); setIsDrawerOpen(true); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', fontSize: '0.65rem', color: '#818cf8', background: 'none', border: 'none', cursor: 'pointer' }}>
                                 <span style={{ fontSize: '1.4rem', transform: 'translateY(-4px)', background: 'rgba(99,102,241,0.2)', borderRadius: '50%', padding: '6px' }}>{item.icon}</span>
                                 <span>{item.name}</span>
                             </button>
@@ -142,26 +142,81 @@ export default function Navbar() {
 
             {/* Mobile Features Drawer Overlay */}
             {isDrawerOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(8,12,24,0.8)', backdropFilter: 'blur(25px)', zIndex: 1001, display: 'flex', flexDirection: 'column', animation: 'fadeInUp 0.3s ease' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(8,12,24,0.95)', backdropFilter: 'blur(25px)', zIndex: 1001, display: 'flex', flexDirection: 'column', animation: 'fadeInUp 0.3s ease' }}>
                     <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>All Features</h2>
+                        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>Study Tools</h2>
                         <button onClick={() => setIsDrawerOpen(false)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', color: 'white', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                     </div>
-                    <div style={{ padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', overflowY: 'auto' }}>
-                        {[
-                            { name: 'Dashboard', path: '/dashboard', icon: '📊', color: '#38bdf8' },
-                            { name: 'Mock Tests', path: '/test/configure', icon: '📝', color: '#6366f1' },
-                            { name: 'Battleground', path: '/battleground', icon: '⚔️', color: '#f43f5e' },
-                            { name: 'Doubt Solver', path: '/doubts', icon: '💡', color: '#10b981' },
-                            { name: 'Mistake Book', path: '/mistakes', icon: '📓', color: '#f59e0b' },
-                            { name: 'Leaderboard', path: '/leaderboard', icon: '🏆', color: '#8b5cf6' },
-                            { name: 'Blueprint', path: '/blueprint', icon: '📚', color: '#ec4899' },
-                        ].map(feature => (
-                            <Link key={feature.name} href={feature.path} onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-                                <div style={{ fontSize: '2rem', background: `${feature.color}15`, width: '56px', height: '56px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{feature.icon}</div>
-                                <span style={{ color: '#f8fafc', fontSize: '0.85rem', fontWeight: 600, textAlign: 'center' }}>{feature.name}</span>
-                            </Link>
-                        ))}
+                    <div style={{ padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '100px' }}>
+                        
+                        {/* PRACTICE GROUP (Primary) */}
+                        <div>
+                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Practice</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                                <Link href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05))', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div style={{ fontSize: '2rem' }}>📝</div>
+                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>Custom Mock Test</span>
+                                </Link>
+                                <Link href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05))', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <div style={{ fontSize: '2rem' }}>📸</div>
+                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>OMR Scanner</span>
+                                </Link>
+                                <Link href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>⚔️</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Battleground</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* IMPROVE GROUP */}
+                        <div>
+                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Improve</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                                <Link href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px', gridColumn: '1 / -1' }}>
+                                    <div style={{ fontSize: '2rem' }}>💡</div>
+                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>AI Doubt Solver</span>
+                                </Link>
+                                <Link href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>📓</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Mistakes</span>
+                                </Link>
+                                <Link href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>🔄</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Revision</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* TRACK GROUP */}
+                        <div>
+                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Track</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                                <Link href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>📚</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Blueprint</span>
+                                </Link>
+                                <Link href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>📅</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Study Plan</span>
+                                </Link>
+                                <Link href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>📊</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Dashboard Analytics</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* COMPETE GROUP */}
+                        <div>
+                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Compete</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
+                                <Link href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>🏆</span>
+                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Global Leaderboard</span>
+                                </Link>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             )}
