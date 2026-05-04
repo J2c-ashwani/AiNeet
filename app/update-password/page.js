@@ -40,7 +40,7 @@ export default function UpdatePasswordPage() {
             setSuccess(true);
             // Wait 1.5 seconds for UX completion feeling before aggressive hard-route to dashboard
             setTimeout(() => {
-                window.location.href = '/dashboard';
+                window.location.href = '/';
             }, 1500);
 
         } catch (err) {
