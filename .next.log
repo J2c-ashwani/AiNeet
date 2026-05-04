@@ -7727,3 +7727,5 @@ AuthApiError: Request rate limit reached
  GET /api/auth/me 200 in 3.2s (compile: 720ms, proxy.ts: 1520ms, render: 996ms)
  GET /api/auth/me 200 in 848ms (compile: 6ms, proxy.ts: 218ms, render: 623ms)
 ✓ Finished filesystem cache database compaction in 22.9s
+✓ Compiled in 87ms
+✓ Compiled in 584ms

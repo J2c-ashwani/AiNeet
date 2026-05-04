@@ -8,7 +8,7 @@ CREATE TYPE billing_status_enum AS ENUM ('pending', 'active', 'grace', 'canceled
 
 CREATE TABLE subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
     
     plan_tier plan_tier_enum NOT NULL,
     billing_source billing_source_enum NOT NULL,

@@ -67,8 +67,8 @@ export async function updateSession(request) {
     // ─── Redirect logged-in users away from login/register ───
     const authPaths = ['/login', '/register'];
     if (authPaths.includes(pathname) && user) {
-        const dashboardUrl = new URL('/dashboard', request.url);
-        const redirectResponse = NextResponse.redirect(dashboardUrl);
+        const homeUrl = new URL('/', request.url);
+        const redirectResponse = NextResponse.redirect(homeUrl);
         supabaseResponse.cookies.getAll().forEach(cookie => {
             redirectResponse.cookies.set(cookie.name, cookie.value, cookie.options);
         });
