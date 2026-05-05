@@ -114,7 +114,10 @@ export async function POST(request) {
                 email: email.toLowerCase().trim(),
             });
             if (resendError) {
-                console.error('OTP email resend failed (non-fatal):', resendError.message);
+                console.error('OTP email resend failed:', resendError.message);
+                // Clean up the user we just created if we can't send the email
+                await supabase.auth.admin.deleteUser(authData.user.id);
+                return NextResponse.json({ error: resendError.message }, { status: 400 });
             }
         } catch (emailErr) {
             console.error('OTP email trigger failed (non-fatal):', emailErr);
