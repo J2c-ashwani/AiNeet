@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ import Link from 'next/link';
  * 3. Client auto-logs in → redirects to home
  */
 
-export default function RegisterPage() {
+function RegisterContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const refCode = searchParams.get('ref') || '';
@@ -304,5 +304,20 @@ export default function RegisterPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function RegisterPage() {
+    return (
+        <Suspense fallback={
+            <div className="auth-page">
+                <div className="auth-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🧠</div>
+                    <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+                </div>
+            </div>
+        }>
+            <RegisterContent />
+        </Suspense>
     );
 }

@@ -1,9 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+function LoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [form, setForm] = useState({ email: '', password: '' });
@@ -78,5 +78,20 @@ export default function LoginPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="auth-page">
+                <div className="auth-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🔐</div>
+                    <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+                </div>
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }

@@ -1,10 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
 import { useAuth } from '@/context/AuthContext';
 
-export default function TestConfigPage() {
+function TestConfigContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [syllabus, setSyllabus] = useState([]);
@@ -407,5 +407,13 @@ export default function TestConfigPage() {
                 </div>
             )}
         </div >
+    );
+}
+
+export default function TestConfigPage() {
+    return (
+        <Suspense fallback={<div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Loading...</div>}>
+            <TestConfigContent />
+        </Suspense>
     );
 }
