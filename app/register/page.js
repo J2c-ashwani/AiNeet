@@ -219,7 +219,7 @@ function RegisterContent() {
                 )}
 
                 {/* Step 1: Registration Form */}
-                {step === 'form' && (
+                <div style={{ display: step === 'form' ? 'block' : 'none' }}>
                     <form onSubmit={handleSubmit}>
                         <div className="input-group">
                             <label>Full Name</label>
@@ -248,10 +248,10 @@ function RegisterContent() {
                             {loading ? 'Creating Account...' : 'Create Account →'}
                         </button>
                     </form>
-                )}
+                </div>
 
                 {/* Step 2: OTP Verification */}
-                {step === 'otp' && (
+                <div style={{ display: step === 'otp' ? 'block' : 'none' }}>
                     <form onSubmit={handleVerifyOtp}>
                         <div className="input-group">
                             <label>Verification Code</label>
@@ -262,7 +262,7 @@ function RegisterContent() {
                                 pattern="[0-9]*"
                                 maxLength={8}
                                 placeholder="Enter code from email" 
-                                required 
+                                required={step === 'otp'} 
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
                                 disabled={loading}
@@ -286,7 +286,7 @@ function RegisterContent() {
                             </button>
                         </div>
                     </form>
-                )}
+                </div>
 
                 {/* Step 3: Done */}
                 {step === 'done' && (
@@ -297,11 +297,11 @@ function RegisterContent() {
                     </div>
                 )}
 
-                {step === 'form' && (
+                <div style={{ display: step === 'form' ? 'block' : 'none' }}>
                     <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                         Already have an account? <Link href="/login">Sign In</Link>
                     </p>
-                )}
+                </div>
             </div>
         </div>
     );

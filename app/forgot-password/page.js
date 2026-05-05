@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
                 )}
 
                 {/* Step 1: Email */}
-                {step === 'email' && (
+                <div style={{ display: step === 'email' ? 'block' : 'none' }}>
                     <form onSubmit={handleSendEmail}>
                         <div className="input-group">
                             <label>Email Address</label>
@@ -159,7 +159,7 @@ export default function ForgotPasswordPage() {
                                 className="input" 
                                 type="email" 
                                 placeholder="Enter your registered email" 
-                                required 
+                                required={step === 'email'} 
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)} 
                                 disabled={loading}
@@ -171,10 +171,10 @@ export default function ForgotPasswordPage() {
                             {loading ? 'Sending Code...' : 'Send Reset Code →'}
                         </button>
                     </form>
-                )}
+                </div>
 
                 {/* Step 2: OTP */}
-                {step === 'otp' && (
+                <div style={{ display: step === 'otp' ? 'block' : 'none' }}>
                     <form onSubmit={handleVerifyOtp}>
                         <div className="input-group">
                             <label>Verification Code</label>
@@ -185,7 +185,7 @@ export default function ForgotPasswordPage() {
                                 pattern="[0-9]*"
                                 maxLength={8}
                                 placeholder="Enter code from email" 
-                                required 
+                                required={step === 'otp'} 
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
                                 disabled={loading}
@@ -194,7 +194,7 @@ export default function ForgotPasswordPage() {
                             />
                         </div>
                         
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 6}>
+                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 4}>
                             {loading ? 'Verifying...' : 'Verify Code →'}
                         </button>
 
@@ -208,10 +208,10 @@ export default function ForgotPasswordPage() {
                             </button>
                         </div>
                     </form>
-                )}
+                </div>
 
                 {/* Step 3: New Password */}
-                {step === 'password' && (
+                <div style={{ display: step === 'password' ? 'block' : 'none' }}>
                     <form onSubmit={handleSetPassword}>
                         <div className="input-group">
                             <label>New Password</label>
@@ -219,7 +219,7 @@ export default function ForgotPasswordPage() {
                                 className="input" 
                                 type="password" 
                                 placeholder="8+ characters, letters & numbers" 
-                                required 
+                                required={step === 'password'} 
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)} 
                                 disabled={loading}
@@ -233,7 +233,7 @@ export default function ForgotPasswordPage() {
                                 className="input" 
                                 type="password" 
                                 placeholder="Repeat new password" 
-                                required 
+                                required={step === 'password'} 
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)} 
                                 disabled={loading}
@@ -244,7 +244,7 @@ export default function ForgotPasswordPage() {
                             {loading ? 'Securing Account...' : 'Set New Password →'}
                         </button>
                     </form>
-                )}
+                </div>
 
                 {/* Step 4: Done */}
                 {step === 'done' && (
