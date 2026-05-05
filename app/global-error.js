@@ -10,22 +10,21 @@ export default function GlobalError({ error, reset }) {
 
     return (
         <html>
-            <body className="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
-                <div className="max-w-md w-full bg-gray-800 rounded-xl p-8 shadow-2xl border border-gray-700 text-center">
-                    <div className="mb-6 mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    
-                    <h2 className="text-2xl font-bold bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent mb-4">
-                        Critical Application Error
+            <body style={{ margin: 0, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0a0e1a', color: '#f1f5f9', padding: '20px', fontFamily: 'system-ui, sans-serif' }}>
+                <div style={{ maxWidth: '500px', width: '100%', background: '#1e293b', borderRadius: '16px', padding: '32px', border: '1px solid #334155', textAlign: 'center' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚠️</div>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '12px', color: '#f87171' }}>
+                        Application Error
                     </h2>
                     
-                    <p className="text-gray-400 mb-6 text-sm leading-relaxed">
-                        The NEET Coach interface encountered an unexpected memory layout error. 
-                        Our engineering team has been automatically pinged with the stack-trace. 
-                        Please try reloading the portal.
+                    {/* Show actual error for diagnosis */}
+                    <div style={{ background: '#0f172a', borderRadius: '8px', padding: '12px', marginBottom: '20px', textAlign: 'left', fontSize: '0.8rem', color: '#94a3b8', wordBreak: 'break-word', maxHeight: '150px', overflow: 'auto' }}>
+                        <strong style={{ color: '#f87171' }}>Error:</strong> {error?.message || 'Unknown error'}
+                        {error?.digest && <div><strong style={{ color: '#f87171' }}>Digest:</strong> {error.digest}</div>}
+                    </div>
+                    
+                    <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '20px' }}>
+                        Please screenshot this and share with the dev team, then tap refresh.
                     </p>
                     
                     <button
