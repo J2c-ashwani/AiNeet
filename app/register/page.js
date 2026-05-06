@@ -299,7 +299,7 @@ function RegisterContent() {
 
                 <div style={{ display: step === 'form' ? 'block' : 'none' }}>
                     <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                        Already have an account? <Link href="/login">Sign In</Link>
+                        Already have an account? <a href="/login">Sign In</a>
                     </p>
                 </div>
             </div>

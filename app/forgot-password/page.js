@@ -257,7 +257,7 @@ export default function ForgotPasswordPage() {
 
                 {step !== 'done' && (
                     <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                        Remember it? <Link href="/login" style={{ color: 'var(--primary)' }}>Back to Login</Link>
+                        Remember it? <a href="/login" style={{ color: 'var(--primary)' }}>Back to Login</a>
                     </p>
                 )}
             </div>

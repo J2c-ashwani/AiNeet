@@ -63,7 +63,7 @@ function LoginContent() {
                     <div className="input-group">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <label style={{ margin: 0 }}>Password</label>
-                            <Link href="/forgot-password" style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</Link>
+                            <a href="/forgot-password" style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</a>
                         </div>
                         <input className="input" type="password" placeholder="Enter your password" required value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })} />
