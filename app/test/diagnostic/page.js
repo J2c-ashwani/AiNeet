@@ -89,7 +89,7 @@ function DiagnosticComponent() {
                     signature: verifyData.signature
                 }));
                 // Proceed to the Lock Screen
-                router.push('/test/diagnostic/results');
+                window.location.href = '/test/diagnostic/results';
             } else {
                 throw new Error(verifyData.error || "Grading failed");
             }
@@ -112,7 +112,7 @@ function DiagnosticComponent() {
             <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: 40, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)', maxWidth: 500 }}>
                 <h2>🎉 You\'ve unlocked today\'s free diagnostics!</h2>
                 <p style={{ color: '#94a3b8', marginTop: 12 }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
-                <button onClick={() => router.push('/login')} style={{ marginTop: 24, padding: '12px 32px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>Sign Up Free</button>
+                <button onClick={() => window.location.href = '/login'} style={{ marginTop: 24, padding: '12px 32px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>Sign Up Free</button>
             </div>
         </div>
     );

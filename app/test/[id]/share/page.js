@@ -79,9 +79,9 @@ export default async function SharePage({ params }) {
                     <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '32px' }}>
                         Generate your own personalized AI mock test, get your All India Rank prediction, and see where you stand.
                     </p>
-                    <Link href="/register" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
+                    <a href="/register" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
                         Take a Free Mock Test →
-                    </Link>
+                    </a>
                 </div>
             </div>
         </div>

@@ -20,7 +20,7 @@ export default function ResultsPage({ params }) {
             }
             return;
         }
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
     }, [router]);
 
     if (!results) return (
@@ -122,9 +122,9 @@ export default function ResultsPage({ params }) {
                 <div style={{ background: 'linear-gradient(135deg, rgba(8, 12, 24, 0.8), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center', boxShadow: '0 10px 30px rgba(99, 102, 241, 0.1)' }}>
                     <h3 style={{ margin: '0 0 8px', fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>🧠 Keep the Momentum Going</h3>
                     <p style={{ color: '#94a3b8', marginBottom: 16 }}>Your physics logic starts decaying when you only focus on Biology. Maintain your All-India rank streak.</p>
-                    <Link href="/test/configure" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '12px 24px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>
+                    <a href="/test/configure" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '12px 24px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>
                         Switch Physics Weaknesses Now →
-                    </Link>
+                    </a>
                 </div>
 
                 {/* MD Transparency: Trust Status Hint */}

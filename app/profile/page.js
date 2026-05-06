@@ -22,7 +22,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { router.push('/login'); return; }
+        if (!user) { window.location.href = '/login'; return; }
         Promise.all([
             fetch('/api/performance').then(r => r.json()),
             fetch('/api/achievements').then(r => r.json()),
@@ -32,7 +32,7 @@ export default function ProfilePage() {
             setBadges(achv.badges || []);
             setEntitlement(ent || { current_plan: 'free', active_status: 'free' });
             setLoading(false);
-        }).catch(() => router.push('/login'));
+        }).catch(() => window.location.href = '/login');
     }, [user, authLoading, router]);
 
     const handleLogout = async () => {
@@ -154,7 +154,7 @@ export default function ProfilePage() {
                     <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                         {!entitlement?.is_premium ? (
                             <>
-                                <button onClick={() => router.push('/pricing')} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', flex: 1, minWidth: '200px', boxShadow: '0 4px 12px rgba(99,102,241,0.2)' }}>
+                                <button onClick={() => window.location.href = '/pricing'} style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', flex: 1, minWidth: '200px', boxShadow: '0 4px 12px rgba(99,102,241,0.2)' }}>
                                     Upgrade to Pro / Premium
                                 </button>
                                 {typeof window !== 'undefined' && window.showInterstitialAd && (

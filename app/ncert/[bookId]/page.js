@@ -63,7 +63,7 @@ function NCERTReaderContent() {
             <div className="text-5xl mb-4">📖</div>
             <h2 className="text-xl font-bold">{error || 'Failed to load PDF.'}</h2>
             {error && (
-                <button onClick={() => router.push('/ncert')} className="btn btn-primary mt-4">
+                <button onClick={() => window.location.href = '/ncert'} className="btn btn-primary mt-4">
                     Back to Library
                 </button>
             )}
@@ -74,7 +74,7 @@ function NCERTReaderContent() {
         <div className="flex-1 overflow-hidden relative flex flex-col">
             <div className="bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between z-10 hidden md:flex">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => router.push('/ncert')} className="btn btn-secondary btn-sm">
+                    <button onClick={() => window.location.href = '/ncert'} className="btn btn-secondary btn-sm">
                         ← Back
                     </button>
                     <h1 className="text-lg font-bold truncate max-w-md">{bookData.title}</h1>
@@ -86,7 +86,7 @@ function NCERTReaderContent() {
 
             {/* Mobile Back Button */}
             <div className="md:hidden p-2 bg-gray-900 border-b border-gray-800 flex justify-between items-center">
-                <button onClick={() => router.push('/ncert')} className="text-blue-400 text-sm font-bold">
+                <button onClick={() => window.location.href = '/ncert'} className="text-blue-400 text-sm font-bold">
                     ← Back
                 </button>
                 <div className="text-xs text-gray-400 truncate max-w-[200px]">{bookData.title}</div>

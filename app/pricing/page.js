@@ -11,7 +11,7 @@ export default function PricingPage() {
 
     const handleSubscribe = async (planId) => {
         if (!user) {
-            router.push('/login?next=/pricing');
+            window.location.href = '/login?next=/pricing';
             return;
         }
 
@@ -40,7 +40,7 @@ export default function PricingPage() {
 
                 if (verifyRes.ok) {
                     alert(`✅ Upgraded to ${planId.toUpperCase()} successfully!`);
-                    router.push('/profile');
+                    window.location.href = '/profile';
                 } else {
                     throw new Error(verifyData.error || 'Mock Verification Failed');
                 }

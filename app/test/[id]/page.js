@@ -124,7 +124,7 @@ export default function TestPage({ params }) {
 
             // 3. Nothing found — redirect to configure
             if (!cancelled) {
-                router.push('/test/configure');
+                window.location.href = '/test/configure';
             }
         }
 
@@ -170,7 +170,7 @@ export default function TestPage({ params }) {
         await OfflineStorage.removeItem(`draft_${testId}`);
         sessionStorage.removeItem('currentTest');
         delete window.__pendingRecovery;
-        router.push('/test/configure');
+        window.location.href = '/test/configure';
     }, [testId, router]);
 
     // ─── P0-1: Persist on every state mutation ───
@@ -321,7 +321,7 @@ export default function TestPage({ params }) {
                 await TestSessionStore.clearSession(testId);
                 await OfflineStorage.removeItem(`draft_${testId}`);
                 sessionStorage.removeItem('currentTest');
-                router.push(`/test/${testId}/results`);
+                window.location.href = `/test/${testId}/results`;
                 return;
             }
 
@@ -331,7 +331,7 @@ export default function TestPage({ params }) {
             sessionStorage.removeItem('currentTest');
             await TestSessionStore.clearSession(testId);
             await OfflineStorage.removeItem(`draft_${testId}`);
-            router.push(`/test/${testId}/results`);
+            window.location.href = `/test/${testId}/results`;
         } catch (err) {
             console.error('Submission Failed:', err);
             setOfflineSyncPending(true);

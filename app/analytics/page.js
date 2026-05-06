@@ -12,11 +12,11 @@ export default function AnalyticsPage() {
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { router.push('/login'); return; }
+        if (!user) { window.location.href = '/login'; return; }
         fetch('/api/performance').then(r => r.json()).then(perf => {
             setData(perf);
             setLoading(false);
-        }).catch(() => router.push('/login'));
+        }).catch(() => window.location.href = '/login');
     }, [user, authLoading, router]);
 
     if (loading) return (

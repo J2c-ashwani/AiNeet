@@ -41,7 +41,7 @@ export default function RevisionPage() {
             } else {
                 // Done
                 alert('Session Complete! Great job.');
-                router.push('/');
+                window.location.href = '/';
             }
         } catch (err) {
             console.error('Failed to log review', err);
@@ -59,7 +59,7 @@ export default function RevisionPage() {
                         <div className="text-4xl mb-4">🎉</div>
                         <h2>All caught up!</h2>
                         <p className="text-muted">You have no pending revisions for today.</p>
-                        <button onClick={() => router.push('/')} className="btn btn-primary mt-6">Back to Dashboard</button>
+                        <button onClick={() => window.location.href = '/'} className="btn btn-primary mt-6">Back to Dashboard</button>
                     </div>
                 </div>
             </div>

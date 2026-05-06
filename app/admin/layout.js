@@ -47,7 +47,7 @@ export default function AdminLayout({ children }) {
                 <p style={{ color: '#64748b', maxWidth: 400, textAlign: 'center' }}>
                     You don't have permission to access the Admin Portal. This area is restricted to administrators only.
                 </p>
-                <button onClick={() => router.push('/dashboard')} style={{
+                <button onClick={() => window.location.href = '/dashboard'} style={{
                     marginTop: 16, padding: '12px 32px', borderRadius: 12, border: '1px solid rgba(99,102,241,0.3)',
                     background: 'rgba(99,102,241,0.1)', color: '#a5b4fc', fontWeight: 600, cursor: 'pointer',
                     fontSize: '0.9rem', transition: 'all 0.2s'

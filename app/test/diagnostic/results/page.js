@@ -81,9 +81,9 @@ export default function DiagnosticResultsLock() {
             <p style={{ color: '#94a3b8', marginBottom: 28, maxWidth: 400 }}>
                 Your diagnostic results are no longer available in this browser. Retake the test — it only takes 3 minutes.
             </p>
-            <Link href="/test/diagnostic" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '14px 32px', borderRadius: 10, fontWeight: 700, textDecoration: 'none', fontSize: '1.05rem' }}>
+            <a href="/test/diagnostic" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '14px 32px', borderRadius: 10, fontWeight: 700, textDecoration: 'none', fontSize: '1.05rem' }}>
                 Retake Diagnostic →
-            </Link>
+            </a>
         </div>
     );
 
@@ -152,7 +152,7 @@ export default function DiagnosticResultsLock() {
                     <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8, marginBottom: 16 }} />
                     <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8 }} />
                     <div style={{ textAlign: 'center', marginTop: 40 }}>
-                         {unlocked && <Link href="/register?claim_diagnostic=true" style={{ display: 'inline-block', background: '#6366f1', color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 700, textDecoration: 'none' }}>Permanently Save This State →</Link>}
+                         {unlocked && <a href="/register?claim_diagnostic=true" style={{ display: 'inline-block', background: '#6366f1', color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 700, textDecoration: 'none' }}>Permanently Save This State →</a>}
                     </div>
                 </div>
 
@@ -187,9 +187,9 @@ export default function DiagnosticResultsLock() {
 
                                 <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
                                     <div style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
-                                    <Link href="/register?claim_diagnostic=true" style={{ display: 'inline-block', width: '100%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', textDecoration: 'none', padding: '14px 20px', borderRadius: 10, fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)' }}>
+                                    <a href="/register?claim_diagnostic=true" style={{ display: 'inline-block', width: '100%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', textDecoration: 'none', padding: '14px 20px', borderRadius: 10, fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)' }}>
                                         Create Free Account
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
                         </div>

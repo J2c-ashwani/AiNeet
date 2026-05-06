@@ -25,7 +25,7 @@ export default function BattlePage() {
     const startBattle = async () => {
         // Guard: redirect unauthenticated users to login
         if (!user) {
-            router.push('/login?redirect=/battle');
+            window.location.href = '/login?redirect=/battle';
             return;
         }
         setGameState('matching');

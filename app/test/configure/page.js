@@ -61,7 +61,7 @@ function TestConfigContent() {
 
     const handleGenerate = async () => {
         if (!user) {
-            router.push('/login?redirect=/test/configure');
+            window.location.href = '/login?redirect=/test/configure';
             return;
         }
         // App Install Gate for Mobile Web
@@ -115,7 +115,7 @@ function TestConfigContent() {
             }
 
             sessionStorage.setItem('currentTest', JSON.stringify(data));
-            router.push(`/test/${data.testId}`);
+            window.location.href = `/test/${data.testId}`;
         } catch (err) {
             setError(err.message);
         } finally { setGenerating(false); }

@@ -30,7 +30,7 @@ export default function DoubtSolver() {
 
     const handleSend = async (retryMsg = null) => {
         if (!user) {
-            router.push('/login?redirect=/doubts');
+            window.location.href = '/login?redirect=/doubts';
             return;
         }
         const userMsg = retryMsg || input.trim();
