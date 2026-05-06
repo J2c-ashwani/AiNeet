@@ -62,11 +62,20 @@ export default function Footer() {
                                     { label: 'Dashboard', href: '/dashboard' },
                                     { label: 'Pricing', href: '/pricing' },
                                 ].map(l => (
-                                    <Link key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                                        onMouseEnter={e => e.target.style.color = '#94a3b8'}
-                                        onMouseLeave={e => e.target.style.color = '#64748b'}>
-                                        {l.label}
-                                    </Link>
+                                    l.href === '/login' || l.href === '/register' ? (
+                                        // Plain <a> for auth pages — prevents removeChild crash from browser extensions
+                                        <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                            onMouseEnter={e => e.target.style.color = '#94a3b8'}
+                                            onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                            {l.label}
+                                        </a>
+                                    ) : (
+                                        <Link key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                            onMouseEnter={e => e.target.style.color = '#94a3b8'}
+                                            onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                            {l.label}
+                                        </Link>
+                                    )
                                 ))}
                             </div>
                         </div>
