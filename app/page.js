@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 
-// NEET 2026 Exam Date (MD Decision: May 3, 2026)
-const NEET_DATE = new Date('2026-05-03T00:00:00+05:30');
+// NEET 2027 Exam Date
+const NEET_DATE = new Date('2027-05-02T00:00:00+05:30');
 
 function getDaysUntilNEET() {
     const now = new Date();
@@ -133,7 +133,7 @@ function CoachingHome({ user, stats, statsLoading }) {
             )}
 
             {/* ── Section 4: Primary CTA ── */}
-            <Link href="/test/configure?type=adaptive" style={{
+            <a href="/test/configure?type=adaptive" style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                 background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                 padding: '18px 24px', borderRadius: '16px', textDecoration: 'none',
@@ -145,7 +145,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                     <div style={{ color: 'white', fontSize: '1.05rem', fontWeight: 700 }}>Start Today&apos;s Practice</div>
                     <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', fontWeight: 500 }}>AI picks questions based on your weak areas</div>
                 </div>
-            </Link>
+            </a>
 
             {/* ── Section 5: New User Empty State ── */}
             {isNewUser && (
@@ -159,19 +159,19 @@ function CoachingHome({ user, stats, statsLoading }) {
                     <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
                         Complete one test to unlock your personal dashboard with AI-powered weak topic analysis and accuracy tracking.
                     </p>
-                    <Link href="/test/configure" style={{
+                    <a href="/test/configure" style={{
                         display: 'inline-block', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)',
                         color: '#10b981', padding: '10px 20px', borderRadius: '10px',
                         textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem'
                     }}>
                         Generate My First Test →
-                    </Link>
+                    </a>
                 </div>
             )}
 
             {/* ── Section 6: Weak Topic Nudge (conditional) ── */}
             {!statsLoading && stats?.weakest && (
-                <Link href={`/test/configure`} style={{
+                <a href="/test/configure" style={{
                     display: 'flex', alignItems: 'center', gap: '14px',
                     background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)',
                     borderRadius: '14px', padding: '14px 16px', marginBottom: '24px', textDecoration: 'none'
@@ -189,7 +189,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                         <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>{stats.weakest.subject}</div>
                     </div>
                     <span style={{ color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, flexShrink: 0 }}>Fix →</span>
-                </Link>
+            </a>
             )}
 
             {/* ── Section 7: Recent Tests (last 3) ── */}
@@ -223,7 +223,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                         { icon: '📓', label: 'Mistakes', desc: 'Review wrong Qs', path: '/mistakes', color: '#f59e0b' },
                         { icon: '📚', label: 'NCERT', desc: 'Chapter reading', path: '/ncert', color: '#8b5cf6' },
                     ].map(action => (
-                        <Link key={action.path} href={action.path} style={{
+                        <a key={action.path} href={action.path} style={{
                             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
                             borderRadius: '14px', padding: '16px', textDecoration: 'none',
                             display: 'flex', flexDirection: 'column', gap: '6px',
@@ -236,7 +236,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                             }}>{action.icon}</div>
                             <div style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>{action.label}</div>
                             <div style={{ color: '#64748b', fontSize: '0.72rem' }}>{action.desc}</div>
-                        </Link>
+                        </a>
                     ))}
                 </div>
             </div>
