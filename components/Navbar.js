@@ -105,12 +105,12 @@ export default function Navbar() {
                     </>
                 ) : (
                     <>
-                        <Link href="/login" style={{ padding: '6px 12px', borderRadius: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
+                        <a href="/login" style={{ padding: '6px 12px', borderRadius: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
                             Sign In
-                        </Link>
-                        <Link href="/register" style={{ padding: '7px 14px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(99,102,241,0.3)' }}>
+                        </a>
+                        <a href="/register" style={{ padding: '7px 14px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(99,102,241,0.3)' }}>
                             Register Free
-                        </Link>
+                        </a>
                     </>
                 )}
             </div>
@@ -134,10 +134,18 @@ export default function Navbar() {
                         );
                     }
                     return (
-                        <Link key={item.path} href={item.path} onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', fontSize: '0.65rem', color: pathname === item.path ? '#818cf8' : '#64748b', textDecoration: 'none' }}>
-                            <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
-                            <span>{item.name}</span>
-                        </Link>
+                        item.path === '/login' || item.path === '/register' ? (
+                            // Use plain <a> for auth pages to force full reload (prevents removeChild crash)
+                            <a key={item.path} href={item.path} onClick={handleHaptic} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', fontSize: '0.65rem', color: pathname === item.path ? '#818cf8' : '#64748b', textDecoration: 'none' }}>
+                                <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
+                                <span>{item.name}</span>
+                            </a>
+                        ) : (
+                            <Link key={item.path} href={item.path} onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', fontSize: '0.65rem', color: pathname === item.path ? '#818cf8' : '#64748b', textDecoration: 'none' }}>
+                                <span style={{ fontSize: '1.3rem' }}>{item.icon}</span>
+                                <span>{item.name}</span>
+                            </Link>
+                        )
                     );
                 })}
             </div>
