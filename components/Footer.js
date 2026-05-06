@@ -22,12 +22,12 @@ export default function Footer() {
                     
                     {/* Brand */}
                     <div style={{ maxWidth: '280px' }}>
-                        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                        <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                             <img src="/logo.png" alt="AI NEET Coach" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
                             <span style={{ fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                 AI NEET Coach
                             </span>
-                        </Link>
+                        </a>
                         <p style={{ color: '#64748b', fontSize: '0.875rem', lineHeight: 1.6 }}>
                             India's #1 AI-powered NEET preparation platform. Crack NEET 2026 with infinite mocks, live battles, and personalized analytics.
                         </p>
@@ -45,11 +45,11 @@ export default function Footer() {
                                     { label: 'AI Doubt Solver', href: '/doubts' },
                                     { label: 'Leaderboard', href: '/leaderboard' },
                                 ].map(l => (
-                                    <Link key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                    <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
                                         onMouseEnter={e => e.target.style.color = '#94a3b8'}
                                         onMouseLeave={e => e.target.style.color = '#64748b'}>
                                         {l.label}
-                                    </Link>
+                                    </a>
                                 ))}
                             </div>
                         </div>
@@ -70,11 +70,11 @@ export default function Footer() {
                                             {l.label}
                                         </a>
                                     ) : (
-                                        <Link key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                        <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
                                             onMouseEnter={e => e.target.style.color = '#94a3b8'}
                                             onMouseLeave={e => e.target.style.color = '#64748b'}>
                                             {l.label}
-                                        </Link>
+                                        </a>
                                     )
                                 ))}
                             </div>
@@ -87,11 +87,11 @@ export default function Footer() {
                                     { label: 'Terms of Service', href: '#' },
                                     { label: 'Refund Policy', href: '#' },
                                 ].map(l => (
-                                    <Link key={l.label} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                    <a key={l.label} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
                                         onMouseEnter={e => e.target.style.color = '#94a3b8'}
                                         onMouseLeave={e => e.target.style.color = '#64748b'}>
                                         {l.label}
-                                    </Link>
+                                    </a>
                                 ))}
                             </div>
                         </div>

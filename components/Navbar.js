@@ -52,18 +52,18 @@ export default function Navbar() {
             borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}>
             {/* Brand */}
-            <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 <img src="/logo.png" alt="AI NEET Coach" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
                 <span style={{ fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>
                     AI NEET Coach
                 </span>
-            </Link>
+            </a>
 
             {/* Nav Links */}
             <ul className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2px', listStyle: 'none', margin: 0, padding: 0, overflow: 'hidden' }}>
                 {navItems.map(item => (
                     <li key={item.path}>
-                        <Link
+                        <a
                             href={item.path}
                             style={{
                                 display: 'block',
@@ -79,7 +79,7 @@ export default function Navbar() {
                             }}
                         >
                             {item.name}
-                        </Link>
+                        </a>
                     </li>
                 ))}
             </ul>
@@ -90,12 +90,12 @@ export default function Navbar() {
                     <div style={{ width: '80px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', animation: 'pulse 1.5s infinite' }} />
                 ) : user ? (
                     <>
-                        <Link href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: '#f1f5f9', fontSize: '0.85rem', fontWeight: 500 }}>
+                        <a href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: '#f1f5f9', fontSize: '0.85rem', fontWeight: 500 }}>
                             <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'white', fontWeight: 700 }}>
                                 {(user.full_name || user.email || 'U')[0].toUpperCase()}
                             </span>
                             {user.full_name?.split(' ')[0] || 'Account'}
-                        </Link>
+                        </a>
                         <button
                             onClick={logout}
                             style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}
@@ -156,18 +156,18 @@ export default function Navbar() {
                         <div>
                             <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Practice</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <Link href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05))', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <a href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05))', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <div style={{ fontSize: '2rem' }}>📝</div>
                                     <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>Custom Mock Test</span>
-                                </Link>
-                                <Link href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05))', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                </a>
+                                <a href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05))', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <div style={{ fontSize: '2rem' }}>📸</div>
                                     <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>OMR Scanner</span>
-                                </Link>
-                                <Link href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
+                                </a>
+                                <a href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
                                     <span style={{ fontSize: '1.5rem' }}>⚔️</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Battleground</span>
-                                </Link>
+                                </a>
                             </div>
                         </div>
 
@@ -175,18 +175,18 @@ export default function Navbar() {
                         <div>
                             <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Improve</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <Link href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px', gridColumn: '1 / -1' }}>
+                                <a href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px', gridColumn: '1 / -1' }}>
                                     <div style={{ fontSize: '2rem' }}>💡</div>
                                     <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>AI Doubt Solver</span>
-                                </Link>
-                                <Link href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                </a>
+                                <a href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span style={{ fontSize: '1.5rem' }}>📓</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Mistakes</span>
-                                </Link>
-                                <Link href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                </a>
+                                <a href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span style={{ fontSize: '1.5rem' }}>🔄</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Revision</span>
-                                </Link>
+                                </a>
                             </div>
                         </div>
 
@@ -194,18 +194,18 @@ export default function Navbar() {
                         <div>
                             <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Track</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <Link href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <a href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span style={{ fontSize: '1.5rem' }}>📚</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Blueprint</span>
-                                </Link>
-                                <Link href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                </a>
+                                <a href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span style={{ fontSize: '1.5rem' }}>📅</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Study Plan</span>
-                                </Link>
-                                <Link href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
+                                </a>
+                                <a href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
                                     <span style={{ fontSize: '1.5rem' }}>📊</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Dashboard Analytics</span>
-                                </Link>
+                                </a>
                             </div>
                         </div>
 
@@ -213,10 +213,10 @@ export default function Navbar() {
                         <div>
                             <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Compete</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
-                                <Link href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <a href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <span style={{ fontSize: '1.5rem' }}>🏆</span>
                                     <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Global Leaderboard</span>
-                                </Link>
+                                </a>
                             </div>
                         </div>
 

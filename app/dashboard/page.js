@@ -13,16 +13,25 @@ export default function Dashboard() {
     const { user, loading: authLoading } = useAuth();
     const [performance, setPerformance] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [apiError, setApiError] = useState(false);
     const [showPricing, setShowPricing] = useState(false);
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { router.push('/login'); return; }
-        fetch('/api/performance').then(r => r.json()).then(perfData => {
+        if (!user) { window.location.href = '/login'; return; }
+        fetch('/api/performance').then(r => {
+            if (!r.ok) throw new Error('API error');
+            return r.json();
+        }).then(perfData => {
             setPerformance(perfData);
             setLoading(false);
-        }).catch(() => router.push('/login'));
-    }, [user, authLoading, router]);
+        }).catch(() => {
+            // Don't redirect to /login on API error (middleware will bounce back to /)
+            // Instead show a graceful error state on the dashboard itself
+            setApiError(true);
+            setLoading(false);
+        });
+    }, [user, authLoading]);
 
     const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
 
@@ -38,6 +47,15 @@ export default function Dashboard() {
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>
             <div className="spinner" style={{ width: 40, height: 40 }}></div>
             <p>Loading your dashboard...</p>
+        </div>
+    );
+
+    if (apiError) return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📊</div>
+            <h2 style={{ color: '#f8fafc', marginBottom: '8px' }}>Dashboard Loading Issue</h2>
+            <p style={{ color: '#94a3b8', marginBottom: '24px' }}>We could not load your performance data. This usually resolves after your first test.</p>
+            <a href="/test/configure" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700 }}>Take Your First Test →</a>
         </div>
     );
 

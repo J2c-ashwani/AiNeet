@@ -198,7 +198,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                     <h3 style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>Recent Tests</h3>
                     <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
                         {stats.recent_tests.map(test => (
-                            <Link key={test.id} href={`/test/${test.id}/results`} style={{
+                            <a key={test.id} href={`/test/${test.id}/results`} style={{
                                 flex: '0 0 auto', minWidth: '130px',
                                 background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
                                 borderRadius: '14px', padding: '14px', textDecoration: 'none',
@@ -207,7 +207,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                                 <span style={{ fontSize: '0.7rem', color: '#818cf8', fontWeight: 700, textTransform: 'uppercase' }}>{testTypeLabel(test.type)}</span>
                                 <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f8fafc' }}>{test.score}/{test.total_marks}</span>
                                 <span style={{ fontSize: '0.7rem', color: '#64748b' }}>{timeAgo(test.completed_at)}</span>
-                            </Link>
+                            </a>
                         ))}
                     </div>
                 </div>
@@ -265,20 +265,20 @@ function GuestLanding() {
                     Don&apos;t guess what&apos;s wrong. Take our 10-minute AI diagnostic test to find the exact chapter destroying your NEET score.
                 </p>
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <Link href="/test/diagnostic" style={{
+                    <a href="/test/diagnostic" style={{
                         background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white',
                         padding: '14px 28px', borderRadius: '12px', textDecoration: 'none',
                         fontWeight: 700, fontSize: '1rem', boxShadow: '0 8px 20px rgba(99,102,241,0.3)'
                     }}>
                         Find My Weakest Chapter →
-                    </Link>
-                    <Link href="/register" style={{
+                    </a>
+                    <a href="/register" style={{
                         background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
                         color: '#94a3b8', padding: '14px 28px', borderRadius: '12px',
                         textDecoration: 'none', fontWeight: 600, fontSize: '1rem'
                     }}>
                         Create Free Account
-                    </Link>
+                    </a>
                 </div>
             </div>
 
