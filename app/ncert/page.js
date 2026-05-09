@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+// Link import removed — using <a> tags to prevent removeChild crashes
 
 const SUBJECT_ICONS = { physics: '⚡', chemistry: '🧪', biology: '🧬' };
 const SUBJECT_COLORS = { physics: '#6366f1', chemistry: '#06b6d4', biology: '#22c55e' };
@@ -147,10 +147,10 @@ export default function NCERTLibrary() {
                                                             <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#f8fafc', lineHeight: 1.3 }}>{ch.title}</span>
                                                         </div>
                                                         <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
-                                                            <Link href={`/ncert/${book.code}?ch=${ch.ch}`}
+                                                            <a href={`/ncert/${book.code}?ch=${ch.ch}`}
                                                                 style={{ flex: 1, textAlign: 'center', padding: '10px', borderRadius: 8, background: `${color}22`, color, fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', border: `1px solid ${color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                                                                 📖 Study PDF
-                                                            </Link>
+                                                            </a>
                                                             {ch.pyqCount === 0 ? (
                                                                 <div style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(239,68,68,0.1)`, color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, border: `1px solid rgba(239,68,68,0.2)`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
                                                                     No PYQs asked yet

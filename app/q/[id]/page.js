@@ -163,7 +163,7 @@ export default async function QuestionPage({ params }) {
             <div className="page" style={{ maxWidth: 800 }}>
                 {/* SEO Breadcrumbs */}
                 <nav className="text-sm text-secondary mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
-                    <Link href="/" className="hover:text-white">Home</Link>
+                    <a href="/" className="hover:text-white">Home</a>
                     <span>›</span>
                     <span className="text-muted">{question.subjects?.name || 'Subject'}</span>
                     <span>›</span>
@@ -224,17 +224,17 @@ export default async function QuestionPage({ params }) {
                                 <div className="mt-10 p-6 rounded-xl bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/20 text-center">
                                     <h4 className="text-white font-bold mb-2">Mastered this concept?</h4>
                                     <p className="text-indigo-200 text-sm mb-4">Generate a dynamic mock test focusing strictly on your weak areas to boost your NEET score.</p>
-                                    <Link href="/test/configure" className="btn btn-primary text-sm px-6 py-2 inline-block">
+                                    <a href="/test/configure" className="btn btn-primary text-sm px-6 py-2 inline-block">
                                         Start Custom Mock Test
-                                    </Link>
+                                    </a>
                                 </div>
                             </div>
                         ) : (
                             <div className="bg-gray-800/50 p-6 rounded-xl text-center border border-gray-700 border-dashed">
                                 <p className="text-gray-400 mb-4">The AI is currently processing the detailed explanation for this specific question.</p>
-                                <Link href={`/login?redirect=/q/${params.id}`} className="btn btn-secondary text-sm inline-block">
+                                <a href={`/login?redirect=/q/${params.id}`} className="btn btn-secondary text-sm inline-block">
                                     Login to Request Instant AI Sync
-                                </Link>
+                                </a>
                             </div>
                         )}
                     </div>
@@ -248,7 +248,7 @@ export default async function QuestionPage({ params }) {
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {relatedLinks.map((link, idx) => (
-                                <Link href={`/q/${link.q.id}`} key={idx} className="block p-5 rounded-xl bg-[#111827] border border-gray-800 hover:border-indigo-500/50 hover:bg-gray-800/50 transition-all group">
+                                <a href={`/q/${link.q.id}`} key={idx} className="block p-5 rounded-xl bg-[#111827] border border-gray-800 hover:border-indigo-500/50 hover:bg-gray-800/50 transition-all group">
                                     <div className="text-xs font-bold text-indigo-400 mb-2 tracking-wider uppercase flex items-center gap-2">
                                         <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
                                         {link.label}
@@ -256,7 +256,7 @@ export default async function QuestionPage({ params }) {
                                     <h4 className="text-gray-300 text-sm line-clamp-2 leading-relaxed group-hover:text-white transition-colors">
                                         {cleanQuestionText(link.q.text)}
                                     </h4>
-                                </Link>
+                                </a>
                             ))}
                         </div>
                     </div>

@@ -9,12 +9,12 @@ export default function NotFound() {
                 This page doesn't exist, or it has been moved. Let's get you back on track with your NEET preparation.
             </p>
             <div style={{ display: 'flex', gap: '16px' }}>
-                <Link href="/dashboard" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, textDecoration: 'none' }}>
+                <a href="/dashboard" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, textDecoration: 'none' }}>
                     🏠 Go to Dashboard
-                </Link>
-                <Link href="/" style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)' }}>
+                </a>
+                <a href="/" style={{ background: 'rgba(255,255,255,0.05)', color: '#f8fafc', padding: '14px 28px', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)' }}>
                     🏠 Homepage
-                </Link>
+                </a>
             </div>
         </div>
     );

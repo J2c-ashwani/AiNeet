@@ -70,12 +70,12 @@ export default async function EducatorDashboard({ searchParams }) {
 
             {/* Time Filter Toggle */}
             <div className="flex gap-2 mb-8 border-b border-gray-800 pb-4">
-                <Link href="/educator?days=7" className={`block px-4 py-2 rounded-md ${daysLimit === 7 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
+                <a href="/educator?days=7" className={`block px-4 py-2 rounded-md ${daysLimit === 7 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
                     Last 7 Days
-                </Link>
-                <Link href="/educator?days=30" className={`block px-4 py-2 rounded-md ${daysLimit === 30 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
+                </a>
+                <a href="/educator?days=30" className={`block px-4 py-2 rounded-md ${daysLimit === 30 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
                     Last 30 Days
-                </Link>
+                </a>
                 <button onClick={() => alert('PDF Report Generator compiling...')} className="ml-auto px-4 py-2 rounded-md bg-white text-black font-bold text-sm flex items-center gap-2">
                     📄 Export Weekly PDF
                 </button>

@@ -100,9 +100,9 @@ export default async function ChallengePage({ params }) {
                     {challenge.creator_name} has generated a high-difficulty 10-question AI Mock Test. Think you can beat their score?
                 </p>
 
-                <Link href={`/register?challenge=${id}`} className="btn btn-primary btn-lg" style={{ width: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '18px 32px', borderRadius: '16px', fontSize: '1.2rem', fontWeight: 800, textDecoration: 'none', display: 'inline-block', boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)' }}>
+                <a href={`/register?challenge=${id}`} className="btn btn-primary btn-lg" style={{ width: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '18px 32px', borderRadius: '16px', fontSize: '1.2rem', fontWeight: 800, textDecoration: 'none', display: 'inline-block', boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)' }}>
                     🔥 Accept Challenge
-                </Link>
+                </a>
 
                 <div style={{ marginTop: '20px', color: '#64748b', fontSize: '0.9rem' }}>
                     Free sign up required to track your score.

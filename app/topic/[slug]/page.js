@@ -37,7 +37,7 @@ export default async function TopicPage({ params }) {
         <div className="min-h-screen bg-[#0a0e1a] text-white pt-24 pb-20 px-6">
             <div className="max-w-4xl mx-auto">
                 <nav className="text-sm text-gray-400 mb-8">
-                    <Link href="/" className="hover:text-indigo-400">Home</Link>
+                    <a href="/" className="hover:text-indigo-400">Home</a>
                     <span className="mx-2">/</span>
                     <span className="text-gray-300">Topics</span>
                     <span className="mx-2">/</span>
@@ -62,12 +62,12 @@ export default async function TopicPage({ params }) {
                     <h2 className="text-2xl font-bold mb-4">Ready to accelerate your NEET prep?</h2>
                     <p className="text-gray-300 mb-6">Join thousands of students using AI to boost their scores.</p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/register" className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20">
+                        <a href="/register" className="px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20">
                             Start Free Trial
-                        </Link>
-                        <Link href="/test/configure" className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-xl font-bold border border-white/10 transition-all">
+                        </a>
+                        <a href="/test/configure" className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-xl font-bold border border-white/10 transition-all">
                             Take a Mock Test
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </div>

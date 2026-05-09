@@ -108,9 +108,9 @@ export default function CoachWidget() {
                     <p className="text-gray-300 mb-4 max-w-2xl leading-relaxed">{message}</p>
                     {actionItem && (
                         <div className="flex items-center gap-4 mb-4">
-                            <Link href={actionItem.link} className={`btn btn-${actionItem.type || 'primary'} btn-sm shadow-sm`}>
+                            <a href={actionItem.link} className={`btn btn-${actionItem.type || 'primary'} btn-sm shadow-sm`}>
                                 {actionItem.text} →
-                            </Link>
+                            </a>
                         </div>
                     )}
                     <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
@@ -136,9 +136,9 @@ export default function CoachWidget() {
                         Take your first diagnostic test to unlock your personalized AI study plan, rank prediction, and daily coaching.
                     </p>
                     <div className="flex items-center gap-4 mb-4">
-                        <Link href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
+                        <a href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
                             Take Diagnostic Test →
-                        </Link>
+                        </a>
                     </div>
                     <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
                         <span>💡</span>
@@ -162,12 +162,12 @@ export default function CoachWidget() {
                     Your personalized guidance is taking a moment to load. Meanwhile, jump right into practice!
                 </p>
                 <div className="flex items-center gap-4 mb-4">
-                    <Link href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
+                    <a href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
                         Start Practice Test →
-                    </Link>
-                    <Link href="/doubts" className="btn btn-ghost btn-sm">
+                    </a>
+                    <a href="/doubts" className="btn btn-ghost btn-sm">
                         Ask AI Doubt →
-                    </Link>
+                    </a>
                 </div>
                 <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
                     <span>💡</span>

@@ -21,9 +21,9 @@ export default function RevisionCard() {
         <div className="card bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-6">
             <h3 className="text-xl font-bold mb-2">🧠 Daily Revision</h3>
             <p className="opacity-90 mb-4">You have {count} cards due for review based on your learning curve.</p>
-            <Link href="/revision" className="btn bg-white text-indigo-600 border-none hover:bg-gray-100 font-semibold px-6 py-2 rounded-full inline-block">
+            <a href="/revision" className="btn bg-white text-indigo-600 border-none hover:bg-gray-100 font-semibold px-6 py-2 rounded-full inline-block">
                 Start Review Session
-            </Link>
+            </a>
         </div>
     );
 }

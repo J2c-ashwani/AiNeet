@@ -101,7 +101,7 @@ export default function AdminLayout({ children }) {
                         {navItems.map(item => {
                             const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path));
                             return (
-                                <Link key={item.path} href={item.path} style={{
+                                <a key={item.path} href={item.path} style={{
                                     display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
                                     borderRadius: 12, textDecoration: 'none', transition: 'all 0.2s',
                                     fontSize: '0.9rem', fontWeight: 500,
@@ -115,7 +115,7 @@ export default function AdminLayout({ children }) {
                                     {isActive && (
                                         <div style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: '#6366f1', boxShadow: '0 0 10px #6366f1' }}></div>
                                     )}
-                                </Link>
+                                </a>
                             );
                         })}
                     </div>
@@ -123,14 +123,14 @@ export default function AdminLayout({ children }) {
 
                 <div style={{ padding: '12px 12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     {bottomItems.map(item => (
-                        <Link key={item.path} href={item.path} style={{
+                        <a key={item.path} href={item.path} style={{
                             display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
                             borderRadius: 12, textDecoration: 'none', color: '#64748b',
                             fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.15s'
                         }}>
                             <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
                             <span>{item.name}</span>
-                        </Link>
+                        </a>
                     ))}
                 </div>
 
