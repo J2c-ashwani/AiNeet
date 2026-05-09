@@ -199,7 +199,20 @@ export default function ResultsPage({ params }) {
                                     {showExplanation[idx] && (
                                         <div className="explanation-box">
                                             <h4>💡 Explanation</h4>
-                                            <p>{a.explanation || 'No explanation available.'}</p>
+                                            {a.explanation ? (
+                                                <p>{a.explanation}</p>
+                                            ) : (
+                                                <div className="flex flex-col gap-2">
+                                                    <p className="text-muted">No specific explanation available.</p>
+                                                    <a 
+                                                        href={`/doubts?q=${encodeURIComponent('Please explain this NEET question: ' + a.text + ' The correct option is ' + a.correct_option)}`}
+                                                        className="btn btn-outline btn-sm text-center"
+                                                        style={{ maxWidth: '250px' }}
+                                                    >
+                                                        🤖 Ask AI Coach to Explain
+                                                    </a>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
