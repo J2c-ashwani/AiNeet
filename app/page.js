@@ -85,7 +85,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                 borderRadius: '16px', padding: '16px 20px', marginBottom: '24px'
             }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ color: '#c7d2fe', fontSize: '0.85rem', fontWeight: 600 }}>⏰ NEET 2026</span>
+                    <span style={{ color: '#c7d2fe', fontSize: '0.85rem', fontWeight: 600 }}>⏰ NEET 2027</span>
                     <span style={{ color: '#818cf8', fontSize: '1.3rem', fontWeight: 800 }}>{daysLeft} days left</span>
                 </div>
                 <div style={{ height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '3px', overflow: 'hidden' }}>
