@@ -112,7 +112,7 @@ function RegisterContent() {
 
             setStep('done');
             setTimeout(() => {
-                window.location.href = challengeId ? `/challenge/${challengeId}` : '/';
+                window.location.href = challengeId ? `/challenge/${challengeId}` : '/welcome';
             }, 1500);
 
         } catch (err) {

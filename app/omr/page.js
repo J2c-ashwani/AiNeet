@@ -63,7 +63,7 @@ export default function OMRScannerPage() {
     const [needsVerification, setNeedsVerification] = useState(false);
     const [scannedAnswers, setScannedAnswers] = useState({});
 
-    // Final Identity State
+    // Grading State
     const [isGrading, setIsGrading] = useState(false);
     const [finalResult, setFinalResult] = useState(null);
 
@@ -168,7 +168,7 @@ export default function OMRScannerPage() {
         }));
     };
 
-    const handleIdentityInjection = async () => {
+    const handleGradeSubmit = async () => {
         setIsGrading(true);
         try {
             const res = await fetch('/api/omr/grade', {
@@ -252,7 +252,7 @@ export default function OMRScannerPage() {
                     </Button>
                     <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
                         <Button variant="primary" style={{ width: '100%', minHeight: '48px' }}>
-                            View Updated Mistake Heatmap
+                            View My Mistakes
                         </Button>
                     </a>
                 </div>
@@ -286,8 +286,8 @@ export default function OMRScannerPage() {
                         ))}
                     </div>
 
-                    <Button variant="success" onClick={handleIdentityInjection} disabled={isGrading} className="critical-flow" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }}>
-                        {isGrading ? 'Grading & Saving to Heatmap...' : 'Lock Answers & Grade →'}
+                    <Button variant="success" onClick={handleGradeSubmit} disabled={isGrading} className="critical-flow" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }}>
+                        {isGrading ? 'Grading your answers...' : 'Lock Answers & Grade →'}
                     </Button>
                     <Button variant="secondary" onClick={resetScanner} style={{ width: '100%', minHeight: '48px' }}>
                         Cancel & Rescan

@@ -327,6 +327,13 @@ export default function Home() {
     }
 
     if (user) {
+        // Redirect new users to onboarding if they haven't completed it
+        if (!statsLoading && (!stats || stats.total_tests === 0)) {
+            if (typeof window !== 'undefined' && localStorage.getItem('onboarding_complete') !== 'true') {
+                window.location.href = '/welcome';
+                return null;
+            }
+        }
         return <CoachingHome user={user} stats={stats} statsLoading={statsLoading} />;
     }
 
