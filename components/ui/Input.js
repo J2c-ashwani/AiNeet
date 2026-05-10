@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 
 /**
  * Canonical Input Primitive
@@ -13,7 +13,8 @@ export const Input = forwardRef(({
     ...props
 }, ref) => {
     // Generate a unique ID if none provided, useful for linking label to input
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || `input-${generatedId.replace(/:/g, '')}`;
 
     return (
         <div className="input-group">
