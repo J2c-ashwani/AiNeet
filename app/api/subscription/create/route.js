@@ -75,6 +75,10 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Subscription Create Error:', error);
-        return NextResponse.json({ error: 'Failed to create payment order. Please try again in a moment.' }, { status: 500 });
+        return NextResponse.json({ 
+            error: 'Failed to create payment order. Please try again in a moment.',
+            devError: error.message,
+            devStack: error.stack
+        }, { status: 500 });
     }
 }
