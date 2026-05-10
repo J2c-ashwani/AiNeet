@@ -999,8 +999,14 @@ select.input {
 }
 
 .chat-input-area {
-  padding: 16px 0;
+  padding: 16px;
   border-top: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .chat-input-area {
+    padding-bottom: calc(16px + 80px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .chat-input-wrapper {

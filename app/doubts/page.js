@@ -82,7 +82,7 @@ export default function DoubtSolver() {
         <div>
             
 
-            <div className="page" style={{ maxWidth: 800, margin: '0 auto', height: 'calc(100dvh - 60px)', paddingBottom: '85px', display: 'flex', flexDirection: 'column' }}>
+            <div className="page" style={{ maxWidth: 800, margin: '0 auto', height: 'calc(100dvh - 60px)', paddingBottom: 'calc(90px + env(safe-area-inset-bottom, 0px))', display: 'flex', flexDirection: 'column' }}>
 
                 <h1 className="text-2xl font-bold mb-4">AI Doubt Solver 🤖</h1>
 
