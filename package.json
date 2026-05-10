@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@sentry/nextjs": "^10.39.0",
+    "@sentry/nextjs": "^10.52.0",
     "@sparticuz/chromium": "^143.0.4",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.97.0",

@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
 import { useAuth } from '@/context/AuthContext';
+import { Card, Button } from '@/components/ui';
 
 function TestConfigContent() {
     const router = useRouter();

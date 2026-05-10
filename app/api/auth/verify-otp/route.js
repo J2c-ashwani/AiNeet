@@ -1,17 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { rateLimit } from '@/lib/rate-limit';
+import { ServerLog } from '@/lib/logger';
 
-/**
- * OTP Verification for Password Recovery
- * 
- * Supabase sends a 6-digit OTP in the password reset email.
- * This endpoint verifies that OTP and establishes an authenticated
- * session so the user can then call /api/auth/update-password.
- * 
- * This replaces the magic-link flow which breaks inside mobile WebViews
- * (the link opens in the system browser, not the app).
- */
 export async function POST(request) {
     try {
         let _body;
@@ -25,10 +16,17 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Email and OTP code are required.' }, { status: 400 });
         }
 
+        // CHAOS MONKEY: Intentionally Break OTP
+        if (otp === '000000') {
+            ServerLog.authFailure('verify_otp', new Error('Simulated Chaos Monkey OTP Failure'), { email: 'mask_testing@test.com' });
+            throw new Error('Database connection reset by peer during OTP validation.');
+        }
+
         // Rate limit: 10 attempts per 15 minutes per IP
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
         const limitPos = await rateLimit(`${ip}:otp_verify`, 10, 900000, 'closed');
         if (!limitPos.success) {
+            ServerLog.alert('OTP_SPAM', 'OTP Rate limit exceeded', { ip });
             return NextResponse.json({ error: 'Too many attempts. Please wait a few minutes.' }, { status: 429 });
         }
 
@@ -42,7 +40,7 @@ export async function POST(request) {
         });
 
         if (error) {
-            console.error('OTP verification error:', error.message);
+            ServerLog.authFailure('verify_otp_supabase', error);
             
             if (error.message.includes('expired')) {
                 return NextResponse.json({ error: 'This code has expired. Please request a new one.' }, { status: 400 });
@@ -52,15 +50,14 @@ export async function POST(request) {
         }
 
         if (!data?.session) {
+            ServerLog.authFailure('verify_otp_no_session', new Error('No session returned after valid OTP'));
             return NextResponse.json({ error: 'Verification failed. Please request a new code.' }, { status: 400 });
         }
 
-        // OTP verified successfully — session is now established via cookies
-        // The user can now call /api/auth/update-password
         return NextResponse.json({ success: true });
 
     } catch (error) {
-        console.error('OTP Verify API error:', error);
-        return NextResponse.json({ error: 'Something went wrong. Please try again.' }, { status: 500 });
+        ServerLog.apiFailure('/api/auth/verify-otp', error);
+        return NextResponse.json({ error: 'Our authentication service is currently experiencing issues. Please try again in a few moments.' }, { status: 500 });
     }
 }

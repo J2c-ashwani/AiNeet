@@ -1,24 +1,27 @@
 import * as Sentry from "@sentry/nextjs";
 
-if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-    Sentry.init({
-        dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || "https://dummy@o0.ingest.sentry.io/0",
 
-        // S5: 0.1 = 10% trace sampling. Errors always captured 100%.
-        tracesSampleRate: 0.1,
+  // Adjust this value in production, or use tracesSampler for greater control
+  tracesSampleRate: 1.0,
 
-        debug: process.env.NODE_ENV === 'development',
-        environment: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+  // Setting this option to true will print useful information to the console while you're setting up Sentry.
+  debug: false,
 
-        // Session replay: errors at 100%, sessions at 5% (reduced from 10%)
-        replaysOnErrorSampleRate: 1.0,
-        replaysSessionSampleRate: 0.05,
+  replaysOnErrorSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1, // Sample 10% of sessions for replay
 
-        integrations: [
-            Sentry.replayIntegration({
-                maskAllText: true,
-                blockAllMedia: true,
-            }),
-        ],
-    });
-}
+  integrations: [
+    Sentry.replayIntegration({
+      // Mask all text inputs and sensitive data
+      maskAllTextInputs: true,
+      maskAllInputs: true,
+      blockAllMedia: false,
+      mask: ['.sensitive-data', '[type="password"]', '[name="otp"]', '[name="password"]', '[id="otp"]'],
+      block: ['form[action="/api/auth/login"]', 'form[action="/api/auth/register"]']
+    }),
+  ],
+
+  environment: process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV || 'development',
+});
