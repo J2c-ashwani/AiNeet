@@ -8073,3 +8073,65 @@ node(55807) MallocStackLogging: can't turn off malloc stack logging because it w
 ✓ Finished filesystem cache database compaction in 22.4s
 ✓ Finished writing to filesystem cache in 19.3s
 ✓ Finished filesystem cache database compaction in 17.0s
+ GET /forgot-password 200 in 9.0s (compile: 5.2s, proxy.ts: 1471ms, render: 2.3s)
+✓ Finished writing to filesystem cache in 10.8s
+node(56143) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+ GET /api/auth/me 200 in 44s (compile: 37.5s, proxy.ts: 733ms, render: 5.4s)
+○ Compiling /api/auth/reset-password ...
+ POST /api/auth/reset-password 200 in 8.4s (compile: 4.4s, proxy.ts: 1524ms, render: 2.5s)
+✓ Finished writing to filesystem cache in 29.3s
+✓ Finished filesystem cache database compaction in 19.4s
+✓ Finished writing to filesystem cache in 18.3s
+○ Compiling /api/auth/verify-otp ...
+[AUTH_FAILURE] Auth failed: verify_otp {
+  email: 'mask_testing@test.com',
+  error: 'Simulated Chaos Monkey OTP Failure'
+}
+[API_FAILURE] API failed: /api/auth/verify-otp { error: 'Database connection reset by peer during OTP validation.' }
+ POST /api/auth/verify-otp 500 in 21.7s (compile: 18.4s, proxy.ts: 2.8s, render: 568ms)
+✓ Finished filesystem cache database compaction in 76s
+✓ Finished writing to filesystem cache in 53s
+ GET /forgot-password 200 in 22.1s (compile: 807ms, proxy.ts: 2.7s, render: 18.6s)
+ GET /api/auth/me 200 in 20.7s (compile: 900ms, proxy.ts: 15.4s, render: 4.4s)
+ POST /api/auth/reset-password 200 in 5.6s (compile: 564ms, proxy.ts: 2.3s, render: 2.7s)
+✓ Finished filesystem cache database compaction in 119s
+[AUTH_FAILURE] Auth failed: verify_otp {
+  email: 'mask_testing@test.com',
+  error: 'Simulated Chaos Monkey OTP Failure'
+}
+[API_FAILURE] API failed: /api/auth/verify-otp { error: 'Database connection reset by peer during OTP validation.' }
+ POST /api/auth/verify-otp 500 in 4.7s (compile: 1073ms, proxy.ts: 3.3s, render: 290ms)
+ GET /forgot-password 200 in 3.4s (compile: 197ms, proxy.ts: 1804ms, render: 1431ms)
+ GET /api/auth/me 200 in 2.6s (compile: 101ms, proxy.ts: 972ms, render: 1482ms)
+ POST /api/auth/reset-password 200 in 1324ms (compile: 39ms, proxy.ts: 684ms, render: 601ms)
+[AUTH_FAILURE] Auth failed: verify_otp_supabase { error: 'Token has expired or is invalid' }
+ POST /api/auth/verify-otp 400 in 9.6s (compile: 331ms, proxy.ts: 6.2s, render: 3.0s)
+ GET /forgot-password 200 in 3.3s (compile: 111ms, proxy.ts: 1061ms, render: 2.1s)
+ GET /api/auth/me 200 in 3.8s (compile: 78ms, proxy.ts: 1631ms, render: 2.0s)
+ POST /api/auth/reset-password 429 in 3.7s (compile: 436ms, proxy.ts: 3.0s, render: 296ms)
+ POST /api/auth/reset-password 429 in 2.8s (compile: 145ms, proxy.ts: 2.5s, render: 165ms)
+ POST /api/auth/reset-password 429 in 708ms (compile: 29ms, proxy.ts: 575ms, render: 104ms)
+ GET /forgot-password?cachebreak=1 200 in 2.3s (compile: 156ms, proxy.ts: 771ms, render: 1371ms)
+ GET /api/auth/me 200 in 3.0s (compile: 144ms, proxy.ts: 1415ms, render: 1454ms)
+ GET /api/auth/me 200 in 873ms (compile: 11ms, proxy.ts: 171ms, render: 691ms)
+✓ Finished filesystem cache database compaction in 31.9s
+ POST /api/auth/reset-password 429 in 3.9s (compile: 309ms, proxy.ts: 3.3s, render: 259ms)
+ POST /api/auth/reset-password 200 in 2.5s (compile: 85ms, proxy.ts: 1698ms, render: 754ms)
+[AUTH_FAILURE] Auth failed: verify_otp {
+  email: 'mask_testing@test.com',
+  error: 'Simulated Chaos Monkey OTP Failure'
+}
+[API_FAILURE] API failed: /api/auth/verify-otp { error: 'Database connection reset by peer during OTP validation.' }
+ POST /api/auth/verify-otp 500 in 1874ms (compile: 185ms, proxy.ts: 1567ms, render: 121ms)
+✓ Compiled in 1043ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 18ms
+ GET / 200 in 7.0s (compile: 1926ms, proxy.ts: 1897ms, render: 3.2s)
+ GET /api/auth/me 200 in 2.7s (compile: 34ms, proxy.ts: 410ms, render: 2.2s)
+✓ Compiled in 3.7s
+ GET /api/auth/me 200 in 11.3s (compile: 123ms, proxy.ts: 547ms, render: 10.7s)
+ GET /api/home/stats 200 in 14.1s (compile: 6.2s, proxy.ts: 399ms, render: 7.5s)
+ GET /api/auth/me 200 in 2.5s (compile: 309ms, proxy.ts: 735ms, render: 1466ms)
+ GET /api/home/stats 200 in 2.2s (compile: 138ms, proxy.ts: 589ms, render: 1522ms)
+✓ Finished writing to filesystem cache in 51s
