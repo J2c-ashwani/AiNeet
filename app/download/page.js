@@ -40,7 +40,7 @@ export default function DownloadPage() {
             <section style={styles.hero}>
                 <div style={styles.badge}>
                     <span style={styles.badgeDot} />
-                    v1.1 — Trust Hardened Release
+                    v1.2 — Dark Mode + OMR Upgrade
                 </div>
 
                 <h1 style={styles.h1}>
@@ -56,7 +56,7 @@ export default function DownloadPage() {
                 {/* Download CTA */}
                 <a
                     href="/downloads/neet-coach.apk"
-                    download="AI-NEET-Coach-v1.1.apk"
+                    download="AI-NEET-Coach-v1.2.apk"
                     style={styles.downloadBtn}
                     id="download-apk-btn"
                 >
@@ -71,7 +71,7 @@ export default function DownloadPage() {
                 <div style={styles.meta}>
                     <span style={styles.metaItem}>📱 Android 7.0+</span>
                     <span style={styles.metaDivider}>•</span>
-                    <span style={styles.metaItem}>📦 44 MB</span>
+                    <span style={styles.metaItem}>📦 46 MB</span>
                     <span style={styles.metaDivider}>•</span>
                     <span style={styles.metaItem}>🔒 Safe & Secure</span>
                 </div>
@@ -122,7 +122,7 @@ export default function DownloadPage() {
                 <h2 style={styles.h2}>Ready to ace NEET 2026?</h2>
                 <a
                     href="/downloads/neet-coach.apk"
-                    download="AI-NEET-Coach-v1.1.apk"
+                    download="AI-NEET-Coach-v1.2.apk"
                     style={styles.downloadBtn2}
                     id="download-apk-btn-bottom"
                 >
