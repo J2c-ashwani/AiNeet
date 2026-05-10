@@ -48,45 +48,52 @@ export default function ParentSettings() {
         }
     };
 
-    if (loading) return <div className="animate-pulse h-32 bg-gray-800 rounded-lg"></div>;
+    if (loading) return (
+        <div className="card animate-pulse" style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="spinner" style={{ width: 30, height: 30 }}></div>
+        </div>
+    );
 
     return (
-        <div className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-6">
-            <h3 className="text-xl font-bold text-white mb-2">👨‍👩‍👧‍👦 Parent Connect</h3>
-            <p className="text-gray-400 text-sm mb-6">
-                Add your parent's details to send them <strong>Weekly Progress Reports</strong>.
+        <div className="card">
+            <h3 className="mb-2" style={{ fontSize: '1.4rem' }}>👨‍👩‍👧‍👦 Parent Connect</h3>
+            <p className="text-muted text-sm mb-6" style={{ lineHeight: 1.6 }}>
+                Add your parent's details to send them <strong style={{ color: 'var(--text-primary)' }}>Weekly Progress Reports</strong>.
                 This helps keep them informed about your hard work and improvements.
             </p>
 
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">Parent's Email</label>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Parent's Email</label>
                     <input
                         type="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder="parent@example.com"
-                        className="w-full bg-black border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
+                        className="input"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm text-gray-400 mb-1">Parent's Phone (Optional)</label>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Parent's Phone (Optional)</label>
                     <input
                         type="tel"
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                         placeholder="+91 9876543210"
-                        className="w-full bg-black border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
+                        className="input"
                     />
                 </div>
 
-                <div className="flex items-center justify-between mt-4">
-                    <span className="text-sm font-medium text-green-400">{message}</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
+                    <span style={{ fontSize: '0.9rem', fontWeight: 600, color: message.includes('❌') ? 'var(--danger)' : 'var(--success)' }}>
+                        {message}
+                    </span>
                     <button
                         type="submit"
                         disabled={saving}
-                        className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                        className="btn btn-primary"
+                        style={{ minWidth: '160px' }}
                     >
                         {saving ? 'Saving...' : 'Save Settings'}
                     </button>
