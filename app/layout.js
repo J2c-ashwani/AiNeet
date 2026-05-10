@@ -175,16 +175,18 @@ function JsonLd() {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning style={{ background: '#080c18' }}>
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/icon-192.png" />
                 <meta name="mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+                <meta name="theme-color" content="#080c18" />
                 <meta name="google-play-app" content="app-id=com.aineetcoach.app" />
                 <JsonLd />
-                {/* Splash: styles + dynamic creation entirely in head so React never tracks the DOM node */}
+                {/* Splash styles in head — renders before any JS */}
                 <style dangerouslySetInnerHTML={{__html: `
+                    html, body { background: #080c18 !important; }
                     #app-splash {
                         position: fixed; inset: 0; z-index: 99999;
                         display: flex; flex-direction: column;
@@ -220,7 +222,11 @@ export default function RootLayout({ children }) {
                         0%, 100% { opacity: 1; } 50% { opacity: 0.5; }
                     }
                 `}} />
-                {/* Create splash via JS so it's outside React's virtual DOM */}
+            </head>
+            <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#080c18' }}>
+                {/* Splash creation script — MUST be in body so document.body exists.
+                    React tracks this <script> tag but NOT the div it creates,
+                    so remove() is safe and won't crash React's reconciler. */}
                 <script dangerouslySetInnerHTML={{__html: `
                     (function(){
                         var s = document.createElement('div');
@@ -235,8 +241,6 @@ export default function RootLayout({ children }) {
                         else window.addEventListener('load', function(){ setTimeout(dismiss, 300); });
                     })();
                 `}} />
-            </head>
-            <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
                 <ClientLayout>
                     {children}
                 </ClientLayout>
