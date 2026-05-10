@@ -110,9 +110,10 @@ export default function PricingPage() {
                 body: JSON.stringify({ planId })
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to create order');
-
-            if (data.isMock) {
+            if (!res.ok) {
+                const errorMsg = data.devError ? `${data.error} (Dev: ${data.devError})` : (data.error || 'Failed to initiate payment.');
+                throw new Error(errorMsg);
+            } if (data.isMock) {
                 const verifyRes = await fetch('/api/subscription/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
