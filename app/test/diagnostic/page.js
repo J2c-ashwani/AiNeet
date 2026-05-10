@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Card, Button, Badge, Skeleton } from '@/components/ui';
 
 function DiagnosticComponent() {
     const [questions, setQuestions] = useState([]);
@@ -14,13 +15,11 @@ function DiagnosticComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     
-    // Challenger Variables (Catch c_ghost)
     const challengerScore = searchParams.get('c_score');
     const challengerChap = searchParams.get('c_chap');
     const challengerGhost = searchParams.get('c_ghost');
 
     useEffect(() => {
-        // Fast, cheap device fingerprint for Level-2 Rate Limiting
         const generateFingerprint = () => {
             let fp = localStorage.getItem('diag_fp');
             if (fp) return fp;
@@ -57,7 +56,6 @@ function DiagnosticComponent() {
 
     const handleAnswerSelect = (opt) => {
         setAnswers(prev => ({ ...prev, [questions[currentIndex].id]: opt }));
-        // Auto-advance for frictionless UX
         if (currentIndex < questions.length - 1) {
             setTimeout(() => setCurrentIndex(c => c + 1), 300);
         }
@@ -67,7 +65,6 @@ function DiagnosticComponent() {
         if (Object.keys(answers).length === 0) return;
         setSubmitting(true);
         try {
-            // Send exactly what the user picked to the Silent Tracker + Challenger Context
             const payloadData = { 
                 answers,
                 c_score: challengerScore,
@@ -83,12 +80,10 @@ function DiagnosticComponent() {
 
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
-                // MD Directive: Push to LocalStorage to survive accidental browser closure!
                 localStorage.setItem('pending_diagnostic_grade', JSON.stringify({
                     scoreData: verifyData.grade,
                     signature: verifyData.signature
                 }));
-                // Proceed to the Lock Screen
                 window.location.href = '/test/diagnostic/results';
             } else {
                 throw new Error(verifyData.error || "Grading failed");
@@ -100,30 +95,30 @@ function DiagnosticComponent() {
     };
 
     if (loading) return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff' }}>
-            <div className="spinner" style={{ width: 50, height: 50, marginBottom: 20 }}></div>
-            <h2 style={{ fontFamily: 'Inter', fontWeight: 600 }}>Analyzing Brain Pathways...</h2>
-            <p style={{ color: '#94a3b8' }}>Generating your custom diagnostic panel</p>
+        <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <div className="spinner" style={{ width: 50, height: 50, marginBottom: 24 }}></div>
+            <h2 style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Analyzing Brain Pathways...</h2>
+            <p style={{ color: 'var(--text-secondary)' }}>Generating your custom diagnostic panel</p>
         </div>
     );
 
     if (limitReached) return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff' }}>
-            <div style={{ background: 'rgba(59, 130, 246, 0.1)', padding: 40, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)', maxWidth: 500 }}>
-                <h2>🎉 You\'ve unlocked today\'s free diagnostics!</h2>
-                <p style={{ color: '#94a3b8', marginTop: 12 }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
-                <button onClick={() => window.location.href = '/login'} style={{ marginTop: 24, padding: '12px 32px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}>Sign Up Free</button>
-            </div>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ maxWidth: 500, textAlign: 'center', background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>🎉 You've unlocked today's free diagnostics!</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
+                <Button variant="primary" style={{ width: '100%' }} onClick={() => window.location.href = '/login'}>Sign Up Free</Button>
+            </Card>
         </div>
     );
 
     if (error) return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff' }}>
-            <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: 40, borderRadius: 16, textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                <h2>System Overloaded</h2>
-                <p>{error}</p>
-                <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 24px', background: '#3b82f6', color: 'white', borderRadius: 8, border: 'none', cursor: 'pointer' }}>Retry Generation</button>
-            </div>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ maxWidth: 500, textAlign: 'center', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--danger)', marginBottom: '12px' }}>System Overloaded</h2>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>{error}</p>
+                <Button variant="primary" onClick={() => window.location.reload()}>Retry Generation</Button>
+            </Card>
         </div>
     );
 
@@ -133,34 +128,31 @@ function DiagnosticComponent() {
     const isLast = currentIndex === questions.length - 1;
 
     return (
-        <div style={{ minHeight: '100vh', background: '#080c18', color: '#fff', padding: '40px 20px', display: 'flex', justifyContent: 'center' }}>
+        <div className="page" style={{ minHeight: 'calc(100vh - 64px)', display: 'flex', justifyContent: 'center', padding: '40px 16px' }}>
             <div style={{ maxWidth: 800, width: '100%' }}>
                 
-                {/* Frictionless Header dynamically reacting to Challenger URI bounds */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, borderBottom: '1px solid var(--border)', paddingBottom: 20 }}>
                     <div>
-                        <span style={{ color: '#818cf8', fontWeight: 700, letterSpacing: 1, fontSize: '0.85rem' }}>
+                        <span style={{ color: 'var(--primary)', fontWeight: 700, letterSpacing: 1, fontSize: '0.85rem' }}>
                             {challengerScore ? 'CHALLENGE ACCEPTED' : 'AI DIAGNOSTIC PROTOCOL'}
                         </span>
-                        <h1 style={{ margin: 0, fontSize: '1.5rem', marginTop: 4 }}>
+                        <h1 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)', marginTop: 4, fontWeight: 800 }}>
                             {challengerScore ? `Your friend scored ${challengerScore}% in ${challengerChap || 'Biology'}. Try to beat it.` : 'Find Your Weakest Chapter'}
                         </h1>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px 16px', borderRadius: 20, fontSize: '0.9rem', fontWeight: 600 }}>
-                        {currentIndex + 1} <span style={{ color: '#64748b' }}>/ {questions.length}</span>
-                    </div>
+                    <Badge variant="secondary" style={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                        {currentIndex + 1} <span style={{ color: 'var(--text-muted)' }}>/ {questions.length}</span>
+                    </Badge>
                 </div>
 
-                {/* Question Card */}
-                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: 32 }}>
-                    
+                <Card style={{ padding: '32px', marginBottom: '32px' }}>
                     {currentQ.is_ai_generated === 1 && (
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(168, 85, 247, 0.1)', color: '#c084fc', padding: '4px 12px', borderRadius: 12, fontSize: '0.8rem', fontWeight: 600, marginBottom: 16 }}>
+                        <Badge variant="accent" style={{ marginBottom: '16px' }}>
                             ✨ AI Generated Target
-                        </div>
+                        </Badge>
                     )}
                     
-                    <h2 style={{ fontSize: '1.3rem', lineHeight: 1.6, marginBottom: 32, fontWeight: 500 }}>{currentQ.text}</h2>
+                    <h2 style={{ fontSize: '1.3rem', lineHeight: 1.6, marginBottom: 32, fontWeight: 500, color: 'var(--text-primary)' }}>{currentQ.text}</h2>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                         {['A', 'B', 'C', 'D'].map((optKey) => {
@@ -173,15 +165,16 @@ function DiagnosticComponent() {
                                     onClick={() => handleAnswerSelect(optKey)}
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px',
-                                        background: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'rgba(15, 23, 42, 0.6)',
-                                        border: `1px solid ${isSelected ? '#3b82f6' : 'rgba(255,255,255,0.05)'}`,
-                                        borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s ease',
-                                        color: '#f8fafc', fontSize: '1.05rem', textAlign: 'left', outline: 'none'
+                                        background: isSelected ? 'var(--bg-glass-hover)' : 'var(--bg-card)',
+                                        border: `1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
+                                        borderRadius: 'var(--radius-md)', cursor: 'pointer', transition: 'all 0.2s ease',
+                                        color: 'var(--text-primary)', fontSize: '1.05rem', textAlign: 'left', outline: 'none'
                                     }}
                                 >
                                     <div style={{ 
                                         width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        background: isSelected ? '#3b82f6' : 'rgba(255,255,255,0.1)', 
+                                        background: isSelected ? 'var(--primary)' : 'var(--bg-glass)', 
+                                        color: isSelected ? '#fff' : 'var(--text-primary)',
                                         borderRadius: '50%', fontSize: '0.9rem', fontWeight: 600 
                                     }}>
                                         {optKey}
@@ -191,34 +184,34 @@ function DiagnosticComponent() {
                             );
                         })}
                     </div>
-                </div>
+                </Card>
 
-                {/* Footer Controls */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 32 }}>
-                    <button 
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Button 
+                        variant="secondary"
                         onClick={() => setCurrentIndex(c => Math.max(0, c - 1))}
                         disabled={currentIndex === 0}
-                        style={{ padding: '12px 24px', background: 'transparent', color: '#94a3b8', border: 'none', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', fontSize: '1rem' }}
                     >
                         ← Back
-                    </button>
+                    </Button>
 
                     {isLast ? (
-                        <button 
+                        <Button 
+                            variant="accent"
                             onClick={handleDiagnosticSubmit}
                             disabled={submitting || !answers[currentQ.id]}
-                            style={{ padding: '14px 32px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', color: 'white', borderRadius: 12, border: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, opacity: submitting ? 0.7 : 1 }}
+                            loading={submitting}
                         >
-                            {submitting ? 'Analyzing...' : 'Generate Diagnosis →'}
-                        </button>
+                            Generate Diagnosis →
+                        </Button>
                     ) : (
-                        <button 
+                        <Button 
+                            variant="primary"
                             onClick={() => setCurrentIndex(c => c + 1)}
                             disabled={!answers[currentQ.id]}
-                            style={{ padding: '14px 32px', background: answers[currentQ.id] ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.02)', color: answers[currentQ.id] ? 'white' : '#475569', borderRadius: 12, border: 'none', cursor: answers[currentQ.id] ? 'pointer' : 'not-allowed', fontSize: '1.1rem', fontWeight: 600 }}
                         >
                             Next →
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -229,7 +222,7 @@ function DiagnosticComponent() {
 
 export default function DiagnosticTestEngine() {
     return (
-        <Suspense fallback={<div style={{ minHeight: '100vh', background: '#080c18' }}></div>}>
+        <Suspense fallback={<div className="page" style={{ minHeight: 'calc(100vh - 64px)' }}></div>}>
             <DiagnosticComponent />
         </Suspense>
     );

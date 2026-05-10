@@ -1,0 +1,7 @@
+
+> neet-coach@0.1.0 lint:design
+> node scripts/check-design-system.js
+
+🔍 Running Design System Consistency Check...
+
+✅ P0/P1 SURFACES PASSED: Architecture is strictly enforced.

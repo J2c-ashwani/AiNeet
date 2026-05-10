@@ -1,16 +1,15 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+
+import { Card, Button, Input, Skeleton } from '@/components/ui';
 
 function LoginContent() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // MD UX Fix: Catch bad links
     useEffect(() => {
         const errorParam = searchParams.get('error');
         if (errorParam === 'reset_link_invalid') {
@@ -32,7 +31,6 @@ function LoginContent() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
-            // Hard navigate to dashboard to force SSR to read the freshly baked session cookies
             window.location.href = '/';
         } catch (err) {
             setError(err.message);
@@ -40,58 +38,59 @@ function LoginContent() {
     };
 
     return (
-        <div className="auth-page">
-            <div className="auth-card animate-fade-in-up">
-                <div className="auth-header">
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🧠</div>
-                    <h1>Welcome Back</h1>
-                    <p>Continue your NEET preparation</p>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '40px 32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🧠</div>
+                    <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>Welcome Back</h1>
+                    <p style={{ color: 'var(--text-secondary)' }}>Continue your NEET preparation</p>
                 </div>
 
                 {error && (
-                    <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
+                    <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.9rem', marginBottom: '24px', fontWeight: 500 }}>
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label>Email</label>
-                        <input className="input" type="email" placeholder="Enter your email" required value={form.email}
-                            onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                    </div>
-                    <div className="input-group">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <label style={{ margin: 0 }}>Password</label>
-                            <a href="/forgot-password" style={{ fontSize: '0.8rem', color: 'var(--primary)', textDecoration: 'none' }}>Forgot Password?</a>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <Input 
+                        label="Email" 
+                        type="email" 
+                        placeholder="Enter your email" 
+                        required 
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })} 
+                    />
+                    
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                            <label style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Password</label>
+                            <a href="/forgot-password" style={{ fontSize: '0.85rem', color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Forgot Password?</a>
                         </div>
-                        <input className="input" type="password" placeholder="Enter your password" required value={form.password}
-                            onChange={(e) => setForm({ ...form, password: e.target.value })} />
+                        <Input 
+                            type="password" 
+                            placeholder="Enter your password" 
+                            required 
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })} 
+                        />
                     </div>
-                    <button className="btn btn-primary w-full" type="submit" disabled={loading}>
-                        {loading ? 'Signing In...' : 'Sign In →'}
-                    </button>
+                    
+                    <Button type="submit" loading={loading} style={{ marginTop: '12px' }}>
+                        Sign In →
+                    </Button>
                 </form>
 
-                <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Don't have an account? <a href="/register">Create Account</a>
+                <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                    Don't have an account? <a href="/register" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Create Account</a>
                 </p>
-            </div>
+            </Card>
         </div>
     );
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function LoginPage() {
-    return (
-        <Suspense fallback={
-            <div className="auth-page">
-                <div className="auth-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🔐</div>
-                    <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
-                </div>
-            </div>
-        }>
-            <LoginContent />
-        </Suspense>
-    );
+    return <LoginContent />;
 }

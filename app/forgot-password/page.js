@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+
+import { Card, Button, Input } from '@/components/ui';
 
 export default function ForgotPasswordPage() {
     const router = useRouter();
@@ -13,7 +14,6 @@ export default function ForgotPasswordPage() {
     const [step, setStep] = useState('email'); // 'email' | 'otp' | 'password' | 'done'
     const [error, setError] = useState('');
 
-    // Step 1: Send reset email
     const handleSendEmail = async (e) => {
         e.preventDefault();
         setError('');
@@ -39,7 +39,6 @@ export default function ForgotPasswordPage() {
         }
     };
 
-    // Step 2: Verify OTP code from email
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         setError('');
@@ -71,7 +70,6 @@ export default function ForgotPasswordPage() {
         }
     };
 
-    // Step 3: Set new password
     const handleSetPassword = async (e) => {
         e.preventDefault();
         setError('');
@@ -121,23 +119,22 @@ export default function ForgotPasswordPage() {
     const current = stepConfig[step];
 
     return (
-        <div className="auth-page">
-            <div className="auth-card animate-fade-in-up">
-                <div className="auth-header">
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>{current.icon}</div>
-                    <h1>{current.title}</h1>
-                    <p>{current.subtitle}</p>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '40px 32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>{current.icon}</div>
+                    <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>{current.title}</h1>
+                    <p style={{ color: 'var(--text-secondary)' }}>{current.subtitle}</p>
                 </div>
 
-                {/* Progress indicator */}
                 {step !== 'done' && (
-                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }}>
                         {['email', 'otp', 'password'].map((s, i) => (
                             <div key={s} style={{
                                 width: '40px', height: '4px', borderRadius: '2px',
                                 background: ['email', 'otp', 'password'].indexOf(step) >= i
-                                    ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
-                                    : 'rgba(255,255,255,0.08)',
+                                    ? 'var(--accent-primary)'
+                                    : 'var(--border)',
                                 transition: 'background 0.3s'
                             }} />
                         ))}
@@ -145,122 +142,101 @@ export default function ForgotPasswordPage() {
                 )}
 
                 {error && (
-                    <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
+                    <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.9rem', marginBottom: '24px', fontWeight: 500 }}>
                         {error}
                     </div>
                 )}
 
-                {/* Step 1: Email */}
-                <div style={{ display: step === 'email' ? 'block' : 'none' }}>
-                    <form onSubmit={handleSendEmail}>
-                        <div className="input-group">
-                            <label>Email Address</label>
-                            <input 
-                                className="input" 
-                                type="email" 
-                                placeholder="Enter your registered email" 
-                                required={step === 'email'} 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)} 
-                                disabled={loading}
-                                autoFocus
-                            />
-                        </div>
-                        
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || !email}>
-                            {loading ? 'Sending Code...' : 'Send Reset Code →'}
-                        </button>
+                {step === 'email' && (
+                    <form onSubmit={handleSendEmail} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <Input 
+                            label="Email Address" 
+                            type="email" 
+                            placeholder="Enter your registered email" 
+                            required 
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} 
+                            disabled={loading}
+                            autoFocus
+                        />
+                        <Button type="submit" loading={loading} style={{ marginTop: '12px' }}>
+                            Send Reset Code →
+                        </Button>
                     </form>
-                </div>
+                )}
 
-                {/* Step 2: OTP */}
-                <div style={{ display: step === 'otp' ? 'block' : 'none' }}>
-                    <form onSubmit={handleVerifyOtp}>
-                        <div className="input-group">
-                            <label>Verification Code</label>
-                            <input 
-                                className="input" 
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                maxLength={8}
-                                placeholder="Enter code from email" 
-                                required={step === 'otp'} 
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
-                                disabled={loading}
-                                autoFocus
-                                style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
-                            />
-                        </div>
-                        
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 4}>
-                            {loading ? 'Verifying...' : 'Verify Code →'}
-                        </button>
-
-                        <div style={{ textAlign: 'center', marginTop: 16 }}>
+                {step === 'otp' && (
+                    <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <Input 
+                            label="Verification Code" 
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={8}
+                            placeholder="Enter code from email" 
+                            required 
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
+                            disabled={loading}
+                            autoFocus
+                            style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
+                        />
+                        <Button type="submit" loading={loading} disabled={otp.length < 4} style={{ marginTop: '12px' }}>
+                            Verify Code →
+                        </Button>
+                        <div style={{ textAlign: 'center', marginTop: '16px' }}>
                             <button 
                                 type="button"
                                 onClick={() => { setStep('email'); setOtp(''); setError(''); }}
                                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'underline' }}
                             >
-                                Didn&apos;t receive it? Send again
+                                Didn't receive it? Send again
                             </button>
                         </div>
                     </form>
-                </div>
+                )}
 
-                {/* Step 3: New Password */}
-                <div style={{ display: step === 'password' ? 'block' : 'none' }}>
-                    <form onSubmit={handleSetPassword}>
-                        <div className="input-group">
-                            <label>New Password</label>
-                            <input 
-                                className="input" 
-                                type="password" 
-                                placeholder="8+ characters, letters & numbers" 
-                                required={step === 'password'} 
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)} 
-                                disabled={loading}
-                                autoFocus
-                            />
-                        </div>
-                        
-                        <div className="input-group" style={{ marginBottom: 24 }}>
-                            <label>Confirm Password</label>
-                            <input 
-                                className="input" 
-                                type="password" 
-                                placeholder="Repeat new password" 
-                                required={step === 'password'} 
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)} 
-                                disabled={loading}
-                            />
-                        </div>
-                        
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || !newPassword || !confirmPassword}>
-                            {loading ? 'Securing Account...' : 'Set New Password →'}
-                        </button>
+                {step === 'password' && (
+                    <form onSubmit={handleSetPassword} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <Input 
+                            label="New Password" 
+                            type="password" 
+                            placeholder="8+ characters, letters & numbers" 
+                            required 
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)} 
+                            disabled={loading}
+                            autoFocus
+                        />
+                        <Input 
+                            label="Confirm Password" 
+                            type="password" 
+                            placeholder="Repeat new password" 
+                            required 
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)} 
+                            disabled={loading}
+                        />
+                        <Button type="submit" loading={loading} disabled={!newPassword || !confirmPassword} style={{ marginTop: '12px' }}>
+                            Set New Password →
+                        </Button>
                     </form>
-                </div>
+                )}
 
-                {/* Step 4: Done */}
                 {step === 'done' && (
                     <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: '12px' }}>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
+                        <p style={{ color: 'var(--success)', fontSize: '0.9rem', margin: 0, fontWeight: 500 }}>
                             Your password has been updated. Redirecting...
                         </p>
                     </div>
                 )}
 
                 {step !== 'done' && (
-                    <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                        Remember it? <a href="/login" style={{ color: 'var(--primary)' }}>Back to Login</a>
+                    <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                        Remember it? <a href="/login" style={{ color: 'var(--accent-primary)', fontWeight: 600, textDecoration: 'none' }}>Back to Login</a>
                     </p>
                 )}
-            </div>
+            </Card>
         </div>
     );
 }

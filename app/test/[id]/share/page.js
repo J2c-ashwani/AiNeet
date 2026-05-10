@@ -58,9 +58,9 @@ export default async function SharePage({ params }) {
     const imageUrl = `/api/tests/scorecard?testId=${testId}`;
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#0a0e1a', color: '#f1f5f9', padding: '40px 20px' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', padding: '40px 20px' }}>
             <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.5rem', fontWeight: 800 }}>
-                <span>🧠</span> <span style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
+                <span>🧠</span> <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
             </div>
 
             <div style={{ maxWidth: '800px', width: '100%', textAlign: 'center' }}>
@@ -71,18 +71,20 @@ export default async function SharePage({ params }) {
                 <img
                     src={imageUrl}
                     alt="Test Scorecard"
-                    style={{ width: '100%', maxWidth: '600px', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '40px' }}
+                    style={{ width: '100%', maxWidth: '600px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', border: '1px solid var(--border)', marginBottom: '40px' }}
                 />
 
-                <div style={{ background: 'rgba(17, 24, 39, 0.8)', padding: '40px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '40px' }}>
+                <Card style={{ padding: '40px', marginBottom: '40px' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '16px' }}>Can you beat this score?</h2>
-                    <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '32px' }}>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '32px' }}>
                         Generate your own personalized AI mock test, get your All India Rank prediction, and see where you stand.
                     </p>
-                    <a href="/register" className="btn btn-primary btn-lg" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa)', color: 'white', padding: '16px 32px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-block' }}>
-                        Take a Free Mock Test →
+                    <a href="/register" style={{ textDecoration: 'none' }}>
+                        <Button variant="primary" size="lg">
+                            Take a Free Mock Test →
+                        </Button>
                     </a>
-                </div>
+                </Card>
             </div>
         </div>
     );

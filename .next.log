@@ -7738,3 +7738,203 @@ AuthApiError: Request rate limit reached
 ✓ Compiled in 186ms
 ✓ Compiled in 349ms
 ✓ Compiled in 1990ms
+○ Compiling / ...
+ GET / 200 in 8.9s (compile: 5.2s, proxy.ts: 1343ms, render: 2.3s)
+ GET /api/auth/me 200 in 70s (compile: 53s, proxy.ts: 3.8s, render: 13.4s)
+✓ Finished writing to filesystem cache in 25.1s
+○ Compiling /login ...
+ GET /login?redirect=%2Fanalytics 200 in 20.6s (compile: 8.4s, proxy.ts: 7.2s, render: 5.1s)
+ GET /api/auth/me 200 in 1628ms (compile: 79ms, proxy.ts: 1374ms, render: 174ms)
+✓ Finished filesystem cache database compaction in 43s
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 48s (compile: 15.5s, proxy.ts: 9.9s, render: 22.8s)
+✓ Finished filesystem cache database compaction in 83s
+✓ Compiled in 1847ms
+ GET /login 200 in 8.1s (compile: 4.4s, proxy.ts: 276ms, render: 3.4s)
+ GET /api/auth/me 200 in 1341ms (compile: 109ms, proxy.ts: 1118ms, render: 114ms)
+ GET /forgot-password 200 in 4.0s (compile: 2.6s, proxy.ts: 179ms, render: 1218ms)
+ GET /login 200 in 1429ms (compile: 81ms, proxy.ts: 87ms, render: 1261ms)
+ GET /api/auth/me 200 in 794ms (compile: 68ms, proxy.ts: 609ms, render: 117ms)
+ GET /api/auth/me 200 in 167ms (compile: 17ms, proxy.ts: 105ms, render: 45ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 2.8s (compile: 60ms, proxy.ts: 588ms, render: 2.1s)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 6.0s (compile: 517ms, proxy.ts: 2.3s, render: 3.2s)
+✓ Compiled in 1574ms
+⚠ Fast Refresh had to perform a full reload when ./.gemini/antigravity/scratch/neet-coach/app/login/page.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./.gemini/antigravity/scratch/neet-coach/app/login/page.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /login 200 in 5.2s (compile: 2.3s, proxy.ts: 24ms, render: 2.9s)
+ GET /login?redirect=%2Fanalytics 200 in 5.5s (compile: 976ms, proxy.ts: 283ms, render: 4.2s)
+ GET /login 200 in 3.1s (compile: 675ms, proxy.ts: 72ms, render: 2.4s)
+ GET /login?redirect=%2Fanalytics 200 in 2.5s (compile: 2.2s, proxy.ts: 62ms, render: 203ms)
+ GET /api/auth/me 200 in 459ms (compile: 27ms, proxy.ts: 392ms, render: 41ms)
+ GET /api/auth/me 200 in 84ms (compile: 5ms, proxy.ts: 73ms, render: 6ms)
+ GET /login 200 in 628ms (compile: 69ms, proxy.ts: 50ms, render: 509ms)
+ GET /api/auth/me 200 in 620ms (compile: 60ms, proxy.ts: 481ms, render: 79ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 2.8s (compile: 52ms, proxy.ts: 435ms, render: 2.4s)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 2.4s (compile: 22ms, proxy.ts: 564ms, render: 1842ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 1954ms (compile: 90ms, proxy.ts: 651ms, render: 1213ms)
+ GET /login 200 in 2.5s (compile: 152ms, proxy.ts: 181ms, render: 2.2s)
+ GET /api/auth/me 200 in 630ms (compile: 67ms, proxy.ts: 481ms, render: 82ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 2.1s (compile: 30ms, proxy.ts: 434ms, render: 1610ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 3.5s (compile: 55ms, proxy.ts: 855ms, render: 2.6s)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 2.3s (compile: 58ms, proxy.ts: 602ms, render: 1592ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 3.9s (compile: 95ms, proxy.ts: 819ms, render: 3.0s)
+ GET /login 200 in 4.7s (compile: 462ms, proxy.ts: 292ms, render: 4.0s)
+ GET /api/auth/me 200 in 842ms (compile: 58ms, proxy.ts: 484ms, render: 300ms)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 3.4s (compile: 71ms, proxy.ts: 940ms, render: 2.3s)
+Supabase Login Error: Error [AuthApiError]: Invalid login credentials
+    at async POST (app/api/auth/login/route.js:29:54)
+  27 |
+  28 |         // Supabase Native SignIn via SSR Cookies
+> 29 |         const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+     |                                                      ^
+  30 |             email: email.toLowerCase().trim(),
+  31 |             password: password
+  32 |         }); {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+ POST /api/auth/login 401 in 6.1s (compile: 1382ms, proxy.ts: 924ms, render: 3.8s)
+ GET /forgot-password 200 in 1104ms (compile: 87ms, proxy.ts: 177ms, render: 839ms)

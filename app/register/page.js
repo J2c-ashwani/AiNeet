@@ -2,19 +2,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
-import Link from 'next/link';
 
-/**
- * Registration Page with Email OTP Verification
- * 
- * Flow:
- * 1. User fills form → server creates unverified account
- * 2. User enters 6-digit OTP from email → verifies email
- * 3. Client auto-logs in → redirects to home
- */
+import { Card, Button, Input, Skeleton } from '@/components/ui';
 
 function RegisterContent() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const refCode = searchParams.get('ref') || '';
     const challengeId = searchParams.get('challenge') || '';
@@ -25,7 +16,6 @@ function RegisterContent() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // MD Mandate: Pre-Signup Database Wake Call (Silent)
     useEffect(() => {
         fetch('/api/cron/keepalive').catch(() => null); 
     }, []);
@@ -54,7 +44,6 @@ function RegisterContent() {
         return data;
     };
 
-    // Step 1: Submit registration form
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -62,7 +51,6 @@ function RegisterContent() {
         
         try {
             await performRegistration(0);
-            // Account created, OTP email sent — move to verification
             setStep('otp');
         } catch (err) {
             if (err.message === 'COLD_START') {
@@ -77,7 +65,7 @@ function RegisterContent() {
                         setLoading(false);
                     }
                 }, 6000);
-                return; // Don't setLoading(false) yet — auto-retry is pending
+                return;
             }
             setError(err.message);
         } finally {
@@ -85,7 +73,6 @@ function RegisterContent() {
         }
     };
 
-    // Step 2: Verify OTP
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         setError('');
@@ -109,7 +96,6 @@ function RegisterContent() {
                 throw new Error(data.error || 'Invalid or expired code.');
             }
 
-            // OTP verified — now establish client session
             const supabase = createBrowserClient(
                 process.env.NEXT_PUBLIC_SUPABASE_URL,
                 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -124,7 +110,6 @@ function RegisterContent() {
                 throw new Error('Email verified but login failed. Please sign in manually.');
             }
 
-            // Success
             setStep('done');
             setTimeout(() => {
                 window.location.href = challengeId ? `/challenge/${challengeId}` : '/';
@@ -137,19 +122,17 @@ function RegisterContent() {
         }
     };
 
-    // Resend OTP via API (avoids Supabase client-side rate limits)
     const handleResendOtp = async () => {
         if (resendCooldown > 0) return;
         setError('');
         setLoading(true);
         try {
-            const res = await fetch('/api/auth/register', {
+            await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, referralCode: refCode || undefined })
             });
-            // This will cleanup zombie + re-create + resend OTP
-            // Start 60s cooldown
+            
             setResendCooldown(60);
             const timer = setInterval(() => {
                 setResendCooldown(prev => {
@@ -168,31 +151,30 @@ function RegisterContent() {
     };
 
     return (
-        <div className="auth-page">
-            <div className="auth-card animate-fade-in-up">
-                <div className="auth-header">
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '40px 32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>
                         {step === 'form' ? '🧠' : step === 'otp' ? '📧' : '✅'}
                     </div>
-                    <h1>
-                        {step === 'form' ? 'Create Account' : step === 'otp' ? 'Verify Email' : 'You\'re In!'}
+                    <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                        {step === 'form' ? 'Create Account' : step === 'otp' ? 'Verify Email' : "You're In!"}
                     </h1>
-                    <p>
+                    <p style={{ color: 'var(--text-secondary)' }}>
                         {step === 'form' ? 'Start your NEET preparation journey' : 
                          step === 'otp' ? `Enter the code sent to ${form.email}` :
                          'Redirecting to your dashboard...'}
                     </p>
                 </div>
 
-                {/* Progress indicator */}
                 {step !== 'done' && (
-                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '24px' }}>
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }}>
                         {['form', 'otp'].map((s, i) => (
                             <div key={s} style={{
                                 width: '50px', height: '4px', borderRadius: '2px',
                                 background: ['form', 'otp'].indexOf(step) >= i
-                                    ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
-                                    : 'rgba(255,255,255,0.08)',
+                                    ? 'var(--accent-primary)'
+                                    : 'var(--border)',
                                 transition: 'background 0.3s'
                             }} />
                         ))}
@@ -200,82 +182,101 @@ function RegisterContent() {
                 )}
 
                 {refCode && step === 'form' && (
-                    <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 'var(--radius-md)', color: '#10b981', fontSize: '0.85rem', marginBottom: 20, textAlign: 'center' }}>
-                        🎉 You were invited by a friend! Sign up to start practicing together.
+                    <div style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: 'var(--radius-md)', color: 'var(--success)', fontSize: '0.9rem', marginBottom: '24px', textAlign: 'center', fontWeight: 500 }}>
+                        🎉 You were invited by a friend! Sign up to start practicing.
                     </div>
                 )}
 
                 {error && (
                     <div style={{ 
-                        padding: '12px 16px', 
-                        background: error.startsWith('✅') ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', 
-                        border: `1px solid ${error.startsWith('✅') ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, 
+                        padding: '16px', 
+                        background: error.startsWith('✅') ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                        border: `1px solid ${error.startsWith('✅') ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`, 
                         borderRadius: 'var(--radius-md)', 
-                        color: error.startsWith('✅') ? '#10b981' : 'var(--danger)', 
-                        fontSize: '0.85rem', marginBottom: 20 
+                        color: error.startsWith('✅') ? 'var(--success)' : 'var(--danger)', 
+                        fontSize: '0.9rem', 
+                        marginBottom: '24px', 
+                        fontWeight: 500 
                     }}>
                         {error}
                     </div>
                 )}
 
-                {/* Step 1: Registration Form */}
-                <div style={{ display: step === 'form' ? 'block' : 'none' }}>
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <label>Full Name</label>
-                            <input className="input" type="text" placeholder="Enter your name" required value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })} disabled={loading} />
-                        </div>
-                        <div className="input-group">
-                            <label>Email</label>
-                            <input className="input" type="email" placeholder="Enter your email" required value={form.email}
-                                onChange={(e) => setForm({ ...form, email: e.target.value })} disabled={loading} />
-                        </div>
-                        <div className="input-group">
-                            <label>Password</label>
-                            <input className="input" type="password" placeholder="Create a password" required minLength={6} value={form.password}
-                                onChange={(e) => setForm({ ...form, password: e.target.value })} disabled={loading} />
-                        </div>
-                        <div className="input-group">
-                            <label>NEET Target Year</label>
-                            <select className="input" value={form.targetYear} onChange={(e) => setForm({ ...form, targetYear: e.target.value })} disabled={loading}>
+                {step === 'form' && (
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <Input 
+                            label="Full Name" 
+                            type="text" 
+                            placeholder="Enter your name" 
+                            required 
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                            disabled={loading} 
+                        />
+                        <Input 
+                            label="Email Address" 
+                            type="email" 
+                            placeholder="Enter your email" 
+                            required 
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })} 
+                            disabled={loading} 
+                        />
+                        <Input 
+                            label="Password" 
+                            type="password" 
+                            placeholder="Create a password" 
+                            required 
+                            minLength={6} 
+                            value={form.password}
+                            onChange={(e) => setForm({ ...form, password: e.target.value })} 
+                            disabled={loading} 
+                        />
+                        
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                                NEET Target Year
+                            </label>
+                            <select 
+                                style={{ width: '100%', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-glass)', color: 'var(--text-primary)', fontSize: '1rem', outline: 'none' }} 
+                                value={form.targetYear} 
+                                onChange={(e) => setForm({ ...form, targetYear: e.target.value })} 
+                                disabled={loading}
+                            >
                                 <option value="2027">NEET 2027</option>
                                 <option value="2028">NEET 2028</option>
                                 <option value="2029">NEET 2029</option>
                             </select>
                         </div>
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading}>
-                            {loading ? 'Creating Account...' : 'Create Account →'}
-                        </button>
+
+                        <Button type="submit" loading={loading} style={{ marginTop: '12px' }}>
+                            Create Account →
+                        </Button>
                     </form>
-                </div>
+                )}
 
-                {/* Step 2: OTP Verification */}
-                <div style={{ display: step === 'otp' ? 'block' : 'none' }}>
-                    <form onSubmit={handleVerifyOtp}>
-                        <div className="input-group">
-                            <label>Verification Code</label>
-                            <input 
-                                className="input" 
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]*"
-                                maxLength={8}
-                                placeholder="Enter code from email" 
-                                required={step === 'otp'} 
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
-                                disabled={loading}
-                                autoFocus
-                                style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
-                            />
-                        </div>
+                {step === 'otp' && (
+                    <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <Input 
+                            label="Verification Code" 
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength={8}
+                            placeholder="Enter code from email" 
+                            required 
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
+                            disabled={loading}
+                            autoFocus
+                            style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
+                        />
                         
-                        <button className="btn btn-primary w-full" type="submit" disabled={loading || otp.length < 4}>
-                            {loading ? 'Verifying...' : 'Verify & Continue →'}
-                        </button>
+                        <Button type="submit" loading={loading} disabled={otp.length < 4} style={{ marginTop: '12px' }}>
+                            Verify & Continue →
+                        </Button>
 
-                        <div style={{ textAlign: 'center', marginTop: 16 }}>
+                        <div style={{ textAlign: 'center', marginTop: '16px' }}>
                             <button 
                                 type="button"
                                 onClick={handleResendOtp}
@@ -286,38 +287,28 @@ function RegisterContent() {
                             </button>
                         </div>
                     </form>
-                </div>
+                )}
 
-                {/* Step 3: Done */}
                 {step === 'done' && (
                     <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: '12px' }}>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
+                        <p style={{ color: 'var(--success)', fontSize: '0.9rem', margin: 0, fontWeight: 500 }}>
                             Account verified! Redirecting...
                         </p>
                     </div>
                 )}
 
-                <div style={{ display: step === 'form' ? 'block' : 'none' }}>
-                    <p style={{ textAlign: 'center', marginTop: 24, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                        Already have an account? <a href="/login">Sign In</a>
+                {step === 'form' && (
+                    <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                        Already have an account? <a href="/login" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Sign In</a>
                     </p>
-                </div>
-            </div>
+                )}
+            </Card>
         </div>
     );
 }
 
+export const dynamic = 'force-dynamic';
+
 export default function RegisterPage() {
-    return (
-        <Suspense fallback={
-            <div className="auth-page">
-                <div className="auth-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🧠</div>
-                    <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
-                </div>
-            </div>
-        }>
-            <RegisterContent />
-        </Suspense>
-    );
+    return <RegisterContent />;
 }

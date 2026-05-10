@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
+import { Card, Button, Badge } from '@/components/ui';
 
 /**
  * P0-1 Trust Hardening: Test Page with Durable State Persistence
@@ -349,24 +350,24 @@ export default function TestPage({ params }) {
     // ─── P0-1: Recovery Prompt UI ───
     if (recoveryState === 'prompt') {
         return (
-            <div style={{ background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-                <div className="card animate-fade-in" style={{ maxWidth: 480, width: '100%', textAlign: 'center', padding: '40px 32px' }}>
+            <div className="page" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                <Card className="animate-fade-in" style={{ maxWidth: 480, width: '100%', textAlign: 'center', padding: '40px 32px' }}>
                     <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 12, color: 'var(--text-primary)' }}>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 12, color: 'var(--text-primary)' }}>
                         Resume your test?
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', marginBottom: 32, lineHeight: 1.6 }}>
                         You have an unfinished test. Your answers and progress have been saved.
                     </p>
-                    <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-                        <button className="btn btn-primary btn-lg" onClick={handleResume} style={{ minWidth: 160 }}>
+                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                        <Button variant="primary" size="lg" onClick={handleResume} style={{ minWidth: 160 }}>
                             Resume Test →
-                        </button>
-                        <button className="btn btn-ghost" onClick={handleDiscard} style={{ minWidth: 120 }}>
+                        </Button>
+                        <Button variant="ghost" size="lg" onClick={handleDiscard} style={{ minWidth: 120 }}>
                             Discard
-                        </button>
+                        </Button>
                     </div>
-                </div>
+                </Card>
             </div>
         );
     }
@@ -394,62 +395,54 @@ export default function TestPage({ params }) {
         <div style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
             {/* Network Fallback Recovery Banner */}
             {offlineSyncPending && (
-                <div className="bg-orange-600 text-white px-4 py-3 text-center sm:px-6 lg:px-8 flex items-center justify-between z-50 relative shadow-xl">
-                    <p className="text-sm font-medium">⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
-                    <button onClick={handleSubmit} disabled={submitting} className="bg-white/20 hover:bg-white/30 text-white border-white px-4 py-1.5 rounded-full text-xs font-bold transition-all">
+                <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 50, position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
+                    <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
+                    <Button onClick={handleSubmit} disabled={submitting} variant="secondary" size="sm">
                         {submitting ? 'Syncing...' : 'Retry Submission Sync'}
-                    </button>
+                    </Button>
                 </div>
             )}
 
             {/* Test Header */}
             <div className="test-header" style={{ margin: 0 }}>
-                <div className="flex items-center gap-4">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <span className="question-number">Q {currentQ + 1}/{testData.totalQuestions}</span>
-                    <span className="text-sm text-muted">{answeredCount} answered</span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{answeredCount} answered</span>
                 </div>
                 <div className={`timer ${timeLeft > 300 ? 'safe' : ''}`}>
                     ⏱️ {formatTime(timeLeft)}
                 </div>
-                <div className="flex gap-2">
-                    <button className="btn btn-ghost btn-sm" onClick={() => setShowNav(!showNav)}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <Button variant="ghost" size="sm" onClick={() => setShowNav(!showNav)}>
                         📋 Navigator
-                    </button>
-                    <button className="btn btn-danger btn-sm" onClick={handleSubmit} disabled={submitting}>
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={handleSubmit} disabled={submitting}>
                         {submitting ? 'Submitting...' : 'Submit Test'}
-                    </button>
+                    </Button>
                 </div>
             </div>
 
             <div style={{ display: 'flex', maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
                 {/* Main Question Area */}
                 <div style={{ flex: 1, paddingRight: showNav ? 24 : 0 }}>
-                    <div className="card animate-fade-in" key={currentQ}>
+                    <Card className="animate-fade-in" key={currentQ}>
                         {/* Question */}
                         <div className="question-text">
                             {question.is_ai_generated === 1 && (
-                                <span className="ai-badge" style={{
-                                    display: 'inline-block', padding: '2px 8px', borderRadius: '12px',
-                                    background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontSize: '0.75rem',
-                                    fontWeight: 'bold', marginRight: '8px', verticalAlign: 'middle', border: '1px solid rgba(59, 130, 246, 0.3)'
-                                }}>
+                                <Badge variant="primary" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
                                     ⚡ AI Generated
-                                </span>
+                                </Badge>
                             )}
                             {(question.year_asked || question.exam_name) && (
-                                <span style={{
-                                    display: 'inline-block', padding: '2px 8px', borderRadius: '12px',
-                                    background: 'var(--accent)', color: 'white', fontSize: '0.75rem',
-                                    fontWeight: 'bold', marginRight: '8px', verticalAlign: 'middle'
-                                }}>
+                                <Badge variant="accent" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
                                     {question.exam_name ? `${question.exam_name} ${question.year_asked}` : `NEET ${question.year_asked}`}
-                                </span>
+                                </Badge>
                             )}
                             <MathRenderer>{question.text}</MathRenderer>
                         </div>
 
                         {/* Options */}
-                        <div className="flex flex-col gap-3">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {[
                                 { key: 'A', text: question.option_a },
                                 { key: 'B', text: question.option_b },
@@ -464,33 +457,33 @@ export default function TestPage({ params }) {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </Card>
 
                     {/* Navigation Buttons */}
-                    <div className="flex items-center justify-between mt-4">
-                        <div className="flex gap-2">
-                            <button className="btn btn-secondary" onClick={() => goToQuestion(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <Button variant="secondary" onClick={() => goToQuestion(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
                                 ← Previous
-                            </button>
-                            <button className={`btn ${marked.has(currentQ) ? 'btn-primary' : 'btn-ghost'}`} onClick={handleMark}>
+                            </Button>
+                            <Button variant={marked.has(currentQ) ? 'primary' : 'ghost'} onClick={handleMark}>
                                 {marked.has(currentQ) ? '🔖 Marked' : '🔖 Mark'}
-                            </button>
-                            <button className="btn btn-ghost" title="Report Issue" onClick={() => setReportState({ ...initialReportState, show: true })}>
+                            </Button>
+                            <Button variant="ghost" title="Report Issue" onClick={() => setReportState({ ...initialReportState, show: true })}>
                                 🚩
-                            </button>
+                            </Button>
                         </div>
-                        <div className="flex gap-2">
+                        <div style={{ display: 'flex', gap: '8px' }}>
                             {answers[currentQ] && (
-                                <button className="btn btn-ghost btn-sm" onClick={() => handleAnswer(answers[currentQ])}>Clear</button>
+                                <Button variant="ghost" size="sm" onClick={() => handleAnswer(answers[currentQ])}>Clear</Button>
                             )}
                             {currentQ < testData.totalQuestions - 1 ? (
-                                <button className="btn btn-primary" onClick={() => goToQuestion(currentQ + 1)}>
+                                <Button variant="primary" onClick={() => goToQuestion(currentQ + 1)}>
                                     Next →
-                                </button>
+                                </Button>
                             ) : (
-                                <button className="btn btn-success" onClick={handleSubmit} disabled={submitting}>
+                                <Button variant="success" onClick={handleSubmit} disabled={submitting}>
                                     Submit Test ✓
-                                </button>
+                                </Button>
                             )}
                         </div>
                     </div>
@@ -498,8 +491,8 @@ export default function TestPage({ params }) {
 
                 {/* Question Navigator Panel */}
                 {showNav && (
-                    <div className="card animate-slide-in" style={{ width: 280, flexShrink: 0, alignSelf: 'flex-start', position: 'sticky', top: 140 }}>
-                        <h4 className="mb-4">Question Navigator</h4>
+                    <Card className="animate-slide-in" style={{ width: 280, flexShrink: 0, alignSelf: 'flex-start', position: 'sticky', top: 140 }}>
+                        <h4 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Question Navigator</h4>
                         <div className="question-nav">
                             {testData.questions.map((_, idx) => (
                                 <button key={idx}
@@ -509,32 +502,32 @@ export default function TestPage({ params }) {
                                 </button>
                             ))}
                         </div>
-                        <div className="mt-4 flex flex-col gap-2 text-xs">
-                            <div className="flex items-center gap-2">
+                        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span className="question-nav-btn current" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Current
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span className="question-nav-btn answered" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Answered
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span className="question-nav-btn marked" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Marked
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <span className="question-nav-btn" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Not visited
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 )}
             </div>
 
             {/* Report Modal */}
             {initialReportState.show && (
                 <div className="modal-overlay">
-                    <div className="modal-content animate-scale-in">
-                        <h3>Report Issue with Q{currentQ + 1}</h3>
-                        <p className="mb-4 text-sm text-muted">Help us improve question quality.</p>
+                    <Card className="modal-content animate-scale-in">
+                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>Report Issue with Q{currentQ + 1}</h3>
+                        <p style={{ marginBottom: '16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Help us improve question quality.</p>
 
-                        <div className="flex flex-col gap-3 mb-4">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
                             <select className="input-field" value={initialReportState.reason} onChange={(e) => setReportState({ ...initialReportState, reason: e.target.value })}>
                                 <option value="error">Factual Error</option>
                                 <option value="ambiguous">Ambiguous / Confusing</option>
@@ -550,11 +543,11 @@ export default function TestPage({ params }) {
                             ></textarea>
                         </div>
 
-                        <div className="flex justify-end gap-2">
-                            <button className="btn btn-ghost" onClick={() => setReportState({ show: false, reason: 'error', comment: '' })}>Cancel</button>
-                            <button className="btn btn-danger" onClick={submitReport}>Submit Report</button>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                            <Button variant="ghost" onClick={() => setReportState({ show: false, reason: 'error', comment: '' })}>Cancel</Button>
+                            <Button variant="danger" onClick={submitReport}>Submit Report</Button>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             )}
         </div>

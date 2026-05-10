@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
+import { Card, Button, Badge } from '@/components/ui';
 
 const PLANS = [
     {
@@ -9,9 +11,9 @@ const PLANS = [
         tagline: 'Get started with AI-powered NEET prep',
         price: '₹0',
         period: 'forever',
-        gradient: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        borderColor: 'rgba(148, 163, 184, 0.2)',
-        accentColor: '#94a3b8',
+        gradient: 'var(--bg-card)',
+        borderColor: 'var(--border)',
+        accentColor: 'var(--text-muted)',
         badge: null,
         features: [
             { text: '3 AI Tests / day', included: true },
@@ -33,9 +35,9 @@ const PLANS = [
         tagline: 'For serious aspirants who want an edge',
         price: '₹199',
         period: '/month',
-        gradient: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%)',
-        borderColor: 'rgba(99, 102, 241, 0.4)',
-        accentColor: '#818cf8',
+        gradient: 'var(--bg-glass)',
+        borderColor: 'var(--primary-dark)',
+        accentColor: 'var(--primary)',
         badge: null,
         features: [
             { text: '20 Custom AI Tests / month', included: true },
@@ -57,9 +59,9 @@ const PLANS = [
         tagline: 'The ultimate arsenal to maximize your score',
         price: '₹399',
         period: '/month',
-        gradient: 'linear-gradient(135deg, #2d1b69 0%, #4c1d95 30%, #7c3aed 60%, #4c1d95 100%)',
-        borderColor: 'rgba(167, 139, 250, 0.5)',
-        accentColor: '#a78bfa',
+        gradient: 'var(--bg-glass-hover)',
+        borderColor: 'var(--accent-primary)',
+        accentColor: 'var(--accent-primary)',
         badge: '⭐ MOST POPULAR',
         features: [
             { text: '100 Custom AI Tests / month', included: true },
@@ -113,7 +115,8 @@ export default function PricingPage() {
             if (!res.ok) {
                 const errorMsg = data.devError ? `${data.error} (Dev: ${data.devError})` : (data.error || 'Failed to initiate payment.');
                 throw new Error(errorMsg);
-            } if (data.isMock) {
+            } 
+            if (data.isMock) {
                 const verifyRes = await fetch('/api/subscription/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -137,279 +140,197 @@ export default function PricingPage() {
     };
 
     return (
-        <div>
-            <div style={{ minHeight: '100vh', padding: '40px 16px 80px' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="page" style={{ paddingBottom: '80px' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
-                    {/* Hero Header */}
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <div style={{
-                            display: 'inline-block', padding: '8px 20px', borderRadius: '100px',
-                            background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(167,139,250,0.15))',
-                            border: '1px solid rgba(167,139,250,0.3)', marginBottom: '20px',
-                            fontSize: '0.85rem', color: '#a78bfa', fontWeight: 600, letterSpacing: '0.5px'
-                        }}>
-                            🚀 Join 50,000+ NEET aspirants already using AI Coach
-                        </div>
-                        <h1 style={{
-                            fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900, lineHeight: 1.1,
-                            background: 'linear-gradient(135deg, #e2e8f0, #f8fafc, #c7d2fe, #a78bfa)',
-                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                            marginBottom: '16px'
-                        }}>
-                            Invest in Your NEET Score,<br />Not Just Coaching Fees
-                        </h1>
-                        <p style={{ fontSize: '1.15rem', color: '#94a3b8', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
-                            Traditional coaching costs ₹2-4 Lakhs/year. Get AI-powered personalized preparation for less than ₹13/day.
-                        </p>
-                    </div>
-
-                    {error && (
-                        <div style={{
-                            background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-                            color: '#fca5a5', padding: '14px 20px', borderRadius: '12px',
-                            marginBottom: '32px', textAlign: 'center', fontSize: '0.9rem'
-                        }}>
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Pricing Cards */}
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                        gap: '24px',
-                        marginBottom: '80px',
-                        alignItems: 'stretch'
-                    }}>
-                        {PLANS.map((plan) => {
-                            const isCurrentPlan = user?.subscription_tier === plan.id;
-                            const isFree = plan.id === 'free';
-                            const isPremium = plan.id === 'premium';
-                            return (
-                                <div key={plan.id} style={{
-                                    background: plan.gradient,
-                                    border: `1.5px solid ${plan.borderColor}`,
-                                    borderRadius: '20px',
-                                    padding: '32px 28px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    position: 'relative',
-                                    transition: 'all 0.3s ease',
-                                    transform: isPremium ? 'scale(1.03)' : 'none',
-                                    boxShadow: isPremium
-                                        ? '0 0 60px rgba(124, 58, 237, 0.2), 0 20px 60px rgba(0,0,0,0.4)'
-                                        : '0 4px 20px rgba(0,0,0,0.2)',
-                                }}>
-                                    {plan.badge && (
-                                        <div style={{
-                                            position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)',
-                                            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
-                                            color: 'white', padding: '6px 18px', borderRadius: '100px',
-                                            fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px',
-                                            boxShadow: '0 4px 15px rgba(124,58,237,0.4)', whiteSpace: 'nowrap'
-                                        }}>
-                                            {plan.badge}
-                                        </div>
-                                    )}
-
-                                    {/* Plan Name */}
-                                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '6px' }}>
-                                        {plan.name}
-                                    </h2>
-                                    <p style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: '20px', lineHeight: 1.4 }}>
-                                        {plan.tagline}
-                                    </p>
-
-                                    {/* Price */}
-                                    <div style={{ marginBottom: '24px' }}>
-                                        <span style={{ fontSize: '2.8rem', fontWeight: 900, color: '#f8fafc' }}>
-                                            {plan.price}
-                                        </span>
-                                        <span style={{ fontSize: '1rem', color: '#64748b', fontWeight: 500 }}>
-                                            {plan.period}
-                                        </span>
-                                        {!isFree && (
-                                            <div style={{ fontSize: '0.8rem', color: plan.accentColor, marginTop: '4px', fontWeight: 600 }}>
-                                                {plan.id === 'pro' ? '= ₹6.6/day' : '= ₹13/day'}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Divider */}
-                                    <div style={{ height: '1px', background: `${plan.accentColor}33`, marginBottom: '20px' }} />
-
-                                    {/* Features */}
-                                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        {plan.features.map((f, i) => (
-                                            <li key={i} style={{
-                                                display: 'flex', alignItems: 'center', gap: '10px',
-                                                fontSize: '0.9rem', color: f.included ? '#e2e8f0' : '#475569',
-                                                opacity: f.included ? 1 : 0.5
-                                            }}>
-                                                <span style={{
-                                                    width: '20px', height: '20px', borderRadius: '50%', display: 'flex',
-                                                    alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', flexShrink: 0,
-                                                    background: f.included ? `${plan.accentColor}22` : 'rgba(71,85,105,0.2)',
-                                                    color: f.included ? plan.accentColor : '#475569',
-                                                    border: `1px solid ${f.included ? `${plan.accentColor}44` : 'rgba(71,85,105,0.3)'}`
-                                                }}>
-                                                    {f.included ? '✓' : '✗'}
-                                                </span>
-                                                {f.text}
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                    {/* CTA Button */}
-                                    <button
-                                        onClick={() => !isFree && handleSubscribe(plan.id)}
-                                        disabled={loading || isFree || isCurrentPlan}
-                                        style={{
-                                            marginTop: '28px', width: '100%', padding: '16px',
-                                            borderRadius: '14px', border: 'none', fontSize: '1rem',
-                                            fontWeight: 700, cursor: (isFree || isCurrentPlan) ? 'default' : 'pointer',
-                                            transition: 'all 0.3s ease',
-                                            background: isFree
-                                                ? 'rgba(148,163,184,0.1)'
-                                                : isCurrentPlan
-                                                    ? 'rgba(148,163,184,0.1)'
-                                                    : isPremium
-                                                        ? 'linear-gradient(135deg, #7c3aed, #a855f7, #7c3aed)'
-                                                        : 'linear-gradient(135deg, #4f46e5, #6366f1)',
-                                            color: (isFree || isCurrentPlan) ? '#64748b' : '#ffffff',
-                                            boxShadow: (isFree || isCurrentPlan) ? 'none'
-                                                : isPremium
-                                                    ? '0 8px 30px rgba(124,58,237,0.4)'
-                                                    : '0 4px 15px rgba(79,70,229,0.3)'
-                                        }}
-                                    >
-                                        {loading === plan.id ? '⏳ Processing...' : isCurrentPlan ? '✓ Current Plan' : isFree ? 'Your Free Plan' : plan.cta}
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/* Social Proof */}
-                    <div style={{ marginBottom: '80px' }}>
-                        <h2 style={{ textAlign: 'center', fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', marginBottom: '12px' }}>
-                            Trusted by NEET Toppers
-                        </h2>
-                        <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '40px', fontSize: '1rem' }}>
-                            Real results from real students
-                        </p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                            {TESTIMONIALS.map((t, i) => (
-                                <div key={i} style={{
-                                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-                                    borderRadius: '16px', padding: '24px', position: 'relative'
-                                }}>
-                                    <div style={{ fontSize: '2rem', marginBottom: '12px', opacity: 0.3 }}>"</div>
-                                    <p style={{ color: '#cbd5e1', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '16px', fontStyle: 'italic' }}>
-                                        {t.text}
-                                    </p>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ color: '#f8fafc', fontWeight: 700, fontSize: '0.9rem' }}>{t.name}</span>
-                                        <span style={{
-                                            background: 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))',
-                                            color: '#4ade80', padding: '4px 12px', borderRadius: '8px',
-                                            fontSize: '0.8rem', fontWeight: 700, border: '1px solid rgba(34,197,94,0.2)'
-                                        }}>
-                                            {t.score}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Comparison Table */}
-                    <div style={{ marginBottom: '80px' }}>
-                        <h2 style={{ textAlign: 'center', fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', marginBottom: '40px' }}>
-                            Why AI NEET Coach vs Traditional Coaching?
-                        </h2>
-                        <div style={{
-                            background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-                            borderRadius: '16px', overflow: 'hidden'
-                        }}>
-                            {[
-                                { feature: 'Monthly Cost', traditional: '₹15,000 - ₹30,000', ai: '₹199 - ₹399' },
-                                { feature: 'Available 24/7', traditional: '❌ Fixed hours', ai: '✅ Anytime' },
-                                { feature: 'Personalized Tests', traditional: '❌ Same for all', ai: '✅ AI adapts to you' },
-                                { feature: 'Instant Doubt Solving', traditional: '❌ Wait for class', ai: '✅ < 10 seconds' },
-                                { feature: 'Performance Tracking', traditional: '❌ Manual', ai: '✅ Real-time AI analytics' },
-                                { feature: 'Revision Alerts', traditional: '❌ None', ai: '✅ Spaced repetition' },
-                            ].map((row, i) => (
-                                <div key={i} style={{
-                                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-                                    borderBottom: i < 5 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-                                    padding: '16px 20px', alignItems: 'center',
-                                    background: i === 0 ? 'rgba(255,255,255,0.03)' : 'transparent'
-                                }}>
-                                    <span style={{ color: '#e2e8f0', fontWeight: i === 0 ? 700 : 500, fontSize: '0.9rem' }}>{row.feature}</span>
-                                    <span style={{ color: '#ef4444', fontSize: '0.85rem', textAlign: 'center', opacity: 0.8 }}>{row.traditional}</span>
-                                    <span style={{ color: '#4ade80', fontSize: '0.85rem', textAlign: 'center', fontWeight: 600 }}>{row.ai}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* FAQ */}
-                    <div style={{ maxWidth: '700px', margin: '0 auto', marginBottom: '60px' }}>
-                        <h2 style={{ textAlign: 'center', fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', marginBottom: '32px' }}>
-                            Frequently Asked Questions
-                        </h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {FAQ.map((item, i) => (
-                                <div key={i} style={{
-                                    background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
-                                    borderRadius: '12px', overflow: 'hidden', transition: 'all 0.3s'
-                                }}>
-                                    <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{
-                                        width: '100%', padding: '16px 20px', display: 'flex', justifyContent: 'space-between',
-                                        alignItems: 'center', background: 'transparent', border: 'none', cursor: 'pointer',
-                                        color: '#e2e8f0', fontSize: '0.95rem', fontWeight: 600, textAlign: 'left'
-                                    }}>
-                                        {item.q}
-                                        <span style={{
-                                            transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)',
-                                            transition: 'transform 0.3s', fontSize: '1.2rem', color: '#64748b'
-                                        }}>▾</span>
-                                    </button>
-                                    {openFaq === i && (
-                                        <div style={{ padding: '0 20px 16px', color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                                            {item.a}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Final CTA */}
-                    <div style={{
-                        textAlign: 'center', padding: '48px 24px', borderRadius: '24px',
-                        background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(99,102,241,0.1), rgba(124,58,237,0.15))',
-                        border: '1px solid rgba(167,139,250,0.2)',
-                    }}>
-                        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f8fafc', marginBottom: '12px' }}>
-                            Still thinking? Start with Free.
-                        </h2>
-                        <p style={{ color: '#94a3b8', marginBottom: '24px', fontSize: '1rem' }}>
-                            No credit card required. Upgrade only when you see results.
-                        </p>
-                        <a href="/register" style={{
-                            display: 'inline-block', padding: '16px 40px', borderRadius: '14px',
-                            background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: 'white',
-                            fontWeight: 700, fontSize: '1.05rem', textDecoration: 'none',
-                            boxShadow: '0 8px 30px rgba(124,58,237,0.4)', transition: 'all 0.3s'
-                        }}>
-                            Start Free — No Card Needed →
-                        </a>
-                    </div>
-
+                {/* Hero Header */}
+                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                    <Badge variant="primary" style={{ marginBottom: '24px', padding: '8px 16px', fontSize: '0.9rem' }}>
+                        🚀 Join 50,000+ NEET aspirants already using AI Coach
+                    </Badge>
+                    <h1 style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1.2, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                        Invest in Your NEET Score,<br />Not Just Coaching Fees
+                    </h1>
+                    <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+                        Traditional coaching costs ₹2-4 Lakhs/year. Get AI-powered personalized preparation for less than ₹13/day.
+                    </p>
                 </div>
+
+                {error && (
+                    <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.95rem', marginBottom: '32px', textAlign: 'center', fontWeight: 500 }}>
+                        {error}
+                    </div>
+                )}
+
+                {/* Pricing Cards */}
+                <div className="grid grid-3" style={{ marginBottom: '80px', alignItems: 'stretch' }}>
+                    {PLANS.map((plan) => {
+                        const isCurrentPlan = user?.subscription_tier === plan.id;
+                        const isFree = plan.id === 'free';
+                        const isPremium = plan.id === 'premium';
+                        return (
+                            <Card key={plan.id} style={{
+                                background: plan.gradient,
+                                border: `1.5px solid ${plan.borderColor}`,
+                                padding: '40px 32px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                position: 'relative',
+                                transform: isPremium ? 'scale(1.05)' : 'none',
+                                zIndex: isPremium ? 10 : 1,
+                            }}>
+                                {plan.badge && (
+                                    <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)' }}>
+                                        <Badge variant="accent" style={{ padding: '6px 16px', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px' }}>
+                                            {plan.badge}
+                                        </Badge>
+                                    </div>
+                                )}
+
+                                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                                    {plan.name}
+                                </h2>
+                                <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.4 }}>
+                                    {plan.tagline}
+                                </p>
+
+                                <div style={{ marginBottom: '32px' }}>
+                                    <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                                        {plan.price}
+                                    </span>
+                                    <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                                        {plan.period}
+                                    </span>
+                                    {!isFree && (
+                                        <div style={{ fontSize: '0.85rem', color: plan.accentColor, marginTop: '4px', fontWeight: 700 }}>
+                                            {plan.id === 'pro' ? '= ₹6.6/day' : '= ₹13/day'}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div style={{ height: '1px', background: 'var(--border)', marginBottom: '24px' }} />
+
+                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    {plan.features.map((f, i) => (
+                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.95rem', color: f.included ? 'var(--text-primary)' : 'var(--text-muted)', opacity: f.included ? 1 : 0.6 }}>
+                                            <span style={{ flexShrink: 0, color: f.included ? plan.accentColor : 'var(--text-muted)', fontWeight: 800 }}>
+                                                {f.included ? '✓' : '✗'}
+                                            </span>
+                                            {f.text}
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <Button
+                                    variant={isPremium ? 'accent' : isFree ? 'secondary' : 'primary'}
+                                    size="lg"
+                                    onClick={() => !isFree && handleSubscribe(plan.id)}
+                                    disabled={loading || isFree || isCurrentPlan}
+                                    loading={loading === plan.id}
+                                    style={{ marginTop: '32px', width: '100%' }}
+                                >
+                                    {isCurrentPlan ? '✓ Current Plan' : isFree ? 'Your Free Plan' : plan.cta}
+                                </Button>
+                            </Card>
+                        );
+                    })}
+                </div>
+
+                {/* Social Proof */}
+                <div style={{ marginBottom: '80px' }}>
+                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                        Trusted by NEET Toppers
+                    </h2>
+                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '48px', fontSize: '1.1rem' }}>
+                        Real results from real students
+                    </p>
+                    <div className="grid grid-3">
+                        {TESTIMONIALS.map((t, i) => (
+                            <Card key={i} style={{ padding: '32px' }}>
+                                <div style={{ fontSize: '2rem', marginBottom: '16px', opacity: 0.5, color: 'var(--primary)' }}>"</div>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '24px', fontStyle: 'italic' }}>
+                                    {t.text}
+                                </p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1rem' }}>{t.name}</span>
+                                    <Badge variant="success" style={{ fontWeight: 800 }}>
+                                        {t.score}
+                                    </Badge>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Comparison Table */}
+                <div style={{ marginBottom: '80px' }}>
+                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '40px' }}>
+                        Why AI NEET Coach vs Traditional Coaching?
+                    </h2>
+                    <Card style={{ padding: '0', overflow: 'hidden' }}>
+                        {[
+                            { feature: 'Monthly Cost', traditional: '₹15,000 - ₹30,000', ai: '₹199 - ₹399' },
+                            { feature: 'Available 24/7', traditional: '❌ Fixed hours', ai: '✅ Anytime' },
+                            { feature: 'Personalized Tests', traditional: '❌ Same for all', ai: '✅ AI adapts to you' },
+                            { feature: 'Instant Doubt Solving', traditional: '❌ Wait for class', ai: '✅ < 10 seconds' },
+                            { feature: 'Performance Tracking', traditional: '❌ Manual', ai: '✅ Real-time AI analytics' },
+                            { feature: 'Revision Alerts', traditional: '❌ None', ai: '✅ Spaced repetition' },
+                        ].map((row, i) => (
+                            <div key={i} style={{
+                                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+                                borderBottom: i < 5 ? '1px solid var(--border)' : 'none',
+                                padding: '20px 24px', alignItems: 'center',
+                                background: i === 0 ? 'var(--bg-glass)' : 'transparent'
+                            }}>
+                                <span style={{ color: 'var(--text-primary)', fontWeight: i === 0 ? 800 : 600, fontSize: '0.95rem' }}>{row.feature}</span>
+                                <span style={{ color: 'var(--danger)', fontSize: '0.9rem', textAlign: 'center', fontWeight: 500 }}>{row.traditional}</span>
+                                <span style={{ color: 'var(--success)', fontSize: '0.9rem', textAlign: 'center', fontWeight: 700 }}>{row.ai}</span>
+                            </div>
+                        ))}
+                    </Card>
+                </div>
+
+                {/* FAQ */}
+                <div style={{ maxWidth: '700px', margin: '0 auto', marginBottom: '80px' }}>
+                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '40px' }}>
+                        Frequently Asked Questions
+                    </h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {FAQ.map((item, i) => (
+                            <Card key={i} style={{ padding: '0' }} interactive>
+                                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{
+                                    width: '100%', padding: '24px', display: 'flex', justifyContent: 'space-between',
+                                    alignItems: 'center', background: 'transparent', border: 'none', cursor: 'pointer',
+                                    color: 'var(--text-primary)', fontSize: '1.05rem', fontWeight: 700, textAlign: 'left'
+                                }}>
+                                    {item.q}
+                                    <span style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s', color: 'var(--text-muted)' }}>▾</span>
+                                </button>
+                                {openFaq === i && (
+                                    <div style={{ padding: '0 24px 24px', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                                        {item.a}
+                                    </div>
+                                )}
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Final CTA */}
+                <Card style={{ textAlign: 'center', padding: '60px 24px', background: 'var(--bg-glass)', border: '1px solid var(--primary-dark)' }}>
+                    <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                        Still thinking? Start with Free.
+                    </h2>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', fontSize: '1.1rem' }}>
+                        No credit card required. Upgrade only when you see results.
+                    </p>
+                    <Link href="/register">
+                        <Button variant="accent" size="lg">
+                            Start Free — No Card Needed →
+                        </Button>
+                    </Link>
+                </Card>
+
             </div>
         </div>
     );

@@ -144,15 +144,15 @@ function TestConfigContent() {
                 </div>
 
                 {error && (
-                    <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
+                    <Card style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
                         {error}
-                    </div>
+                    </Card>
                 )}
 
                 {/* Test Type */}
-                <div className="card mb-4">
-                    <h3 className="mb-4">Test Type</h3>
-                    <div className="flex gap-3 flex-wrap">
+                <Card style={{ marginBottom: '24px' }}>
+                    <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Test Type</h3>
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                         {[
                             { value: 'custom', label: 'Custom Test', icon: '🎯', desc: 'Choose your own settings' },
                             { value: 'adaptive', label: 'Adaptive Practice', icon: '🧠', desc: 'AI Adjusts Difficulty' },
@@ -175,67 +175,67 @@ function TestConfigContent() {
                                 }} style={{ flex: '1 1 180px' }}>
                                 <span style={{ fontSize: '1.5rem' }}>{t.icon}</span>
                                 <div>
-                                    <div className="font-semibold">{t.label}</div>
-                                    <div className="text-xs text-muted">{t.desc}</div>
+                                    <div style={{ fontWeight: 600 }}>{t.label}</div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t.desc}</div>
                                 </div>
                             </div>
                         ))}
                     </div>
-                </div>
+                </Card>
 
                 {testType === 'yearly_pyq' && (
-                    <div className="card mb-4 border-2 border-[var(--accent-primary)]">
-                        <h3 className="mb-4">Select PYQ Year</h3>
+                    <Card style={{ marginBottom: '24px', border: '2px solid var(--primary)' }}>
+                        <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Select PYQ Year</h3>
                         {availableYears.length > 0 ? (
-                            <div className="flex gap-3 flex-wrap">
+                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                                 {availableYears.map(year => (
                                     <div key={year} className={`option-card ${selectedYear === year ? 'selected' : ''}`}
                                         onClick={() => setSelectedYear(year)} style={{ flex: '1 1 120px', textAlign: 'center' }}>
-                                        <span className="font-bold text-xl">{year}</span>
+                                        <span style={{ fontWeight: 800, fontSize: '1.25rem' }}>{year}</span>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-6 text-center text-muted bg-[var(--bg-elevated)] rounded-xl border border-[var(--border-color)]">
+                            <Card style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
                                 📅 No full yearly papers available yet. They are coming soon!
-                            </div>
+                            </Card>
                         )}
-                        <p className="mt-4 text-sm text-muted">
+                        <p style={{ marginTop: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                             This will generate a full 180-question mock test containing all Botany, Zoology, Physics, and Chemistry questions exactly as they appeared in the {selectedYear} paper.
                         </p>
-                    </div>
+                    </Card>
                 )}
 
                 {testType !== 'mock' && testType !== 'yearly_pyq' && (
                     <>
                         {/* Subject Selection */}
-                        <div className="card mb-4">
-                            <h3 className="mb-4">Select Subjects</h3>
-                            <div className="flex gap-3 flex-wrap">
+                        <Card style={{ marginBottom: '24px' }}>
+                            <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Subjects</h3>
+                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                                 {syllabus.map(s => (
                                     <div key={s.id}
                                         className={`option-card ${selectedSubjects.includes(s.id) ? 'selected' : ''}`}
                                         onClick={() => toggleSubject(s.id)}
                                         style={{ flex: '1 1 150px', borderColor: selectedSubjects.includes(s.id) ? s.color : undefined }}>
                                         <span style={{ fontSize: '1.3rem' }}>{s.icon}</span>
-                                        <div className="font-semibold">{s.name}</div>
+                                        <div style={{ fontWeight: 600 }}>{s.name}</div>
                                     </div>
                                 ))}
                             </div>
                             {selectedSubjects.length === 0 && (
-                                <p className="text-muted text-sm mt-2">
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>
                                     {testType === 'adaptive' ? 'Please select a subject to start adaptive practice' : 'No selection = all subjects included'}
                                 </p>
                             )}
-                        </div>
+                        </Card>
 
                         {/* Chapter Selection */}
                         {testType !== 'adaptive' && testType !== 'ai_generated' && (
-                            <div className="card mb-4">
-                                <h3 className="mb-2">Select Specific Chapters <span className="text-muted text-sm font-normal">(Mix and match items across subjects)</span></h3>
-                                <p className="text-sm text-muted mb-6">If you pick specific chapters, your test will only include questions from those chapters.</p>
+                            <Card style={{ marginBottom: '24px' }}>
+                                <h3 style={{ marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Specific Chapters <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 400 }}>(Mix and match items across subjects)</span></h3>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>If you pick specific chapters, your test will only include questions from those chapters.</p>
 
-                                <div className="flex flex-col gap-6">
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                     {activeSubjectsForChapters.map(subject => (
                                         <div key={subject.id}>
                                             <h4 style={{ color: subject.color, marginBottom: 12, borderBottom: `1px solid ${subject.color}33`, paddingBottom: 8 }}>
@@ -248,14 +248,14 @@ function TestConfigContent() {
                                                         <div key={c.id}
                                                             className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
                                                             onClick={() => { if (!isDisabled) toggleChapter(c.id); }}
-                                                            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', cursor: isDisabled ? 'not-allowed' : 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border-color)', opacity: isDisabled ? 0.5 : 1 }}
+                                                            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', cursor: isDisabled ? 'not-allowed' : 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border)', opacity: isDisabled ? 0.5 : 1 }}
                                                         >
-                                                            <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                                            <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'var(--bg-glass)', color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700 }}>
                                                                 {selectedChapters.includes(c.id) && '✓'}
                                                                 {isDisabled && '🚫'}
                                                             </div>
                                                             <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                                <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? '#fff' : 'var(--text-secondary)' }}>
+                                                                <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
                                                                     {c.name}
                                                                 </div>
                                                                 {testType === 'pyq' && (
@@ -271,33 +271,33 @@ function TestConfigContent() {
                                         </div>
                                     ))}
                                 </div>
-                            </div>
+                            </Card>
                         )}
 
                         {/* Topic Selection for Topic-wise test */}
                         {testType === 'topic' && selectedChapters.length > 0 && (
-                            <div className="card mb-4 mt-4">
-                                <h3 className="mb-2">Select Specific Topics</h3>
-                                <p className="text-sm text-muted mb-6">Choose the exact topics from your selected chapters.</p>
-                                <div className="flex flex-col gap-6">
+                            <Card style={{ marginBottom: '24px', marginTop: '16px' }}>
+                                <h3 style={{ marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Specific Topics</h3>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>Choose the exact topics from your selected chapters.</p>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                     {activeSubjectsForChapters.map(subject => {
                                         const activeChapters = subject.chapters.filter(c => selectedChapters.includes(c.id));
                                         if (activeChapters.length === 0) return null;
                                         return (
                                             <div key={`topics-${subject.id}`}>
                                                 {activeChapters.map(c => (
-                                                    <div key={c.id} className="mb-4">
+                                                    <div key={c.id} style={{ marginBottom: '16px' }}>
                                                         <h5 style={{ color: subject.color, marginBottom: 8, fontSize: '0.95rem' }}>{c.name}</h5>
-                                                        <div className="flex gap-2 flex-wrap">
+                                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                             {c.topics && c.topics.map(t => (
                                                                 <div key={t.id}
                                                                     onClick={() => toggleTopic(t.id)}
                                                                     className={`pill ${selectedTopics.includes(t.id) ? 'active' : ''}`}
                                                                     style={{
                                                                         padding: '6px 12px', fontSize: '0.8rem', borderRadius: 20, cursor: 'pointer',
-                                                                        background: selectedTopics.includes(t.id) ? subject.color : 'rgba(255,255,255,0.05)',
+                                                                        background: selectedTopics.includes(t.id) ? subject.color : 'var(--bg-glass)',
                                                                         color: selectedTopics.includes(t.id) ? '#fff' : 'var(--text-secondary)',
-                                                                        border: `1px solid ${selectedTopics.includes(t.id) ? subject.color : 'var(--border-color)'}`
+                                                                        border: `1px solid ${selectedTopics.includes(t.id) ? subject.color : 'var(--border)'}`
                                                                     }}
                                                                 >
                                                                     {t.name}
@@ -310,15 +310,15 @@ function TestConfigContent() {
                                         );
                                     })}
                                 </div>
-                            </div>
+                            </Card>
                         )}
 
                         {/* Difficulty & Count */}
-                        <div className="grid grid-2 gap-4 mb-4">
+                        <div className="grid grid-2" style={{ gap: '16px', marginBottom: '16px' }}>
                             {(testType === 'custom' || testType === 'ai_generated') && (
-                                <div className="card">
-                                    <h3 className="mb-4">Difficulty Level</h3>
-                                    <div className="flex flex-col gap-2">
+                                <Card>
+                                    <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Difficulty Level</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         {['all', 'easy', 'medium', 'hard', 'neet'].map(d => (
                                             <div key={d} className={`option-card ${difficulty === d ? 'selected' : ''}`}
                                                 onClick={() => setDifficulty(d)} style={{ padding: '12px 16px' }}>
@@ -328,30 +328,31 @@ function TestConfigContent() {
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                </Card>
                             )}
-                            <div className="card">
-                                <h3 className="mb-4">Number of Questions</h3>
-                                <div className="flex flex-col gap-2">
+                            <Card>
+                                <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Number of Questions</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {[10, 20, 50, 90, 180].map(n => (
                                         <div key={n} className={`option-card ${questionCount === n ? 'selected' : ''}`}
                                             onClick={() => setQuestionCount(n)} style={{ padding: '12px 16px' }}>
-                                            <span className="font-semibold">{n} Questions</span>
-                                            <span className="text-muted text-sm">({n * 4} marks • {Math.round(n * 1.5)} min)</span>
+                                            <span style={{ fontWeight: 600 }}>{n} Questions</span>
+                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({n * 4} marks • {Math.round(n * 1.5)} min)</span>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
+                            </Card>
                         </div>
                     </>
                 )}
 
                 {/* Generate Button */}
-                <button
-                    className="btn btn-primary btn-lg w-full"
+                <Button
+                    variant="primary"
+                    size="lg"
                     onClick={handleGenerate}
                     disabled={generating || (testType === 'yearly_pyq' && !selectedYear)}
-                    style={{ fontSize: '1.1rem', padding: '18px 32px' }}
+                    style={{ width: '100%', fontSize: '1.1rem', padding: '18px 32px' }}
                 >
                     {generating ? (
                         <><div className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }}></div> Generating Test...</>
@@ -360,50 +361,52 @@ function TestConfigContent() {
                     ) : (
                         <>🚀 Generate & Start Test</>
                     )}
-                </button>
+                </Button>
             </div>
 
             {/* Referral Lock Modal */}
             {showLockModal && (
-                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div className="modal-content" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--bg-overlay)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <Card className="modal-content" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
                         <button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
 
                         <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🔒</div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '16px' }}>Premium Feature Locked</h2>
+                        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '16px', color: 'var(--text-primary)' }}>Premium Feature Locked</h2>
                         <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '32px', lineHeight: 1.6 }}>
                             {lockMessage}
                         </p>
 
-                        <div style={{ background: 'var(--bg-glass)', border: '1px dashed var(--accent-primary)', padding: '20px', borderRadius: '16px', marginBottom: '32px' }}>
+                        <Card style={{ background: 'var(--bg-glass)', border: '1px dashed var(--primary)', padding: '20px', marginBottom: '32px' }}>
                             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Unique Invite Link</div>
-                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px' }}>
+                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: 'var(--bg-card)', padding: '10px', borderRadius: 'var(--radius-md)' }}>
                                 <input
                                     type="text"
                                     readOnly
                                     value={`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`}
                                     style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none' }}
                                 />
-                                <button
+                                <Button
                                     onClick={() => navigator.clipboard.writeText(`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`)}
-                                    className="btn btn-secondary btn-sm"
+                                    variant="secondary"
+                                    size="sm"
                                 >
                                     Copy
-                                </button>
+                                </Button>
                             </div>
-                        </div>
+                        </Card>
 
-                        <button
+                        <Button
                             onClick={() => {
                                 const text = `Join AI NEET Coach with me and get free AI Mock Tests! 🚀\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                             }}
-                            className="btn btn-success btn-lg w-full"
-                            style={{ fontSize: '1.2rem', padding: '16px', fontWeight: 700 }}
+                            variant="success"
+                            size="lg"
+                            style={{ width: '100%', fontSize: '1.2rem', padding: '16px' }}
                         >
                             📱 Share via WhatsApp
-                        </button>
-                    </div>
+                        </Button>
+                    </Card>
                 </div>
             )}
         </div >

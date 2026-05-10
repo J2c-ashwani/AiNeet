@@ -2,6 +2,7 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Card, Button, Badge, Skeleton } from '@/components/ui';
 
 export default function ResultsPage({ params }) {
     const { id: testId } = use(params);
@@ -24,8 +25,13 @@ export default function ResultsPage({ params }) {
     }, [router]);
 
     if (!results) return (
-        <div className="loading-overlay" style={{ minHeight: '100vh' }}>
-            <div className="spinner" style={{ width: 40, height: 40 }}></div>
+        <div className="page" style={{ maxWidth: 900, margin: '0 auto', minHeight: 'calc(100vh - 64px)' }}>
+            <Card style={{ marginBottom: '24px', textAlign: 'center', padding: '40px' }}>
+                <Skeleton style={{ width: '120px', height: '60px', margin: '0 auto 16px' }} />
+                <Skeleton style={{ width: '80px', height: '24px', margin: '0 auto 32px' }} />
+                <Skeleton style={{ height: '12px', width: '100%', marginBottom: '32px' }} />
+                <div className="grid grid-4"><Skeleton style={{ height: '80px' }} /><Skeleton style={{ height: '80px' }} /><Skeleton style={{ height: '80px' }} /><Skeleton style={{ height: '80px' }} /></div>
+            </Card>
         </div>
     );
 
@@ -36,186 +42,196 @@ export default function ResultsPage({ params }) {
     };
 
     return (
-        <div>
-
-
-            <div className="page" style={{ maxWidth: 900 }}>
+        <div className="page">
+            <div style={{ maxWidth: 900, margin: '0 auto' }}>
                 {/* Score Display */}
-                <div className="card animate-fade-in-up mb-6">
-                    <div className="score-display">
-                        <div className="score-big">{score.scaledScore}</div>
-                        <div className="score-max">out of 720</div>
+                <Card className="animate-fade-in-up" style={{ marginBottom: '24px', padding: '40px 24px' }}>
+                    <div className="score-display" style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '4rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{score.scaledScore}</div>
+                        <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', marginTop: '8px' }}>out of 720</div>
 
                         {/* Result bar */}
-                        <div className="result-bar mt-6">
-                            <div className="result-bar-correct" style={{ flex: score.correct }}></div>
-                            <div className="result-bar-incorrect" style={{ flex: score.incorrect }}></div>
-                            <div className="result-bar-unanswered" style={{ flex: score.unanswered }}></div>
+                        <div style={{ display: 'flex', height: '12px', borderRadius: '6px', overflow: 'hidden', margin: '32px 0 24px' }}>
+                            <div style={{ flex: score.correct, background: 'var(--success)' }}></div>
+                            <div style={{ flex: score.incorrect, background: 'var(--danger)' }}></div>
+                            <div style={{ flex: score.unanswered, background: 'var(--border)' }}></div>
                         </div>
 
-                        <div className="flex justify-center gap-6 mt-4">
-                            <div className="text-center">
-                                <div className="font-bold text-success" style={{ fontSize: '1.3rem' }}>{score.correct}</div>
-                                <div className="text-xs text-muted">Correct (+{score.correct * 4})</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="font-bold text-danger" style={{ fontSize: '1.3rem' }}>{score.incorrect}</div>
-                                <div className="text-xs text-muted">Incorrect (-{score.incorrect})</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="font-bold text-muted" style={{ fontSize: '1.3rem' }}>{score.unanswered}</div>
-                                <div className="text-xs text-muted">Unanswered</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="font-bold" style={{ fontSize: '1.3rem', color: 'var(--accent-primary)' }}>{score.accuracy}%</div>
-                                <div className="text-xs text-muted">Accuracy</div>
-                            </div>
+                        <div className="grid grid-4" style={{ gap: '16px' }}>
+                            <Card style={{ padding: '16px', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>{score.correct}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Correct (+{score.correct * 4})</div>
+                            </Card>
+                            <Card style={{ padding: '16px', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--danger)' }}>{score.incorrect}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Incorrect (-{score.incorrect})</div>
+                            </Card>
+                            <Card style={{ padding: '16px', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-secondary)' }}>{score.unanswered}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Unanswered</div>
+                            </Card>
+                            <Card style={{ padding: '16px', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)' }}>{score.accuracy}%</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Accuracy</div>
+                            </Card>
                         </div>
                     </div>
-                </div>
+                </Card>
 
                 {/* DOPAMINE UI: Referral Reward Loop */}
                 {referralRewardUnlocked && (
-                    <div className="mb-6 animate-fade-in-up" style={{
-                        padding: '24px', borderRadius: '16px',
+                    <Card className="animate-fade-in-up" style={{
+                        marginBottom: '24px', padding: '24px', textAlign: 'center',
                         background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15))',
                         border: '1px solid rgba(168,85,247,0.4)',
-                        position: 'relative', overflow: 'hidden', textAlign: 'center'
                     }}>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '12px' }}>
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>
                             🎉 Referral Validated!
                         </h3>
-                        <p style={{ color: '#cbd5e1', marginBottom: '20px', fontSize: '1.1rem' }}>
-                            You and your friend both earned <strong style={{ color: '#4ade80' }}>+20 Trust Score</strong> and unlocked <strong style={{ color: '#c084fc' }}>24h of Premium AI!</strong>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '20px', fontSize: '1.1rem' }}>
+                            You and your friend both earned <strong style={{ color: 'var(--success)' }}>+20 Trust Score</strong> and unlocked <strong style={{ color: 'var(--primary)' }}>24h of Premium AI!</strong>
                         </p>
                         
-                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: '16px', borderRadius: '12px', display: 'inline-block' }}>
-                            <p style={{ margin: 0, fontWeight: 700, color: '#e2e8f0', fontSize: '0.95rem' }}>
-                                🔥 Invite 3 more friends → Unlock 7 days premium!
-                            </p>
-                        </div>
-                    </div>
+                        <Badge variant="accent" style={{ padding: '8px 16px', fontSize: '0.95rem' }}>
+                            🔥 Invite 3 more friends → Unlock 7 days premium!
+                        </Badge>
+                    </Card>
                 )}
 
                 {/* XP & Level */}
-                <div className="grid grid-2 gap-4 mb-6 stagger">
-                    <div className="stat-card">
-                        <div className="stat-icon">⭐</div>
-                        <div className="stat-value">+{xpEarned} XP</div>
-                        <div className="stat-label">Experience Earned</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🎖️</div>
-                        <div className="stat-value">Level {level.level}</div>
-                        <div className="stat-label">{level.name}</div>
-                    </div>
+                <div className="grid grid-2" style={{ marginBottom: '24px' }}>
+                    <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '8px' }}>⭐</div>
+                        <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)' }}>+{xpEarned} XP</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Experience Earned</div>
+                    </Card>
+                    <Card style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+                        <div style={{ fontSize: '2rem', marginBottom: '8px' }}>🎖️</div>
+                        <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)' }}>Level {level.level}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{level.name}</div>
+                    </Card>
                 </div>
 
                 {/* Habit Retention Cycle: XP Progression Trigger */}
-                <div style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 12, padding: 16, marginBottom: 24, textAlign: 'center' }}>
-                    <p style={{ margin: 0, fontWeight: 600, color: '#e0e7ff' }}>
-                        You are extremely close to Level {level.level + 1}. <span style={{ color: '#818cf8' }}>Take 1 more test to rank up!</span>
+                <Card style={{ padding: '16px', marginBottom: '24px', textAlign: 'center', background: 'var(--bg-glass)' }}>
+                    <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-primary)' }}>
+                        You are extremely close to Level {level.level + 1}. <span style={{ color: 'var(--primary)' }}>Take 1 more test to rank up!</span>
                     </p>
-                </div>
+                </Card>
 
                 {/* Habit Retention Cycle: Next-Action Contiguous Testing */}
-                <div style={{ background: 'linear-gradient(135deg, rgba(8, 12, 24, 0.8), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(99, 102, 241, 0.4)', borderRadius: 16, padding: 24, marginBottom: 24, textAlign: 'center', boxShadow: '0 10px 30px rgba(99, 102, 241, 0.1)' }}>
-                    <h3 style={{ margin: '0 0 8px', fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>🧠 Keep the Momentum Going</h3>
-                    <p style={{ color: '#94a3b8', marginBottom: 16 }}>Your physics logic starts decaying when you only focus on Biology. Maintain your All-India rank streak.</p>
-                    <a href="/test/configure" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '12px 24px', borderRadius: 8, textDecoration: 'none', fontWeight: 600 }}>
-                        Switch Physics Weaknesses Now →
-                    </a>
-                </div>
+                <Card style={{ padding: '32px', marginBottom: '24px', textAlign: 'center', background: 'var(--bg-glass)', border: '1px solid var(--primary-dark)' }}>
+                    <h3 style={{ margin: '0 0 12px', fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)' }}>🧠 Keep the Momentum Going</h3>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '1rem' }}>Your physics logic starts decaying when you only focus on Biology. Maintain your All-India rank streak.</p>
+                    <Link href="/test/configure">
+                        <Button variant="accent" size="lg">
+                            Switch Physics Weaknesses Now →
+                        </Button>
+                    </Link>
+                </Card>
 
                 {/* MD Transparency: Trust Status Hint */}
                 {results.trustHint && (
-                    <div className="mb-6 animate-fade-in" style={{
-                        padding: '14px 20px', borderRadius: 12,
-                        background: results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.08)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.08)' : 'rgba(239,68,68,0.08)',
-                        border: `1px solid ${results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.25)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.25)' : 'rgba(239,68,68,0.25)'}`,
-                        color: results.trustHint.severity === 'success' ? '#4ade80' : results.trustHint.severity === 'warning' ? '#fbbf24' : '#f87171',
-                        fontSize: '0.85rem', fontWeight: 500
+                    <Card className="animate-fade-in" style={{
+                        marginBottom: '24px', padding: '16px 24px',
+                        background: results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.05)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.05)' : 'rgba(239,68,68,0.05)',
+                        border: `1px solid ${results.trustHint.severity === 'success' ? 'rgba(34,197,94,0.2)' : results.trustHint.severity === 'warning' ? 'rgba(245,158,11,0.2)' : 'rgba(239,68,68,0.2)'}`,
                     }}>
-                        {results.trustHint.severity === 'success' ? '🌟' : results.trustHint.severity === 'warning' ? '⚠️' : '🔒'} {results.trustHint.message}
-                    </div>
+                        <p style={{ margin: 0, color: results.trustHint.severity === 'success' ? 'var(--success)' : results.trustHint.severity === 'warning' ? 'var(--warning)' : 'var(--danger)', fontSize: '0.95rem', fontWeight: 600 }}>
+                            {results.trustHint.severity === 'success' ? '🌟' : results.trustHint.severity === 'warning' ? '⚠️' : '🔒'} {results.trustHint.message}
+                        </p>
+                    </Card>
                 )}
+
                 {/* Actions */}
-                <div className="flex gap-3 mb-6 flex-wrap">
-                    <a href="/test/configure" className="btn btn-primary">📝 Take Another Test</a>
-                    <a href="/analytics" className="btn btn-secondary">📊 View Analytics</a>
-                    <a href="/dashboard" className="btn btn-secondary">🏠 Dashboard</a>
-                    <button
+                <div style={{ display: 'flex', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
+                    <Link href="/test/configure"><Button variant="primary">📝 Take Another Test</Button></Link>
+                    <Link href="/analytics"><Button variant="secondary">📊 View Analytics</Button></Link>
+                    <Link href="/dashboard"><Button variant="secondary">🏠 Dashboard</Button></Link>
+                    <Button
+                        variant="success"
                         onClick={() => {
                             const text = `I just scored ${score.scaledScore}/720 on my AI NEET Mock Test! 🚀\n\nCheck out my scorecard and rank prediction here:\nhttps://aineetcoach.com/test/${testId}/share`;
                             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                         }}
-                        className="btn btn-success"
                         style={{ marginLeft: 'auto' }}
                     >
                         📱 Share to WhatsApp
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Answer Review */}
-                <div className="card-flat">
-                    <h2 className="mb-4">📋 Answer Review</h2>
-                    <div className="flex flex-col gap-4">
+                <div style={{ marginBottom: '80px' }}>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '24px' }}>📋 Answer Review</h2>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {answers.map((a, idx) => (
                             <div key={idx} className="animate-fade-in" style={{ animationDelay: `${Math.min(idx * 0.03, 0.5)}s` }}>
-                                <div style={{ padding: '16px', background: 'var(--bg-glass)', border: `1px solid ${a.is_correct ? 'rgba(16,185,129,0.3)' : a.selected_option ? 'rgba(239,68,68,0.3)' : 'var(--border-color)'}`, borderRadius: 'var(--radius-md)' }}>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="question-number">Question {idx + 1}</span>
-                                        <span className={a.is_correct ? 'text-success font-bold' : a.selected_option ? 'text-danger font-bold' : 'text-muted'}>
+                                <Card style={{ padding: '24px', background: 'var(--bg-glass)', border: `1px solid ${a.is_correct ? 'rgba(16,185,129,0.3)' : a.selected_option ? 'rgba(239,68,68,0.3)' : 'var(--border)'}` }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                        <Badge variant="secondary" style={{ fontWeight: 700 }}>Question {idx + 1}</Badge>
+                                        <span style={{ fontWeight: 800, fontSize: '0.9rem', color: a.is_correct ? 'var(--success)' : a.selected_option ? 'var(--danger)' : 'var(--text-muted)' }}>
                                             {a.is_correct ? '✓ Correct (+4)' : a.selected_option ? '✗ Incorrect (-1)' : '— Skipped (0)'}
                                         </span>
                                     </div>
-                                    <p className="text-sm mb-3">{a.text}</p>
+                                    <p style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginBottom: '20px', lineHeight: 1.6 }}>{a.text}</p>
 
-                                    <div className="flex flex-col gap-2">
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {[
                                             { key: 'A', text: a.option_a },
                                             { key: 'B', text: a.option_b },
                                             { key: 'C', text: a.option_c },
                                             { key: 'D', text: a.option_d },
                                         ].map(opt => {
-                                            let cls = '';
-                                            if (opt.key === a.correct_option) cls = 'correct';
-                                            else if (opt.key === a.selected_option && !a.is_correct) cls = 'incorrect';
+                                            const isCorrectAnswer = opt.key === a.correct_option;
+                                            const isSelectedWrong = opt.key === a.selected_option && !a.is_correct;
+                                            
                                             return (
-                                                <div key={opt.key} className={`option-card ${cls}`} style={{ cursor: 'default', padding: '10px 14px' }}>
-                                                    <span className="option-label" style={{ width: 28, height: 28, fontSize: '0.75rem' }}>{opt.key}</span>
-                                                    <span className="text-sm">{opt.text}</span>
-                                                    {opt.key === a.correct_option && <span className="text-success text-xs">✓ Correct</span>}
-                                                    {opt.key === a.selected_option && opt.key !== a.correct_option && <span className="text-danger text-xs">Your answer</span>}
+                                                <div key={opt.key} style={{
+                                                    display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 16px',
+                                                    background: isCorrectAnswer ? 'rgba(16,185,129,0.1)' : isSelectedWrong ? 'rgba(239,68,68,0.1)' : 'var(--bg-card)',
+                                                    border: `1px solid ${isCorrectAnswer ? 'rgba(16,185,129,0.3)' : isSelectedWrong ? 'rgba(239,68,68,0.3)' : 'var(--border)'}`,
+                                                    borderRadius: 'var(--radius-md)'
+                                                }}>
+                                                    <div style={{
+                                                        width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        background: isCorrectAnswer ? 'var(--success)' : isSelectedWrong ? 'var(--danger)' : 'var(--bg-glass)',
+                                                        color: isCorrectAnswer || isSelectedWrong ? '#fff' : 'var(--text-secondary)',
+                                                        borderRadius: '50%', fontSize: '0.8rem', fontWeight: 700
+                                                    }}>
+                                                        {opt.key}
+                                                    </div>
+                                                    <span style={{ flex: 1, fontSize: '0.95rem', color: isCorrectAnswer ? 'var(--success)' : isSelectedWrong ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: isCorrectAnswer || isSelectedWrong ? 600 : 400 }}>{opt.text}</span>
+                                                    {isCorrectAnswer && <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--success)' }}>✓ Correct</span>}
+                                                    {isSelectedWrong && <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--danger)' }}>Your answer</span>}
                                                 </div>
                                             );
                                         })}
                                     </div>
 
-                                    <button className="btn btn-ghost btn-sm mt-3" onClick={() => toggleExplanation(idx)}>
-                                        {showExplanation[idx] ? '🔽 Hide Explanation' : '💡 Show Explanation'}
-                                    </button>
+                                    <div style={{ marginTop: '20px' }}>
+                                        <Button variant="outline" size="sm" onClick={() => toggleExplanation(idx)}>
+                                            {showExplanation[idx] ? '🔽 Hide Explanation' : '💡 Show Explanation'}
+                                        </Button>
+                                    </div>
 
                                     {showExplanation[idx] && (
-                                        <div className="explanation-box">
-                                            <h4>💡 Explanation</h4>
+                                        <div style={{ marginTop: '20px', padding: '16px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                                            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>💡 Explanation</h4>
                                             {a.explanation ? (
-                                                <p>{a.explanation}</p>
+                                                <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{a.explanation}</p>
                                             ) : (
-                                                <div className="flex flex-col gap-2">
-                                                    <p className="text-muted">No specific explanation available.</p>
-                                                    <a 
-                                                        href={`/doubts?q=${encodeURIComponent('Please explain this NEET question: ' + a.text + ' The correct option is ' + a.correct_option)}`}
-                                                        className="btn btn-outline btn-sm text-center"
-                                                        style={{ maxWidth: '250px' }}
-                                                    >
-                                                        🤖 Ask AI Coach to Explain
-                                                    </a>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>No specific explanation available.</p>
+                                                    <Link href={`/doubts?q=${encodeURIComponent('Please explain this NEET question: ' + a.text + ' The correct option is ' + a.correct_option)}`}>
+                                                        <Button variant="secondary" size="sm">
+                                                            🤖 Ask AI Coach to Explain
+                                                        </Button>
+                                                    </Link>
                                                 </div>
                                             )}
                                         </div>
                                     )}
-                                </div>
+                                </Card>
                             </div>
                         ))}
                     </div>
