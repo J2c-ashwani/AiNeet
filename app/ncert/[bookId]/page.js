@@ -59,46 +59,46 @@ function NCERTReaderContent() {
     );
 
     if (error || !bookData) return (
-        <div className="flex-1 flex flex-col items-center justify-center pt-10">
-            <div className="text-5xl mb-4">📖</div>
-            <h2 className="text-xl font-bold">{error || 'Failed to load PDF.'}</h2>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '40px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📖</div>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>{error || 'Failed to load PDF.'}</h2>
             {error && (
-                <button onClick={() => window.location.href = '/ncert'} className="btn btn-primary mt-4">
+                <Button variant="primary" onClick={() => window.location.href = '/ncert'} style={{ marginTop: '16px' }}>
                     Back to Library
-                </button>
+                </Button>
             )}
         </div>
     );
 
     return (
-        <div className="flex-1 overflow-hidden relative flex flex-col">
-            <div className="bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between z-10 hidden md:flex">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => window.location.href = '/ncert'} className="btn btn-secondary btn-sm">
+        <div style={{ flex: 1, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+            <div className="hidden md:flex" style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', padding: '12px', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <Button variant="secondary" size="sm" onClick={() => window.location.href = '/ncert'}>
                         ← Back
-                    </button>
-                    <h1 className="text-lg font-bold truncate max-w-md">{bookData.title}</h1>
+                    </Button>
+                    <h1 style={{ fontSize: '1.125rem', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>{bookData.title}</h1>
                 </div>
-                <div className="text-sm text-gray-400">
+                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                     Select text to AI Explain ✨
                 </div>
             </div>
 
             {/* Mobile Back Button */}
-            <div className="md:hidden p-2 bg-gray-900 border-b border-gray-800 flex justify-between items-center">
-                <button onClick={() => window.location.href = '/ncert'} className="text-blue-400 text-sm font-bold">
+            <div className="md:hidden" style={{ padding: '8px', background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button onClick={() => window.location.href = '/ncert'} style={{ color: 'var(--accent)', fontSize: '0.875rem', fontWeight: 800, background: 'none', border: 'none', cursor: 'pointer' }}>
                     ← Back
                 </button>
-                <div className="text-xs text-gray-400 truncate max-w-[200px]">{bookData.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>{bookData.title}</div>
             </div>
 
-            <div className="flex-1 overflow-hidden relative">
+            <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
                 <PDFViewerClient book={bookData} />
                 {/* Fallback: always give user a direct escape hatch */}
-                <div style={{ textAlign: 'center', padding: '12px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                    <span style={{ color: '#64748b', fontSize: '0.8rem' }}>PDF not loading? </span>
+                <div style={{ textAlign: 'center', padding: '12px', borderTop: '1px solid var(--border)' }}>
+                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>PDF not loading? </span>
                     <a href={bookData.directUrl} target="_blank" rel="noopener noreferrer"
-                        style={{ color: '#60a5fa', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
+                        style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
                         Open in New Tab ↗
                     </a>
                 </div>
@@ -109,9 +109,9 @@ function NCERTReaderContent() {
 
 export default function NCERTReaderPage() {
     return (
-        <div className="h-screen flex flex-col bg-gray-950">
+        <div className="page" style={{ height: '100vh', display: 'flex', flexDirection: 'column', padding: 0 }}>
             
-            <Suspense fallback={<div className="flex-1 flex justify-center items-center"><div className="spinner mx-auto w-8 h-8"></div></div>}>
+            <Suspense fallback={<div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}><div className="spinner mx-auto w-8 h-8"></div></div>}>
                 <NCERTReaderContent />
             </Suspense>
         </div>

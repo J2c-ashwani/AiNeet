@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { Card, Button, Badge, Skeleton } from '@/components/ui';
 
 export default function DiagnosticResultsLock() {
     const [result, setResult] = useState(null);
@@ -75,39 +76,40 @@ export default function DiagnosticResultsLock() {
     };
 
     if (noResult) return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#080c18', color: '#fff', padding: 40, textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: 16 }}>⏱️</div>
-            <h2 style={{ fontWeight: 700, marginBottom: 12 }}>Your session expired</h2>
-            <p style={{ color: '#94a3b8', marginBottom: 28, maxWidth: 400 }}>
+        <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', textAlign: 'center' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⏱️</div>
+            <h2 style={{ fontWeight: 800, marginBottom: '12px', color: 'var(--text-primary)' }}>Your session expired</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '28px', maxWidth: 400 }}>
                 Your diagnostic results are no longer available in this browser. Retake the test — it only takes 3 minutes.
             </p>
-            <a href="/test/diagnostic" style={{ display: 'inline-block', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', padding: '14px 32px', borderRadius: 10, fontWeight: 700, textDecoration: 'none', fontSize: '1.05rem' }}>
-                Retake Diagnostic →
-            </a>
+            <Link href="/test/diagnostic">
+                <Button variant="accent" size="lg">
+                    Retake Diagnostic →
+                </Button>
+            </Link>
         </div>
     );
 
     if (!result) return null;
 
     return (
-        <div style={{ minHeight: '100vh', background: '#080c18', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 20px', overflowX: 'hidden' }}>
+        <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 20px', overflowX: 'hidden' }}>
             
             {/* Real Telemetry Social Proof */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(245, 158, 11, 0.1)', color: '#fbbf24', padding: '6px 16px', borderRadius: 20, fontSize: '0.85rem', fontWeight: 600, marginBottom: 24, border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                <span className="animate-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: '#fbbf24' }}></span>
+            <Badge variant="warning" style={{ marginBottom: '24px', padding: '8px 16px', fontSize: '0.85rem' }}>
                 🔥 {aspirantCount || '...'} students took this test today | Average: 61%
-            </div>
+            </Badge>
 
             {/* The Hook: Immediate Reality Check */}
             <div style={{ textAlign: 'center', maxWidth: 640, marginBottom: 40, animation: 'fadeInDown 0.6s ease-out' }}>
-                <div style={{ display: 'inline-block', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '6px 16px', borderRadius: 20, fontSize: '0.9rem', fontWeight: 700, marginBottom: 16 }}>
+                <Badge variant="danger" style={{ marginBottom: '16px', fontWeight: 800, letterSpacing: '0.5px' }}>
                     CRITICAL DIAGNOSIS COMPLETE
-                </div>
-                <h1 style={{ fontSize: '2.5rem', margin: 0, fontWeight: 800, lineHeight: 1.2 }}>
+                </Badge>
+                <h1 style={{ fontSize: '2.5rem', margin: 0, fontWeight: 900, lineHeight: 1.2, color: 'var(--text-primary)' }}>
                     Your primary weakness is <br/>
-                    <span style={{ color: '#ef4444' }}>{result.weakestChapter}</span>
+                    <span style={{ color: 'var(--danger)' }}>{result.weakestChapter}</span>
                 </h1>
-                <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginTop: 16 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: 16 }}>
                     This single chapter is dragging down your entire NEET preparation trajectory.
                 </p>
             </div>
@@ -115,84 +117,90 @@ export default function DiagnosticResultsLock() {
             {/* The Psychological Stack Panel */}
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 900, marginBottom: 60 }}>
                 {/* Fear Panel */}
-                <div style={{ background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 16, padding: 24, width: 280, boxShadow: '0 10px 30px rgba(239, 68, 68, 0.05)' }}>
+                <Card style={{ border: '1px solid var(--danger)', width: 280, padding: 24 }}>
                     <div style={{ fontSize: '2rem', marginBottom: 8 }}>📉</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#ef4444', fontWeight: 800 }}>-{result.lostMarks} Marks</h3>
-                    <p style={{ color: '#94a3b8', margin: '8px 0 0', fontSize: '0.95rem' }}>Projected score penalty in the actual NEET exam due to this blind spot.</p>
-                </div>
+                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--danger)', fontWeight: 800 }}>-{result.lostMarks} Marks</h3>
+                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Projected score penalty in the actual NEET exam due to this blind spot.</p>
+                </Card>
 
                 {/* Peer Pressure Panel */}
-                <div style={{ background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 16, padding: 24, width: 280, boxShadow: '0 10px 30px rgba(245, 158, 11, 0.05)' }}>
+                <Card style={{ border: '1px solid var(--warning)', width: 280, padding: 24 }}>
                     <div style={{ fontSize: '2rem', marginBottom: 8 }}>👥</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#fbbf24', fontWeight: 800 }}>Bottom {result.percentile}%</h3>
-                    <p style={{ color: '#94a3b8', margin: '8px 0 0', fontSize: '0.95rem' }}>Your accuracy places you behind {100 - result.percentile}% of active NEET aspirants this week.</p>
-                </div>
+                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--warning)', fontWeight: 800 }}>Bottom {result.percentile}%</h3>
+                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Your accuracy places you behind {100 - result.percentile}% of active NEET aspirants this week.</p>
+                </Card>
 
                 {/* Hope Panel */}
-                <div style={{ background: 'linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: 16, padding: 24, width: 280, boxShadow: '0 10px 30px rgba(34, 197, 94, 0.05)' }}>
+                <Card style={{ border: '1px solid var(--success)', width: 280, padding: 24 }}>
                     <div style={{ fontSize: '2rem', marginBottom: 8 }}>🚀</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#4ade80', fontWeight: 800 }}>{result.peerImprovementText}</h3>
-                    <p style={{ color: '#94a3b8', margin: '8px 0 0', fontSize: '0.95rem' }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
-                </div>
+                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--success)', fontWeight: 800 }}>{result.peerImprovementText}</h3>
+                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
+                </Card>
             </div>
 
 
             {/* The Lock Screen & Blur (Dynamically clears on unlock state!) */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 24, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.5s ease' }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.5s ease' }}>
                 {/* Fake Blurred Dashboard content to trigger FOMO */}
-                <div style={{ padding: 40, background: '#0f172a', filter: unlocked ? 'none' : 'blur(12px)', opacity: unlocked ? 1 : 0.5, pointerEvents: unlocked ? 'auto' : 'none', userSelect: unlocked ? 'auto' : 'none', transition: 'all 0.5s ease' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 30 }}>
-                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {unlocked && <h3 style={{ color: '#818cf8' }}>Deep Analysis Active</h3>}
-                        </div>
-                        <div style={{ width: 300, height: 180, background: '#1e293b', borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {unlocked && <h3 style={{ color: '#4ade80' }}>Action Plan Active</h3>}
-                        </div>
+                <Card style={{ padding: 40, filter: unlocked ? 'none' : 'blur(12px)', opacity: unlocked ? 1 : 0.5, pointerEvents: unlocked ? 'auto' : 'none', userSelect: unlocked ? 'auto' : 'none', transition: 'all 0.5s ease', border: 'none', background: 'var(--bg-glass)' }}>
+                    <div className="grid grid-2" style={{ marginBottom: 30 }}>
+                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
+                            {unlocked && <h3 style={{ color: 'var(--primary)' }}>Deep Analysis Active</h3>}
+                        </Card>
+                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
+                            {unlocked && <h3 style={{ color: 'var(--success)' }}>Action Plan Active</h3>}
+                        </Card>
                     </div>
-                    <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8, marginBottom: 16 }} />
-                    <div style={{ width: '100%', height: 60, background: '#1e293b', borderRadius: 8 }} />
+                    <Skeleton style={{ height: 60, marginBottom: 16 }} />
+                    <Skeleton style={{ height: 60 }} />
                     <div style={{ textAlign: 'center', marginTop: 40 }}>
-                         {unlocked && <a href="/register?claim_diagnostic=true" style={{ display: 'inline-block', background: '#6366f1', color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 700, textDecoration: 'none' }}>Permanently Save This State →</a>}
+                         {unlocked && (
+                             <Link href="/register?claim_diagnostic=true">
+                                 <Button variant="accent">Permanently Save This State →</Button>
+                             </Link>
+                         )}
                     </div>
-                </div>
+                </Card>
 
                 {/* The Soft CTA Override (The Share/Register Gate) */}
                 {!unlocked && (
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(8, 12, 24, 0.7)' }}>
-                        <div style={{ background: '#1e293b', padding: '40px 32px', borderRadius: 24, textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', maxWidth: 440, width: '100%' }}>
-                            <div style={{ width: 64, height: 64, background: 'rgba(99, 102, 241, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-overlay)' }}>
+                        <Card style={{ padding: '40px 32px', textAlign: 'center', maxWidth: 440, width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+                            <div style={{ width: 64, height: 64, background: 'var(--bg-glass-hover)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <span style={{ fontSize: '1.8rem' }}>🔒</span>
                             </div>
-                            <h2 style={{ fontSize: '1.6rem', marginBottom: 12, fontWeight: 700 }}>Unlock your full improvement plan</h2>
-                            <p style={{ color: '#94a3b8', marginBottom: 24, fontSize: '0.95rem' }}>
+                            <h2 style={{ fontSize: '1.6rem', marginBottom: 12, fontWeight: 800, color: 'var(--text-primary)' }}>Unlock your full improvement plan</h2>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: '0.95rem' }}>
                                 Choose one of the following to reveal your complete analytics.
                             </p>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <div style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>1. The Viral Path</div>
-                                    <button onClick={handleViralShare} style={{ width: '100%', background: '#25D366', color: 'white', padding: '14px 20px', borderRadius: 10, border: 'none', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 4px 14px rgba(37, 211, 102, 0.2)', transition: 'transform 0.2s', marginBottom: 12 }}>
+                                <Card style={{ padding: 16, border: '1px solid var(--border)' }}>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>1. The Viral Path</div>
+                                    <Button variant="success" onClick={handleViralShare} style={{ width: '100%', padding: '14px 20px', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
                                         📱 Share your score with friends
-                                    </button>
+                                    </Button>
                                     <input 
                                         type="tel" 
                                         placeholder="WhatsApp # (Optional: Alert me if beaten)" 
                                         value={ghostPhone}
                                         onChange={(e) => setGhostPhone(e.target.value)}
-                                        style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: '#080c18', border: '1px solid #334155', color: 'white', fontSize: '0.9rem', outline: 'none' }}
+                                        style={{ width: '100%', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: '0.95rem', outline: 'none' }}
                                     />
-                                </div>
+                                </Card>
                                 
-                                <div style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 600 }}>OR</div>
+                                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 700 }}>OR</div>
 
-                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <div style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
-                                    <a href="/register?claim_diagnostic=true" style={{ display: 'inline-block', width: '100%', background: 'linear-gradient(135deg, #6366f1, #a855f7)', color: 'white', textDecoration: 'none', padding: '14px 20px', borderRadius: 10, fontWeight: 700, fontSize: '1.05rem', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)' }}>
-                                        Create Free Account
-                                    </a>
-                                </div>
+                                <Card style={{ padding: 16, border: '1px solid var(--border)' }}>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
+                                    <Link href="/register?claim_diagnostic=true" style={{ width: '100%' }}>
+                                        <Button variant="accent" style={{ width: '100%', fontSize: '1.05rem' }}>
+                                            Create Free Account
+                                        </Button>
+                                    </Link>
+                                </Card>
                             </div>
-                        </div>
+                        </Card>
                     </div>
                 )}
             </div>

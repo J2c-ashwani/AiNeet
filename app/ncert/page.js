@@ -68,21 +68,21 @@ export default function NCERTLibrary() {
                     {['all', 'physics', 'chemistry', 'biology'].map(s => (
                         <button key={s} onClick={() => setActiveSubject(s)} style={{
                             padding: '10px 20px', borderRadius: 10,
-                            border: activeSubject === s ? `2px solid ${SUBJECT_COLORS[s] || '#6366f1'}` : '2px solid rgba(255,255,255,0.1)',
-                            background: activeSubject === s ? `${SUBJECT_COLORS[s] || '#6366f1'}22` : 'rgba(255,255,255,0.03)',
-                            color: activeSubject === s ? (SUBJECT_COLORS[s] || '#6366f1') : '#94a3b8',
+                            border: activeSubject === s ? `2px solid var(--primary)` : '2px solid var(--border)',
+                            background: activeSubject === s ? `var(--primary-light, rgba(99, 102, 241, 0.1))` : 'var(--bg-glass)',
+                            color: activeSubject === s ? 'var(--primary)' : 'var(--text-secondary)',
                             fontWeight: 700, cursor: 'pointer', textTransform: 'capitalize',
                         }}>
                             {s === 'all' ? '📖 All' : `${SUBJECT_ICONS[s]} ${s}`}
                         </button>
                     ))}
-                    <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', padding: '0 12px' }} />
+                    <div style={{ borderLeft: '1px solid var(--border)', padding: '0 12px' }} />
                     {['all', '11', '12'].map(c => (
                         <button key={c} onClick={() => setActiveClass(c)} style={{
                             padding: '10px 20px', borderRadius: 10,
-                            border: activeClass === c ? '2px solid #f59e0b' : '2px solid rgba(255,255,255,0.1)',
-                            background: activeClass === c ? 'rgba(245,158,11,0.1)' : 'rgba(255,255,255,0.03)',
-                            color: activeClass === c ? '#f59e0b' : '#94a3b8',
+                            border: activeClass === c ? '2px solid var(--accent)' : '2px solid var(--border)',
+                            background: activeClass === c ? 'var(--accent-light, rgba(245, 158, 11, 0.1))' : 'var(--bg-glass)',
+                            color: activeClass === c ? 'var(--accent)' : 'var(--text-secondary)',
                             fontWeight: 700, cursor: 'pointer',
                         }}>
                             {c === 'all' ? 'All Classes' : `Class ${c}`}
@@ -98,7 +98,7 @@ export default function NCERTLibrary() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         {filtered.map((book, i) => {
                             const isExpanded = expandedBook === i;
-                            const color = SUBJECT_COLORS[book.subject] || '#6366f1';
+                            const color = SUBJECT_COLORS[book.subject] || 'var(--primary)';
                             return (
                                 <div key={i} className="card" style={{ borderLeft: `4px solid ${color}`, transition: 'all 0.3s' }}>
                                     <div onClick={() => setExpandedBook(isExpanded ? null : i)}
@@ -108,13 +108,13 @@ export default function NCERTLibrary() {
                                                 {SUBJECT_ICONS[book.subject] || '📖'}
                                             </span>
                                             <div>
-                                                <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>
                                                     Class {book.class} • {book.subject}
                                                 </div>
-                                                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f1f5f9' }}>
+                                                <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                                                     {book.book}
                                                 </div>
-                                                <div style={{ fontSize: '0.85rem', color: '#64748b', marginTop: 4 }}>
+                                                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 4 }}>
                                                     {book.chapters.length} chapters
                                                 </div>
                                             </div>
@@ -125,26 +125,26 @@ export default function NCERTLibrary() {
                                                 style={{ padding: '8px 16px', borderRadius: 8, background: `${color}22`, color, fontWeight: 700, fontSize: '0.85rem', border: `1px solid ${color}44` }}>
                                                 {isExpanded ? 'Collapse' : '📂 Chapter-wise'}
                                             </button>
-                                            <span style={{ color: '#64748b', fontSize: '1.5rem', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
+                                            <span style={{ color: 'var(--text-secondary)', fontSize: '1.5rem', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
                                         </div>
                                     </div>
 
                                     {isExpanded && (
-                                        <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 16 }}>
+                                        <div style={{ marginTop: 20, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12 }}>
                                                 {book.chapters.map(ch => (
                                                     <div key={ch.ch}
                                                         style={{
                                                             display: 'flex', flexDirection: 'column', gap: 12, padding: '16px',
-                                                            borderRadius: 12, background: 'rgba(255,255,255,0.03)',
-                                                            border: '1px solid rgba(255,255,255,0.06)',
+                                                            borderRadius: 12, background: 'var(--bg-glass)',
+                                                            border: '1px solid var(--border)',
                                                         }}
                                                     >
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                                             <span style={{ background: `${color}22`, color, padding: '4px 10px', borderRadius: 6, fontWeight: 800, fontSize: '0.8rem', minWidth: 40, textAlign: 'center' }}>
                                                                 Ch {ch.ch}
                                                             </span>
-                                                            <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#f8fafc', lineHeight: 1.3 }}>{ch.title}</span>
+                                                            <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.3 }}>{ch.title}</span>
                                                         </div>
                                                         <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
                                                             <a href={`/ncert/${book.code}?ch=${ch.ch}`}
@@ -152,15 +152,15 @@ export default function NCERTLibrary() {
                                                                 📖 Study PDF
                                                             </a>
                                                             {ch.pyqCount === 0 ? (
-                                                                <div style={{ flex: 1, padding: '10px', borderRadius: 8, background: `rgba(239,68,68,0.1)`, color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, border: `1px solid rgba(239,68,68,0.2)`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+                                                                <div style={{ flex: 1, padding: '10px', borderRadius: 8, background: `var(--danger-light, rgba(239, 68, 68, 0.1))`, color: 'var(--danger)', fontSize: '0.85rem', fontWeight: 600, border: `1px solid var(--danger)`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
                                                                     No PYQs asked yet
                                                                 </div>
                                                             ) : (
                                                                 <button
                                                                     onClick={() => handleStartPyq(ch.title, ch.pyqCount)}
                                                                     disabled={generating === ch.title || noPyqChapter === ch.title}
-                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: noPyqChapter === ch.title ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)', color: noPyqChapter === ch.title ? '#ef4444' : '#f59e0b', fontSize: '0.85rem', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid rgba(239,68,68,0.3)' : '1px solid rgba(245,158,11,0.3)', cursor: (generating === ch.title || noPyqChapter === ch.title) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
-                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: '#f59e0b', borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? '❌ No PYQs Available' : `🎯 Solve PYQs (${ch.pyqCount})`}
+                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: noPyqChapter === ch.title ? 'var(--danger-light, rgba(239, 68, 68, 0.1))' : 'var(--accent-light, rgba(245, 158, 11, 0.1))', color: noPyqChapter === ch.title ? 'var(--danger)' : 'var(--accent)', fontSize: '0.85rem', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid var(--danger)' : '1px solid var(--accent)', cursor: (generating === ch.title || noPyqChapter === ch.title) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
+                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: 'var(--accent)', borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? '❌ No PYQs Available' : `🎯 Solve PYQs (${ch.pyqCount})`}
                                                                 </button>
                                                             )}
                                                         </div>

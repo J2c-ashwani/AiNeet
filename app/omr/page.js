@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { createSupabaseClient } from '@/utils/supabase/client';
+import { Card, Button } from '@/components/ui';
 
 export default function OMRScannerPage() {
     const supabase = createSupabaseClient();
@@ -116,17 +117,17 @@ export default function OMRScannerPage() {
     };
 
     return (
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+        <div className="page" style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
             
-            <header className="mb-8 text-center pb-6 border-b border-gray-800">
-                <span className="text-4xl block mb-2">📸</span>
-                <h1 className="text-3xl font-black mb-1">OMR Engine</h1>
-                <p className="text-muted text-sm">Digitize offline mock tests into your NEET Heatmap</p>
+            <header style={{ marginBottom: '32px', textAlign: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--border)' }}>
+                <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px' }}>📸</span>
+                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px', color: 'var(--text-primary)' }}>OMR Engine</h1>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Digitize offline mock tests into your NEET Heatmap</p>
             </header>
 
             {/* ERROR TOAST */}
             {scanError && (
-                <div className="bg-red-900 border border-red-500 text-red-200 p-4 rounded-lg mb-6 text-sm flex gap-2">
+                <div style={{ background: 'var(--danger-light, rgba(239, 68, 68, 0.1))', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', fontSize: '0.9rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <span>⚠️</span> {scanError}
                 </div>
             )}
@@ -134,70 +135,74 @@ export default function OMRScannerPage() {
             {/* FINAL RESULT STATE */}
             {finalResult ? (
                 <div className="animate-fade-in-up">
-                    <div className="card text-center py-10 px-4" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1))', borderColor: 'rgba(99,102,241,0.2)' }}>
-                        <h2 className="text-4xl font-black text-indigo-400 mb-2">{finalResult.score} / {finalResult.totalPossible}</h2>
-                        <p className="text-gray-400 font-bold mb-6">Accuracy: <span className="text-white">{finalResult.accuracy}%</span></p>
+                    <Card style={{ textAlign: 'center', padding: '40px 16px', background: 'var(--gradient-primary-light, linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)))', border: '1px solid var(--primary)', marginBottom: '24px' }}>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '8px' }}>{finalResult.score} / {finalResult.totalPossible}</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '24px' }}>Accuracy: <span style={{ color: 'var(--text-primary)' }}>{finalResult.accuracy}%</span></p>
                         
-                        <div className="bg-black/30 p-4 rounded-lg mb-6">
-                            <span className="block text-xs uppercase tracking-widest text-emerald-500 font-bold mb-1">Rank Estimate</span>
-                            <span className="text-2xl font-bold">{finalResult.estimatedRankRange}</span>
+                        <div style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '24px' }}>
+                            <span style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--success)', fontWeight: 700, marginBottom: '4px' }}>Rank Estimate</span>
+                            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{finalResult.estimatedRankRange}</span>
                         </div>
 
-                        <p className="text-sm text-yellow-300 bg-yellow-900/30 p-3 rounded">{finalResult.communityInsight}</p>
-                    </div>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--warning)', background: 'var(--warning-light, rgba(245, 158, 11, 0.1))', padding: '12px', borderRadius: 'var(--radius-sm)' }}>{finalResult.communityInsight}</p>
+                    </Card>
 
-                    <button className="btn btn-secondary w-full mt-6" onClick={() => { setFinalResult(null); setImagePreview(null); }}>
+                    <Button variant="secondary" style={{ width: '100%', marginBottom: '12px' }} onClick={() => { setFinalResult(null); setImagePreview(null); }}>
                         Scan Another OMR Sheet
-                    </button>
+                    </Button>
                     {/* MD Hook to jump straight into Heatmap action */}
-                    <a href="/mistakes" className="btn btn-primary w-full mt-3 block text-center" style={{ textDecoration: 'none' }}>
-                        View Updated Mistake Heatmap
+                    <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
+                        <Button variant="primary" style={{ width: '100%' }}>
+                            View Updated Mistake Heatmap
+                        </Button>
                     </a>
                 </div>
             ) 
             /* VERIFICATION STATE (MD MANDATE) */
             : needsVerification ? (
                 <div className="animate-fade-in-up">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-xl text-yellow-400">Verify extracted answers</h3>
-                        <span className="text-xs text-gray-400">Tap to correct</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                        <h3 style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--warning)' }}>Verify extracted answers</h3>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tap to correct</span>
                     </div>
                     
-                    <div className="grid grid-cols-4 gap-2 mb-8 max-h-[400px] overflow-y-auto p-2 border border-gray-800 rounded bg-black/20">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px', marginBottom: '32px', maxHeight: '400px', overflowY: 'auto', padding: '8px', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)' }}>
                         {Object.keys(scannedAnswers).map(qNum => (
-                            <div key={qNum} className="flex gap-2 items-center bg-gray-900 p-2 rounded">
-                                <span className="text-xs text-gray-500 w-4 text-right">{qNum}.</span>
+                            <div key={qNum} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg-elevated)', padding: '8px', borderRadius: 'var(--radius-sm)' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', width: '16px', textAlign: 'right' }}>{qNum}.</span>
                                 <select 
-                                    className="bg-transparent border-none text-white text-sm font-bold p-0 focus:ring-0 cursor-pointer"
+                                    className="input-field"
+                                    style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 700, padding: 0, cursor: 'pointer', outline: 'none' }}
                                     value={scannedAnswers[qNum] || ''}
                                     onChange={(e) => handleBubbleCorrection(qNum, e.target.value)}
                                 >
-                                    <option value="" className="bg-gray-800">-</option>
-                                    <option value="A" className="bg-gray-800">A</option>
-                                    <option value="B" className="bg-gray-800">B</option>
-                                    <option value="C" className="bg-gray-800">C</option>
-                                    <option value="D" className="bg-gray-800">D</option>
+                                    <option value="" style={{ background: 'var(--bg-card)' }}>-</option>
+                                    <option value="A" style={{ background: 'var(--bg-card)' }}>A</option>
+                                    <option value="B" style={{ background: 'var(--bg-card)' }}>B</option>
+                                    <option value="C" style={{ background: 'var(--bg-card)' }}>C</option>
+                                    <option value="D" style={{ background: 'var(--bg-card)' }}>D</option>
                                 </select>
                             </div>
                         ))}
                     </div>
 
-                    <button onClick={handleIdentityInjection} disabled={isGrading} className="btn w-full font-bold" style={{ background: '#10b981', color: 'white' }}>
+                    <Button variant="success" onClick={handleIdentityInjection} disabled={isGrading} style={{ width: '100%', marginBottom: '12px' }}>
                         {isGrading ? 'Injecting into Heatmap...' : 'Lock Initial Answers & Grade →'}
-                    </button>
-                    <button onClick={() => setNeedsVerification(false)} className="btn btn-secondary w-full mt-3">
+                    </Button>
+                    <Button variant="secondary" onClick={() => setNeedsVerification(false)} style={{ width: '100%' }}>
                         Cancel & Rescan
-                    </button>
+                    </Button>
                 </div>
             ) 
             /* INITIAL UPLOAD STATE */
             : (
-                <div className="space-y-6">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     {/* MD Upgrade 3: Test Identification Gateway */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-400 mb-2">1. Select Offline Test</label>
+                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>1. Select Offline Test</label>
                         <select 
-                            className="input w-full p-3 bg-gray-900"
+                            className="input-field"
+                            style={{ width: '100%', padding: '12px', background: 'var(--bg-elevated)' }}
                             value={selectedTestId}
                             onChange={(e) => setSelectedTestId(e.target.value)}
                         >
@@ -208,15 +213,17 @@ export default function OMRScannerPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-400 mb-2">2. Capture OMR Sheet</label>
-                        <div className="relative border-2 border-dashed border-gray-700 rounded-xl bg-gray-900/50 p-6 flex flex-col items-center justify-center min-h-[200px] overflow-hidden group hover:border-indigo-500 transition-colors cursor-pointer">
+                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>2. Capture OMR Sheet</label>
+                        <div style={{ position: 'relative', border: '2px dashed var(--border)', borderRadius: 'var(--radius-xl)', background: 'var(--bg-glass)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '200px', overflow: 'hidden', cursor: 'pointer', transition: 'border-color 0.2s' }}
+                             onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
+                             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}>
                             
                             {imagePreview ? (
-                                <img src={imagePreview} alt="OMR Preview" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+                                <img src={imagePreview} alt="OMR Preview" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} />
                             ) : (
-                                <div className="text-center pointer-events-none">
-                                    <span className="text-4xl block mb-2 text-indigo-400">📷</span>
-                                    <span className="font-bold text-gray-300">Tap to open Camera</span>
+                                <div style={{ textAlign: 'center', pointerEvents: 'none' }}>
+                                    <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px', color: 'var(--primary)' }}>📷</span>
+                                    <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>Tap to open Camera</span>
                                 </div>
                             )}
 
@@ -225,23 +232,25 @@ export default function OMRScannerPage() {
                                 accept="image/*" 
                                 capture="environment" 
                                 onChange={handleCameraCapture}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
                             />
                         </div>
                     </div>
 
-                    <button 
+                    <Button 
+                        variant="primary"
+                        size="lg"
                         onClick={handleVisionScan}
                         disabled={!imagePreview || isScanning}
-                        className="btn btn-primary w-full py-4 text-lg mt-4 disabled:opacity-50"
+                        style={{ width: '100%', padding: '16px', fontSize: '1.1rem', marginTop: '16px' }}
                     >
                         {isScanning ? (
-                            <span className="flex items-center justify-center gap-2">
-                                <div className="w-5 h-5 border-2 border-white rounded-full border-t-transparent animate-spin" />
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <div className="spinner" style={{ width: '20px', height: '20px' }} />
                                 Extracting Neural Bubbles...
                             </span>
                         ) : 'Extract Answers'}
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>
