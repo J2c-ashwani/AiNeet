@@ -1,89 +1,166 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createSupabaseClient } from '@/utils/supabase/client';
 import { Card, Button } from '@/components/ui';
 
+// ── Image Validation Helpers ──
+function validateImage(file) {
+    const MAX_SIZE_MB = 15;
+    const MIN_DIMENSION = 300;
+    const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    const SUPPORTED_PDF = 'application/pdf';
+
+    if (!file) return { valid: false, error: 'No file selected.' };
+
+    const isPdf = file.type === SUPPORTED_PDF;
+    const isImage = SUPPORTED_IMAGE_TYPES.includes(file.type);
+
+    if (!isImage && !isPdf) {
+        return { valid: false, error: `Unsupported format: ${file.type || 'unknown'}. Use JPG, PNG, WebP, or PDF.` };
+    }
+
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > MAX_SIZE_MB) {
+        return { valid: false, error: `File too large (${sizeMB.toFixed(1)}MB). Maximum is ${MAX_SIZE_MB}MB.` };
+    }
+
+    if (isPdf) {
+        return { valid: true, isPdf: true, sizeLabel: `PDF · ${sizeMB.toFixed(1)}MB` };
+    }
+
+    return { valid: true, isPdf: false, sizeLabel: `${sizeMB.toFixed(1)}MB` };
+}
+
+function checkImageDimensions(base64) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            if (img.width < 300 || img.height < 300) {
+                resolve({ warning: `Image is very small (${img.width}×${img.height}px). A clearer photo will improve accuracy.` });
+            } else {
+                resolve({ warning: null, width: img.width, height: img.height });
+            }
+        };
+        img.onerror = () => resolve({ warning: null });
+        img.src = base64;
+    });
+}
+
 export default function OMRScannerPage() {
     const supabase = createSupabaseClient();
-    
+
     // Core App State
     const [tests, setTests] = useState([]);
+    const [testsLoading, setTestsLoading] = useState(true);
     const [selectedTestId, setSelectedTestId] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
+    const [fileInfo, setFileInfo] = useState(null); // { sizeLabel, isPdf, warning }
     const [isScanning, setIsScanning] = useState(false);
     const [scanError, setScanError] = useState(null);
-    
-    // Verification Grid State (MD Mandate 1)
+
+    // Verification Grid State
     const [needsVerification, setNeedsVerification] = useState(false);
     const [scannedAnswers, setScannedAnswers] = useState({});
-    
+
     // Final Identity State
     const [isGrading, setIsGrading] = useState(false);
     const [finalResult, setFinalResult] = useState(null);
 
+    // Refs for hidden file inputs
+    const cameraInputRef = useRef(null);
+    const galleryInputRef = useRef(null);
+
     useEffect(() => {
         async function fetchTests() {
-            const { data } = await supabase.from('offline_tests').select('id, test_name, provider');
-            if (data) {
-                setTests(data);
-                if (data.length > 0) setSelectedTestId(data[0].id);
+            try {
+                const { data } = await supabase.from('offline_tests').select('id, test_name, provider');
+                if (data && data.length > 0) {
+                    setTests(data);
+                    setSelectedTestId(data[0].id);
+                }
+            } catch (e) {
+                // silently fail — empty state handled in UI
             }
+            setTestsLoading(false);
         }
         fetchTests();
     }, [supabase]);
 
-    const handleCameraCapture = (e) => {
-        if (!e.target.files || e.target.files.length === 0) return;
-        const file = e.target.files[0];
-        
+    const processFile = async (file) => {
+        if (!file) return;
+
+        // Validate format and size
+        const validation = validateImage(file);
+        if (!validation.valid) {
+            setScanError(validation.error);
+            return;
+        }
+
+        setScanError(null);
+        setFinalResult(null);
+
         const reader = new FileReader();
-        reader.onloadend = () => {
+        reader.onloadend = async () => {
             const base64String = reader.result;
             setImagePreview(base64String);
             const pureBase64 = base64String.split(',')[1];
             setImageBase64(pureBase64);
-            setScanError(null);
-            setFinalResult(null);
+
+            // Check dimensions for images (not PDFs)
+            const info = { sizeLabel: validation.sizeLabel, isPdf: validation.isPdf, warning: null };
+            if (!validation.isPdf) {
+                const dimCheck = await checkImageDimensions(base64String);
+                info.warning = dimCheck.warning;
+            }
+            setFileInfo(info);
         };
         reader.readAsDataURL(file);
     };
 
+    const handleFileSelect = (e) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        processFile(e.target.files[0]);
+        // Reset input so the same file can be re-selected
+        e.target.value = '';
+    };
+
     const handleVisionScan = async () => {
-        if (!imageBase64 || !selectedTestId) return alert('Select a test and take a photo of your OMR.');
-        
+        if (!imageBase64 || !selectedTestId) {
+            setScanError('Please select a test and capture/upload your OMR sheet first.');
+            return;
+        }
+
         setIsScanning(true);
         setScanError(null);
-        
+
         try {
             const res = await fetch('/api/omr/scan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    imageBase64, 
-                    testId: selectedTestId 
+                body: JSON.stringify({
+                    imageBase64,
+                    testId: selectedTestId
                 })
             });
 
             const data = await res.json();
-            
-            // MD Safeguard: Quality Gate
+
             if (!res.ok) {
-                setScanError(data.reason || 'Failed to scan image.');
+                setScanError(data.reason || 'Couldn\'t detect bubbles clearly. Try better lighting or upload a clearer image.');
                 setIsScanning(false);
                 return;
             }
 
             setScannedAnswers(data.answers || {});
             setNeedsVerification(true);
-            
+
         } catch (e) {
-            setScanError('Network or vision architecture error.');
+            setScanError('Couldn\'t detect bubbles clearly. Please try again with better lighting or a clearer photo.');
         }
         setIsScanning(false);
     };
 
-    // Allows user to manually fix AI hallucinated bubbles
     const handleBubbleCorrection = (qNum, newValue) => {
         setScannedAnswers(prev => ({
             ...prev,
@@ -97,9 +174,9 @@ export default function OMRScannerPage() {
             const res = await fetch('/api/omr/grade', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    verifiedAnswers: scannedAnswers, 
-                    testId: selectedTestId 
+                body: JSON.stringify({
+                    verifiedAnswers: scannedAnswers,
+                    testId: selectedTestId
                 })
             });
 
@@ -111,68 +188,91 @@ export default function OMRScannerPage() {
                 setScanError(data.error);
             }
         } catch (e) {
-            setScanError('Failed to inject tracking data.');
+            setScanError('Failed to grade answers. Please try again.');
         }
         setIsGrading(false);
     };
 
+    const resetScanner = () => {
+        setFinalResult(null);
+        setImagePreview(null);
+        setImageBase64(null);
+        setFileInfo(null);
+        setScanError(null);
+        setNeedsVerification(false);
+        setScannedAnswers({});
+    };
+
     return (
-        <div className="page" style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
-            
-            <header style={{ marginBottom: '32px', textAlign: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--border)' }}>
+        <div className="page" style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px 120px', minHeight: '100vh' }}>
+
+            <header style={{ marginBottom: '32px', textAlign: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--border-color)' }}>
                 <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px' }}>📸</span>
                 <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px', color: 'var(--text-primary)' }}>OMR Engine</h1>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Digitize offline mock tests into your NEET Heatmap</p>
             </header>
 
-            {/* ERROR TOAST */}
+            {/* ERROR BANNER */}
             {scanError && (
-                <div style={{ background: 'var(--danger-light, rgba(239, 68, 68, 0.1))', border: '1px solid var(--danger)', color: 'var(--danger)', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '24px', fontSize: '0.9rem', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span>⚠️</span> {scanError}
+                <div style={{
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: 'var(--danger)',
+                    padding: '16px',
+                    borderRadius: 'var(--radius-lg)',
+                    marginBottom: '24px',
+                    fontSize: '0.9rem',
+                    display: 'flex',
+                    gap: '8px',
+                    alignItems: 'flex-start',
+                    lineHeight: 1.5,
+                }}>
+                    <span style={{ flexShrink: 0 }}>⚠️</span>
+                    <span>{scanError}</span>
                 </div>
             )}
 
-            {/* FINAL RESULT STATE */}
+            {/* ═══ FINAL RESULT STATE ═══ */}
             {finalResult ? (
-                <div className="animate-fade-in-up">
-                    <Card style={{ textAlign: 'center', padding: '40px 16px', background: 'var(--gradient-primary-light, linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05)))', border: '1px solid var(--primary)', marginBottom: '24px' }}>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '8px' }}>{finalResult.score} / {finalResult.totalPossible}</h2>
+                <div className="animate-fade-in">
+                    <Card style={{ textAlign: 'center', padding: '40px 16px', background: 'linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05))', border: '1px solid var(--accent-primary)', marginBottom: '24px' }}>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--accent-primary)', marginBottom: '8px' }}>{finalResult.score} / {finalResult.totalPossible}</h2>
                         <p style={{ color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '24px' }}>Accuracy: <span style={{ color: 'var(--text-primary)' }}>{finalResult.accuracy}%</span></p>
-                        
-                        <div style={{ background: 'var(--bg-elevated)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '24px' }}>
+
+                        <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '24px' }}>
                             <span style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--success)', fontWeight: 700, marginBottom: '4px' }}>Rank Estimate</span>
                             <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{finalResult.estimatedRankRange}</span>
                         </div>
 
-                        <p style={{ fontSize: '0.9rem', color: 'var(--warning)', background: 'var(--warning-light, rgba(245, 158, 11, 0.1))', padding: '12px', borderRadius: 'var(--radius-sm)' }}>{finalResult.communityInsight}</p>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--warning)', background: 'rgba(245, 158, 11, 0.1)', padding: '12px', borderRadius: 'var(--radius-sm)' }}>{finalResult.communityInsight}</p>
                     </Card>
 
-                    <Button variant="secondary" style={{ width: '100%', marginBottom: '12px' }} onClick={() => { setFinalResult(null); setImagePreview(null); }}>
+                    <Button variant="secondary" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }} onClick={resetScanner}>
                         Scan Another OMR Sheet
                     </Button>
-                    {/* MD Hook to jump straight into Heatmap action */}
                     <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
-                        <Button variant="primary" style={{ width: '100%' }}>
+                        <Button variant="primary" style={{ width: '100%', minHeight: '48px' }}>
                             View Updated Mistake Heatmap
                         </Button>
                     </a>
                 </div>
-            ) 
-            /* VERIFICATION STATE (MD MANDATE) */
+            )
+
+            /* ═══ VERIFICATION STATE ═══ */
             : needsVerification ? (
-                <div className="animate-fade-in-up">
+                <div className="animate-fade-in">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                         <h3 style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--warning)' }}>Verify extracted answers</h3>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tap to correct</span>
                     </div>
-                    
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px', marginBottom: '32px', maxHeight: '400px', overflowY: 'auto', padding: '8px', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)' }}>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px', marginBottom: '32px', maxHeight: '400px', overflowY: 'auto', padding: '8px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)' }}>
                         {Object.keys(scannedAnswers).map(qNum => (
-                            <div key={qNum} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg-elevated)', padding: '8px', borderRadius: 'var(--radius-sm)' }}>
+                            <div key={qNum} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg-card)', padding: '8px', borderRadius: 'var(--radius-sm)' }}>
                                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', width: '16px', textAlign: 'right' }}>{qNum}.</span>
-                                <select 
-                                    className="input-field"
-                                    style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 700, padding: 0, cursor: 'pointer', outline: 'none' }}
+                                <select
+                                    className="input"
+                                    style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 700, padding: '4px', cursor: 'pointer', outline: 'none', width: '40px' }}
                                     value={scannedAnswers[qNum] || ''}
                                     onChange={(e) => handleBubbleCorrection(qNum, e.target.value)}
                                 >
@@ -186,68 +286,234 @@ export default function OMRScannerPage() {
                         ))}
                     </div>
 
-                    <Button variant="success" onClick={handleIdentityInjection} disabled={isGrading} style={{ width: '100%', marginBottom: '12px' }}>
-                        {isGrading ? 'Injecting into Heatmap...' : 'Lock Initial Answers & Grade →'}
+                    <Button variant="success" onClick={handleIdentityInjection} disabled={isGrading} className="critical-flow" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }}>
+                        {isGrading ? 'Grading & Saving to Heatmap...' : 'Lock Answers & Grade →'}
                     </Button>
-                    <Button variant="secondary" onClick={() => setNeedsVerification(false)} style={{ width: '100%' }}>
+                    <Button variant="secondary" onClick={resetScanner} style={{ width: '100%', minHeight: '48px' }}>
                         Cancel & Rescan
                     </Button>
                 </div>
-            ) 
-            /* INITIAL UPLOAD STATE */
+            )
+
+            /* ═══ INITIAL UPLOAD STATE ═══ */
             : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    {/* MD Upgrade 3: Test Identification Gateway */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+
+                    {/* Step 1: Select Test */}
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>1. Select Offline Test</label>
-                        <select 
-                            className="input-field"
-                            style={{ width: '100%', padding: '12px', background: 'var(--bg-elevated)' }}
-                            value={selectedTestId}
-                            onChange={(e) => setSelectedTestId(e.target.value)}
-                        >
-                            {tests.map(t => (
-                                <option key={t.id} value={t.id}>{t.provider} - {t.test_name}</option>
-                            ))}
-                        </select>
+                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                            1. Select Offline Test
+                        </label>
+                        {testsLoading ? (
+                            <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />
+                        ) : tests.length === 0 ? (
+                            <Card style={{ padding: '16px', textAlign: 'center', border: '1px dashed var(--border-color)' }}>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>No offline tests configured yet.</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Ask your coaching institute to add their test papers.</p>
+                            </Card>
+                        ) : (
+                            <select
+                                className="input"
+                                style={{
+                                    width: '100%',
+                                    padding: '14px 16px',
+                                    minHeight: '48px',
+                                    fontSize: '0.95rem',
+                                    cursor: 'pointer',
+                                }}
+                                value={selectedTestId}
+                                onChange={(e) => setSelectedTestId(e.target.value)}
+                            >
+                                {tests.map(t => (
+                                    <option key={t.id} value={t.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+                                        {t.provider} — {t.test_name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
                     </div>
 
+                    {/* Step 2: Capture OMR Sheet */}
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>2. Capture OMR Sheet</label>
-                        <div style={{ position: 'relative', border: '2px dashed var(--border)', borderRadius: 'var(--radius-xl)', background: 'var(--bg-glass)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '200px', overflow: 'hidden', cursor: 'pointer', transition: 'border-color 0.2s' }}
-                             onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--primary)'}
-                             onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}>
-                            
-                            {imagePreview ? (
-                                <img src={imagePreview} alt="OMR Preview" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} />
-                            ) : (
-                                <div style={{ textAlign: 'center', pointerEvents: 'none' }}>
-                                    <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px', color: 'var(--primary)' }}>📷</span>
-                                    <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>Tap to open Camera</span>
-                                </div>
-                            )}
+                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '12px' }}>
+                            2. Capture OMR Sheet
+                        </label>
 
-                            <input 
-                                type="file" 
-                                accept="image/*" 
-                                capture="environment" 
-                                onChange={handleCameraCapture}
-                                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
-                            />
+                        {/* Dual Capture Buttons */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                            {/* Camera Button */}
+                            <button
+                                onClick={() => cameraInputRef.current?.click()}
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px',
+                                    padding: '20px 12px',
+                                    minHeight: '100px',
+                                    background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1))',
+                                    border: '2px solid rgba(99,102,241,0.3)',
+                                    borderRadius: 'var(--radius-lg)',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-primary)',
+                                    fontFamily: 'inherit',
+                                    transition: 'border-color var(--transition-fast), background var(--transition-fast)',
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)'; }}
+                            >
+                                <span style={{ fontSize: '2rem' }}>📷</span>
+                                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Take Photo</span>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Open camera</span>
+                            </button>
+
+                            {/* Gallery/PDF Button */}
+                            <button
+                                onClick={() => galleryInputRef.current?.click()}
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px',
+                                    padding: '20px 12px',
+                                    minHeight: '100px',
+                                    background: 'var(--bg-glass)',
+                                    border: '2px solid var(--border-color)',
+                                    borderRadius: 'var(--radius-lg)',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-primary)',
+                                    fontFamily: 'inherit',
+                                    transition: 'border-color var(--transition-fast), background var(--transition-fast)',
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-glow)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+                            >
+                                <span style={{ fontSize: '2rem' }}>🖼️</span>
+                                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Upload from Gallery</span>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Photo or PDF</span>
+                            </button>
                         </div>
+
+                        {/* Hidden File Inputs */}
+                        <input
+                            ref={cameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={handleFileSelect}
+                            style={{ display: 'none' }}
+                        />
+                        <input
+                            ref={galleryInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf"
+                            onChange={handleFileSelect}
+                            style={{ display: 'none' }}
+                        />
+
+                        {/* Image Preview */}
+                        {imagePreview && (
+                            <Card style={{ padding: '0', overflow: 'hidden', position: 'relative', marginBottom: '8px' }}>
+                                {fileInfo?.isPdf ? (
+                                    <div style={{
+                                        padding: '32px',
+                                        textAlign: 'center',
+                                        background: 'var(--bg-glass)',
+                                    }}>
+                                        <span style={{ fontSize: '3rem', display: 'block', marginBottom: '8px' }}>📄</span>
+                                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>PDF Uploaded</span>
+                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>{fileInfo.sizeLabel}</div>
+                                    </div>
+                                ) : (
+                                    <div style={{ position: 'relative' }}>
+                                        <img
+                                            src={imagePreview}
+                                            alt="OMR Sheet Preview"
+                                            style={{
+                                                width: '100%',
+                                                maxHeight: '300px',
+                                                objectFit: 'contain',
+                                                display: 'block',
+                                                background: '#000',
+                                            }}
+                                        />
+                                        {fileInfo?.sizeLabel && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                bottom: '8px',
+                                                right: '8px',
+                                                background: 'rgba(0,0,0,0.7)',
+                                                color: 'white',
+                                                padding: '4px 8px',
+                                                borderRadius: 'var(--radius-sm)',
+                                                fontSize: '0.7rem',
+                                                fontWeight: 600,
+                                            }}>
+                                                {fileInfo.sizeLabel}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Re-capture button */}
+                                <button
+                                    onClick={resetScanner}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '8px',
+                                        right: '8px',
+                                        background: 'rgba(0,0,0,0.6)',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '32px',
+                                        height: '32px',
+                                        color: 'white',
+                                        cursor: 'pointer',
+                                        fontSize: '1rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    title="Remove and re-capture"
+                                >
+                                    ✕
+                                </button>
+                            </Card>
+                        )}
+
+                        {/* Dimension Warning */}
+                        {fileInfo?.warning && (
+                            <div style={{
+                                background: 'rgba(245, 158, 11, 0.1)',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                color: 'var(--warning)',
+                                padding: '12px',
+                                borderRadius: 'var(--radius-md)',
+                                fontSize: '0.85rem',
+                                display: 'flex',
+                                gap: '8px',
+                                alignItems: 'center',
+                            }}>
+                                <span>⚠️</span> {fileInfo.warning}
+                            </div>
+                        )}
                     </div>
 
-                    <Button 
+                    {/* Step 3: Extract */}
+                    <Button
                         variant="primary"
                         size="lg"
                         onClick={handleVisionScan}
-                        disabled={!imagePreview || isScanning}
-                        style={{ width: '100%', padding: '16px', fontSize: '1.1rem', marginTop: '16px' }}
+                        disabled={!imagePreview || isScanning || !selectedTestId}
+                        className="critical-flow"
+                        style={{ width: '100%', padding: '16px', fontSize: '1.1rem', minHeight: '56px' }}
                     >
                         {isScanning ? (
-                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                                 <div className="spinner" style={{ width: '20px', height: '20px' }} />
-                                Extracting Neural Bubbles...
+                                Analyzing OMR Sheet…
                             </span>
                         ) : 'Extract Answers'}
                     </Button>
