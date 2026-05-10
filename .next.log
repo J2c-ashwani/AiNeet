@@ -8135,3 +8135,97 @@ node(56143) MallocStackLogging: can't turn off malloc stack logging because it w
  GET /api/auth/me 200 in 2.5s (compile: 309ms, proxy.ts: 735ms, render: 1466ms)
  GET /api/home/stats 200 in 2.2s (compile: 138ms, proxy.ts: 589ms, render: 1522ms)
 ✓ Finished writing to filesystem cache in 51s
+✓ Finished filesystem cache database compaction in 45s
+✓ Finished writing to filesystem cache in 11.0s
+✓ Compiled in 810ms
+✓ Compiled in 1875ms
+✓ Compiled in 231ms
+✓ Finished filesystem cache database compaction in 21.6s
+✓ Finished writing to filesystem cache in 14.3s
+✓ Finished filesystem cache database compaction in 20.3s
+✓ Finished writing to filesystem cache in 18.6s
+✓ Compiled in 2.1s
+✓ Compiled in 65ms
+✓ Compiled in 363ms
+✓ Compiled in 3s
+ GET / 200 in 9.0s (compile: 3.1s, proxy.ts: 2.3s, render: 3.7s)
+ GET /forgot-password?cachebreak=1 200 in 9.6s (compile: 5.6s, proxy.ts: 2.9s, render: 1062ms)
+ GET / 200 in 1616ms (compile: 90ms, proxy.ts: 803ms, render: 724ms)
+ GET /forgot-password?cachebreak=1 200 in 806ms (compile: 133ms, proxy.ts: 66ms, render: 607ms)
+ GET / 200 in 766ms (compile: 152ms, proxy.ts: 24ms, render: 590ms)
+ GET /forgot-password?cachebreak=1 200 in 743ms (compile: 107ms, proxy.ts: 19ms, render: 617ms)
+ GET / 200 in 648ms (compile: 36ms, proxy.ts: 20ms, render: 592ms)
+ GET /forgot-password?cachebreak=1 200 in 632ms (compile: 94ms, proxy.ts: 15ms, render: 522ms)
+ GET / 200 in 633ms (compile: 49ms, proxy.ts: 81ms, render: 504ms)
+ GET /forgot-password?cachebreak=1 200 in 556ms (compile: 69ms, proxy.ts: 26ms, render: 461ms)
+ GET / 200 in 507ms (compile: 15ms, proxy.ts: 14ms, render: 478ms)
+ GET /forgot-password?cachebreak=1 200 in 544ms (compile: 22ms, proxy.ts: 19ms, render: 502ms)
+ GET / 200 in 580ms (compile: 20ms, proxy.ts: 16ms, render: 545ms)
+ GET /forgot-password?cachebreak=1 200 in 568ms (compile: 25ms, proxy.ts: 79ms, render: 464ms)
+ GET /forgot-password?cachebreak=1 200 in 496ms (compile: 68ms, proxy.ts: 27ms, render: 400ms)
+ GET / 200 in 504ms (compile: 32ms, proxy.ts: 19ms, render: 453ms)
+ GET / 200 in 438ms (compile: 16ms, proxy.ts: 16ms, render: 406ms)
+ GET /forgot-password?cachebreak=1 200 in 446ms (compile: 14ms, proxy.ts: 16ms, render: 416ms)
+ GET / 200 in 473ms (compile: 22ms, proxy.ts: 18ms, render: 433ms)
+ GET /forgot-password?cachebreak=1 200 in 474ms (compile: 74ms, proxy.ts: 11ms, render: 389ms)
+ GET / 200 in 419ms (compile: 27ms, proxy.ts: 16ms, render: 377ms)
+ GET /forgot-password?cachebreak=1 200 in 469ms (compile: 62ms, proxy.ts: 19ms, render: 388ms)
+ GET / 200 in 1355ms (compile: 15ms, proxy.ts: 8ms, render: 1332ms)
+ GET /forgot-password?cachebreak=1 200 in 1631ms (compile: 21ms, proxy.ts: 18ms, render: 1592ms)
+ GET / 200 in 3.6s (compile: 33ms, proxy.ts: 14ms, render: 3.5s)
+ GET /forgot-password?cachebreak=1 200 in 3.7s (compile: 60ms, proxy.ts: 11ms, render: 3.6s)
+ GET / 200 in 3.9s (compile: 19ms, proxy.ts: 14ms, render: 3.9s)
+ GET /forgot-password?cachebreak=1 200 in 6.3s (compile: 70ms, proxy.ts: 24ms, render: 6.2s)
+ GET / 200 in 5.7s (compile: 176ms, proxy.ts: 181ms, render: 5.3s)
+ GET /forgot-password?cachebreak=1 200 in 5.5s (compile: 175ms, proxy.ts: 758ms, render: 4.6s)
+ GET /forgot-password?cachebreak=1 200 in 3.5s (compile: 255ms, proxy.ts: 110ms, render: 3.1s)
+ GET / 200 in 3.7s (compile: 1288ms, proxy.ts: 166ms, render: 2.2s)
+ GET /forgot-password?cachebreak=1 200 in 3.4s (compile: 135ms, proxy.ts: 1739ms, render: 1547ms)
+ GET /api/auth/me 200 in 2.0s (compile: 31ms, proxy.ts: 494ms, render: 1515ms)
+✓ Compiled in 1137ms
+ GET /forgot-password?cachebreak=1 200 in 5.5s (compile: 1249ms, proxy.ts: 906ms, render: 3.4s)
+ GET / 200 in 5.5s (compile: 2.6s, proxy.ts: 877ms, render: 2.0s)
+ GET /forgot-password?cachebreak=1 200 in 922ms (compile: 124ms, proxy.ts: 68ms, render: 730ms)
+ GET /forgot-password?cachebreak=1 200 in 713ms (compile: 126ms, proxy.ts: 25ms, render: 562ms)
+ GET /forgot-password?cachebreak=1 200 in 512ms (compile: 38ms, proxy.ts: 43ms, render: 431ms)
+ GET /forgot-password?cachebreak=1 200 in 536ms (compile: 23ms, proxy.ts: 44ms, render: 469ms)
+ GET /forgot-password?cachebreak=1 200 in 494ms (compile: 31ms, proxy.ts: 32ms, render: 431ms)
+ GET /forgot-password?cachebreak=1 200 in 574ms (compile: 32ms, proxy.ts: 42ms, render: 500ms)
+ GET /forgot-password?cachebreak=1 200 in 670ms (compile: 18ms, proxy.ts: 14ms, render: 638ms)
+ GET /forgot-password?cachebreak=1 200 in 782ms (compile: 12ms, proxy.ts: 19ms, render: 750ms)
+ GET /forgot-password?cachebreak=1 200 in 1120ms (compile: 20ms, proxy.ts: 18ms, render: 1082ms)
+ GET /forgot-password?cachebreak=1 200 in 1066ms (compile: 26ms, proxy.ts: 48ms, render: 993ms)
+ GET /forgot-password?cachebreak=1 200 in 1070ms (compile: 16ms, proxy.ts: 24ms, render: 1029ms)
+ GET /forgot-password?cachebreak=1 200 in 1007ms (compile: 35ms, proxy.ts: 30ms, render: 942ms)
+ GET /forgot-password?cachebreak=1 200 in 870ms (compile: 33ms, proxy.ts: 23ms, render: 813ms)
+ GET /forgot-password?cachebreak=1 200 in 735ms (compile: 11ms, proxy.ts: 26ms, render: 698ms)
+ GET /forgot-password?cachebreak=1 200 in 348ms (compile: 27ms, proxy.ts: 20ms, render: 301ms)
+ GET /api/auth/me 200 in 2.0s (compile: 31ms, proxy.ts: 471ms, render: 1500ms)
+ GET /api/home/stats 200 in 1511ms (compile: 74ms, proxy.ts: 128ms, render: 1309ms)
+✓ Compiled in 1284ms
+○ Compiling /forgot-password ...
+ GET / 200 in 9.2s (compile: 8.6s, proxy.ts: 115ms, render: 529ms)
+ GET /forgot-password?cachebreak=1 200 in 9.4s (compile: 2.3s, proxy.ts: 134ms, render: 6.9s)
+ GET / 200 in 2.1s (compile: 113ms, proxy.ts: 604ms, render: 1341ms)
+ GET / 200 in 1235ms (compile: 26ms, proxy.ts: 50ms, render: 1159ms)
+ GET / 200 in 1174ms (compile: 41ms, proxy.ts: 57ms, render: 1076ms)
+ GET / 200 in 953ms (compile: 46ms, proxy.ts: 32ms, render: 875ms)
+ GET / 200 in 882ms (compile: 52ms, proxy.ts: 21ms, render: 810ms)
+ GET / 200 in 904ms (compile: 23ms, proxy.ts: 22ms, render: 859ms)
+ GET / 200 in 1005ms (compile: 34ms, proxy.ts: 21ms, render: 950ms)
+ GET / 200 in 846ms (compile: 30ms, proxy.ts: 40ms, render: 776ms)
+ GET / 200 in 666ms (compile: 16ms, proxy.ts: 33ms, render: 618ms)
+ GET / 200 in 664ms (compile: 57ms, proxy.ts: 198ms, render: 409ms)
+ GET / 200 in 243ms (compile: 49ms, proxy.ts: 19ms, render: 175ms)
+ GET / 200 in 835ms (compile: 55ms, proxy.ts: 27ms, render: 753ms)
+ GET /api/auth/me 200 in 2.9s (compile: 57ms, proxy.ts: 1039ms, render: 1798ms)
+ GET / 200 in 556ms (compile: 47ms, proxy.ts: 20ms, render: 488ms)
+ GET / 200 in 395ms (compile: 31ms, proxy.ts: 17ms, render: 347ms)
+ GET / 200 in 211ms (compile: 70ms, proxy.ts: 24ms, render: 117ms)
+ GET /api/auth/me 200 in 983ms (compile: 23ms, proxy.ts: 159ms, render: 800ms)
+ GET /api/auth/me 200 in 1527ms (compile: 29ms, proxy.ts: 191ms, render: 1306ms)
+ GET /api/home/stats 200 in 1899ms (compile: 55ms, proxy.ts: 150ms, render: 1694ms)
+ GET /api/home/stats 200 in 877ms (compile: 27ms, proxy.ts: 179ms, render: 671ms)
+[@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated and will be removed in a future version. Use webpack.treeshake.removeDebugLogging instead. (Not supported with Turbopack.)
+[@sentry/nextjs] DEPRECATION WARNING: automaticVercelMonitors is deprecated and will be removed in a future version. Use webpack.automaticVercelMonitors instead. (Not supported with Turbopack.)
+[?25h

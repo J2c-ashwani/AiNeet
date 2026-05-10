@@ -183,7 +183,7 @@ export default function RootLayout({ children }) {
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
                 <meta name="google-play-app" content="app-id=com.aineetcoach.app" />
                 <JsonLd />
-                {/* Inline splash screen styles — renders BEFORE any JS/CSS loads */}
+                {/* Splash: styles + dynamic creation entirely in head so React never tracks the DOM node */}
                 <style dangerouslySetInnerHTML={{__html: `
                     #app-splash {
                         position: fixed; inset: 0; z-index: 99999;
@@ -220,33 +220,26 @@ export default function RootLayout({ children }) {
                         0%, 100% { opacity: 1; } 50% { opacity: 0.5; }
                     }
                 `}} />
+                {/* Create splash via JS so it's outside React's virtual DOM */}
+                <script dangerouslySetInnerHTML={{__html: `
+                    (function(){
+                        var s = document.createElement('div');
+                        s.id = 'app-splash';
+                        s.innerHTML = '<div style="position:relative;display:flex;align-items:center;justify-content:center"><div class="splash-ring"></div><span class="splash-logo">AI</span></div><div class="splash-title">NEET Coach</div><div class="splash-sub">Loading...</div>';
+                        document.body.prepend(s);
+                        function dismiss() {
+                            s.classList.add('hide');
+                            setTimeout(function(){ s.remove(); }, 500);
+                        }
+                        if (document.readyState === 'complete') dismiss();
+                        else window.addEventListener('load', function(){ setTimeout(dismiss, 300); });
+                    })();
+                `}} />
             </head>
             <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                {/* Inline splash — first thing painted by browser, zero JS dependency */}
-                <div id="app-splash">
-                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div className="splash-ring"></div>
-                        <span className="splash-logo">AI</span>
-                    </div>
-                    <div className="splash-title">NEET Coach</div>
-                    <div className="splash-sub">Loading...</div>
-                </div>
-
                 <ClientLayout>
                     {children}
                 </ClientLayout>
-
-                {/* Auto-dismiss splash after React hydration completes */}
-                <script dangerouslySetInnerHTML={{__html: `
-                    (function(){
-                        function dismissSplash() {
-                            var s = document.getElementById('app-splash');
-                            if (s) { s.classList.add('hide'); setTimeout(function(){ s.remove(); }, 500); }
-                        }
-                        if (document.readyState === 'complete') { dismissSplash(); }
-                        else { window.addEventListener('load', function(){ setTimeout(dismissSplash, 300); }); }
-                    })();
-                `}} />
             </body>
         </html>
     );

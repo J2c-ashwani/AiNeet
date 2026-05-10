@@ -416,7 +416,7 @@ export default function TestPage({ params }) {
                     <Button variant="ghost" size="sm" onClick={() => setShowNav(!showNav)}>
                         📋 Navigator
                     </Button>
-                    <Button variant="danger" size="sm" onClick={handleSubmit} disabled={submitting}>
+                    <Button variant="danger" size="sm" onClick={handleSubmit} disabled={submitting} className="critical-flow">
                         {submitting ? 'Submitting...' : 'Submit Test'}
                     </Button>
                 </div>
@@ -481,7 +481,7 @@ export default function TestPage({ params }) {
                                     Next →
                                 </Button>
                             ) : (
-                                <Button variant="success" onClick={handleSubmit} disabled={submitting}>
+                                <Button variant="success" onClick={handleSubmit} disabled={submitting} className="critical-flow">
                                     Submit Test ✓
                                 </Button>
                             )}

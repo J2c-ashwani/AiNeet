@@ -179,9 +179,10 @@ export default function ForgotPasswordPage() {
                             onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))} 
                             disabled={loading}
                             autoFocus
+                            className="critical-flow"
                             style={{ fontSize: '1.5rem', letterSpacing: '8px', textAlign: 'center', fontWeight: 700 }}
                         />
-                        <Button type="submit" loading={loading} disabled={otp.length < 4} style={{ marginTop: '12px' }}>
+                        <Button type="submit" loading={loading} disabled={otp.length < 4} className="critical-flow" style={{ marginTop: '12px' }}>
                             Verify Code →
                         </Button>
                         <div style={{ textAlign: 'center', marginTop: '16px' }}>

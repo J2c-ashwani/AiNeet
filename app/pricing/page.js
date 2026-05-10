@@ -227,6 +227,7 @@ export default function PricingPage() {
                                     onClick={() => !isFree && handleSubscribe(plan.id)}
                                     disabled={loading || isFree || isCurrentPlan}
                                     loading={loading === plan.id}
+                                    className="critical-flow"
                                     style={{ marginTop: '32px', width: '100%' }}
                                 >
                                     {isCurrentPlan ? '✓ Current Plan' : isFree ? 'Your Free Plan' : plan.cta}
