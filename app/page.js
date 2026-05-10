@@ -291,8 +291,37 @@ export default function Home() {
 
     if (authLoading) {
         return (
-            <div className="page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Skeleton style={{ width: '60px', height: '60px', borderRadius: '50%' }} />
+            <div className="page" style={{ maxWidth: '680px', paddingTop: '24px' }}>
+                {/* Header skeleton */}
+                <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <Skeleton style={{ width: '220px', height: '32px', marginBottom: '8px' }} />
+                        <Skeleton style={{ width: '180px', height: '18px' }} />
+                    </div>
+                    <Skeleton style={{ width: '120px', height: '28px', borderRadius: '999px' }} />
+                </div>
+
+                {/* Countdown card skeleton */}
+                <Skeleton style={{ height: '120px', marginBottom: '32px', borderRadius: 'var(--radius-lg)' }} />
+
+                {/* Stats grid skeleton */}
+                <div className="grid grid-3" style={{ marginBottom: '40px' }}>
+                    <Skeleton style={{ height: '90px' }} />
+                    <Skeleton style={{ height: '90px' }} />
+                    <Skeleton style={{ height: '90px' }} />
+                </div>
+
+                {/* CTA skeleton */}
+                <Skeleton style={{ height: '80px', marginBottom: '40px', borderRadius: 'var(--radius-lg)' }} />
+
+                {/* Quick tools skeleton */}
+                <Skeleton style={{ width: '100px', height: '16px', marginBottom: '16px' }} />
+                <div className="grid grid-2">
+                    <Skeleton style={{ height: '100px' }} />
+                    <Skeleton style={{ height: '100px' }} />
+                    <Skeleton style={{ height: '100px' }} />
+                    <Skeleton style={{ height: '100px' }} />
+                </div>
             </div>
         );
     }
