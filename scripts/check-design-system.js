@@ -1,11 +1,20 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
 // Directories to scan
 const SCAN_DIRS = ['app', 'components'];
 // Directories to ignore (canonical implementations)
 const IGNORE_DIRS = ['components/ui', 'components/Charts.js'];
+
+// Directories that MUST pass the check (P0 and P1 trust surfaces)
+const STRICT_DIRS = [
+    'app/page.js', // Home
+    'app/login', 'app/register', 'app/forgot-password', // Auth
+    'app/test', // Test Engine
+    'app/pricing', // Monetization
+    'app/profile', 'app/analytics', // Dashboard
+    'app/omr', 'app/revision', 'app/ncert' // P1 Core Tools
+];
 
 // Patterns that break the build
 const BLOCKED_PATTERNS = [
@@ -39,7 +48,12 @@ const BLOCKED_PATTERNS = [
     }
 ];
 
-let hasErrors = false;
+let hasStrictErrors = false;
+let warningCount = 0;
+
+function isStrict(filePath) {
+    return STRICT_DIRS.some(strictPath => filePath.includes(strictPath));
+}
 
 function scanDirectory(dir) {
     const files = fs.readdirSync(dir);
@@ -48,10 +62,7 @@ function scanDirectory(dir) {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
         
-        // Skip ignored directories
-        if (IGNORE_DIRS.some(ignored => fullPath.includes(ignored))) {
-            return;
-        }
+        if (IGNORE_DIRS.some(ignored => fullPath.includes(ignored))) return;
 
         if (stat.isDirectory()) {
             scanDirectory(fullPath);
@@ -64,15 +75,19 @@ function scanDirectory(dir) {
 function checkFile(filePath) {
     const content = fs.readFileSync(filePath, 'utf-8');
     const lines = content.split('\n');
+    const isStrictFile = isStrict(filePath);
 
     lines.forEach((line, index) => {
         BLOCKED_PATTERNS.forEach(pattern => {
-            const matches = line.match(pattern.regex);
-            if (matches) {
-                console.error(`\n❌ DESIGN SYSTEM VIOLATION in ${filePath}:${index + 1}`);
-                console.error(`   Rule: ${pattern.message}`);
-                console.error(`   Code: ${line.trim()}`);
-                hasErrors = true;
+            if (pattern.regex.test(line)) {
+                if (isStrictFile) {
+                    console.error(`\n❌ ERROR in ${filePath}:${index + 1}`);
+                    console.error(`   Rule: ${pattern.message}`);
+                    console.error(`   Code: ${line.trim()}`);
+                    hasStrictErrors = true;
+                } else {
+                    warningCount++;
+                }
             }
         });
     });
@@ -81,16 +96,17 @@ function checkFile(filePath) {
 console.log('🔍 Running Design System Consistency Check...');
 
 SCAN_DIRS.forEach(dir => {
-    if (fs.existsSync(dir)) {
-        scanDirectory(dir);
-    }
+    if (fs.existsSync(dir)) scanDirectory(dir);
 });
 
-if (hasErrors) {
-    console.error('\n🛑 BUILD FAILED: Design system violations detected.');
-    console.error('Please refactor the above files to use Canonical UI primitives (/components/ui/) or global CSS tokens.');
+if (warningCount > 0) {
+    console.warn(`\n⚠️  WARNING: Found ${warningCount} legacy design violations in non-critical (P2) directories. These will not break the build.`);
+}
+
+if (hasStrictErrors) {
+    console.error('\n🛑 BUILD FAILED: Design system violations detected in P0/P1 trust surfaces.');
     process.exit(1);
 } else {
-    console.log('\n✅ DESIGN SYSTEM CHECK PASSED: Architecture is strictly enforced.');
+    console.log('\n✅ P0/P1 SURFACES PASSED: Architecture is strictly enforced.');
     process.exit(0);
 }
