@@ -18,7 +18,7 @@ function RegisterContent() {
     const searchParams = useSearchParams();
     const refCode = searchParams.get('ref') || '';
     const challengeId = searchParams.get('challenge') || '';
-    const [form, setForm] = useState({ name: '', email: '', password: '', targetYear: '2026' });
+    const [form, setForm] = useState({ name: '', email: '', password: '', targetYear: '2027' });
     const [step, setStep] = useState('form'); // 'form' | 'otp' | 'done'
     const [resendCooldown, setResendCooldown] = useState(0);
     const [otp, setOtp] = useState('');
@@ -239,9 +239,9 @@ function RegisterContent() {
                         <div className="input-group">
                             <label>NEET Target Year</label>
                             <select className="input" value={form.targetYear} onChange={(e) => setForm({ ...form, targetYear: e.target.value })} disabled={loading}>
-                                <option value="2026">NEET 2026</option>
                                 <option value="2027">NEET 2027</option>
                                 <option value="2028">NEET 2028</option>
+                                <option value="2029">NEET 2029</option>
                             </select>
                         </div>
                         <button className="btn btn-primary w-full" type="submit" disabled={loading}>
