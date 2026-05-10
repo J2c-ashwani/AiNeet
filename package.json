@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "typecheck": "tsc --noEmit",
-    "build": "npm run typecheck && next build",
+    "build": "npm run lint:design && next build",
     "start": "next start",
     "lint": "next lint",
-    "analyze": "next build && node scripts/check_bundle_size.mjs"
+    "analyze": "next build && node scripts/check_bundle_size.mjs",
+    "lint:design": "node scripts/check-design-system.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
