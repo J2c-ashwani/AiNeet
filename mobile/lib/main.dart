@@ -40,7 +40,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'AI NEET Coach',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF080c18),
         useMaterial3: true,
       ),
       home: const WebViewScreen(),
@@ -180,7 +184,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
     controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
+      ..setBackgroundColor(const Color(0xFF080c18))
       ..addJavaScriptChannel(
         'NeetCoachAds',
         onMessageReceived: (JavaScriptMessage message) {
@@ -279,6 +283,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF080c18),
       body: SafeArea(
         child: Column(
           children: [
