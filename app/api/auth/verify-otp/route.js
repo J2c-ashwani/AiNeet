@@ -16,11 +16,6 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Email and OTP code are required.' }, { status: 400 });
         }
 
-        // CHAOS MONKEY: Intentionally Break OTP
-        if (otp === '000000') {
-            ServerLog.authFailure('verify_otp', new Error('Simulated Chaos Monkey OTP Failure'), { email: 'mask_testing@test.com' });
-            throw new Error('Database connection reset by peer during OTP validation.');
-        }
 
         // Rate limit: 10 attempts per 15 minutes per IP
         const ip = request.headers.get('x-forwarded-for') || 'unknown';
