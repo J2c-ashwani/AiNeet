@@ -208,8 +208,8 @@ export default function OMRScannerPage() {
 
             <header style={{ marginBottom: '32px', textAlign: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--border-color)' }}>
                 <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px' }}>📸</span>
-                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px', color: 'var(--text-primary)' }}>OMR Engine</h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Digitize offline mock tests into your NEET Heatmap</p>
+                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px', color: 'var(--text-primary)' }}>OMR Scanner</h1>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Scan your offline answer sheet & get instant results</p>
             </header>
 
             {/* ERROR BANNER */}
