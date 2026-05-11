@@ -65,10 +65,17 @@ function TestConfigContent() {
             window.location.href = '/login?redirect=/test/configure';
             return;
         }
-        // App Install Gate for Mobile Web
+        // App Install Gate for Mobile Web ONLY
+        // Do NOT block users already inside the native app (ReactNativeWebView or custom UA header)
         if (typeof window !== 'undefined') {
             const isMobileBrowser = Boolean(navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-            if (isMobileBrowser) {
+            const isInsideNativeApp = Boolean(
+                window.ReactNativeWebView ||                          // React Native WebView bridge
+                window.nativeApp ||                                    // Custom bridge if set
+                navigator.userAgent.includes('NEETCoachApp') ||       // Custom UA we can set in the app
+                document.cookie.includes('native_app=true')           // Cookie set by native app on boot
+            );
+            if (isMobileBrowser && !isInsideNativeApp) {
                 setShowAppPromo(true);
                 return;
             }

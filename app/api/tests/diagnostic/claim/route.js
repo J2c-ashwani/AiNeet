@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,59 +38,47 @@ export async function POST(request) {
         const attemptId = uuidv4();
 
         // Check if they already claimed one recently to prevent double-claiming spam (idempotency)
-        const { data: existingClaims } = await supabase.from('tests')
+        const { data: existingClaims } = await safeSelect('tests', q => q
             .select('id')
             .eq('user_id', decoded.id)
             .eq('type', 'diagnostic_claim')
-            .limit(1);
+            .limit(1), { route: '/api/tests/diagnostic/claim/check', userId: decoded.id });
             
         if (existingClaims && existingClaims.length > 0) {
             return NextResponse.json({ success: true, message: 'Already claimed' });
         }
 
-        // 3. Mount Test Config
         const totalQuestions = scoreData.maxScore / 4;
-        await supabase.from('tests').insert({
-            id: testId,
-            user_id: decoded.id,
-            type: 'diagnostic_claim',
-            config_json: JSON.stringify({ source: 'acquisition_funnel', weakest_chapter: scoreData.weakestChapter }),
-            total_questions: totalQuestions,
-            total_marks: scoreData.maxScore
-        });
-
-        // 4. Mount Attempt Record
-        await supabase.from('test_attempts').insert({
-            id: attemptId,
-            test_id: testId,
-            user_id: decoded.id,
-            total_score: scoreData.score,
-            correct_answers: scoreData.correct,
-            incorrect_answers: scoreData.incorrect,
-            accuracy_rate: scoreData.accuracy
-        });
-
-        // 5. Mount Question Granularity 
-        // Iterate through scoreData.answersObject
         const answerInserts = [];
         if (scoreData.answersObject && typeof scoreData.answersObject === 'object') {
             for (const [qId, opt] of Object.entries(scoreData.answersObject)) {
                 answerInserts.push({
-                    test_attempt_id: attemptId,
                     question_id: qId,
                     user_answer_option: opt,
-                    time_spent_seconds: 90 // Default constant for stateless
+                    time_spent_seconds: 90
                 });
             }
-            if (answerInserts.length > 0) {
-                await supabase.from('test_answers').insert(answerInserts);
-            }
         }
+
+        // 3. Execute Atomic Transaction via RPC
+        await safeRpc('diagnostic_claim_transaction', {
+            p_test_id: testId,
+            p_attempt_id: attemptId,
+            p_user_id: decoded.id,
+            p_config_json: { source: 'acquisition_funnel', weakest_chapter: scoreData.weakestChapter },
+            p_total_questions: totalQuestions,
+            p_total_marks: scoreData.maxScore,
+            p_score: scoreData.score,
+            p_correct: scoreData.correct,
+            p_incorrect: scoreData.incorrect,
+            p_accuracy: scoreData.accuracy,
+            p_answers: answerInserts.length > 0 ? answerInserts : null
+        }, { route: '/api/tests/diagnostic/claim', userId: decoded.id });
 
         // 6. Grant Acquisition XP & Levels 
         // Force the DB to trigger rank progression for finishing the onboarding funnel
         let acquisitionXp = scoreData.score > 0 ? scoreData.score + 10 : 10; 
-        await supabase.rpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: acquisitionXp });
+        await safeRpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: acquisitionXp }, { route: '/api/tests/diagnostic/claim/xp', userId: decoded.id });
 
         return NextResponse.json({
             success: true,

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { SUBSCRIPTION_PLANS } from '@/lib/payment_service';
+import { safeRpc } from '@/lib/core/db-safe';
 
 export async function POST(request) {
     try {
@@ -64,33 +65,31 @@ export async function POST(request) {
             const expiryDate = new Date();
             expiryDate.setDate(expiryDate.getDate() + plan.duration_days);
 
-            // 2. Insert into the new Dual-Rail Subscriptions table (History-Preserving)
-            const { error: insertErr } = await supabase.from('subscriptions').insert({
-                user_id: payment.user_id,
-                plan_tier: plan.id === 'premium' ? 'premium' : 'pro',
-                billing_source: 'web',
-                billing_provider: 'cashfree',
-                billing_status: 'active',
-                external_subscription_id: orderId, // Cashfree links order ID to the subscription intent usually
-                external_customer_id: payment.user_id,
-                provider_event_id: eventId,
-                provider_event_type: payload.type,
-                provider_payload: payload,
-                started_at: new Date().toISOString(),
-                expires_at: expiryDate.toISOString()
-            });
-
-            if (insertErr) {
+            // 2. Execute Atomic Subscription Activation via RPC
+            try {
+                await safeRpc('subscription_activation_transaction', {
+                    p_user_id: payment.user_id,
+                    p_plan_tier: plan.id === 'premium' ? 'premium' : 'pro',
+                    p_billing_source: 'web',
+                    p_billing_provider: 'cashfree',
+                    p_billing_status: 'active',
+                    p_external_subscription_id: orderId,
+                    p_external_customer_id: payment.user_id,
+                    p_provider_event_id: eventId,
+                    p_provider_event_type: payload.type,
+                    p_provider_payload: payload,
+                    p_started_at: new Date().toISOString(),
+                    p_expires_at: expiryDate.toISOString(),
+                    p_provider_order_id: orderId
+                }, { route: '/api/webhooks/cashfree', userId: payment.user_id });
+            } catch (err) {
                 // If the error is a unique constraint violation on provider_event_id, it's a duplicate webhook replay.
-                if (insertErr.code === '23505') {
+                if (err.originalError?.code === '23505') {
                     console.log(`[WEBHOOK IDEMPOTENCY] Replay blocked: Event ${eventId} already processed.`);
                     return NextResponse.json({ success: true, message: "Duplicate event safely ignored" });
                 }
-                throw insertErr;
+                throw err;
             }
-
-            // Optional: Mark legacy payment intent as completed so old checks don't break immediately
-            await supabase.from('payments').update({ status: 'completed' }).eq('provider_order_id', orderId);
             
             console.log(`[WEBHOOK SUCCESS] Upgraded User: ${payment.user_id} via Cashfree to ${plan.id}. Expiry: ${expiryDate.toISOString()}`);
         }

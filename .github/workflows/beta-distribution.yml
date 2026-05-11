@@ -1,0 +1,102 @@
+name: 📱 Build & Distribute Beta APK
+
+on:
+  # Auto-trigger on every push to main (so every code fix goes to beta testers instantly)
+  push:
+    branches: [main]
+    paths:
+      - 'mobile/**'                        # Only trigger when mobile app code changes
+  
+  # Manual trigger — push beta build anytime from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: 'Release notes for testers'
+        required: false
+        default: 'Bug fixes and performance improvements.'
+
+jobs:
+  build_and_distribute:
+    name: Build APK & Send to Beta Testers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # ─── 1. Checkout Code ───────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ─── 2. Setup Java (required by Android build tools) ────────────────────
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # ─── 3. Setup Flutter ───────────────────────────────────────────────────
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          channel: 'stable'
+          cache: true
+
+      # ─── 4. Restore google-services.json from Secret ────────────────────────
+      # IMPORTANT: Add GOOGLE_SERVICES_JSON as a GitHub secret (base64 encoded)
+      # Run: base64 -i mobile/android/app/google-services.json | pbcopy
+      # Then add to GitHub → Settings → Secrets → GOOGLE_SERVICES_JSON
+      - name: Restore google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/android/app/google-services.json
+          echo "✅ google-services.json restored"
+
+      # ─── 5. Install Dependencies ─────────────────────────────────────────────
+      - name: Install Flutter dependencies
+        working-directory: mobile
+        run: flutter pub get
+
+      # ─── 6. Build Release APK ───────────────────────────────────────────────
+      - name: Build APK (Release)
+        working-directory: mobile
+        run: |
+          flutter build apk --release \
+            --build-name="1.1.${{ github.run_number }}" \
+            --build-number="${{ github.run_number }}"
+        env:
+          FLUTTER_BUILD_MODE: release
+
+      # ─── 7. Upload APK as GitHub Artifact (for manual download too) ─────────
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: neet-coach-beta-v1.1.${{ github.run_number }}
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+      # ─── 8. Distribute via Firebase App Distribution ────────────────────────
+      # IMPORTANT: Add FIREBASE_APP_ID and FIREBASE_TOKEN as GitHub Secrets
+      # Get FIREBASE_APP_ID from Firebase Console → Project Settings → General → Your Apps
+      # Get FIREBASE_TOKEN by running: firebase login:ci  (on your local machine)
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: beta-testers           # Create this group in Firebase Console
+          file: mobile/build/app/outputs/flutter-apk/app-release.apk
+          releaseNotes: |
+            ${{ github.event.inputs.release_notes || 'New beta build from main branch.' }}
+            
+            Build: v1.1.${{ github.run_number }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Time: ${{ github.event.head_commit.timestamp }}
+
+      # ─── 9. Post success summary ─────────────────────────────────────────────
+      - name: Post build summary
+        run: |
+          echo "## ✅ Beta Build Distributed" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** v1.1.${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **APK:** app-release.apk" >> $GITHUB_STEP_SUMMARY
+          echo "- **Distribution:** Firebase App Distribution → beta-testers group" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

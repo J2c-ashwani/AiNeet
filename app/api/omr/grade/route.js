@@ -121,17 +121,35 @@ export async function POST(request) {
         else if (normalizedScore >= 300) estimatedRank = "2,00,000 - 5,00,000";
         else estimatedRank = "5,00,000+";
 
+        // Create canonical test record first
+        const { error: testInsertErr } = await supabase.from('tests').insert({
+            id: testId,
+            user_id: user.id,
+            type: 'omr_scan',
+            score: finalScore,
+            correct_count: correctCount,
+            incorrect_count: wrongCount,
+            unanswered_count: skippedCount,
+            completed_at: new Date().toISOString()
+        });
+
+        if (testInsertErr) {
+            console.error('OMR canonical test insert failed:', testInsertErr);
+            throw testInsertErr;
+        }
+
         // Log the scan
-        try {
-            await supabase.from('omr_scans').insert({
-                user_id: user.id,
-                test_id: testId,
-                accuracy_percentage: accuracy,
-                raw_extracted_answers: verifiedAnswers,
-                verified_answers: verifiedAnswers,
-            });
-        } catch (e) {
-            console.error('OMR scan log failed (non-blocking):', e.message);
+        const { error: omrInsertErr } = await supabase.from('omr_scans').insert({
+            user_id: user.id,
+            test_id: testId,
+            accuracy_percentage: accuracy,
+            raw_extracted_answers: verifiedAnswers,
+            verified_answers: verifiedAnswers,
+        });
+
+        if (omrInsertErr) {
+            console.error('OMR scan log failed:', omrInsertErr);
+            throw omrInsertErr;
         }
 
         const yearLabel = testYear || 'this test';

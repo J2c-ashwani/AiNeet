@@ -185,6 +185,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
     controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF080c18))
+      // ✅ Critical: Marks this WebView as the native app so the web app
+      // does NOT show the "Download App" install gate and blocks test generation.
+      ..setUserAgent('Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36 NEETCoachApp/1.0')
       ..addJavaScriptChannel(
         'NeetCoachAds',
         onMessageReceived: (JavaScriptMessage message) {

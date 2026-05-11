@@ -15,7 +15,16 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
         // Simple mobile detection on mount
         const userAgent = typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
         const mobile = Boolean(userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-        setIsMobile(mobile);
+        
+        // ✅ Critical: Never show install prompts inside the native app itself
+        const isInsideNativeApp = Boolean(
+            window.ReactNativeWebView ||
+            window.nativeApp ||
+            userAgent.includes('NEETCoachApp') ||
+            document.cookie.includes('native_app=true')
+        );
+        
+        setIsMobile(mobile && !isInsideNativeApp);
 
         // Check if previously dismissed (only respect dismiss for 'soft' mode)
         if (mode === 'soft') {
@@ -24,10 +33,7 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
         }
     }, [mode]);
 
-    // Expose the isMobile state through a global or context? No, simpler: just block the click on the parent component.
-    // The AppInstallPrompt will just render the UI.
-
-    if (!isMobile) return null; // Don't show on desktop
+    if (!isMobile) return null; // Don't show on desktop or inside native app
 
     if (mode === 'hard') {
         if (!showModal) return null; // Wait for trigger

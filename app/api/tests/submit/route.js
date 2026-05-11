@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeRpc, safeUpdate, safeInsert } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { calculateNEETScore, calculateXP, getLevelFromXP } from '@/lib/scoring';
 import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engine';
@@ -79,7 +80,7 @@ export async function POST(request) {
                 test_id: testId,
                 question_id: String(answer.questionId),
                 selected_option: answer.selectedOption || null,
-                is_correct: answer.selectedOption ? (isCorrect === 1) : null,
+                is_correct: answer.selectedOption ? isCorrect : null,
                 time_spent_seconds: timeSpent
             });
 
@@ -189,20 +190,23 @@ export async function POST(request) {
             });
         }
 
-        // ─── PHASE 4: Batch-write all updates in parallel ─────────────────────────
-        const writeOps = [];
-
-        if (testAnswersToInsert.length > 0) {
-            writeOps.push(supabase.from('test_answers').insert(testAnswersToInsert));
-        }
-        if (performanceUpserts.length > 0) {
-            writeOps.push(supabase.from('user_performance').upsert(performanceUpserts, { onConflict: 'user_id,topic_id' }));
-        }
-        if (mistakeUpserts.length > 0) {
-            writeOps.push(supabase.from('mistake_log').upsert(mistakeUpserts, { onConflict: 'user_id,question_id' }));
-        }
-
-        await Promise.all(writeOps);
+        // ─── PHASE 4: Execute Atomic Test Submission via RPC ─────────────────────────
+        const completionTime = new Date().toISOString();
+        const scoreData = calculateNEETScore(processedAnswers);
+        
+        await safeRpc('submit_test_transaction', {
+            p_test_id: testId,
+            p_user_id: decoded.id,
+            p_score: scoreData.scaledScore,
+            p_correct_count: scoreData.correct,
+            p_incorrect_count: scoreData.incorrect,
+            p_unanswered_count: scoreData.unanswered,
+            p_completed_at: completionTime,
+            p_time_taken_seconds: timeTaken || 0,
+            p_answers: testAnswersToInsert.length > 0 ? testAnswersToInsert : null,
+            p_mistakes: mistakeUpserts.length > 0 ? mistakeUpserts : null,
+            p_performances: performanceUpserts.length > 0 ? performanceUpserts : null
+        }, { route: '/api/tests/submit', userId: decoded.id, testId });
 
         // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
         await Promise.all([
@@ -211,14 +215,7 @@ export async function POST(request) {
             ...wrongAnswerQuestionIds.map(qId => scheduleNewCard(decoded.id, qId).catch(() => {})),
         ]);
 
-        const scoreData = calculateNEETScore(processedAnswers);
         const xpEarned = calculateXP(scoreData);
-
-        await supabase.from('tests').update({
-            score: scoreData.scaledScore, correct_count: scoreData.correct,
-            incorrect_count: scoreData.incorrect, unanswered_count: scoreData.unanswered,
-            time_taken_seconds: timeTaken || 0, completed_at: new Date().toISOString()
-        }).eq('id', testId);
 
         // Update XP, Level, and Risk Telemetry
         const { data: user } = await supabase.from('users').select('xp, streak, last_active_date, referred_by, trust_score').eq('id', decoded.id).single();
@@ -258,9 +255,9 @@ export async function POST(request) {
         if (trustPenalty === 0 && processedAnswers.length >= 3) {
             const recoveryPoints = calculateTrustRecovery('test_completed', user?.trust_score);
             if (recoveryPoints > 0) {
-                await supabase.from('users').update({
+                await safeUpdate('users', { id: decoded.id }, {
                     trust_score: Math.min(100, (user?.trust_score || 100) + recoveryPoints)
-                }).eq('id', decoded.id);
+                }, { route: '/api/tests/submit/trust_recovery', userId: decoded.id });
             }
         }
 
@@ -290,15 +287,15 @@ export async function POST(request) {
         }
 
         // Update user state using atomic streak math instead of overwriting XP blindly
-        await supabase.from('users').update({ streak: newStreak, last_active_date: new Date().toISOString() }).eq('id', decoded.id);
+        await safeUpdate('users', { id: decoded.id }, { streak: newStreak, last_active_date: new Date().toISOString() }, { route: '/api/tests/submit/streak', userId: decoded.id });
 
         // MD Trust Recovery: Streak milestones give bonus trust recovery
         if (newStreak >= 3 && trustPenalty === 0) {
             const streakRecovery = calculateTrustRecovery('streak_maintained', user?.trust_score);
             if (streakRecovery > 0) {
-                await supabase.from('users').update({
+                await safeUpdate('users', { id: decoded.id }, {
                     trust_score: Math.min(100, (user?.trust_score || 100) + streakRecovery)
-                }).eq('id', decoded.id);
+                }, { route: '/api/tests/submit/streak_trust', userId: decoded.id });
             }
         }
 
@@ -309,9 +306,9 @@ export async function POST(request) {
             if (!existing) {
                 const badge = ACHIEVEMENTS.find(b => b.id === id);
                 if (badge) {
-                    await supabase.from('user_achievements').insert({
+                    await safeInsert('user_achievements', {
                         user_id: decoded.id, badge_type: id, badge_name: badge.name, description: badge.description
-                    });
+                    }, { route: '/api/tests/submit/badge', userId: decoded.id });
                     newBadges.push(badge);
                 }
             }

@@ -1,57 +1,42 @@
-require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
+const s = createClient('https://lfwnrehqjiwpfoylhmby.supabase.co','REDACTED_KEY_ROTATED', { auth: { persistSession: false }});
 
-async function auditDatabase() {
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+async function runAudit() {
+  const report = {};
+  
+  // Mod 1: Auth
+  const { data: users } = await s.from('users').select('id, fcm_token, onboarding_completed, parent_email');
+  report.auth = {
+    totalUsers: users?.length || 0,
+    withFcm: users?.filter(u => !!u.fcm_token).length || 0,
+    withParent: users?.filter(u => !!u.parent_email).length || 0,
+    onboarded: users?.filter(u => u.onboarding_completed).length || 0
+  };
 
-    console.log('[PHASE 9 AUDIT] Scanning for mathematical anomalies and corrupted state...');
+  // Mod 2: Test Submissions
+  const { count: testsCount } = await s.from('tests').select('*', { count: 'exact', head: true }).not('completed_at', 'is', null);
+  const { count: testAnswersCount } = await s.from('test_answers').select('*', { count: 'exact', head: true });
+  const { count: testAttemptsCount, error: attemptsErr } = await s.from('test_attempts').select('*', { count: 'exact', head: true });
+  report.tests = { completedTests: testsCount, totalAnswers: testAnswersCount, totalAttempts: testAttemptsCount, attemptsError: attemptsErr?.message };
 
-    // 1. Audit Orphans: Are there pending payments older than 30 days?
-    // 2. XP Mathematics: Calculate sum of all test_attempts XP vs users.xp
-    
-    // Check all test_attempts
-    const { data: allAttempts, error } = await supabase.from('test_attempts')
-        .select('user_id, xp_awarded, status');
-        
-    if (error) {
-        console.error('Audit failed:', error);
-        return;
-    }
+  // Mod 4: OMR
+  const { count: omrCount } = await s.from('omr_scans').select('*', { count: 'exact', head: true });
+  report.omr = { scans: omrCount };
 
-    // Aggregate XP by user_id
-    const userRealXpMap = {};
-    for (const attempt of allAttempts) {
-        if (attempt.status === 'completed' && attempt.xp_awarded > 0) {
-            userRealXpMap[attempt.user_id] = (userRealXpMap[attempt.user_id] || 0) + attempt.xp_awarded;
-        }
-    }
+  // Mod 5: Doubts
+  const { count: doubtConvs } = await s.from('doubt_conversations').select('*', { count: 'exact', head: true });
+  const { count: doubtMsgs } = await s.from('doubt_messages').select('*', { count: 'exact', head: true });
+  report.doubts = { conversations: doubtConvs, messages: doubtMsgs };
 
-    // Now pull all users to check if their state matches the truth DB
-    const { data: allUsers } = await supabase.from('users').select('id, xp, name');
+  // Mod 6: Subscriptions
+  const { data: payments } = await s.from('payments').select('id, status, user_id, amount');
+  const { data: subs } = await s.from('subscriptions').select('id, user_id, billing_status');
+  report.payments = { 
+    totalPayments: payments?.length, 
+    completedPayments: payments?.filter(p => p.status === 'completed').length,
+    activeSubs: subs?.length 
+  };
 
-    let corruptCount = 0;
-    
-    for (const user of allUsers) {
-        const expectedXp = userRealXpMap[user.id] || 0;
-        // In local development, some XP might be injected manually but the core algorithm should match
-        // Or users who have 0 tests should have 0 XP
-        if (user.xp !== expectedXp && user.xp > 0) {
-            console.warn(`⚠️ XP ANOMALY: User ${user.id} (${user.name}) has ${user.xp} XP but sum of tests equals ${expectedXp} XP.`);
-            corruptCount++;
-        }
-    }
-
-    // 3. Duplicate Test attempts
-    console.log(`[PHASE 9 AUDIT] Integrity Scan Complete.`);
-    
-    if (corruptCount === 0) {
-        console.log(`✅ SYSTEM SECURE! Database Mathematical verification passed 100%. No orphan test states or duplicated XP detected.`);
-    } else {
-        console.warn(`WARNING: ${corruptCount} user records exhibit disconnected data states. Note: This may be due to manual dev modifications.`);
-    }
+  console.log(JSON.stringify(report, null, 2));
 }
-
-auditDatabase();
+runAudit().catch(console.error);
