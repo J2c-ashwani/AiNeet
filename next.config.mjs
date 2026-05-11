@@ -6,6 +6,57 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
+  customWorkerDir: "worker",
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/.*\.(js|css|woff2?)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "static-assets",
+        expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+      },
+    },
+    {
+      urlPattern: /^https:\/\/.*\.(png|jpg|jpeg|svg|gif|webp|ico)$/i,
+      handler: "CacheFirst",
+      options: {
+        cacheName: "image-cache",
+        expiration: { maxEntries: 60, maxAgeSeconds: 7 * 24 * 60 * 60 },
+      },
+    },
+    {
+      urlPattern: /\/api\/(study-plan|syllabus|blueprint|ncert\/library|home\/stats|auth\/me|omr\/tests)/,
+      handler: "StaleWhileRevalidate",
+      options: {
+        cacheName: "api-data-cache",
+        expiration: { maxEntries: 30, maxAgeSeconds: 2 * 60 * 60 },
+      },
+    },
+    {
+      urlPattern: /\/api\/tests\/submit/,
+      handler: "NetworkFirst",
+      method: "POST",
+      options: {
+        cacheName: "test-submit-cache",
+        backgroundSync: {
+          name: "test-submit-queue",
+          options: { maxRetentionTime: 24 * 60 },
+        },
+      },
+    },
+    {
+      urlPattern: /\/api\/omr\/grade/,
+      handler: "NetworkFirst",
+      method: "POST",
+      options: {
+        cacheName: "omr-grade-cache",
+        backgroundSync: {
+          name: "omr-grade-queue",
+          options: { maxRetentionTime: 24 * 60 },
+        },
+      },
+    },
+  ],
 });
 
 /** @type {import('next').NextConfig} */

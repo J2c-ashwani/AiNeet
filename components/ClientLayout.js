@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import OfflineBanner from '@/components/OfflineBanner';
 import { AuthProvider } from '@/context/AuthContext';
 
 export default function ClientLayout({ children }) {
@@ -26,7 +27,7 @@ export default function ClientLayout({ children }) {
 
     return (
         <AuthProvider>
-
+            <OfflineBanner />
             <Navbar />
             <main style={{ flex: 1 }}>
                 {children}
