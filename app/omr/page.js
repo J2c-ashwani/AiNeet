@@ -168,6 +168,30 @@ export default function OMRScannerPage() {
     };
 
     const handleGradeSubmit = async () => {
+        // Pre-grade validation
+        const selectedTest = tests.find(t => t.id === selectedTestId);
+        const expectedTotal = selectedTest?.total_questions || 180;
+        const answeredCount = Object.values(scannedAnswers).filter(v => v && v !== '-' && v !== '').length;
+        const skippedCount = expectedTotal - answeredCount;
+        
+        // Reject if less than 10% questions answered — likely a bad scan
+        if (answeredCount < Math.max(5, expectedTotal * 0.1)) {
+            setScanError(`Only ${answeredCount} answers detected out of ${expectedTotal} questions. The scan quality may be too low. Please re-scan with better lighting.`);
+            return;
+        }
+
+        // Warn if more than 50% skipped (but allow submission)
+        if (skippedCount > expectedTotal * 0.5) {
+            const proceed = window.confirm(
+                `${skippedCount} out of ${expectedTotal} questions appear unanswered.\n\n` +
+                `This could mean:\n` +
+                `• Some bubbles weren't detected clearly\n` +
+                `• You intentionally skipped those questions\n\n` +
+                `Do you want to grade with ${answeredCount} answers?`
+            );
+            if (!proceed) return;
+        }
+
         setIsGrading(true);
         try {
             const res = await fetch('/api/omr/grade', {
@@ -236,24 +260,48 @@ export default function OMRScannerPage() {
                 <div className="animate-fade-in">
                     <Card style={{ textAlign: 'center', padding: '40px 16px', background: 'linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05))', border: '1px solid var(--accent-primary)', marginBottom: '24px' }}>
                         <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--accent-primary)', marginBottom: '8px' }}>{finalResult.score} / {finalResult.totalPossible}</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '24px' }}>Accuracy: <span style={{ color: 'var(--text-primary)' }}>{finalResult.accuracy}%</span></p>
+                        <p style={{ color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '20px' }}>Accuracy: <span style={{ color: 'var(--text-primary)' }}>{finalResult.accuracy}%</span></p>
 
-                        <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '24px' }}>
-                            <span style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--success)', fontWeight: 700, marginBottom: '4px' }}>Rank Estimate</span>
+                        {/* Correct / Wrong / Skipped stats */}
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                            <div style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
+                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--success)' }}>✓ {finalResult.correct || 0}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Correct</div>
+                            </div>
+                            <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
+                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--danger)' }}>✗ {finalResult.wrong || 0}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Wrong</div>
+                            </div>
+                            <div style={{ background: 'rgba(148, 163, 184, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
+                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-secondary)' }}>— {finalResult.skipped || 0}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Skipped</div>
+                            </div>
+                        </div>
+
+                        <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '20px' }}>
+                            <span style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--success)', fontWeight: 700, marginBottom: '4px' }}>Estimated NEET Rank</span>
                             <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{finalResult.estimatedRankRange}</span>
                         </div>
 
-                        <p style={{ fontSize: '0.9rem', color: 'var(--warning)', background: 'rgba(245, 158, 11, 0.1)', padding: '12px', borderRadius: 'var(--radius-sm)' }}>{finalResult.communityInsight}</p>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{finalResult.communityInsight}</p>
                     </Card>
 
-                    <Button variant="secondary" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }} onClick={resetScanner}>
-                        Scan Another OMR Sheet
-                    </Button>
-                    <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
-                        <Button variant="primary" style={{ width: '100%', minHeight: '48px' }}>
-                            View My Mistakes
+                    {/* Post-grade actions — learning loop */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
+                            <Button variant="primary" style={{ width: '100%', minHeight: '48px' }}>
+                                📝 View My Mistakes
+                            </Button>
+                        </a>
+                        <a href="/dashboard" style={{ textDecoration: 'none', display: 'block' }}>
+                            <Button variant="secondary" style={{ width: '100%', minHeight: '48px' }}>
+                                📊 Go to Dashboard
+                            </Button>
+                        </a>
+                        <Button variant="secondary" style={{ width: '100%', minHeight: '48px' }} onClick={resetScanner}>
+                            📸 Scan Another Sheet
                         </Button>
-                    </a>
+                    </div>
                 </div>
             )
 
@@ -307,28 +355,50 @@ export default function OMRScannerPage() {
                             <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />
                         ) : tests.length === 0 ? (
                             <Card style={{ padding: '16px', textAlign: 'center', border: '1px dashed var(--border-color)' }}>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>No offline tests configured yet.</p>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Ask your coaching institute to add their test papers.</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>No test papers available yet.</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>PYQ papers will appear here once uploaded.</p>
                             </Card>
                         ) : (
-                            <select
-                                className="input"
-                                style={{
-                                    width: '100%',
-                                    padding: '14px 16px',
-                                    minHeight: '48px',
-                                    fontSize: '0.95rem',
-                                    cursor: 'pointer',
-                                }}
-                                value={selectedTestId}
-                                onChange={(e) => setSelectedTestId(e.target.value)}
-                            >
-                                {tests.map(t => (
-                                    <option key={t.id} value={t.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
-                                        {t.test_name} ({t.total_questions} Qs)
-                                    </option>
-                                ))}
-                            </select>
+                            <>
+                                <select
+                                    className="input"
+                                    style={{
+                                        width: '100%',
+                                        padding: '14px 16px',
+                                        minHeight: '48px',
+                                        fontSize: '0.95rem',
+                                        cursor: 'pointer',
+                                    }}
+                                    value={selectedTestId}
+                                    onChange={(e) => setSelectedTestId(e.target.value)}
+                                >
+                                    {tests.map(t => (
+                                        <option key={t.id} value={t.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+                                            {t.test_name} ({t.total_questions} Qs)
+                                        </option>
+                                    ))}
+                                </select>
+                                {/* Subject breakdown */}
+                                {(() => {
+                                    const selected = tests.find(t => t.id === selectedTestId);
+                                    if (selected?.subject_breakdown) {
+                                        return (
+                                            <div style={{
+                                                marginTop: '8px',
+                                                padding: '8px 12px',
+                                                background: 'rgba(99, 102, 241, 0.06)',
+                                                borderRadius: 'var(--radius-sm)',
+                                                fontSize: '0.8rem',
+                                                color: 'var(--text-secondary)',
+                                                fontWeight: 500,
+                                            }}>
+                                                📋 {selected.subject_breakdown}
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })()}
+                            </>
                         )}
                     </div>
 
