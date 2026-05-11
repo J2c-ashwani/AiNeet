@@ -1,5 +1,16 @@
+require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
-const s = createClient('https://lfwnrehqjiwpfoylhmby.supabase.co','REDACTED_KEY_ROTATED', { auth: { persistSession: false }});
+
+// NEVER hardcode credentials. Always use environment variables.
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('❌ SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set in .env.local');
+  process.exit(1);
+}
+
+const s = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, { auth: { persistSession: false } });
 
 async function runAudit() {
   const report = {};

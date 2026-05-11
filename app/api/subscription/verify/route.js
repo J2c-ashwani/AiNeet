@@ -5,8 +5,10 @@ import { getUserFromRequest } from '@/lib/core/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
+import { safeRpc, safeUpdate } from '@/lib/core/db-safe';
 
 export async function POST(request) {
+    const ROUTE = '/api/subscription/verify';
     try {
         const supabase = await getDb();
 
@@ -39,8 +41,8 @@ export async function POST(request) {
         const verification = await PaymentService.verifyPayment(orderId);
 
         if (!verification.isPaid) {
-            // Update payment status to failed
-            await supabase.from('payments').update({ status: 'failed' }).eq('provider_order_id', orderId);
+            // Update payment status to failed — use safe layer
+            await safeUpdate('payments', { provider_order_id: orderId }, { status: 'failed' }, { route: ROUTE, userId: decoded.id });
             return NextResponse.json({
                 error: 'Payment not completed',
                 orderStatus: verification.orderStatus
@@ -55,18 +57,15 @@ export async function POST(request) {
         expiryDate.setDate(expiryDate.getDate() + durationDays);
         const expiryIso = expiryDate.toISOString();
 
-        // 5. Upgrade User Subscription
-        await supabase.from('users').update({
-            subscription_tier: 'pro',
-            subscription_status: 'active',
-            subscription_expiry: expiryIso
-        }).eq('id', decoded.id);
-
-        // 6. Update Payment Status
-        await supabase.from('payments').update({
-            status: 'completed',
-            provider_payment_id: verification.cfOrderId || orderId
-        }).eq('provider_order_id', orderId);
+        // 5. Atomic Subscription Activation via RPC
+        // This atomically: upgrades user + marks payment completed
+        await safeRpc('subscription_verify_transaction', {
+            p_user_id: decoded.id,
+            p_order_id: orderId,
+            p_plan_tier: 'pro',
+            p_expiry_at: expiryIso,
+            p_cf_order_id: verification.cfOrderId || orderId
+        }, { route: ROUTE, userId: decoded.id });
 
         return NextResponse.json({
             success: true,
