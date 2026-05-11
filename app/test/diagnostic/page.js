@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 function DiagnosticComponent() {
     const [questions, setQuestions] = useState([]);
@@ -20,20 +21,18 @@ function DiagnosticComponent() {
     const challengerGhost = searchParams.get('c_ghost');
 
     useEffect(() => {
-        const generateFingerprint = () => {
-            let fp = localStorage.getItem('diag_fp');
-            if (fp) return fp;
-            fp = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            localStorage.setItem('diag_fp', fp);
-            return fp;
-        };
-
         const fetchTest = async () => {
             try {
+                let fp = await resilientStorage.get(STORAGE_KEYS.DIAGNOSTIC_FP);
+                if (!fp) {
+                    fp = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+                    await resilientStorage.set(STORAGE_KEYS.DIAGNOSTIC_FP, fp);
+                }
+
                 const res = await fetch('/api/tests/diagnostic/generate', {
                     method: 'POST',
                     headers: {
-                        'x-device-print': generateFingerprint()
+                        'x-device-print': fp
                     }
                 });
                 
@@ -80,7 +79,7 @@ function DiagnosticComponent() {
 
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
-                localStorage.setItem('pending_diagnostic_grade', JSON.stringify({
+                await resilientStorage.set(STORAGE_KEYS.PENDING_DIAGNOSTIC, JSON.stringify({
                     scoreData: verifyData.grade,
                     signature: verifyData.signature
                 }));

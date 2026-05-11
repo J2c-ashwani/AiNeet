@@ -5,6 +5,8 @@ import { getUserFromRequest } from '@/lib/core/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
+import { safeInsert } from '@/lib/core/db-safe';
+import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
 export async function POST(request) {
     try {
@@ -52,13 +54,23 @@ export async function POST(request) {
 
         // 5. Log payment intent in DB
         const paymentId = uuidv4();
-        await supabase.from('payments').insert({
+        await safeInsert('payments', {
             id: paymentId,
             user_id: decoded.id,
             amount: plan.amount,
             currency: 'INR',
             status: 'pending',
             provider_order_id: order.orderId
+        }, { route: '/api/subscription/create', userId: decoded.id });
+
+        await logPaymentTimeline({
+            paymentId,
+            userId: decoded.id,
+            provider: 'cashfree',
+            requestId: order.orderId,
+            sourceRoute: '/api/subscription/create',
+            status: 'initiated',
+            metadata: { amount: plan.amount, planId }
         });
 
         // 6. Return Cashfree session details to frontend

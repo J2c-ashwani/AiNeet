@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeUpdate } from '@/lib/core/db-safe';
+import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { getUserFromRequest } from '@/lib/core/auth';
 
 export async function POST(request) {
@@ -44,13 +46,33 @@ export async function POST(request) {
 
         const score = (correct * 4) - (incorrect * 1); // NEET marking scheme
 
-        await supabase.from('battleground_participants').update({
-            score: score,
-            correct_count: correct,
-            incorrect_count: incorrect,
-            time_spent_seconds: timeSpent || 0,
-            submitted_at: new Date().toISOString()
-        }).eq('battleground_id', battleId).eq('user_id', decoded.id);
+        // Atomic Check and Set using safeUpdate to prevent double-submit
+        const { data: updateRes, error: updateErr } = await supabase
+            .from('battleground_participants')
+            .update({
+                score: score,
+                correct_count: correct,
+                incorrect_count: incorrect,
+                time_spent_seconds: timeSpent || 0,
+                submitted_at: new Date().toISOString()
+            })
+            .eq('battleground_id', battleId)
+            .eq('user_id', decoded.id)
+            .is('submitted_at', null)
+            .select();
+
+        if (updateErr) throw updateErr;
+
+        if (!updateRes || updateRes.length === 0) {
+            return NextResponse.json({ error: 'Already submitted or battle locked.' }, { status: 409 });
+        }
+
+        await logAcademicEvent({
+            eventType: 'battle_finalized',
+            userId: decoded.id,
+            payload: { battleId, score, correct, incorrect },
+            sourceRoute: '/api/battleground/submit'
+        });
 
         return NextResponse.json({ success: true, score, correct, incorrect, timeSpent });
 

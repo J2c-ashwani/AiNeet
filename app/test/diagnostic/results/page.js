@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 export default function DiagnosticResultsLock() {
     const [result, setResult] = useState(null);
@@ -17,24 +18,31 @@ export default function DiagnosticResultsLock() {
 
     // 1. Ghost ID provision for Symmetrical Flywheel
     useEffect(() => {
-        if (!localStorage.getItem('ghost_id')) {
-            localStorage.setItem('ghost_id', 'ghost_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36));
-        }
+        const initGhost = async () => {
+            const current = await resilientStorage.get(STORAGE_KEYS.GHOST_ID);
+            if (!current) {
+                await resilientStorage.set(STORAGE_KEYS.GHOST_ID, 'ghost_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36));
+            }
+        };
+        initGhost();
     }, []);
 
     useEffect(() => {
-        const stored = localStorage.getItem('pending_diagnostic_grade');
-        if (stored) {
-            try {
-                setResult(JSON.parse(stored).scoreData);
-                // If user is already logged in, unlock the results immediately — no wall needed
-                if (user) setUnlocked(true);
-            } catch (e) {
+        const fetchStored = async () => {
+            const stored = await resilientStorage.get(STORAGE_KEYS.PENDING_DIAGNOSTIC);
+            if (stored) {
+                try {
+                    setResult(JSON.parse(stored).scoreData);
+                    // If user is already logged in, unlock the results immediately — no wall needed
+                    if (user) setUnlocked(true);
+                } catch (e) {
+                    setNoResult(true);
+                }
+            } else {
                 setNoResult(true);
             }
-        } else {
-            setNoResult(true);
-        }
+        };
+        fetchStored();
 
         fetch('/api/stats/traffic').then(r => r.json()).then(d => d && setAspirantCount(d.activeAspirants)).catch(() => setAspirantCount(462));
     }, [router, user]);
@@ -42,7 +50,7 @@ export default function DiagnosticResultsLock() {
     const handleViralShare = async () => {
         if (!result) return;
         const rootUrl = window.location.origin;
-        const ghostId = localStorage.getItem('ghost_id');
+        const ghostId = await resilientStorage.get(STORAGE_KEYS.GHOST_ID);
         
         // Push notification hook logic:
         if (ghostPhone && ghostPhone.length > 5) {

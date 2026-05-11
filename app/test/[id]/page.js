@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
+import { STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button, Badge } from '@/components/ui';
 
 /**
@@ -197,7 +198,7 @@ export default function TestPage({ params }) {
         const handleUnload = () => {
             // Synchronous signal for localStorage (IDB may not complete)
             try {
-                localStorage.setItem('activeTest', JSON.stringify({
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_TEST, JSON.stringify({
                     activeTestId: testId,
                     lastUpdatedAt: Date.now(),
                     resumeAvailable: true

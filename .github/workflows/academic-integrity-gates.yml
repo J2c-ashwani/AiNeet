@@ -1,0 +1,48 @@
+name: Academic Integrity Gates (P0)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  academic-integrity-audit:
+    runs-on: ubuntu-latest
+    
+    # Do not let broken data slip into production
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Academic Data Audit (Orphans & Missing Data)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/audit-academics.js
+
+      - name: Run Revision System Audit (SM-2 Consistency)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/audit-revision.js
+
+      - name: Run Analytics Audit (Truthfulness & Scoring)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/audit-analytics.js
+
+      - name: Run Academic Chaos Simulation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/test-academic-chaos.js

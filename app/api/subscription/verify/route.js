@@ -6,6 +6,7 @@ import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
 import { safeRpc, safeUpdate } from '@/lib/core/db-safe';
+import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
 export async function POST(request) {
     const ROUTE = '/api/subscription/verify';
@@ -43,6 +44,16 @@ export async function POST(request) {
         if (!verification.isPaid) {
             // Update payment status to failed — use safe layer
             await safeUpdate('payments', { provider_order_id: orderId }, { status: 'failed' }, { route: ROUTE, userId: decoded.id });
+            
+            await logPaymentTimeline({
+                userId: decoded.id,
+                provider: 'cashfree',
+                requestId: orderId,
+                sourceRoute: ROUTE,
+                status: 'failed',
+                metadata: { error: 'Payment not completed', orderStatus: verification.orderStatus }
+            });
+
             return NextResponse.json({
                 error: 'Payment not completed',
                 orderStatus: verification.orderStatus
@@ -66,6 +77,15 @@ export async function POST(request) {
             p_expiry_at: expiryIso,
             p_cf_order_id: verification.cfOrderId || orderId
         }, { route: ROUTE, userId: decoded.id });
+
+        await logPaymentTimeline({
+            userId: decoded.id,
+            provider: 'cashfree',
+            requestId: orderId,
+            sourceRoute: ROUTE,
+            status: 'verified',
+            metadata: { planId, expiryIso, cfOrderId: verification.cfOrderId || orderId }
+        });
 
         return NextResponse.json({
             success: true,

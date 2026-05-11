@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button } from '@/components/ui';
 
 export default function WelcomePage() {
@@ -9,36 +10,41 @@ export default function WelcomePage() {
     const router = useRouter();
     const [step, setStep] = useState(0);
     const [isExiting, setIsExiting] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
 
     const firstName = user?.name?.split(' ')[0] || user?.full_name?.split(' ')[0] || 'there';
 
     useEffect(() => {
-        // If already onboarded (DB flag via user object or localStorage cache), skip
-        if (typeof window !== 'undefined') {
-            if (localStorage.getItem('onboarding_complete') === 'true') {
-                router.replace('/');
-                return;
+        setHasMounted(true);
+        const checkOnboarding = async () => {
+            if (typeof window !== 'undefined') {
+                const complete = await resilientStorage.get(STORAGE_KEYS.ONBOARDING_COMPLETE);
+                if (complete === 'true') {
+                    router.replace('/');
+                    return;
+                }
             }
-        }
-        if (user?.onboarding_completed) {
-            localStorage.setItem('onboarding_complete', 'true');
-            router.replace('/');
-        }
+            if (user?.onboarding_completed) {
+                await resilientStorage.set(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
+                router.replace('/');
+            }
+        };
+        checkOnboarding();
     }, [router, user]);
 
     const handleStartDiagnostic = async () => {
-        // Mark onboarding complete in both localStorage (instant) and DB (persistent)
-        localStorage.setItem('onboarding_complete', 'true');
+        // Mark onboarding complete in both resilientStorage (instant) and DB (persistent)
+        await resilientStorage.set(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
         try {
             await fetch('/api/user/complete-onboarding', { method: 'POST' });
         } catch (e) {
-            // Non-blocking — localStorage is the fallback
+            // Non-blocking
         }
         router.push('/test/diagnostic');
     };
 
     const handleSkip = async () => {
-        localStorage.setItem('onboarding_complete', 'true');
+        await resilientStorage.set(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
         try {
             await fetch('/api/user/complete-onboarding', { method: 'POST' });
         } catch (e) {}
@@ -52,6 +58,8 @@ export default function WelcomePage() {
             setIsExiting(false);
         }, 200);
     };
+
+    if (!hasMounted) return null;
 
     if (authLoading) {
         return (

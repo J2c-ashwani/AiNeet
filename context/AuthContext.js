@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 const AuthContext = createContext(null);
 
@@ -12,40 +13,45 @@ export function AuthProvider({ children }) {
     const router = useRouter();
 
     useEffect(() => {
-        fetch('/api/auth/me')
-            .then(r => r.json())
-            .then(data => {
-                if (data.user) {
-                    setUser(data.user);
-                    
-                    // ACQUISITION ENGINE FLAG: Seamlessly map pending stateless diagnostics to this new user profile
-                    const storedDiagnostic = localStorage.getItem('pending_diagnostic_grade');
-                    if (storedDiagnostic) {
-                        fetch('/api/tests/diagnostic/claim', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: storedDiagnostic
-                        }).then(r => {
-                            if (r.ok) localStorage.removeItem('pending_diagnostic_grade');
-                        }).catch(e => console.error('Acquisition merge failed:', e));
-                    }
-                }
-            })
-            .catch(err => console.error('Auth check failed:', err))
-            .finally(() => setLoading(false));
+        const initStorage = async () => {
+            const storedDiagnostic = await resilientStorage.get(STORAGE_KEYS.PENDING_DIAGNOSTIC);
+            const ghost_id = await resilientStorage.get(STORAGE_KEYS.GHOST_ID);
 
-        // VIRAL FLYWHEEL: Ghost Reconnaissance
-        const ghost_id = localStorage.getItem('ghost_id');
-        if (ghost_id) {
-            fetch(`/api/challenge/status?ghost_id=${ghost_id}`)
+            fetch('/api/auth/me')
                 .then(r => r.json())
-                .then(d => {
-                    if (d.defeated && d.data) {
-                        setGhostDefeat(d.data);
+                .then(data => {
+                    if (data.user) {
+                        setUser(data.user);
+                        
+                        // ACQUISITION ENGINE FLAG: Seamlessly map pending stateless diagnostics to this new user profile
+                        if (storedDiagnostic) {
+                            fetch('/api/tests/diagnostic/claim', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: storedDiagnostic
+                            }).then(async r => {
+                                if (r.ok) await resilientStorage.remove(STORAGE_KEYS.PENDING_DIAGNOSTIC);
+                            }).catch(e => console.error('Acquisition merge failed:', e));
+                        }
                     }
                 })
-                .catch(()=>{});
-        }
+                .catch(err => console.error('Auth check failed:', err))
+                .finally(() => setLoading(false));
+
+            // VIRAL FLYWHEEL: Ghost Reconnaissance
+            if (ghost_id) {
+                fetch(`/api/challenge/status?ghost_id=${ghost_id}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.defeated && d.data) {
+                            setGhostDefeat(d.data);
+                        }
+                    })
+                    .catch(()=>{});
+            }
+        };
+
+        initStorage();
     }, []);
 
     const logout = async () => {
@@ -88,8 +94,8 @@ export function AuthProvider({ children }) {
                         </p>
 
                         <button 
-                            onClick={() => {
-                                localStorage.removeItem('ghost_id');
+                            onClick={async () => {
+                                await resilientStorage.remove(STORAGE_KEYS.GHOST_ID);
                                 setGhostDefeat(null);
                                 window.location.href = '/test/diagnostic';
                             }}

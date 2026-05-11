@@ -21,8 +21,10 @@ export default function ProfilePage() {
     const [entitlement, setEntitlement] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isRestoring, setIsRestoring] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
+        setHasMounted(true);
         if (authLoading) return;
         if (!user) { window.location.href = '/login'; return; }
         Promise.all([
@@ -62,6 +64,8 @@ export default function ProfilePage() {
             alert('Restore purchases is only available on the Android app.');
         }
     };
+
+    if (!hasMounted) return null;
 
     if (loading) return (
         <div className="page" style={{ maxWidth: 700, margin: '0 auto' }}>

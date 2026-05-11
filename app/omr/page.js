@@ -52,7 +52,7 @@ export default function OMRScannerPage() {
     const [testsLoading, setTestsLoading] = useState(true);
     const [selectedTestId, setSelectedTestId] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
-    const [imageBase64, setImageBase64] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [fileInfo, setFileInfo] = useState(null); // { sizeLabel, isPdf, warning }
     const [isScanning, setIsScanning] = useState(false);
     const [scanError, setScanError] = useState(null);
@@ -86,6 +86,13 @@ export default function OMRScannerPage() {
         fetchTests();
     }, []);
 
+    // Cleanup object URLs to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            if (imagePreview) URL.revokeObjectURL(imagePreview);
+        };
+    }, [imagePreview]);
+
     const processFile = async (file) => {
         if (!file) return;
 
@@ -99,22 +106,21 @@ export default function OMRScannerPage() {
         setScanError(null);
         setFinalResult(null);
 
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            const base64String = reader.result;
-            setImagePreview(base64String);
-            const pureBase64 = base64String.split(',')[1];
-            setImageBase64(pureBase64);
+        if (imagePreview) {
+            URL.revokeObjectURL(imagePreview);
+        }
 
-            // Check dimensions for images (not PDFs)
-            const info = { sizeLabel: validation.sizeLabel, isPdf: validation.isPdf, warning: null };
-            if (!validation.isPdf) {
-                const dimCheck = await checkImageDimensions(base64String);
-                info.warning = dimCheck.warning;
-            }
-            setFileInfo(info);
-        };
-        reader.readAsDataURL(file);
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+        setSelectedFile(file);
+
+        // Check dimensions for images (not PDFs)
+        const info = { sizeLabel: validation.sizeLabel, isPdf: validation.isPdf, warning: null };
+        if (!validation.isPdf) {
+            const dimCheck = await checkImageDimensions(previewUrl);
+            info.warning = dimCheck.warning;
+        }
+        setFileInfo(info);
     };
 
     const handleFileSelect = (e) => {
@@ -125,7 +131,7 @@ export default function OMRScannerPage() {
     };
 
     const handleVisionScan = async () => {
-        if (!imageBase64 || !selectedTestId) {
+        if (!selectedFile || !selectedTestId) {
             setScanError('Please select a test and capture/upload your OMR sheet first.');
             return;
         }
@@ -134,11 +140,20 @@ export default function OMRScannerPage() {
         setScanError(null);
 
         try {
+            // Generate base64 only right before sending to keep memory free
+            const base64String = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(selectedFile);
+            });
+            const pureBase64 = base64String.split(',')[1];
+
             const res = await fetch('/api/omr/scan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    imageBase64,
+                    imageBase64: pureBase64,
                     testId: selectedTestId
                 })
             });
@@ -217,9 +232,10 @@ export default function OMRScannerPage() {
     };
 
     const resetScanner = () => {
+        if (imagePreview) URL.revokeObjectURL(imagePreview);
         setFinalResult(null);
         setImagePreview(null);
-        setImageBase64(null);
+        setSelectedFile(null);
         setFileInfo(null);
         setScanError(null);
         setNeedsVerification(false);

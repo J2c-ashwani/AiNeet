@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { SUBSCRIPTION_PLANS } from '@/lib/payment_service';
-import { safeRpc } from '@/lib/core/db-safe';
+import { safeRpc, safeSelect, safeInsert } from '@/lib/core/db-safe';
+import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
 export async function POST(request) {
     try {
@@ -49,14 +50,27 @@ export async function POST(request) {
 
             console.log(`[WEBHOOK START] Received valid payload for Order: ${orderId}`);
 
-            // 1. Fetch payment intent from old payments table to map to user_id
-            const { data: payment, error: fetchErr } = await supabase
-                .from('payments')
-                .select('user_id, status, amount')
-                .eq('provider_order_id', orderId)
-                .single();
+            // 0. Hard Idempotency Check using payment_events table
+            try {
+                await safeInsert('payment_events', {
+                    provider: 'cashfree',
+                    external_event_id: eventId,
+                    payload_hash: crypto.createHash('sha256').update(rawBody).digest('hex'),
+                    status: 'success'
+                }, { route: '/api/webhooks/cashfree' });
+            } catch (eventErr) {
+                if (eventErr.originalError?.code === '23505') {
+                    console.log(`[WEBHOOK IDEMPOTENCY] Replay blocked: Event ${eventId} already processed.`);
+                    return NextResponse.json({ success: true, message: "Duplicate event safely ignored" });
+                }
+                throw eventErr;
+            }
 
-            if (fetchErr) {
+            // 1. Fetch payment intent to map to user_id
+            let payment;
+            try {
+                payment = await safeSelect('payments', (q) => q.select('id, user_id, status, amount').eq('provider_order_id', orderId).single(), { route: '/api/webhooks/cashfree' });
+            } catch (fetchErr) {
                 console.error(`[WEBHOOK ERROR] Failed to fetch payment order ${orderId}:`, fetchErr);
                 return NextResponse.json({ error: 'Order not found' }, { status: 404 });
             }
@@ -82,10 +96,30 @@ export async function POST(request) {
                     p_expires_at: expiryDate.toISOString(),
                     p_provider_order_id: orderId
                 }, { route: '/api/webhooks/cashfree', userId: payment.user_id });
+
+                await logPaymentTimeline({
+                    paymentId: payment.id,
+                    userId: payment.user_id,
+                    provider: 'cashfree',
+                    requestId: orderId,
+                    sourceRoute: '/api/webhooks/cashfree',
+                    status: 'webhook_received',
+                    metadata: { type: payload.type, planTier: plan.id }
+                });
+
+                await logPaymentTimeline({
+                    paymentId: payment.id,
+                    userId: payment.user_id,
+                    provider: 'cashfree',
+                    requestId: orderId,
+                    sourceRoute: '/api/webhooks/cashfree',
+                    status: 'activated',
+                    metadata: { expiry: expiryDate.toISOString(), eventId }
+                });
+
             } catch (err) {
-                // If the error is a unique constraint violation on provider_event_id, it's a duplicate webhook replay.
                 if (err.originalError?.code === '23505') {
-                    console.log(`[WEBHOOK IDEMPOTENCY] Replay blocked: Event ${eventId} already processed.`);
+                    console.log(`[WEBHOOK SUB IDEMPOTENCY] Replay blocked at sub level: Event ${eventId}.`);
                     return NextResponse.json({ success: true, message: "Duplicate event safely ignored" });
                 }
                 throw err;

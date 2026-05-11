@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 
 /**
  * OMR Scan API — v2
@@ -84,17 +85,35 @@ export async function POST(request) {
 
         const imagePart = { inlineData: { data: imageBase64, mimeType: mimeType || 'image/jpeg' } };
         
-        const result = await model.generateContent([prompt, imagePart]);
-        const rawOutput = await result.response.text();
-        
+        let rawOutput;
+        try {
+            const result = await model.generateContent([prompt, imagePart]);
+            rawOutput = await result.response.text();
+        } catch (genErr) {
+            console.error("Gemini API Error:", genErr);
+            await safeInsert('omr_retry_queue', {
+                user_id: user.id,
+                scan_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
+                state: 'pending',
+                last_error: genErr.message
+            }, { route: '/api/omr/scan', userId: user.id });
+            return NextResponse.json({ error: 'AI processing failed. We have queued your scan for manual review.' }, { status: 500 });
+        }
+
         let parsedPayload;
         try {
             const cleanRaw = rawOutput.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
             parsedPayload = JSON.parse(cleanRaw);
         } catch (e) {
             console.error("OMR Extraction Parse Error:", rawOutput);
+            await safeInsert('omr_retry_queue', {
+                user_id: user.id,
+                scan_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
+                state: 'pending',
+                last_error: 'Parse error: ' + String(rawOutput).substring(0, 100)
+            }, { route: '/api/omr/scan', userId: user.id });
             return NextResponse.json({ 
-                error: 'Couldn\'t read the answer sheet clearly. Please flatten the paper, improve lighting, and try again.' 
+                error: 'Couldn\'t read the answer sheet clearly. It has been queued for background processing.' 
             }, { status: 422 });
         }
 
@@ -104,6 +123,15 @@ export async function POST(request) {
                 reason: parsedPayload.reason || 'Image is too blurry or dark. Please retake with better lighting.' 
             }, { status: 400 });
         }
+
+        // Successfully extracted -> Log to forensic audit trail
+        await safeInsert('scan_audit_trail', {
+            user_id: user.id,
+            test_id: testId.startsWith('pyq_') ? null : testId, // UUID strictness workaround for dynamic tests
+            raw_image_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64.substring(0, 100)}...`, // Truncated to avoid huge DB size if not needed
+            extracted_payload: parsedPayload,
+            confidence_scores: { "overall": 0.95 } // Mocked confidence for now
+        }, { route: '/api/omr/scan', userId: user.id });
 
         return NextResponse.json({ answers: parsedPayload.answers });
         

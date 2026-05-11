@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 
 // NEET 2027 Exam Date
@@ -275,6 +276,15 @@ export default function Home() {
     const { user, loading: authLoading } = useAuth();
     const [stats, setStats] = useState(null);
     const [statsLoading, setStatsLoading] = useState(true);
+    const [isOnboarded, setIsOnboarded] = useState(null);
+    const [hasMounted, setHasMounted] = useState(false);
+
+    useEffect(() => {
+        setHasMounted(true);
+        if (typeof window !== 'undefined') {
+            resilientStorage.get(STORAGE_KEYS.ONBOARDING_COMPLETE).then(val => setIsOnboarded(val === 'true'));
+        }
+    }, []);
 
     useEffect(() => {
         if (authLoading) return;
@@ -288,6 +298,8 @@ export default function Home() {
             .catch(() => {})
             .finally(() => setStatsLoading(false));
     }, [user, authLoading]);
+
+    if (!hasMounted) return null; // Prevent hydration mismatch
 
     if (authLoading) {
         return (
@@ -329,7 +341,7 @@ export default function Home() {
     if (user) {
         // Redirect new users to onboarding if they haven't completed it
         if (!statsLoading && (!stats || stats.total_tests === 0)) {
-            if (typeof window !== 'undefined' && localStorage.getItem('onboarding_complete') !== 'true') {
+            if (isOnboarded === false) {
                 window.location.href = '/welcome';
                 return null;
             }

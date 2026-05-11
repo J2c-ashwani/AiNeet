@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
+import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { rateLimit } from '@/lib/rate-limit';
@@ -200,13 +202,28 @@ export async function POST(request) {
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, difficulty, questionCount: questions.length, type });
 
-        await supabase.from('tests').insert({
+        const timeLimitSeconds = type === 'mock' ? 10800 : questions.length * 90;
+        const now = new Date();
+        const startedAt = now.toISOString();
+        const expiresAt = new Date(now.getTime() + timeLimitSeconds * 1000).toISOString();
+
+        await safeInsert('tests', {
             id: testId,
             user_id: decoded.id,
             type: type || 'custom',
             config_json: config,
             total_questions: questions.length,
-            total_marks: totalMarks
+            total_marks: totalMarks,
+            started_at: startedAt,
+            expires_at: expiresAt
+        }, { route: '/api/tests/generate', userId: decoded.id });
+
+        await logAcademicEvent({
+            eventType: 'test_generated',
+            userId: decoded.id,
+            testId,
+            payload: { type, questionCount: questions.length, timeLimitSeconds },
+            sourceRoute: '/api/tests/generate'
         });
 
         const clientQuestions = questions.map((q, idx) => ({
@@ -219,7 +236,8 @@ export async function POST(request) {
         return NextResponse.json({
             testId, questions: clientQuestions, totalQuestions: questions.length,
             totalMarks, type: type || 'custom',
-            timeLimit: type === 'mock' ? 10800 : questions.length * 90
+            timeLimit: timeLimitSeconds,
+            startedAt, expiresAt
         });
     } catch (error) {
         console.error('Test generation error:', error);

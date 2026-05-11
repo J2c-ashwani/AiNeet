@@ -17,13 +17,22 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const SCAN_DIRS = ['app', 'components', 'lib', 'context'];
 
-// Patterns that indicate a mobile blocker
+// Patterns that indicate a mobile blocker or risk
 const BLOCKER_PATTERNS = [
   { regex: /userAgent\.match\(.*Android.*iPhone/g, label: 'Mobile UA Detection' },
   { regex: /isMobile.*return/gs, label: 'Early return after mobile check' },
   { regex: /showAppPromo|AppInstallPrompt|App Required/g, label: 'App Install Gate' },
   { regex: /mode.*hard.*showModal/g, label: 'Hard-blocking modal' },
   { regex: /navigator\.userAgent.*\breturn\b/gs, label: 'UA-gated return statement' },
+  // Wave 3 Mobile Defenses
+  { regex: /navigator\.share\([^)]+\)(?!\s*\.catch)/g, label: 'navigator.share without catch (Crash Risk)' },
+  { regex: /navigator\.clipboard\.writeText\([^)]+\)(?!\s*\.catch)/g, label: 'clipboard API without catch (Crash Risk)' },
+  { regex: /navigator\.mediaDevices\.getUserMedia/g, label: 'Direct camera access (Requires WebView Delegation)' },
+  { regex: /window\.open\(/g, label: 'window.open (Blocked by many WebViews)' },
+  { regex: /Blob\(.*1024 \* 1024 \* 50/g, label: 'Memory-heavy blob allocation (>50MB)' },
+  { regex: /onScroll=\{.*(?!\bdebounce\b|\bthrottle\b)/g, label: 'Un-throttled onScroll (Infinite scroll lag)' },
+  { regex: /typeof window !== 'undefined'.*return/g, label: 'Hydration Mismatch Risk (Client-only early return without useEffect)' },
+  { regex: /router\.push.*setTimeout/g, label: 'Delayed route transition (Transition crash risk)' }
 ];
 
 // Pattern that indicates proper native-app bypass

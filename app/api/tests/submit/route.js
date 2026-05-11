@@ -8,6 +8,7 @@ import { scheduleNewCard } from '@/lib/spaced_repetition';
 import { applyTrustXpModifier, calculateTrustRecovery, getTrustHint } from '@/lib/trust-engine';
 import * as Sentry from '@sentry/nextjs';
 import { logError } from '@/lib/error-logger';
+import { logAcademicEvent } from '@/lib/core/academic-timeline';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -50,6 +51,32 @@ export async function POST(request) {
 
         if (!test) return NextResponse.json({ error: 'Test not found' }, { status: 404 });
         if (test.completed_at) return NextResponse.json({ error: 'Test already submitted' }, { status: 400 });
+
+        // Timer Authoritativeness Validation
+        if (test.expires_at) {
+            const expiresAt = new Date(test.expires_at).getTime();
+            // Allow a 10-second grace period for network delays
+            if (Date.now() > expiresAt + 10000) {
+                return NextResponse.json({ error: 'Test has expired. Submissions are no longer accepted.' }, { status: 403 });
+            }
+        }
+
+        // Idempotency Lock
+        let lockAcquired = false;
+        try {
+            await logAcademicEvent({
+                eventType: 'test_submitted',
+                userId: decoded.id,
+                testId: testId,
+                sourceRoute: '/api/tests/submit'
+            });
+            lockAcquired = true;
+        } catch (lockErr) {
+            if (lockErr.originalError?.code === '23505') {
+                return NextResponse.json({ error: 'Duplicate submission blocked.' }, { status: 409 });
+            }
+            throw lockErr;
+        }
 
         // ─── PHASE 1: Score all answers in pure memory — zero DB calls ─────────────
         const processedAnswers = [];
@@ -194,19 +221,30 @@ export async function POST(request) {
         const completionTime = new Date().toISOString();
         const scoreData = calculateNEETScore(processedAnswers);
         
-        await safeRpc('submit_test_transaction', {
-            p_test_id: testId,
-            p_user_id: decoded.id,
-            p_score: scoreData.scaledScore,
-            p_correct_count: scoreData.correct,
-            p_incorrect_count: scoreData.incorrect,
-            p_unanswered_count: scoreData.unanswered,
-            p_completed_at: completionTime,
-            p_time_taken_seconds: timeTaken || 0,
-            p_answers: testAnswersToInsert.length > 0 ? testAnswersToInsert : null,
-            p_mistakes: mistakeUpserts.length > 0 ? mistakeUpserts : null,
-            p_performances: performanceUpserts.length > 0 ? performanceUpserts : null
-        }, { route: '/api/tests/submit', userId: decoded.id, testId });
+        try {
+            await safeRpc('submit_test_transaction', {
+                p_test_id: testId,
+                p_user_id: decoded.id,
+                p_score: scoreData.scaledScore,
+                p_correct_count: scoreData.correct,
+                p_incorrect_count: scoreData.incorrect,
+                p_unanswered_count: scoreData.unanswered,
+                p_completed_at: completionTime,
+                p_time_taken_seconds: timeTaken || 0,
+                p_answers: testAnswersToInsert.length > 0 ? testAnswersToInsert : null,
+                p_mistakes: mistakeUpserts.length > 0 ? mistakeUpserts : null,
+                p_performances: performanceUpserts.length > 0 ? performanceUpserts : null
+            }, { route: '/api/tests/submit', userId: decoded.id, testId });
+        } catch (rpcErr) {
+            // Retry safety: Release the lock if the actual commit failed so they can try again
+            if (lockAcquired) {
+                await supabase.from('academic_events')
+                    .delete()
+                    .eq('test_id', testId)
+                    .eq('event_type', 'test_submitted');
+            }
+            throw rpcErr;
+        }
 
         // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
         await Promise.all([
@@ -248,7 +286,7 @@ export async function POST(request) {
         );
 
         if (trustPenalty > 0) {
-             await supabase.rpc('decrement_trust_score', { target_user_id: decoded.id, penalty: trustPenalty });
+             await safeRpc('decrement_trust_score', { target_user_id: decoded.id, penalty: trustPenalty }, { route: '/api/tests/submit/trust', userId: decoded.id });
         }
 
         // MD Trust Recovery: Reward positive actions to enable trust restoration
@@ -262,7 +300,7 @@ export async function POST(request) {
         }
 
         if (actualXpEarned > 0) {
-             await supabase.rpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: actualXpEarned });
+             await safeRpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: actualXpEarned }, { route: '/api/tests/submit/xp', userId: decoded.id });
         }
 
         // Calculate predicted new XP and Level for frontend without an expensive refetch
