@@ -56,7 +56,7 @@ export default function DownloadPage() {
                 {/* Download CTA */}
                 <a
                     href="/downloads/neet-coach.apk"
-                    download="AI-NEET-Coach-v1.2.apk"
+                    download="AI-NEET-Coach-v2.0.apk"
                     style={styles.downloadBtn}
                     id="download-apk-btn"
                 >
@@ -122,7 +122,7 @@ export default function DownloadPage() {
                 <h2 style={styles.h2}>Ready to ace NEET 2026?</h2>
                 <a
                     href="/downloads/neet-coach.apk"
-                    download="AI-NEET-Coach-v1.2.apk"
+                    download="AI-NEET-Coach-v2.0.apk"
                     style={styles.downloadBtn2}
                     id="download-apk-btn-bottom"
                 >

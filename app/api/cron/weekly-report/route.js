@@ -6,10 +6,12 @@ export async function GET(request) {
     try {
         const authHeader = request.headers.get('authorization');
         const cronSecret = process.env.CRON_SECRET;
+        const querySecret = new URL(request.url).searchParams.get('secret');
 
-        // Allow local testing without secret for development
+        // Accept secret via Bearer header OR query param (for cron-job.org)
         if (process.env.NODE_ENV === 'production') {
-            if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+            const isAuthed = (authHeader === `Bearer ${cronSecret}`) || (querySecret === cronSecret);
+            if (!cronSecret || !isAuthed) {
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
             }
         }
