@@ -38,10 +38,41 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 
-# Secrets & Firebase
+# ─── Secrets & Credentials (NEVER commit these) ───────────────
 .env
+.env.*
+!.env.example
 google-services.json
 mobile/android/app/google-services.json
+GoogleService-Info.plist
+mobile/ios/Runner/GoogleService-Info.plist
+*.p8
+*.p12
+*.jks
+keystore.properties
+
+# ─── Local Audit & Scratch Scripts (may contain hardcoded keys) ─
+test_audit.js
+test_audit2.js
+test_db*.js
+test_db_prod.js
+test_rls.js
+test_chaos.js
+test_network.js
+check_*.mjs
+check-*.js
+list_users.mjs
+promote_admin.mjs
+reset_admin_password.mjs
+set_user_password.mjs
+verify_*.mjs
+wipe_*.mjs
+rpc_*.js
+!scripts/
+
+# ─── Firebase Admin SDK (contains private key) ──────────────────
+*firebase-adminsdk*.json
+*-firebase-*.json
 
 # Mobile build output
 mobile/build/
