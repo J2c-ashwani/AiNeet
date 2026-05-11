@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { createSupabaseClient } from '@/utils/supabase/client';
 import { Card, Button } from '@/components/ui';
 
 // ── Image Validation Helpers ──
@@ -47,7 +46,6 @@ function checkImageDimensions(base64) {
 }
 
 export default function OMRScannerPage() {
-    const supabase = createSupabaseClient();
 
     // Core App State
     const [tests, setTests] = useState([]);
@@ -74,10 +72,11 @@ export default function OMRScannerPage() {
     useEffect(() => {
         async function fetchTests() {
             try {
-                const { data } = await supabase.from('offline_tests').select('id, test_name, provider');
-                if (data && data.length > 0) {
-                    setTests(data);
-                    setSelectedTestId(data[0].id);
+                const res = await fetch('/api/omr/tests');
+                const data = await res.json();
+                if (data.tests && data.tests.length > 0) {
+                    setTests(data.tests);
+                    setSelectedTestId(data.tests[0].id);
                 }
             } catch (e) {
                 // silently fail — empty state handled in UI
@@ -85,7 +84,7 @@ export default function OMRScannerPage() {
             setTestsLoading(false);
         }
         fetchTests();
-    }, [supabase]);
+    }, []);
 
     const processFile = async (file) => {
         if (!file) return;
@@ -302,7 +301,7 @@ export default function OMRScannerPage() {
                     {/* Step 1: Select Test */}
                     <div>
                         <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                            1. Select Offline Test
+                            1. Select Test Paper
                         </label>
                         {testsLoading ? (
                             <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />
@@ -326,7 +325,7 @@ export default function OMRScannerPage() {
                             >
                                 {tests.map(t => (
                                     <option key={t.id} value={t.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
-                                        {t.provider} — {t.test_name}
+                                        {t.test_name} ({t.total_questions} Qs)
                                     </option>
                                 ))}
                             </select>

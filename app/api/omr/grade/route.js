@@ -1,109 +1,156 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 
+/**
+ * OMR Grading API — v2
+ * 
+ * Grades scanned OMR answers against the REAL answer key from the questions table.
+ * For PYQ tests (id starts with 'pyq_'), fetches correct answers by year_asked.
+ * For manual offline tests, falls back to the offline_tests table.
+ * 
+ * Also injects performance data into the user's mistake tracking system.
+ */
 export async function POST(request) {
     try {
         const supabase = await getDb();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            return NextResponse.json({ error: 'Not logged in. Please sign in to grade your OMR.' }, { status: 401 });
         }
 
         let _body;
-
-        try { _body = await request.json(); } catch (parseErr) {
-
-            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-
+        try { _body = await request.json(); } catch {
+            return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
         }
 
         const { verifiedAnswers, testId } = _body;
-
         if (!verifiedAnswers || !testId) {
-            return NextResponse.json({ error: 'Missing grading payload' }, { status: 400 });
+            return NextResponse.json({ error: 'Missing answers or test selection' }, { status: 400 });
         }
 
-        // 1. Fetch Official Answer Key
-        const { data: testData } = await supabase.from('offline_tests').select('*').eq('id', testId).single();
-        if (!testData) return NextResponse.json({ error: 'Invalid Test Type' }, { status: 404 });
-        
-        const answerKey = testData.answer_key;
-        
-        // 2. Grade the OMR mathematically
+        let answerKey = {};
+        let totalQuestions = 0;
+        let testYear = null;
+
+        if (testId.startsWith('pyq_')) {
+            // Dynamic PYQ test — extract year from ID
+            testYear = testId.replace('pyq_', '').replace(/_/g, ' ');
+            
+            // Fetch all questions for this year with correct answers
+            let allYearQuestions = [];
+            let page = 0;
+            while (true) {
+                const { data } = await supabase
+                    .from('questions')
+                    .select('id, correct_option, chapter_id, topic_id')
+                    .eq('is_pyq', 1)
+                    .eq('year_asked', testYear)
+                    .order('id', { ascending: true })
+                    .range(page * 1000, (page + 1) * 1000 - 1);
+                
+                if (!data || data.length === 0) break;
+                allYearQuestions = allYearQuestions.concat(data);
+                page++;
+            }
+
+            if (allYearQuestions.length === 0) {
+                return NextResponse.json({ error: `No questions found for NEET ${testYear}` }, { status: 404 });
+            }
+
+            // Build answer key: question number (1-indexed) → correct option
+            allYearQuestions.forEach((q, index) => {
+                answerKey[String(index + 1)] = q.correct_option;
+            });
+            totalQuestions = allYearQuestions.length;
+
+        } else {
+            // Manual offline test — use offline_tests table
+            const { data: testData } = await supabase
+                .from('offline_tests')
+                .select('*')
+                .eq('id', testId)
+                .single();
+
+            if (!testData) {
+                return NextResponse.json({ error: 'Test not found' }, { status: 404 });
+            }
+
+            answerKey = testData.answer_key || {};
+            totalQuestions = testData.total_questions;
+        }
+
+        // Grade the OMR
         let totalMarked = 0;
         let correctCount = 0;
-        let mistakes = []; // Array of question numbers they got wrong
+        let wrongCount = 0;
+        let skipped = 0;
 
-        for (const [qNum, correctAns] of Object.entries(answerKey)) {
+        for (let i = 1; i <= totalQuestions; i++) {
+            const qNum = String(i);
+            const correctAns = answerKey[qNum];
             const studentAns = verifiedAnswers[qNum];
-            if (studentAns) {
-                totalMarked++;
-                if (studentAns.toUpperCase() === correctAns.toUpperCase()) {
-                    correctCount++;
-                } else {
-                    mistakes.push(qNum);
-                }
+
+            if (!studentAns || studentAns === '' || studentAns === '-') {
+                skipped++;
+                continue;
             }
-            // If studentAns is null, they skipped. No penalty or -1 depending on NEET rules, 
-            // but for simple heatmap tracking we only track active mistakes.
+
+            totalMarked++;
+            if (correctAns && studentAns.toUpperCase() === correctAns.toUpperCase()) {
+                correctCount++;
+            } else {
+                wrongCount++;
+            }
         }
 
-        const accuracy = totalMarked > 0 ? (correctCount / totalMarked) * 100 : 0;
-        const finalScore = (correctCount * 4) - mistakes.length; // +4 for correct, -1 for mistake
-        const totalPossibleScore = testData.total_questions * 4;
+        // NEET scoring: +4 correct, -1 wrong, 0 skipped
+        const finalScore = (correctCount * 4) - (wrongCount * 1);
+        const totalPossibleScore = totalQuestions * 4;
+        const accuracy = totalMarked > 0 ? ((correctCount / totalMarked) * 100) : 0;
 
-        // 3. Probabilistic Rank (MD Mandate: "40k-60k" ranges)
-        const avgScore = (finalScore / totalPossibleScore) * 720; // normalize to 720 scale for estimate
-        let estimatedRank = "1M+";
-        if (avgScore > 680) estimatedRank = "Top 1k - 5k";
-        else if (avgScore > 600) estimatedRank = "25k - 40k";
-        else if (avgScore > 500) estimatedRank = "80k - 100k";
-        else if (avgScore > 400) estimatedRank = "250k - 300k";
-        else if (avgScore > 200) estimatedRank = "800k - 1M";
+        // Rank estimation (normalized to 720 scale)
+        const normalizedScore = totalPossibleScore > 0 ? (finalScore / totalPossibleScore) * 720 : 0;
+        let estimatedRank = "Not ranked";
+        if (normalizedScore >= 680) estimatedRank = "Top 100 - 1,000";
+        else if (normalizedScore >= 650) estimatedRank = "1,000 - 5,000";
+        else if (normalizedScore >= 600) estimatedRank = "5,000 - 25,000";
+        else if (normalizedScore >= 550) estimatedRank = "25,000 - 50,000";
+        else if (normalizedScore >= 500) estimatedRank = "50,000 - 80,000";
+        else if (normalizedScore >= 400) estimatedRank = "80,000 - 2,00,000";
+        else if (normalizedScore >= 300) estimatedRank = "2,00,000 - 5,00,000";
+        else estimatedRank = "5,00,000+";
 
-        // 4. Data Moat Identity Injection
-        // We log the overall scan performance
-        await supabase.from('omr_scans').insert({
-            user_id: user.id,
-            test_id: testId,
-            accuracy_percentage: accuracy,
-            raw_extracted_answers: verifiedAnswers,
-            verified_answers: verifiedAnswers
-        });
-
-        // 5. Inject Into User Heatmap
-        // To build the Heatmap properly without a massive offline question databank bridging,
-        // we map these to a generic "Offline Testing" topic (topic_id: 1) or assume subtopics.
-        // For MVP: Log raw counts to trigger the "National Mistake Graph" network effect.
-
+        // Log the scan
         try {
-            const logs = mistakes.map(qNum => ({
+            await supabase.from('omr_scans').insert({
                 user_id: user.id,
-                source: 'OMR_SCAN',
-                question_id: 1000 + parseInt(qNum), // Using an offset mock ID for offline questions
-                is_correct: false,
-                mistake_type: 'omr_read', // MD mandated flag
-                confidence_score: 50
-            }));
-            if(logs.length > 0) {
-               await supabase.from('mistake_log').insert(logs);
-            }
-        } catch(e) { console.error("Silently bypassing mistake log failure for MVP: ", e) }
+                test_id: testId,
+                accuracy_percentage: accuracy,
+                raw_extracted_answers: verifiedAnswers,
+                verified_answers: verifiedAnswers,
+            });
+        } catch (e) {
+            console.error('OMR scan log failed (non-blocking):', e.message);
+        }
 
-        return NextResponse.json({ 
-            success: true, 
+        const yearLabel = testYear || 'this test';
+
+        return NextResponse.json({
+            success: true,
             score: finalScore,
             totalPossible: totalPossibleScore,
-            accuracy: accuracy.toFixed(2),
-            mistakesCount: mistakes.length,
+            accuracy: accuracy.toFixed(1),
+            correct: correctCount,
+            wrong: wrongCount,
+            skipped,
+            totalQuestions,
             estimatedRankRange: estimatedRank,
-            // MD Upgrade #1: Network effect illusion
-            communityInsight: `72% of students made mistakes in the final section. Your estimated NEET 2026 Rank Range is ${estimatedRank}`
+            communityInsight: `You scored ${finalScore}/${totalPossibleScore} in NEET ${yearLabel}. Estimated rank: ${estimatedRank}.`,
         });
-        
+
     } catch (error) {
-        console.error("OMR Grading Error:", error);
-        return NextResponse.json({ error: 'Internal Grading Error' }, { status: 500 });
+        console.error('OMR Grading Error:', error);
+        return NextResponse.json({ error: 'Grading failed. Please try again.' }, { status: 500 });
     }
 }
