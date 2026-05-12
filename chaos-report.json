@@ -1,0 +1,104 @@
+{
+  "run_at": "2026-05-12T15:43:41.015Z",
+  "base_url": "https://ai-neet.vercel.app",
+  "scenarios": [
+    {
+      "name": "Platform reachable",
+      "status": "pass",
+      "duration_ms": 1072,
+      "detail": null
+    },
+    {
+      "name": "Recovery telemetry table accessible",
+      "status": "pass",
+      "duration_ms": 1542,
+      "detail": "1 events"
+    },
+    {
+      "name": "Feature flags reachable",
+      "status": "pass",
+      "duration_ms": 169,
+      "detail": "7 flags"
+    },
+    {
+      "name": "Idempotent test submission (duplicate blocked)",
+      "status": "pass",
+      "duration_ms": 675,
+      "detail": null
+    },
+    {
+      "name": "Offline tamper detection infrastructure present",
+      "status": "pass",
+      "duration_ms": 185,
+      "detail": "0 historical tamper events"
+    },
+    {
+      "name": "Circuit breaker event telemetry writeable",
+      "status": "pass",
+      "duration_ms": 629,
+      "detail": null
+    },
+    {
+      "name": "Recovery tracking columns present",
+      "status": "pass",
+      "duration_ms": 181,
+      "detail": "3/3 columns present"
+    },
+    {
+      "name": "Fraud signal detection write path",
+      "status": "pass",
+      "duration_ms": 392,
+      "detail": null
+    },
+    {
+      "name": "No orphan test_answers (data integrity)",
+      "status": "pass",
+      "duration_ms": 253,
+      "detail": "0 orphans"
+    },
+    {
+      "name": "Telemetry ingest endpoint responsive",
+      "status": "pass",
+      "duration_ms": 2275,
+      "detail": null
+    },
+    {
+      "name": "Auth endpoint healthy",
+      "status": "pass",
+      "duration_ms": 660,
+      "detail": "Status 200"
+    },
+    {
+      "name": "Feature flag kill-switch works",
+      "status": "pass",
+      "duration_ms": 1424,
+      "detail": null
+    },
+    {
+      "name": "Job queue write path",
+      "status": "pass",
+      "duration_ms": 672,
+      "detail": null
+    },
+    {
+      "name": "Leaderboard snapshot infrastructure",
+      "status": "pass",
+      "duration_ms": 473,
+      "detail": null
+    },
+    {
+      "name": "Critical tables all present",
+      "status": "pass",
+      "duration_ms": 209,
+      "detail": "8/8 tables present"
+    }
+  ],
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "recovery_success_rate": "100.0%",
+  "memory_peak_mb": null,
+  "queue_recovery_latency_ms": null
+}
