@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import ParentSettings from '@/components/ParentSettings';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import Link from 'next/link';
@@ -265,7 +266,10 @@ export default function ProfilePage() {
                     </div>
                 </Card>
 
-
+                {/* Parent Connect Settings */}
+                <div style={{ marginBottom: '32px' }}>
+                    <ParentSettings />
+                </div>
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
                     <Button variant="danger" onClick={handleLogout}>
