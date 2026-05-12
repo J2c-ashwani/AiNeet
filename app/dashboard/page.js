@@ -10,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 import { DashboardSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { ProgressRing } from '@/components/ui/ProgressRing';
 import { Flame, Trophy, Star, Target, CheckCircle2, Zap } from 'lucide-react';
 
 export default function Dashboard() {
@@ -68,33 +69,88 @@ export default function Dashboard() {
             
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                    <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 4px', color: 'var(--text-primary)' }}>
-                        Welcome back, {user?.name?.split(' ')[0]}!
-                    </h1>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                        Level {user?.levelInfo?.level} • {user?.levelInfo?.xpToNext} XP to next level
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <ProgressRing 
+                        progress={user?.levelInfo?.progress || 0}
+                        level={user?.levelInfo?.level || 1}
+                        initials={(user?.name || user?.email || 'U')[0].toUpperCase()}
+                        size={64}
+                        strokeWidth={5}
+                    />
+                    <div>
+                        <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 4px', color: 'var(--text-primary)' }}>
+                            Welcome back, {user?.name?.split(' ')[0]}!
+                        </h1>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                            {user?.levelInfo?.xpToNext} XP to next level
+                        </div>
                     </div>
-                </div>
-                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'white', fontWeight: 700 }}>
-                    {(user?.name || user?.email || 'U')[0].toUpperCase()}
                 </div>
             </div>
 
             {/* Streak / XP / Rank - Wave 7 Restructure (Top) */}
             <div style={{ display: 'flex', gap: '12px' }}>
-                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
-                    <Flame size={24} color="#f59e0b" style={{ marginBottom: '8px' }} />
+                <div 
+                    style={{ 
+                        flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)',
+                        transition: 'transform var(--duration-tap) cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--duration-tap) ease', cursor: 'pointer'
+                    }}
+                    onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                >
+                    <Flame 
+                        size={24} 
+                        style={{ 
+                            marginBottom: '8px',
+                            color: user?.streak === 0 ? '#4b5563' : user?.streak >= 30 ? '#ff7b00' : user?.streak >= 7 ? '#f97316' : '#fcd34d',
+                            filter: user?.streak >= 7 ? 'drop-shadow(0 0 8px rgba(249, 115, 22, 0.4))' : 'none',
+                            transition: 'color 300ms ease, filter 300ms ease'
+                        }} 
+                    />
                     <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.streak || 0}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Day Streak</div>
                 </div>
-                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
-                    <Star size={24} color="#38bdf8" style={{ marginBottom: '8px' }} />
+                <div 
+                    style={{ 
+                        flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)',
+                        transition: 'transform var(--duration-tap) cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--duration-tap) ease', cursor: 'pointer'
+                    }}
+                    onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                >
+                    <Star 
+                        size={24} 
+                        color="#38bdf8" 
+                        style={{ 
+                            marginBottom: '8px', 
+                            filter: 'drop-shadow(0 0 8px rgba(56, 189, 248, 0.3))' 
+                        }} 
+                    />
                     <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.xp || 0}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Total XP</div>
                 </div>
-                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
-                    <Trophy size={24} color="#a855f7" style={{ marginBottom: '8px' }} />
+                <div 
+                    style={{ 
+                        flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)',
+                        transition: 'transform var(--duration-tap) cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--duration-tap) ease', cursor: 'pointer'
+                    }}
+                    onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.96)'; }}
+                    onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+                >
+                    <Trophy 
+                        size={24} 
+                        color="#a855f7" 
+                        style={{ 
+                            marginBottom: '8px', 
+                            filter: 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.3))' 
+                        }} 
+                    />
                     <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{rankPrediction.predictedRank ? `#${(rankPrediction.predictedRank/1000).toFixed(1)}k` : 'N/A'}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Est. Rank</div>
                 </div>
