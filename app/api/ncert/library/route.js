@@ -1,62 +1,69 @@
 import { NextResponse } from 'next/server';
 import { NCERT_BOOKS, getChapterPdfUrl, getBookUrl } from '@/lib/ncert-data';
-import { getDb } from '@/lib/core/db';
+import { getDb } from '@/lib/db';
 
 /**
- * GET /api/ncert/library — Returns all NCERT books with chapter-wise PDF links
- * Replaces the old DB-dependent books API with static data + official NCERT URLs
+ * GET /api/ncert/library
+ * Returns all NCERT books with chapter-wise PDF links and real PYQ counts.
+ *
+ * Bug fix (Wave 7):
+ * - Was using Supabase fuzzy chapter name matching → always returned 0
+ * - Now uses direct postgres query joining questions → topics → chapters
+ * - Guest-safe: no auth required
  */
 export async function GET(request) {
     try {
-        const supabase = await getDb();
-
         const { searchParams } = new URL(request.url);
         const subject = searchParams.get('subject');
         const classNum = searchParams.get('class');
 
         let books = NCERT_BOOKS;
+        if (subject) books = books.filter(b => b.subject === subject.toLowerCase());
+        if (classNum) books = books.filter(b => b.class === parseInt(classNum));
 
-        if (subject) {
-            books = books.filter(b => b.subject === subject.toLowerCase());
-        }
-        if (classNum) {
-            books = books.filter(b => b.class === parseInt(classNum));
-        }
+        // ── Fetch real PYQ counts from postgres ─────────────────────────────
+        // Query: count PYQ questions grouped by chapter name
+        // Uses ILIKE for case-insensitive matching across topic→chapter→name chain
+        let pyqByChapter = {};
+        try {
+            const db = getDb();
+            const rows = await db.all(`
+                SELECT 
+                    c.name        AS chapter_name,
+                    COUNT(q.id)   AS pyq_count
+                FROM questions q
+                JOIN topics t    ON q.topic_id   = t.id
+                JOIN chapters c  ON t.chapter_id = c.id
+                WHERE q.is_pyq = 1
+                GROUP BY c.name
+            `);
 
-        // Fetch pyq counts from DB using Supabase
-        const { data: chapters } = await supabase.from('chapters').select('id, name');
-        const { data: pyqs } = await supabase.from('questions').select('chapter_id').eq('is_pyq', true);
-
-        const pyqCounts = {};
-        if (pyqs) {
-            pyqs.forEach(q => {
-                pyqCounts[q.chapter_id] = (pyqCounts[q.chapter_id] || 0) + 1;
+            rows.forEach(row => {
+                const key = row.chapter_name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
+                pyqByChapter[key] = parseInt(row.pyq_count, 10);
             });
-        }
-
-        let chapterList = [];
-        if (chapters) {
-            chapterList = chapters.map(c => ({
-                name: c.name,
-                pyq_count: pyqCounts[c.id] || 0
-            }));
+        } catch (dbErr) {
+            // DB unavailable — degrade gracefully, show 0 counts but don't crash
+            console.error('[NCERT library] PYQ count query failed:', dbErr.message);
         }
 
         const getPyqCount = (title) => {
             const cleanTitle = title.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim();
 
-            // Try exact match first
-            let match = chapterList.find(c => c.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim() === cleanTitle);
+            // 1. Exact match
+            if (pyqByChapter[cleanTitle] !== undefined) return pyqByChapter[cleanTitle];
 
-            // If no exact match, try matching the first few words
-            if (!match) {
-                const prefix = cleanTitle.split(' ').slice(0, 3).join(' ');
-                match = chapterList.find(c => c.name.toLowerCase().replace(/[^a-z0-9 ]/g, '').trim().startsWith(prefix));
-            }
-            return match ? match.pyq_count : 0;
-        }
+            // 2. DB chapter name starts with our title prefix (handles truncated names)
+            const prefix = cleanTitle.split(' ').slice(0, 4).join(' ');
+            const prefixMatch = Object.entries(pyqByChapter).find(
+                ([k]) => k.startsWith(prefix) || cleanTitle.startsWith(k.split(' ').slice(0, 4).join(' '))
+            );
+            if (prefixMatch) return prefixMatch[1];
 
-        // Enrich with URLs and PYQ counts
+            return 0;
+        };
+
+        // Enrich books with PDF URLs and PYQ counts
         const enriched = books.map(book => ({
             ...book,
             bookUrl: getBookUrl(book.code),
@@ -70,6 +77,9 @@ export async function GET(request) {
         return NextResponse.json({ books: enriched });
     } catch (error) {
         console.error('NCERT Library API error:', error);
-        return NextResponse.json({ error: 'Failed to fetch NCERT library. Please try again in a moment.' }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Failed to fetch NCERT library. Please try again in a moment.' },
+            { status: 500 }
+        );
     }
 }

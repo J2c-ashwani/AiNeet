@@ -59,24 +59,34 @@ function NCERTReaderContent() {
     );
 
     if (error || !bookData) return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '40px' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📖</div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '40px', gap: '16px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '8px' }}>📖</div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>{error || 'Failed to load PDF.'}</h2>
-            {error && (
-                <Button variant="primary" onClick={() => window.location.href = '/ncert'} style={{ marginTop: '16px' }}>
-                    Back to Library
-                </Button>
-            )}
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>The chapter PDF could not be loaded.</p>
+            <a
+                href="/ncert"
+                style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    marginTop: '8px', padding: '10px 24px', borderRadius: '10px',
+                    background: 'var(--accent-gradient)', color: '#fff',
+                    fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem',
+                }}
+            >
+                ← Back to Library
+            </a>
         </div>
     );
 
     return (
         <div style={{ flex: 1, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-            <div className="hidden md:flex" style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', padding: '12px', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+            <div style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', padding: '12px', alignItems: 'center', justifyContent: 'space-between', zIndex: 10, display: 'flex' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <Button variant="secondary" size="sm" onClick={() => window.location.href = '/ncert'}>
+                    <a
+                        href="/ncert"
+                        style={{ padding: '6px 14px', borderRadius: '8px', background: 'var(--bg-glass)', border: '1px solid var(--border)', color: 'var(--text-primary)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}
+                    >
                         ← Back
-                    </Button>
+                    </a>
                     <h1 style={{ fontSize: '1.125rem', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>{bookData.title}</h1>
                 </div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
