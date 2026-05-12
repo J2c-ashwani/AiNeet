@@ -20,11 +20,13 @@ export async function POST(request) {
         }
 
         const body = _body;
-        const { token } = body;
+        const { token, timezone } = body;
 
         if (!token || typeof token !== 'string') {
             return NextResponse.json({ error: 'Invalid FCM token' }, { status: 400 });
         }
+
+        const validTimezone = timezone && typeof timezone === 'string' ? timezone : 'Asia/Kolkata';
 
         // Update FCM token in users table
         const { error } = await supabase
@@ -32,6 +34,7 @@ export async function POST(request) {
             .update({
                 fcm_token: token,
                 fcm_token_updated_at: new Date().toISOString(),
+                timezone: validTimezone
             })
             .eq('id', user.id);
 

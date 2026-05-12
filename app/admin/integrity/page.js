@@ -13,6 +13,7 @@ export default function IntegrityDashboard() {
         webhookFailures: 0,
         orphanedTests: 0,
         cronFailures: 0,
+        notificationMetrics: { sent: 0, failed: 0, openRate: 0 },
         loading: true
     });
 
@@ -49,11 +50,20 @@ export default function IntegrityDashboard() {
                     .ilike('route', '%cron%')
                     .gte('created_at', yesterday.toISOString());
 
+                // 5. Notification Metrics (last 24h)
+                const { count: notifSent } = await supabase.from('notifications_log').select('*', { count: 'exact', head: true }).eq('delivery_status', 'sent').gte('created_at', yesterday.toISOString());
+                const { count: notifFailed } = await supabase.from('notifications_log').select('*', { count: 'exact', head: true }).eq('delivery_status', 'failed').gte('created_at', yesterday.toISOString());
+                const { count: notifOpened } = await supabase.from('notifications_log').select('*', { count: 'exact', head: true }).eq('delivery_status', 'opened').gte('created_at', yesterday.toISOString());
+                const { count: notifActioned } = await supabase.from('notifications_log').select('*', { count: 'exact', head: true }).eq('delivery_status', 'action_completed').gte('created_at', yesterday.toISOString());
+
+                const openRate = notifSent > 0 ? Math.round(((notifOpened + notifActioned) / notifSent) * 100) : 0;
+
                 setData({
                     errorLogs: errors || [],
                     webhookFailures: failedWebhooks || 0,
                     orphanedTests: 'N/A (Requires RPC)', 
                     cronFailures: crons || 0,
+                    notificationMetrics: { sent: notifSent || 0, failed: notifFailed || 0, openRate },
                     loading: false
                 });
 
@@ -95,6 +105,12 @@ export default function IntegrityDashboard() {
                     value={data.cronFailures} 
                     icon={<AlertCircle />}
                     status={data.cronFailures > 0 ? 'danger' : 'safe'}
+                />
+                <MetricCard 
+                    title="Nudge Failures (24h)" 
+                    value={`${data.notificationMetrics.failed} (${data.notificationMetrics.openRate}% open rate)`} 
+                    icon={<AlertCircle />}
+                    status={data.notificationMetrics.failed > 0 ? 'warning' : 'safe'}
                 />
             </div>
 

@@ -33,7 +33,17 @@ export async function POST(request) {
 
         }
 
-        const { testId, answers, timeTaken } = _body;
+        const { testId, answers, timeTaken, notification_id } = _body;
+
+        if (notification_id) {
+            // Background update to not block submission
+            supabase.from('notifications_log')
+                .update({ action_completed_at: new Date().toISOString() })
+                .eq('id', notification_id)
+                .eq('user_id', decoded.id)
+                .then(() => {})
+                .catch(err => console.error('Failed to mark notification complete', err));
+        }
 
         if (!testId || typeof testId !== 'string') {
             return NextResponse.json({ error: 'Valid test ID is required' }, { status: 400 });
