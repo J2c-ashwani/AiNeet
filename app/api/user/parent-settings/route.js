@@ -13,12 +13,13 @@ export async function GET(request) {
 
         const { data: user } = await supabase
             .from('users')
-            .select('parent_email, parent_phone, subscription_tier')
+            .select('parent_email, parent_phone, parent_consent_given_at, subscription_tier')
             .eq('id', decoded.id)
             .single();
         return NextResponse.json({
             parent_email: user?.parent_email || '',
             parent_phone: user?.parent_phone || '',
+            parent_consent_given_at: user?.parent_consent_given_at || null,
             tier: user?.subscription_tier || 'free'
         });
 
@@ -52,14 +53,26 @@ export async function POST(request) {
         // Sanitize and validate
         const parent_email = body.parent_email ? sanitizeString(body.parent_email, 320) : '';
         const parent_phone = body.parent_phone ? sanitizePhone(body.parent_phone) : '';
+        const consent_given = !!body.consent_given;
+
+        if (!consent_given && (parent_email || parent_phone)) {
+            return NextResponse.json({ error: 'Consent is required to save parent details.' }, { status: 400 });
+        }
 
         if (parent_email && !validateEmail(parent_email)) {
             return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
         }
 
+        const updates = { 
+            parent_email, 
+            parent_phone,
+            parent_consent_given_at: consent_given ? new Date().toISOString() : null,
+            parent_consent_version: consent_given ? 'v1_early_access_beta' : null
+        };
+
         const { error: updateError } = await supabase
             .from('users')
-            .update({ parent_email, parent_phone })
+            .update(updates)
             .eq('id', decoded.id);
 
         if (updateError) throw updateError;

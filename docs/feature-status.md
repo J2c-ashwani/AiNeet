@@ -47,7 +47,7 @@ This document classifies all features currently implemented or planned for the N
 | Feature | Status | Notes |
 | :--- | :--- | :--- |
 | **Student Dashboard** | Production | Stable. Primary landing page post-login. |
-| **Parent Dashboard** | **Dead** | Incomplete and broken. **Action: Remove.** |
+| **Parent Connect (Weekly Reports)** | **Beta Ready** | Delivery pipeline pending verification. Retained as a retention feature. |
 | **Educator Dashboard** | **Dormant** | Not a current focus. Needs evaluation before revival. |
 
 ### Monetization & User Accounts
