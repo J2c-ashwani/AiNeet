@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+public/
+mobile/
+scripts/
+migrations/
+build/
+.dart_tool/

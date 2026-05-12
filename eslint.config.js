@@ -1,28 +1,21 @@
-// eslint.config.js — ESLint Flat Config (ESLint v9+)
-// Replaces .eslintrc-mobile-gates.js
-// Bans raw browser APIs in product code. All hardware access must go through
-// lib/utils/, lib/hooks/ platform utility layer.
-
-import globals from 'globals';
+// eslint.config.js — ESLint Flat Config (CJS, no external deps)
+// Compatible with ESLint v9/v10 in any Node environment.
+// Bans raw browser APIs in product pages/components.
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
-export default [
+module.exports = [
     {
-        // Apply to all product source files
+        // Applies to all product page and component source files
         files: ['app/**/*.js', 'app/**/*.jsx', 'components/**/*.js', 'components/**/*.jsx'],
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-            },
             parserOptions: {
                 ecmaFeatures: { jsx: true },
             },
         },
         rules: {
-            // ── Ban raw navigator.share ───────────────────────
+            // ── Ban raw navigator.share in pages/components ───
             'no-restricted-syntax': [
                 'error',
                 {
@@ -40,7 +33,7 @@ export default [
         },
     },
     {
-        // Apply lib/ files (excluding the safe utility layer)
+        // Applies to lib files excluding the platform utility layer itself
         files: ['lib/**/*.js'],
         ignores: [
             'lib/utils/whatsapp.js',
@@ -58,7 +51,6 @@ export default [
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
-            globals: { ...globals.browser, ...globals.node },
             parserOptions: { ecmaFeatures: { jsx: true } },
         },
         rules: {
@@ -70,5 +62,16 @@ export default [
                 },
             ],
         },
+    },
+    {
+        // Global ignores
+        ignores: [
+            'node_modules/**',
+            '.next/**',
+            'out/**',
+            'public/**',
+            'mobile/**',
+            'scripts/**',
+        ],
     },
 ];
