@@ -358,7 +358,7 @@ const styles = {
         borderRadius: '16px',
         background: 'rgba(15,23,42,0.6)',
         border: '1px solid rgba(51,65,85,0.5)',
-        backdropFilter: 'blur(10px)',
+        
         transition: 'transform 0.2s ease, border-color 0.2s ease',
     },
     featureIcon: {

@@ -5,6 +5,7 @@ import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
 import { STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button, Badge } from '@/components/ui';
+import { AutosaveIndicator } from '@/components/ui/TrustBadge';
 
 /**
  * P0-1 Trust Hardening: Test Page with Durable State Persistence
@@ -409,6 +410,9 @@ export default function TestPage({ params }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <span className="question-number">Q {currentQ + 1}/{testData.totalQuestions}</span>
                     <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{answeredCount} answered</span>
+                    <div className="hidden md:block">
+                        <AutosaveIndicator lastSavedAt={testData ? Date.now() : null} />
+                    </div>
                 </div>
                 <div className={`timer ${timeLeft > 300 ? 'safe' : ''}`}>
                     ⏱️ {formatTime(timeLeft)}

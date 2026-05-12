@@ -42,7 +42,7 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
             <div className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md">
                 <div className="bg-gray-900 border border-gray-800 p-8 rounded-3xl max-w-sm w-full shadow-2xl relative overflow-hidden">
                     {onClose && (
-                        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white z-20 text-xl font-bold p-2 leading-none">
+                        <button onClick={onClose} aria-label="Close" className="absolute top-2 right-2 text-gray-500 hover:text-white z-20 text-xl font-bold w-11 h-11 flex items-center justify-center">
                             ✕
                         </button>
                     )}

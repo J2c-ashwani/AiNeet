@@ -8,6 +8,9 @@ import AdBanner from "@/components/monetization/AdBanner";
 import PricingModal from "@/components/monetization/PricingModal";
 import { useAuth } from '@/context/AuthContext';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
+import { DashboardSkeleton } from '@/components/skeletons';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { Flame, Trophy, Star, Target, CheckCircle2, Zap } from 'lucide-react';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -27,8 +30,6 @@ export default function Dashboard() {
             setPerformance(perfData);
             setLoading(false);
         }).catch(() => {
-            // Don't redirect to /login on API error (middleware will bounce back to /)
-            // Instead show a graceful error state on the dashboard itself
             setApiError(true);
             setLoading(false);
         });
@@ -36,8 +37,6 @@ export default function Dashboard() {
 
     const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
 
-    // Signal the mobile app (Flutter WebView) about premium status
-    // This disables all ads for paying users inside the native wrapper
     useEffect(() => {
         if (!loading && typeof window.setPremiumUser === 'function') {
             window.setPremiumUser(!isFree);
@@ -45,9 +44,8 @@ export default function Dashboard() {
     }, [loading, isFree]);
 
     if (loading) return (
-        <div className="loading-overlay" style={{ minHeight: '100vh' }}>
-            <div className="spinner" style={{ width: 40, height: 40 }}></div>
-            <p>Loading your dashboard...</p>
+        <div style={{ minHeight: '100vh', padding: '0px' }}>
+            <DashboardSkeleton />
         </div>
     );
 
@@ -56,7 +54,7 @@ export default function Dashboard() {
             <div style={{ fontSize: '3rem', marginBottom: '16px' }}>📊</div>
             <h2 style={{ color: '#f8fafc', marginBottom: '8px' }}>Dashboard Loading Issue</h2>
             <p style={{ color: '#94a3b8', marginBottom: '24px' }}>We could not load your performance data. This usually resolves after your first test.</p>
-            <a href="/test/configure" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700 }}>Take Your First Test →</a>
+            <a href="/test/configure" style={{ background: 'var(--accent-gradient)', color: 'white', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700 }}>Take Your First Test →</a>
         </div>
     );
 
@@ -66,224 +64,125 @@ export default function Dashboard() {
     const testHistory = performance?.testHistory || [];
 
     return (
-        <div>
+        <div className="page" style={{ padding: '20px 16px', gap: '24px', display: 'flex', flexDirection: 'column' }}>
             
-
-            <div className="page">
-                {/* Welcome */}
-                <div className="page-header">
-                    <h1 className="page-title">Welcome back, {user?.name?.split(' ')[0]}! 👋</h1>
-                    <p className="page-subtitle">
-                        Level {user?.levelInfo?.level} — {user?.levelInfo?.name} • {user?.levelInfo?.xpToNext} XP to next level
-                    </p>
-                    <div className="progress-bar mt-2" style={{ maxWidth: 300 }}>
-                        <div className="progress-fill" style={{ width: `${user?.levelInfo?.progress || 0}%` }}></div>
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <h1 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 4px', color: 'var(--text-primary)' }}>
+                        Welcome back, {user?.name?.split(' ')[0]}!
+                    </h1>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                        Level {user?.levelInfo?.level} • {user?.levelInfo?.xpToNext} XP to next level
                     </div>
                 </div>
-
-                <CoachWidget />
-
-                {/* Stats Grid */}
-                <div className="grid grid-4 stagger mb-6">
-                    <div className="stat-card">
-                        <div className="stat-icon">📝</div>
-                        <div className="stat-value">{stats.total_tests || 0}</div>
-                        <div className="stat-label">Tests Taken</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🎯</div>
-                        <div className="stat-value">{stats.avg_accuracy || 0}%</div>
-                        <div className="stat-label">Avg Accuracy</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">🏅</div>
-                        <div className="stat-value">{Math.round(stats.best_score || 0)}</div>
-                        <div className="stat-label">Best Score / 720</div>
-                    </div>
-                    <div className="stat-card">
-                        <div className="stat-icon">📊</div>
-                        <div className="stat-value">{rankPrediction.predictedRank ? `#${rankPrediction.predictedRank.toLocaleString()}` : 'N/A'}</div>
-                        <div className="stat-label">Predicted Rank</div>
-                    </div>
-                </div>
-
-                {/* Spaced Repetition */}
-                <RevisionCard />
-
-                {/* Activity Heatmap */}
-                {performance?.activityData && performance.activityData.length > 0 && (
-                    <div className="card mb-6">
-                        <ActivityHeatmap data={
-                            (performance.activityData || []).reduce((acc, curr) => ({
-                                ...acc, [new Date(curr.date).toLocaleDateString(undefined, { weekday: 'short' })]: curr.count
-                            }), {})
-                        } />
-                    </div>
-                )}
-
-                <div className="grid grid-2 gap-6">
-                    {/* Quick Actions */}
-                    <div>
-                        <h2 className="mb-4">🚀 Quick Actions</h2>
-                        <div className="flex flex-col gap-3 stagger">
-                            <a href="/test/configure?type=ai_generated" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(99,102,241,0.1)' }}>🎯</div>
-                                <div className="quick-action-text">
-                                    <h3>Generate AI Test</h3>
-                                    <p>Create a personalized test based on your level</p>
-                                </div>
-                            </a>
-                            <a href="/test/configure?type=mock" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(239,68,68,0.1)' }}>⏱️</div>
-                                <div className="quick-action-text">
-                                    <h3>Full Mock Test</h3>
-                                    <p>180 questions • 720 marks • 3 hours</p>
-                                </div>
-                            </a>
-                            <a href="/test/configure?type=yearly_pyq" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(56,189,248,0.1)' }}>📅</div>
-                                <div className="quick-action-text">
-                                    <h3>Year-wise PYQ Paper</h3>
-                                    <p>Practice past real exam papers directly</p>
-                                </div>
-                            </a>
-                            <a href="/doubts" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(16,185,129,0.1)' }}>🤖</div>
-                                <div className="quick-action-text">
-                                    <h3>Ask AI Doubt</h3>
-                                    <p>Get instant NEET-focused explanations</p>
-                                </div>
-                            </a>
-                            <a href="/study-plan" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(245,158,11,0.1)' }}>📅</div>
-                                <div className="quick-action-text">
-                                    <h3>Today's Study Plan</h3>
-                                    <p>AI-generated personalized schedule</p>
-                                </div>
-                            </a>
-                            <a href="/omr" className="quick-action">
-                                <div className="quick-action-icon" style={{ background: 'rgba(255,255,255,0.1)' }}>📸</div>
-                                <div className="quick-action-text">
-                                    <h3>OMR Scanner</h3>
-                                    <p>Scan physical offline mock tests</p>
-                                </div>
-                            </a>
-                            <button
-                                onClick={async (e) => {
-                                    e.currentTarget.disabled = true;
-                                    e.currentTarget.innerHTML = '<div class="quick-action-icon" style="background: rgba(168,85,247,0.1)">⏳</div><div class="quick-action-text"><h3>Generating...</h3><p>Creating challenge link</p></div>';
-                                    try {
-                                        const res = await fetch('/api/challenge/create', { method: 'POST' });
-                                        const data = await res.json();
-                                        if (data.success) {
-                                            const text = `I'm challenging you to a 10-question AI NEET Mock Test duel! ⚔️\n\nCan you beat my score? Accept here:\n${data.shareUrl}`;
-                                            openWhatsAppShare(text);
-                                        } else {
-                                            alert(data.error || 'Failed to create challenge. Have you taken enough tests?');
-                                        }
-                                    } catch (err) {
-                                        alert('Error creating challenge.');
-                                    }
-                                    window.location.reload();
-                                }}
-                                className="quick-action" style={{ textAlign: 'left', cursor: 'pointer', border: 'none', background: 'var(--bg-glass)', width: '100%', fontFamily: 'inherit' }}
-                            >
-                                <div className="quick-action-icon" style={{ background: 'rgba(168,85,247,0.1)' }}>⚔️</div>
-                                <div className="quick-action-text">
-                                    <h3 style={{ background: 'linear-gradient(135deg, #a855f7, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Challenge a Friend</h3>
-                                    <p>Send a 10-question duel via WhatsApp</p>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Right column */}
-                    <div>
-                        {/* Rank Prediction */}
-                        {stats.total_tests > 0 && (
-                            <div className="card mb-4">
-                                <h3 className="mb-4">🏆 Rank Prediction</h3>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-secondary">Predicted Score</span>
-                                    <span className="font-bold">{rankPrediction.predictedScore}/720</span>
-                                </div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-secondary">Predicted Rank</span>
-                                    <span className="font-bold">#{rankPrediction.predictedRank?.toLocaleString()}</span>
-                                </div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-secondary">Percentile</span>
-                                    <span className="font-bold">{rankPrediction.percentile}%</span>
-                                </div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-secondary">Selection Probability</span>
-                                    <span className="font-bold">
-                                        {rankPrediction.successProbability}%
-                                        {rankPrediction.trend === 'up' ? ' ↗️' : rankPrediction.trend === 'down' ? ' ↘️' : ''}
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-secondary">Status</span>
-                                    <span className="font-bold" style={{ color: rankPrediction.category === 'Excellent' ? 'var(--success)' : rankPrediction.category === 'Good' ? 'var(--info)' : 'var(--warning)' }}>
-                                        {rankPrediction.category}
-                                    </span>
-                                </div>
-                                <p className="text-sm text-muted mt-2">{rankPrediction.collegePossibility}</p>
-                            </div>
-                        )}
-
-                        {/* Weak Areas Alert */}
-                        {weakAreas.length > 0 && (
-                            <div className="card" style={{ borderColor: 'rgba(245,158,11,0.3)' }}>
-                                <h3 className="mb-4">⚠️ Weak Areas</h3>
-                                <div className="flex flex-col gap-2">
-                                    {weakAreas.slice(0, 5).map((w, i) => (
-                                        <div key={i} className="flex items-center justify-between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border-color)' }}>
-                                            <div>
-                                                <div className="text-sm font-semibold">{w.topic_name}</div>
-                                                <div className="text-xs text-muted">{w.chapter_name}</div>
-                                            </div>
-                                            <span className="text-danger font-bold">{Math.round(w.accuracy)}%</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <a href="/test/configure" className="btn btn-sm btn-secondary mt-4 w-full" style={{ textAlign: 'center' }}>
-                                    Practice Weak Areas 📝
-                                </a>
-                            </div>
-                        )}
-
-                        {/* Recent Tests */}
-                        {testHistory.length > 0 && (
-                            <div className="card mt-4">
-                                <h3 className="mb-4">📋 Recent Tests</h3>
-                                <div className="flex flex-col gap-2">
-                                    {testHistory.slice(0, 5).map((t, i) => (
-                                        <a key={i} href={`/test/${t.id}/results`} className="flex items-center justify-between" style={{ padding: '10px 12px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)', textDecoration: 'none', color: 'inherit' }}>
-                                            <div>
-                                                <div className="text-sm font-semibold">{t.type.charAt(0).toUpperCase() + t.type.slice(1)} Test</div>
-                                                <div className="text-xs text-muted">{t.total_questions} questions • {new Date(t.completed_at).toLocaleDateString()}</div>
-                                            </div>
-                                            <span className="font-bold" style={{ color: 'var(--accent-primary)' }}>{Math.round(t.score)}/720</span>
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Empty state for new users */}
-                        {stats.total_tests === 0 && (
-                            <div className="card text-center">
-                                <div style={{ fontSize: '3rem', marginBottom: 16 }}>🎯</div>
-                                <h3>No tests taken yet</h3>
-                                <p className="text-secondary text-sm mt-2 mb-4">Start your first test to see performance analytics, rank prediction, and personalized study plans!</p>
-                                <a href="/test/configure" className="btn btn-primary">Take Your First Test →</a>
-                            </div>
-                        )}
-                    </div>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'white', fontWeight: 700 }}>
+                    {(user?.name || user?.email || 'U')[0].toUpperCase()}
                 </div>
             </div>
+
+            {/* Streak / XP / Rank - Wave 7 Restructure (Top) */}
+            <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
+                    <Flame size={24} color="#f59e0b" style={{ marginBottom: '8px' }} />
+                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.streak || 0}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Day Streak</div>
+                </div>
+                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
+                    <Star size={24} color="#38bdf8" style={{ marginBottom: '8px' }} />
+                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.xp || 0}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Total XP</div>
+                </div>
+                <div style={{ flex: 1, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid var(--border)' }}>
+                    <Trophy size={24} color="#a855f7" style={{ marginBottom: '8px' }} />
+                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{rankPrediction.predictedRank ? `#${(rankPrediction.predictedRank/1000).toFixed(1)}k` : 'N/A'}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Est. Rank</div>
+                </div>
+            </div>
+
+            {/* Stat Cards Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-md)', padding: '16px', border: '1px solid var(--border)' }}>
+                    <Target size={20} color="#6366f1" style={{ marginBottom: '12px' }} />
+                    <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.total_tests || 0}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Tests Taken</div>
+                </div>
+                <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-md)', padding: '16px', border: '1px solid var(--border)' }}>
+                    <CheckCircle2 size={20} color="#22c55e" style={{ marginBottom: '12px' }} />
+                    <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avg_accuracy || 0}%</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px' }}>Avg Accuracy</div>
+                </div>
+            </div>
+
+            {/* Empty State vs Continue Test Block */}
+            {stats.total_tests === 0 ? (
+                <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+                    <EmptyState 
+                        type="tests" 
+                        headline="Begin Your Journey" 
+                        body="Start your first full test to establish your baseline and get your first rank prediction."
+                        ctaLabel="Take Your First Test"
+                        ctaHref="/test/configure"
+                        showGhostCards={false}
+                    />
+                </div>
+            ) : (
+                <div style={{ background: 'var(--surface-elevated)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--border)', backgroundImage: 'linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.05) 100%)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                        <Zap size={20} color="#a855f7" />
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>Next up for you</h2>
+                    </div>
+                    {weakAreas.length > 0 ? (
+                        <>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>Your accuracy in <strong style={{color:'var(--text-primary)'}}>{weakAreas[0].topic_name}</strong> is currently {Math.round(weakAreas[0].accuracy)}%. Practice this weak area now.</p>
+                            <a href={`/test/configure?type=custom&topic=${encodeURIComponent(weakAreas[0].topic_name)}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px', background: 'var(--primary)', color: 'white', borderRadius: '12px', fontWeight: 700, textDecoration: 'none' }}>
+                                Practice Weak Area →
+                            </a>
+                        </>
+                    ) : (
+                        <>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>Ready for your next challenge? Generate an AI-curated mock test based on your current level.</p>
+                            <a href="/test/configure?type=ai_generated" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px', background: 'var(--primary)', color: 'white', borderRadius: '12px', fontWeight: 700, textDecoration: 'none' }}>
+                                Generate AI Test →
+                            </a>
+                        </>
+                    )}
+                </div>
+            )}
+
+            <CoachWidget />
+
+            <RevisionCard />
+
+            {/* Activity Block (Bottom) */}
+            {testHistory.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <h2 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '12px 0 0' }}>Recent Activity</h2>
+                    
+                    {performance?.activityData && performance.activityData.length > 0 && (
+                        <div style={{ background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', padding: '16px', border: '1px solid var(--border)' }}>
+                            <ActivityHeatmap data={
+                                (performance.activityData || []).reduce((acc, curr) => ({
+                                    ...acc, [new Date(curr.date).toLocaleDateString(undefined, { weekday: 'short' })]: curr.count
+                                }), {})
+                            } />
+                        </div>
+                    )}
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {testHistory.slice(0, 5).map((t, i) => (
+                            <a key={i} href={`/test/${t.id}/results`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px', background: 'var(--surface-card)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', textDecoration: 'none', color: 'inherit' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.95rem', fontWeight: 700 }}>{t.type.charAt(0).toUpperCase() + t.type.slice(1)} Test</div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>{t.total_questions} questions • {new Date(t.completed_at).toLocaleDateString()}</div>
+                                </div>
+                                <span style={{ fontWeight: 800, color: 'var(--accent)', fontSize: '1.1rem' }}>{Math.round(t.score)}/720</span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

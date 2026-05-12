@@ -246,8 +246,6 @@ h4 {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   transition: all var(--transition-base);
 }
 
@@ -262,7 +260,7 @@ h4 {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
-  backdrop-filter: blur(20px);
+  
 }
 
 /* ---- Buttons ---- */
@@ -469,7 +467,7 @@ select.input {
   justify-content: space-between;
   padding: 0 24px;
   background: rgba(10, 14, 26, 0.9);
-  backdrop-filter: blur(20px);
+  
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -570,7 +568,7 @@ select.input {
   right: 0;
   height: 72px;
   background: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(20px);
+  
   border-top: 1px solid var(--border-color);
   z-index: 100;
   padding: 0 8px;
@@ -659,7 +657,7 @@ select.input {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
-  backdrop-filter: blur(20px);
+  
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
@@ -828,7 +826,7 @@ select.input {
   justify-content: space-between;
   padding: 16px 24px;
   background: rgba(10, 14, 26, 0.95);
-  backdrop-filter: blur(20px);
+  
   border-bottom: 1px solid var(--border-color);
   margin: 0 -24px 24px;
 }
@@ -1435,7 +1433,7 @@ select.input {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  backdrop-filter: blur(20px);
+  
 }
 
 .auth-header {

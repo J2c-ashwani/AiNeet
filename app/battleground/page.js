@@ -300,7 +300,7 @@ export default function BattlegroundPage() {
         return (
             <div>
                 {/* Test Header */}
-                <div style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,14,26,0.95)', backdropFilter: 'blur(20px)', padding: '12px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,14,26,0.95)',  }}>
                     <div className="font-bold">⚔️ Battleground</div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 900, color: timeLeft < 60 ? 'var(--danger)' : 'var(--accent-primary)' }}>
                         ⏱️ {formatTime(timeLeft)}

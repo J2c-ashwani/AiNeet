@@ -53,7 +53,7 @@ export default function Navbar() {
             justifyContent: 'space-between',
             padding: '0 24px',
             background: 'rgba(8, 12, 24, 0.9)',
-            backdropFilter: 'blur(20px)',
+            
             borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}>
             {/* Brand */}
@@ -126,7 +126,7 @@ export default function Navbar() {
 
             {/* Mobile Features Drawer Overlay */}
             {isDrawerOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(8,12,24,0.95)', backdropFilter: 'blur(25px)', zIndex: 1001, display: 'flex', flexDirection: 'column', animation: 'fadeInUp 0.3s ease' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(8,12,24,0.95)',  }}>
                     <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                         <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>Study Tools</h2>
                         <button onClick={() => setIsDrawerOpen(false)} aria-label="Close tools drawer" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', color: 'white', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>

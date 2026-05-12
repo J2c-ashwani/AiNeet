@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { ScoreTrendChart, SubjectRadarChart } from '@/components/Charts';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button } from '@/components/ui';
+import { AnalyticsSkeleton } from '@/components/skeletons';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function AnalyticsPage() {
@@ -22,8 +24,8 @@ export default function AnalyticsPage() {
     }, [user, authLoading, router]);
 
     if (loading) return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="spinner" style={{ width: 40, height: 40 }}></div>
+        <div style={{ minHeight: '100vh', padding: '0px' }}>
+            <AnalyticsSkeleton />
         </div>
     );
 
@@ -38,6 +40,16 @@ export default function AnalyticsPage() {
                     <h1 className="page-title">📈 Performance Analytics</h1>
                     <p className="page-subtitle">Your complete NEET preparation insights</p>
                 </div>
+
+                {/* Empty State */}
+                {(!testHistory || testHistory.length === 0) && (
+                    <div style={{ marginTop: '32px' }}>
+                        <EmptyState 
+                            type="analytics"
+                            onAction={() => router.push('/test/configure')}
+                        />
+                    </div>
+                )}
 
                 {/* Charts Section */}
                 {testHistory && testHistory.length > 0 && (
@@ -168,7 +180,7 @@ export default function AnalyticsPage() {
                     <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px' }}>🏆 Rank Prediction</h2>
 
                     {(user?.referrals_count || 0) < 1 && (
-                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-overlay)', backdropFilter: 'blur(10px)', borderRadius: 'inherit' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-overlay)',  }}>
                             <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🔒</div>
                             <h3 style={{ fontWeight: 800, marginBottom: '8px', color: 'var(--text-primary)' }}>Premium Analytics Locked</h3>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '20px', fontSize: '0.9rem' }}>Refer 1 friend to unlock your AIR prediction</p>

@@ -92,11 +92,11 @@ export default function PDFViewerClient({ book }) {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button onClick={zoomOut} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom Out">
+                        <button onClick={zoomOut} aria-label="Zoom Out" className="w-11 h-11 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom Out">
                             -
                         </button>
                         <span className="text-gray-300 text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
-                        <button onClick={zoomIn} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom In">
+                        <button onClick={zoomIn} aria-label="Zoom In" className="w-11 h-11 flex items-center justify-center rounded-lg bg-gray-800 text-white hover:bg-gray-700" title="Zoom In">
                             +
                         </button>
                     </div>
@@ -141,7 +141,7 @@ export default function PDFViewerClient({ book }) {
                         <div className="bg-gray-900 border border-gray-700 shadow-2xl p-6 rounded-2xl max-w-lg w-full text-white m-4" onClick={e => e.stopPropagation()}>
                             <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-800">
                                 <h3 className="text-xl font-bold flex items-center gap-2">✨ AI Explanation</h3>
-                                <button onClick={() => setExplanation(null)} className="text-gray-400 hover:text-white text-xl">×</button>
+                                <button onClick={() => setExplanation(null)} aria-label="Close explanation" className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-white text-2xl" style={{ margin: '-12px -12px 0 0' }}>×</button>
                             </div>
 
                             {loadingAI ? (
