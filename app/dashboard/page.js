@@ -7,6 +7,7 @@ import CoachWidget from '@/components/CoachWidget';
 import AdBanner from "@/components/monetization/AdBanner";
 import PricingModal from "@/components/monetization/PricingModal";
 import { useAuth } from '@/context/AuthContext';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -176,7 +177,7 @@ export default function Dashboard() {
                                         const data = await res.json();
                                         if (data.success) {
                                             const text = `I'm challenging you to a 10-question AI NEET Mock Test duel! ⚔️\n\nCan you beat my score? Accept here:\n${data.shareUrl}`;
-                                            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                            openWhatsAppShare(text);
                                         } else {
                                             alert(data.error || 'Failed to create challenge. Have you taken enough tests?');
                                         }

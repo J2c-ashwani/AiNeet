@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseClient } from '@/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
+import { copyToClipboard } from '@/lib/utils/clipboard';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function BattlegroundPage() {
     const router = useRouter();
@@ -253,10 +255,10 @@ export default function BattlegroundPage() {
                             {inviteCode}
                         </div>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <button onClick={() => navigator.clipboard.writeText(inviteCode)} className="btn btn-secondary">📋 Copy Code</button>
+                            <button onClick={() => copyToClipboard(inviteCode)} className="btn btn-secondary">📋 Copy Code</button>
                             <button onClick={() => {
                                 const text = `Join my 200-Player NEET Battleground Mega-Quiz! ⚔️\n\nCode: ${inviteCode}\n\nAccept the challenge here:\nhttps://aineetcoach.com/battleground/invite/${inviteCode}`;
-                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                openWhatsAppShare(text);
                             }} className="btn btn-success">📱 WhatsApp</button>
                         </div>
                     </div>

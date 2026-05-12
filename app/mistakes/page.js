@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function MistakesPage() {
     const router = useRouter();
@@ -98,7 +99,7 @@ export default function MistakesPage() {
                         <button
                             onClick={() => {
                                 const text = `I'm preparing for NEET 2026 with AI NEET Coach! 🧠\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
-                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                openWhatsAppShare(text);
                             }}
                             className="btn btn-success btn-lg w-full"
                             style={{ fontSize: '1.1rem', padding: '14px', fontWeight: 700 }}

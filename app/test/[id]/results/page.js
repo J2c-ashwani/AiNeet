@@ -3,6 +3,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function ResultsPage({ params }) {
     const { id: testId } = use(params);
@@ -152,7 +153,7 @@ export default function ResultsPage({ params }) {
                         variant="success"
                         onClick={() => {
                             const text = `I just scored ${score.scaledScore}/720 on my AI NEET Mock Test! 🚀\n\nCheck out my scorecard and rank prediction here:\nhttps://aineetcoach.com/test/${testId}/share`;
-                            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                            openWhatsAppShare(text);
                         }}
                         style={{ marginLeft: 'auto' }}
                     >

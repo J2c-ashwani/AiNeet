@@ -17,6 +17,15 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const SCAN_DIRS = ['app', 'components', 'lib', 'context'];
 
+// These are the canonical platform utility files that INTENTIONALLY use native APIs.
+// They are the controlled implementation layer — everything else must go through them.
+const EXEMPT_PATHS = [
+  'lib/utils/whatsapp.js',
+  'lib/utils/clipboard.js',
+  'lib/hooks/usePlatformShare.js',
+  'lib/platform.js',
+];
+
 // Patterns that indicate a mobile blocker or risk
 const BLOCKER_PATTERNS = [
   { regex: /userAgent\.match\(.*Android.*iPhone/g, label: 'Mobile UA Detection' },
@@ -45,6 +54,10 @@ let totalBlockers = 0;
 let results = [];
 
 function scanFile(filePath) {
+  // Skip canonical platform utility files — these intentionally use native APIs
+  const relativePath = filePath.replace(ROOT + '/', '');
+  if (EXEMPT_PATHS.some(exempt => relativePath.endsWith(exempt))) return;
+
   const content = fs.readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
   let fileBlockers = [];

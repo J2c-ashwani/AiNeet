@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { copyToClipboard } from '@/lib/utils/clipboard';
 
 export default function GrowthCopilotPage() {
     const [doubtText, setDoubtText] = useState('');
@@ -66,7 +67,7 @@ export default function GrowthCopilotPage() {
     };
 
     const handleCopy = async (variantName, text) => {
-        await navigator.clipboard.writeText(text);
+        await copyToClipboard(text);
         setCopiedIndex(variantName);
 
         // Silent MD Tracker: Memory Hook

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ScoreTrendChart, SubjectRadarChart } from '@/components/Charts';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button } from '@/components/ui';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function AnalyticsPage() {
     const router = useRouter();
@@ -175,7 +176,7 @@ export default function AnalyticsPage() {
                                 variant="primary"
                                 onClick={() => {
                                     const text = `Prepare for NEET 2026 with AI! 🧠\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
-                                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                    openWhatsAppShare(text);
                                 }}
                             >
                                 📱 Share & Unlock

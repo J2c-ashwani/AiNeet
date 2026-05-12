@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { usePlatformShare } from '@/lib/hooks/usePlatformShare';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
@@ -66,21 +67,9 @@ export default function DiagnosticResultsLock() {
         const pct = 100 - result.percentile; // Inverse logic to show Top %
         const shareText = `Top ${pct}% in NEET ${result.weakestChapter} 🔥\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
 
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'NEET AI Assessment',
-                    text: shareText
-                });
-                setUnlocked(true); // MD Directive: Unlock upon successful share
-            } catch (err) {
-                console.log('User cancelled share');
-            }
-        } else {
-            // Fallback to WhatsApp deep link
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
-            setUnlocked(true); // Fallback assumption unlock
-        }
+        const { share } = usePlatformShare();
+        await share({ title: 'NEET AI Assessment', text: shareText, url: shareUrl });
+        setUnlocked(true);
     };
 
     if (noResult) return (
