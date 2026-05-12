@@ -1,0 +1,122 @@
+/* ============================================================
+   NEET Coach — Typography System
+   Wave 7: Experience Hardening
+   8-level scale. Geist font (Inter fallback). Token-based only.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ── Font Family ────────────────────────────────────────── */
+  --font-primary: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', sans-serif;
+  --font-mono:    'Geist Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* ── Type Scale ─────────────────────────────────────────── */
+  --text-display: 28px;  /* Hero sections, splash titles        */
+  --text-h1:      24px;  /* Page titles                         */
+  --text-h2:      20px;  /* Section headings                    */
+  --text-h3:      18px;  /* Card titles, sub-sections           */
+  --text-body-lg: 16px;  /* Primary reading body text           */
+  --text-body:    15px;  /* Default body, list items            */
+  --text-caption: 13px;  /* Labels, helper text, timestamps     */
+  --text-tiny:    11px;  /* Badge counts, micro labels          */
+
+  /* ── Font Weights ───────────────────────────────────────── */
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+
+  /* ── Line Heights ───────────────────────────────────────── */
+  --leading-tight:    1.2;
+  --leading-snug:     1.35;
+  --leading-normal:   1.5;
+  --leading-relaxed:  1.65;
+
+  /* ── Letter Spacing ─────────────────────────────────────── */
+  --tracking-tight:   -0.02em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.04em;
+  --tracking-caps:    0.08em;   /* For uppercase labels         */
+}
+
+/* ── Base Typography ─────────────────────────────────────── */
+body {
+  font-family: var(--font-primary);
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+}
+
+/* ── Semantic Type Classes ───────────────────────────────── */
+.text-display {
+  font-size: var(--text-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-h1 {
+  font-size: var(--text-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-h2 {
+  font-size: var(--text-h2);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.text-h3 {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+.text-body-lg {
+  font-size: var(--text-body-lg);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+}
+
+.text-body {
+  font-size: var(--text-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+}
+
+.text-caption {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+}
+
+.text-tiny {
+  font-size: var(--text-tiny);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+
+/* ── Color Utilities ─────────────────────────────────────── */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+.text-accent    { color: var(--accent-primary); }
+.text-success   { color: var(--success); }
+.text-warning   { color: var(--warning); }
+.text-danger    { color: var(--danger); }
+
+/* ── Label Utility ───────────────────────────────────────── */
+.label-caps {
+  font-size: var(--text-tiny);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}

@@ -1,6 +1,11 @@
 /* ============================================
-   AI NEET Coach — Premium Design System
+   AI NEET Coach — Wave 7 UX System
    ============================================ */
+
+/* Wave 7: Design token system (overrides below vars) */
+@import '../styles/tokens.css';
+@import '../styles/typography.css';
+@import '../styles/motion.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 

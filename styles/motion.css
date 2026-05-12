@@ -1,0 +1,121 @@
+/* ============================================================
+   NEET Coach — Motion System
+   Wave 7: Experience Hardening
+   Restrained, purposeful animation language.
+   Premium apps feel calm — not flashy.
+   ============================================================ */
+
+:root {
+  /* ── Duration Scale ─────────────────────────────────────── */
+  --duration-instant:   80ms;   /* Immediate feedback (active states)  */
+  --duration-tap:      120ms;   /* Button press, icon toggle           */
+  --duration-fast:     160ms;   /* Hover, card elevation               */
+  --duration-normal:   220ms;   /* Modal open, sheet slide             */
+  --duration-page:     260ms;   /* Page transitions                    */
+  --duration-skeleton: 1400ms;  /* Skeleton shimmer loop               */
+  --duration-slow:     400ms;   /* Onboarding, first-load animations   */
+
+  /* ── Easing ─────────────────────────────────────────────── */
+  --ease-out:     cubic-bezier(0.0, 0, 0.2, 1);    /* Elements entering view      */
+  --ease-in:      cubic-bezier(0.4, 0, 1, 1);      /* Elements leaving view       */
+  --ease-inout:   cubic-bezier(0.4, 0, 0.2, 1);    /* State changes               */
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic, tactile press   */
+  --ease-linear:  linear;                            /* Skeleton shimmer           */
+}
+
+/* ── Interaction Classes ─────────────────────────────────── */
+
+/* Tap feedback — simulate native press depth */
+.interactive {
+  transition:
+    transform  var(--duration-tap)  var(--ease-spring),
+    opacity    var(--duration-tap)  var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.interactive:active {
+  transform: scale(0.97);
+}
+
+/* Hover elevation — for cards on non-touch */
+@media (hover: hover) {
+  .interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Button depression — stronger press feedback */
+.btn-press:active {
+  transform: scale(0.95);
+  transition-duration: var(--duration-instant);
+}
+
+/* Fade in — for content entering viewport */
+.fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-out) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Slide up — for modals, sheets, bottom nav reveal */
+.slide-up {
+  animation: slideUp var(--duration-normal) var(--ease-out) both;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Scale in — for popups, confirmation dialogs */
+.scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-spring) both;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* ── Skeleton Shimmer ────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton {
+  background: var(--skeleton-shimmer);
+  background-size: 800px 100%;
+  animation: shimmer var(--duration-skeleton) var(--ease-linear) infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Nav Icon Active Glow ────────────────────────────────── */
+@keyframes iconGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--accent-glow)); }
+  50%      { filter: drop-shadow(0 0 8px var(--accent-glow)); }
+}
+
+.nav-icon-active {
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+/* ── Reduced Motion Override ─────────────────────────────── */
+/* Always respect system accessibility preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}

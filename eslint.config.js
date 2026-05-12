@@ -29,6 +29,13 @@ module.exports = [
                     message:
                         'Use copyToClipboard() from lib/utils/clipboard.js instead of raw navigator.clipboard.',
                 },
+                // ── Wave 7 UI Quality Gates ───────────────────
+                {
+                    // Ban raw emoji characters as JSX text (use Icon component instead)
+                    selector: "JSXText[value=/[\\u{1F300}-\\u{1FFFF}\\u{2600}-\\u{26FF}\\u{2700}-\\u{27BF}]/u]",
+                    message:
+                        'Raw emoji in JSX is banned (Wave 7). Use <Icon name="..." /> from components/ui/Icon.js instead.',
+                },
             ],
         },
     },
