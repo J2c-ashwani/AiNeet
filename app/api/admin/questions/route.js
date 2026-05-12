@@ -132,19 +132,69 @@ export async function POST(request) {
             correct_option: body.correct_option.toUpperCase(),
             difficulty: body.difficulty || 'medium',
             explanation,
-            is_pyq: body.is_pyq ? true : false,
+            is_pyq: body.is_pyq ? 1 : 0,
             exam_name: body.exam_name || null,
             year_asked: body.year_asked || null,
             tags,
             flag_count: 0,
-            quality_score: 1.0
-        }).select('id').single();
+            quality_score: 1.0,
+            verification_status: 'teacher_verified'
+        }).select('*').single();
 
         if (error) throw error;
+
+        // Wave 5: Create immutable question snapshot
+        await supabase.from('question_versions').insert({
+            question_id: result.id,
+            version_number: 1,
+            snapshot: result,
+            created_by: admin.id,
+            change_reason: 'Initial Creation'
+        });
+
         return NextResponse.json({ success: true, id: result.id });
 
     } catch (error) {
         console.error('Add Question Error:', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+export async function PUT(request) {
+    const admin = await requireAdmin(request);
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+
+    try {
+        const supabase = await getDb();
+        let body;
+        try { body = await request.json(); } catch (e) {
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+        }
+
+        const { id, change_reason, ...updates } = body;
+        if (!id) return NextResponse.json({ error: 'Missing question ID' }, { status: 400 });
+
+        // Fetch current max version
+        const { data: maxVer } = await supabase.from('question_versions')
+            .select('version_number').eq('question_id', id).order('version_number', { ascending: false }).limit(1).single();
+        
+        const nextVersion = maxVer ? maxVer.version_number + 1 : 1;
+
+        const { data: updatedQuestion, error } = await supabase.from('questions').update(updates).eq('id', id).select('*').single();
+        if (error) throw error;
+
+        // Wave 5: Create immutable question snapshot on edit
+        await supabase.from('question_versions').insert({
+            question_id: updatedQuestion.id,
+            version_number: nextVersion,
+            snapshot: updatedQuestion,
+            created_by: admin.id,
+            change_reason: change_reason || 'Admin Edit'
+        });
+
+        return NextResponse.json({ success: true, question: updatedQuestion });
+    } catch (error) {
+        console.error('Update Question Error:', error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
