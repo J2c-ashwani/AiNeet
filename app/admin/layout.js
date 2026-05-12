@@ -60,6 +60,8 @@ export default function AdminLayout({ children }) {
 
     const navItems = [
         { name: 'Overview', path: '/admin', icon: '📊' },
+        { name: 'Runtime Dashboard', path: '/admin/runtime', icon: '🖥️' },
+        { name: 'Integrity', path: '/admin/integrity', icon: '🛡️' },
         { name: 'Ops Control Room', path: '/admin/ops', icon: '🧯' },
         { name: 'Question Bank', path: '/admin/questions', icon: '📝' },
         { name: 'NCERT Library', path: '/admin/ncert', icon: '📚' },
