@@ -1,6 +1,5 @@
 // mobile/lib/security/app_check.dart
 // App Check token injection for all requests to integrity endpoints.
-// Protects: test submit, battleground, ranking, XP mutation, leaderboard.
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -42,10 +41,10 @@ class AppCheckBridge {
 
   static Future<String> _getToken() async {
     try {
-      final result = await FirebaseAppCheck.instance.getToken(false);
-      return result?.token ?? '';
+      final String? token = await FirebaseAppCheck.instance.getToken(false);
+      return token ?? '';
     } catch (_) {
-      return ''; // Fail open for degraded mode; server validates and rejects
+      return ''; // Fail open; server validates and rejects invalid tokens
     }
   }
 }

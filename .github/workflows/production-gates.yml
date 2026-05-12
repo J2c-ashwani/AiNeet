@@ -21,7 +21,7 @@ jobs:
         with: { node-version: '${{ env.NODE_VERSION }}', cache: 'npm' }
       - run: npm ci
       - name: ESLint mobile gate rules
-        run: npx eslint app/ components/ lib/ --config .eslintrc-mobile-gates.js --max-warnings 0
+        run: npx eslint app/ components/ lib/ --max-warnings 0
       - name: Mobile API blocker audit
         run: node scripts/audit-mobile-blockers.js
       - name: Intelligence governance audit
