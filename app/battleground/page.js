@@ -5,6 +5,7 @@ import { createSupabaseClient } from '@/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { copyToClipboard } from '@/lib/utils/clipboard';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
+import { Card, Button, Badge } from '@/components/ui';
 
 export default function BattlegroundPage() {
     const router = useRouter();
@@ -174,23 +175,23 @@ export default function BattlegroundPage() {
     const formatTime = (s) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
 
     if (authLoading) return (
-        <div style={{ maxWidth: 700, margin: '60px auto', padding: '0 24px' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                <div style={{ width: 120, height: 36, borderRadius: 10, background: 'rgba(255,255,255,0.05)', margin: '0 auto 12px' }} />
-                <div style={{ width: 260, height: 16, borderRadius: 8, background: 'rgba(255,255,255,0.04)', margin: '0 auto' }} />
+        <div className="bg-loading-wrapper">
+            <div className="bg-loading-header">
+                <div className="bg-loading-title" />
+                <div className="bg-loading-subtitle" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-                {[0,1].map(i => <div key={i} style={{ height: 200, borderRadius: 20, background: 'rgba(255,255,255,0.04)' }} />)}
+            <div className="bg-loading-grid">
+                {[0,1].map(i => <div key={i} className="bg-loading-card" />)}
             </div>
         </div>
     );
 
     if (!user) return (
-        <div style={{ maxWidth: 700, margin: '80px auto', padding: '0 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚔️</div>
-            <h2 style={{ color: '#f8fafc', marginBottom: '12px' }}>Join the Battleground</h2>
-            <p style={{ color: '#94a3b8', marginBottom: '32px' }}>Sign in to create and join live NEET battles with other aspirants.</p>
-            <a href="/login" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', padding: '12px 28px', borderRadius: '12px', textDecoration: 'none', fontWeight: 700 }}>Sign In to Battle</a>
+        <div className="bg-guest-wrapper">
+            <div className="bg-guest-icon">⚔️</div>
+            <h2 className="bg-guest-title">Join the Battleground</h2>
+            <p className="bg-guest-desc">Sign in to create and join live NEET battles with other aspirants.</p>
+            <a href="/login" className="bg-guest-cta">Sign In to Battle</a>
         </div>
     );
 
@@ -198,38 +199,38 @@ export default function BattlegroundPage() {
     if (view === 'home') return (
         <div>
             
-            <div className="page" style={{ maxWidth: 700 }}>
-                <div className="page-header" style={{ textAlign: 'center' }}>
+            <div className="page bg-home-wrapper">
+                <div className="page-header bg-home-header">
                     <h1 className="page-title">⚔️ NEET Battleground</h1>
                     <p className="page-subtitle">Challenge up to 200 students. Same questions. Same timer. Highest scorer wins.</p>
                 </div>
 
-                {error && <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px', color: 'var(--danger)', marginBottom: '20px', textAlign: 'center' }}>{error}</div>}
+                {error && <div className="bg-error-banner">{error}</div>}
 
                 <div className="grid grid-2 gap-6">
-                    <div className="card" style={{ textAlign: 'center', padding: '40px 24px' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🏟️</div>
-                        <h2 style={{ marginBottom: '12px' }}>Create a Battle</h2>
-                        <p className="text-muted text-sm" style={{ marginBottom: '24px' }}>Generate 20 questions and share the invite code with your friends</p>
-                        <button onClick={handleCreate} disabled={creating} className="btn btn-primary w-full" style={{ fontSize: '1.1rem', padding: '14px' }}>
+                    <Card className="bg-home-card">
+                        <div className="bg-home-icon">🏟️</div>
+                        <h2 className="bg-home-card-title">Create a Battle</h2>
+                        <p className="text-muted text-sm bg-home-card-desc">Generate 20 questions and share the invite code with your friends</p>
+                        <Button variant="primary" onClick={handleCreate} disabled={creating} className="bg-home-btn">
                             {creating ? '⏳ Creating...' : '🚀 Create Battleground'}
-                        </button>
-                    </div>
+                        </Button>
+                    </Card>
 
-                    <div className="card" style={{ textAlign: 'center', padding: '40px 24px' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🎟️</div>
-                        <h2 style={{ marginBottom: '12px' }}>Join a Battle</h2>
-                        <p className="text-muted text-sm" style={{ marginBottom: '24px' }}>Enter the 6-character invite code shared by a friend</p>
+                    <Card className="bg-home-card">
+                        <div className="bg-home-icon">🎟️</div>
+                        <h2 className="bg-home-card-title">Join a Battle</h2>
+                        <p className="text-muted text-sm bg-home-card-desc">Enter the 6-character invite code shared by a friend</p>
                         <input
                             value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                             placeholder="Enter code (e.g. A3X9K2)"
                             maxLength={6}
-                            style={{ width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)', textAlign: 'center', fontSize: '1.5rem', fontWeight: 800, letterSpacing: '6px', marginBottom: '12px' }}
+                            className="bg-home-input"
                         />
-                        <button onClick={handleJoin} disabled={joining} className="btn btn-success w-full" style={{ fontSize: '1.1rem', padding: '14px' }}>
+                        <Button variant="success" onClick={handleJoin} disabled={joining} className="bg-home-btn">
                             {joining ? '⏳ Joining...' : '🎮 Join Battle'}
-                        </button>
-                    </div>
+                        </Button>
+                    </Card>
                 </div>
             </div>
         </div>
@@ -239,38 +240,38 @@ export default function BattlegroundPage() {
     if (view === 'lobby') return (
         <div>
             
-            <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🏟️</div>
-                <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Battleground Lobby</h1>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: connected ? '#10b981' : '#ef4444', animation: connected ? 'pulse 2s infinite' : 'none', display: 'inline-block' }}></span>
-                    <span className="text-muted" style={{ fontSize: '0.85rem' }}>{connected ? 'LIVE — Real-time WebSockets active' : 'Connecting...'}</span>
+            <div className="page bg-lobby-wrapper">
+                <div className="bg-lobby-icon">🏟️</div>
+                <h1 className="bg-lobby-title">Battleground Lobby</h1>
+                <div className="bg-lobby-status-container">
+                    <span className={`bg-lobby-status-dot ${connected ? 'bg-lobby-status-dot--connected' : 'bg-lobby-status-dot--disconnected'}`}></span>
+                    <span className="bg-lobby-status-text">{connected ? 'LIVE — Real-time WebSockets active' : 'Connecting...'}</span>
                 </div>
 
                 {/* Invite Code Display */}
                 {inviteCode && (
-                    <div className="card" style={{ marginBottom: '32px', padding: '32px' }}>
-                        <div className="text-muted text-sm" style={{ marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '2px' }}>Share This Invite Code</div>
-                        <div style={{ fontSize: '3rem', fontWeight: 900, letterSpacing: '12px', color: 'var(--accent-primary)', marginBottom: '20px' }}>
+                    <Card className="bg-invite-card">
+                        <div className="text-muted text-sm bg-invite-label">Share This Invite Code</div>
+                        <div className="bg-invite-code">
                             {inviteCode}
                         </div>
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <button onClick={() => copyToClipboard(inviteCode)} className="btn btn-secondary">📋 Copy Code</button>
-                            <button onClick={() => {
+                        <div className="bg-invite-actions">
+                            <Button variant="secondary" onClick={() => copyToClipboard(inviteCode)}>📋 Copy Code</Button>
+                            <Button variant="success" onClick={() => {
                                 const text = `Join my 200-Player NEET Battleground Mega-Quiz! ⚔️\n\nCode: ${inviteCode}\n\nAccept the challenge here:\nhttps://aineetcoach.com/battleground/invite/${inviteCode}`;
                                 openWhatsAppShare(text);
-                            }} className="btn btn-success">📱 WhatsApp</button>
+                            }}>📱 WhatsApp</Button>
                         </div>
-                    </div>
+                    </Card>
                 )}
 
                 {/* Participant List */}
-                <div className="card" style={{ textAlign: 'left' }}>
+                <Card className="bg-participants-card">
                     <h3 className="mb-4">👥 {participants.length} Participants Joined</h3>
                     <div className="flex flex-col gap-2">
                         {participants.map((p, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', background: 'var(--bg-glass)', borderRadius: '10px' }}>
-                                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: p.isMe ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem' }}>
+                            <div key={i} className="bg-participant-row">
+                                <div className={`bg-participant-avatar ${p.isMe ? 'bg-participant-avatar--me' : 'bg-participant-avatar--other'}`}>
                                     {p.name?.[0]?.toUpperCase()}
                                 </div>
                                 <div>
@@ -280,13 +281,13 @@ export default function BattlegroundPage() {
                             </div>
                         ))}
                     </div>
-                </div>
+                </Card>
 
                 {/* Start Button (creator only) */}
                 {battle?.creatorId === user?.id && (
-                    <button onClick={handleStart} className="btn btn-primary btn-lg w-full mt-6" style={{ fontSize: '1.2rem', padding: '18px' }}>
+                    <Button variant="primary" size="lg" onClick={handleStart} className="bg-start-btn">
                         🚀 Start Battle for Everyone ({participants.length} players)
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>
@@ -300,28 +301,28 @@ export default function BattlegroundPage() {
         return (
             <div>
                 {/* Test Header */}
-                <div style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(10,14,26,0.95)',  }}>
+                <div className="bg-test-header">
                     <div className="font-bold">⚔️ Battleground</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 900, color: timeLeft < 60 ? 'var(--danger)' : 'var(--accent-primary)' }}>
+                    <div className={`bg-test-timer ${timeLeft < 60 ? 'bg-test-timer--warning' : 'bg-test-timer--normal'}`}>
                         ⏱️ {formatTime(timeLeft)}
                     </div>
                     <div className="text-sm text-muted">Q {currentQ + 1} / {questions.length}</div>
                 </div>
 
-                <div className="page" style={{ maxWidth: 800, paddingTop: '20px' }}>
+                <div className="page bg-test-wrapper">
                     {/* Progress */}
-                    <div className="progress-bar mb-4" style={{ height: 4 }}>
+                    <div className="progress-bar bg-test-progress">
                         <div className="progress-fill" style={{ width: `${((currentQ + 1) / questions.length) * 100}%` }}></div>
                     </div>
 
                     {/* Question */}
-                    <div className="card mb-4">
+                    <Card className="mb-4">
                         <div className="flex items-center justify-between mb-3">
                             <span className="question-number">Question {currentQ + 1}</span>
-                            {q.difficulty && <span className={`difficulty-badge ${q.difficulty}`}>{q.difficulty}</span>}
+                            {q.difficulty && <Badge variant="neutral" className={`difficulty-badge ${q.difficulty}`}>{q.difficulty}</Badge>}
                         </div>
-                        <p style={{ fontSize: '1.1rem', lineHeight: 1.6 }}>{q.text}</p>
-                    </div>
+                        <p className="bg-test-q-text">{q.text}</p>
+                    </Card>
 
                     {/* Options */}
                     <div className="flex flex-col gap-3 mb-6">
@@ -340,14 +341,14 @@ export default function BattlegroundPage() {
                     </div>
 
                     {/* Navigation */}
-                    <div style={{ display: 'flex', gap: '12px' }}>
-                        {currentQ > 0 && <button onClick={() => setCurrentQ(currentQ - 1)} className="btn btn-secondary">← Previous</button>}
+                    <div className="bg-test-nav">
+                        {currentQ > 0 && <Button variant="secondary" onClick={() => setCurrentQ(currentQ - 1)}>← Previous</Button>}
                         {currentQ < questions.length - 1 ? (
-                            <button onClick={() => setCurrentQ(currentQ + 1)} className="btn btn-primary" style={{ marginLeft: 'auto' }}>Next →</button>
+                            <Button variant="primary" onClick={() => setCurrentQ(currentQ + 1)} className="bg-test-next-btn">Next →</Button>
                         ) : (
-                            <button onClick={handleSubmit} disabled={submitting} className="btn btn-success" style={{ marginLeft: 'auto', fontWeight: 700 }}>
+                            <Button variant="success" onClick={handleSubmit} disabled={submitting} className="bg-test-submit-btn">
                                 {submitting ? '⏳ Submitting...' : '✅ Submit & See Results'}
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>
@@ -359,43 +360,38 @@ export default function BattlegroundPage() {
     if (view === 'results') return (
         <div>
             
-            <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
-                <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🏆</div>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '8px' }}>Battle Results</h1>
-                <p className="text-muted" style={{ marginBottom: '40px' }}>
+            <div className="page bg-results-wrapper">
+                <div className="bg-results-icon">🏆</div>
+                <h1 className="bg-results-title">Battle Results</h1>
+                <p className="text-muted bg-results-meta">
                     {battle?.questionCount} Questions • {participants.length} Participants
                 </p>
 
                 {/* Leaderboard */}
-                <div className="card" style={{ textAlign: 'left' }}>
+                <Card className="bg-leaderboard-card">
                     <h3 className="mb-4">🏅 Final Leaderboard</h3>
                     <div className="flex flex-col gap-3">
                         {participants.map((p, i) => {
                             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
                             return (
-                                <div key={i} style={{
-                                    display: 'flex', alignItems: 'center', gap: '16px', padding: '16px',
-                                    background: p.isMe ? 'rgba(99, 102, 241, 0.1)' : 'var(--bg-glass)',
-                                    border: p.isMe ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid transparent',
-                                    borderRadius: '14px'
-                                }}>
-                                    <div style={{ fontSize: i < 3 ? '2rem' : '1.2rem', width: '40px', textAlign: 'center', fontWeight: 800 }}>{medal}</div>
+                                <div key={i} className={`bg-leaderboard-row ${p.isMe ? 'bg-leaderboard-row--me' : 'bg-leaderboard-row--other'}`}>
+                                    <div className={`bg-leaderboard-rank ${i < 3 ? 'bg-leaderboard-rank--top' : 'bg-leaderboard-rank--normal'}`}>{medal}</div>
                                     <div style={{ flex: 1 }}>
-                                        <div className="font-bold">{p.name} {p.isMe && <span style={{ color: 'var(--accent-primary)', fontSize: '0.8rem' }}>(You)</span>}</div>
+                                        <div className="font-bold">{p.name} {p.isMe && <span className="bg-leaderboard-me-badge">(You)</span>}</div>
                                         <div className="text-xs text-muted">✅ {p.correct} correct • ❌ {p.incorrect} wrong • ⏱️ {formatTime(p.timeSpent || 0)}</div>
                                     </div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 900, color: i === 0 ? '#fbbf24' : 'var(--accent-primary)' }}>
+                                    <div className={`bg-leaderboard-score ${i === 0 ? 'bg-leaderboard-score--first' : 'bg-leaderboard-score--normal'}`}>
                                         {p.score}
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
-                </div>
+                </Card>
 
-                <div style={{ display: 'flex', gap: '12px', marginTop: '32px', justifyContent: 'center' }}>
-                    <button onClick={() => { setView('home'); setBattleId(null); setInviteCode(''); setAnswers({}); setCurrentQ(0); }} className="btn btn-primary">🏟️ New Battleground</button>
-                    <a href="/dashboard" className="btn btn-secondary">🏠 Dashboard</a>
+                <div className="bg-results-actions">
+                    <Button variant="primary" onClick={() => { setView('home'); setBattleId(null); setInviteCode(''); setAnswers({}); setCurrentQ(0); }}>🏟️ New Battleground</Button>
+                    <Link href="/dashboard"><Button variant="secondary">🏠 Dashboard</Button></Link>
                 </div>
             </div>
         </div>

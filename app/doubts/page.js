@@ -102,7 +102,7 @@ export default function DoubtSolver() {
         <div>
             
 
-            <div className="page" style={{ maxWidth: 800, margin: '0 auto', height: 'calc(100dvh - 60px)', paddingBottom: 'calc(90px + env(safe-area-inset-bottom, 0px))', display: 'flex', flexDirection: 'column' }}>
+            <div className="page" style={{ maxWidth: 800, margin: '0 auto', minHeight: 'calc(100dvh - 60px)', display: 'flex', flexDirection: 'column' }}>
 
                 <h1 className="text-2xl font-bold mb-4">AI Doubt Solver 🤖</h1>
 
@@ -172,7 +172,7 @@ export default function DoubtSolver() {
                         )}
                     </div>
 
-                    <div className="chat-input-area" style={{ position: 'relative' }}>
+                    <div className="chat-input-area" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
                         {lastSaved && (
                             <div style={{ position: 'absolute', top: '-30px', right: '16px' }}>
                                 <TrustBadge type="autosave" meta={{ seconds: Math.floor((Date.now() - lastSaved)/1000) }} />

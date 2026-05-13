@@ -272,30 +272,18 @@ export default function OMRScannerPage() {
     };
 
     return (
-        <div className="page" style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px 120px', minHeight: '100vh' }}>
+        <div className="page omr-wrapper">
 
-            <header style={{ marginBottom: '32px', textAlign: 'center', paddingBottom: '24px', borderBottom: '1px solid var(--border-color)' }}>
-                <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '8px' }}>📸</span>
-                <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px', color: 'var(--text-primary)' }}>OMR Scanner</h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Scan your offline answer sheet & get instant results</p>
+            <header className="omr-header">
+                <span className="omr-header-icon">📸</span>
+                <h1 className="omr-title">OMR Scanner</h1>
+                <p className="omr-subtitle">Scan your offline answer sheet &amp; get instant results</p>
             </header>
 
             {/* ERROR BANNER */}
             {scanError && (
-                <div style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    color: 'var(--danger)',
-                    padding: '16px',
-                    borderRadius: 'var(--radius-lg)',
-                    marginBottom: '24px',
-                    fontSize: '0.9rem',
-                    display: 'flex',
-                    gap: '8px',
-                    alignItems: 'flex-start',
-                    lineHeight: 1.5,
-                }}>
-                    <span style={{ flexShrink: 0 }}>⚠️</span>
+                <div className="omr-error-banner">
+                    <span className="omr-error-icon">⚠️</span>
                     <span>{scanError}</span>
                 </div>
             )}
@@ -303,47 +291,47 @@ export default function OMRScannerPage() {
             {/* ═══ FINAL RESULT STATE ═══ */}
             {finalResult ? (
                 <div className="animate-fade-in">
-                    <Card style={{ textAlign: 'center', padding: '40px 16px', background: 'linear-gradient(135deg, rgba(99,102,241,0.05), rgba(168,85,247,0.05))', border: '1px solid var(--accent-primary)', marginBottom: '24px' }}>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--accent-primary)', marginBottom: '8px' }}>{finalResult.score} / {finalResult.totalPossible}</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontWeight: 700, marginBottom: '20px' }}>Accuracy: <span style={{ color: 'var(--text-primary)' }}>{finalResult.accuracy}%</span></p>
+                    <Card className="omr-result-card">
+                        <h2 className="omr-result-score">{finalResult.score} / {finalResult.totalPossible}</h2>
+                        <p className="omr-result-accuracy">Accuracy: <span className="omr-result-accuracy-val">{finalResult.accuracy}%</span></p>
 
                         {/* Correct / Wrong / Skipped stats */}
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                            <div style={{ background: 'rgba(34, 197, 94, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
-                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--success)' }}>✓ {finalResult.correct || 0}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Correct</div>
+                        <div className="omr-stats-container">
+                            <div className="omr-stat-box omr-stat-box--correct">
+                                <div className="omr-stat-val--correct">✓ {finalResult.correct || 0}</div>
+                                <div className="omr-stat-label">Correct</div>
                             </div>
-                            <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
-                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--danger)' }}>✗ {finalResult.wrong || 0}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Wrong</div>
+                            <div className="omr-stat-box omr-stat-box--wrong">
+                                <div className="omr-stat-val--wrong">✗ {finalResult.wrong || 0}</div>
+                                <div className="omr-stat-label">Wrong</div>
                             </div>
-                            <div style={{ background: 'rgba(148, 163, 184, 0.1)', padding: '10px 16px', borderRadius: 'var(--radius-md)', minWidth: '80px' }}>
-                                <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-secondary)' }}>— {finalResult.skipped || 0}</div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Skipped</div>
+                            <div className="omr-stat-box omr-stat-box--skipped">
+                                <div className="omr-stat-val--skipped">— {finalResult.skipped || 0}</div>
+                                <div className="omr-stat-label">Skipped</div>
                             </div>
                         </div>
 
-                        <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '20px' }}>
-                            <span style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--success)', fontWeight: 700, marginBottom: '4px' }}>Estimated NEET Rank</span>
-                            <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{finalResult.estimatedRankRange}</span>
+                        <div className="omr-rank-box">
+                            <span className="omr-rank-label">Estimated NEET Rank</span>
+                            <span className="omr-rank-val">{finalResult.estimatedRankRange}</span>
                         </div>
 
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{finalResult.communityInsight}</p>
+                        <p className="omr-insight">{finalResult.communityInsight}</p>
                     </Card>
 
                     {/* Post-grade actions — learning loop */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div className="omr-actions">
                         <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
-                            <Button variant="primary" style={{ width: '100%', minHeight: '48px' }}>
+                            <Button variant="primary" className="omr-action-btn">
                                 📝 View My Mistakes
                             </Button>
                         </a>
                         <a href="/dashboard" style={{ textDecoration: 'none', display: 'block' }}>
-                            <Button variant="secondary" style={{ width: '100%', minHeight: '48px' }}>
+                            <Button variant="secondary" className="omr-action-btn">
                                 📊 Go to Dashboard
                             </Button>
                         </a>
-                        <Button variant="secondary" style={{ width: '100%', minHeight: '48px' }} onClick={resetScanner}>
+                        <Button variant="secondary" className="omr-action-btn" onClick={resetScanner}>
                             📸 Scan Another Sheet
                         </Button>
                     </div>
@@ -353,77 +341,69 @@ export default function OMRScannerPage() {
             /* ═══ VERIFICATION STATE ═══ */
             : needsVerification ? (
                 <div className="animate-fade-in">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <div className="omr-verify-header">
                         <div>
-                            <h3 style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--warning)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <h3 className="omr-verify-title">
                                 Verify extracted answers
                                 {lastSaved && <TrustBadge type="autosave" meta={{ seconds: Math.floor((Date.now() - lastSaved)/1000) }} />}
                             </h3>
                         </div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tap to correct</span>
+                        <span className="omr-verify-hint">Tap to correct</span>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '8px', marginBottom: '32px', maxHeight: '400px', overflowY: 'auto', padding: '8px', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', background: 'var(--bg-glass)' }}>
+                    <div className="omr-verify-grid">
                         {Object.keys(scannedAnswers).map(qNum => (
-                            <div key={qNum} style={{ display: 'flex', gap: '8px', alignItems: 'center', background: 'var(--bg-card)', padding: '8px', borderRadius: 'var(--radius-sm)' }}>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', width: '16px', textAlign: 'right' }}>{qNum}.</span>
+                            <div key={qNum} className="omr-verify-item">
+                                <span className="omr-verify-num">{qNum}.</span>
                                 <select
-                                    className="input"
-                                    style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 700, padding: '4px', cursor: 'pointer', outline: 'none', width: '40px' }}
+                                    className="input omr-verify-select"
                                     value={scannedAnswers[qNum] || ''}
                                     onChange={(e) => handleBubbleCorrection(qNum, e.target.value)}
                                 >
-                                    <option value="" style={{ background: 'var(--bg-card)' }}>-</option>
-                                    <option value="A" style={{ background: 'var(--bg-card)' }}>A</option>
-                                    <option value="B" style={{ background: 'var(--bg-card)' }}>B</option>
-                                    <option value="C" style={{ background: 'var(--bg-card)' }}>C</option>
-                                    <option value="D" style={{ background: 'var(--bg-card)' }}>D</option>
+                                    <option value="" className="omr-verify-option">-</option>
+                                    <option value="A" className="omr-verify-option">A</option>
+                                    <option value="B" className="omr-verify-option">B</option>
+                                    <option value="C" className="omr-verify-option">C</option>
+                                    <option value="D" className="omr-verify-option">D</option>
                                 </select>
                             </div>
                         ))}
                     </div>
 
-                    <Button variant="success" onClick={handleGradeSubmit} disabled={isGrading} className="critical-flow" style={{ width: '100%', marginBottom: '12px', minHeight: '48px' }}>
+                    <Button variant="success" onClick={handleGradeSubmit} disabled={isGrading} className="critical-flow omr-action-btn" style={{ marginBottom: '12px' }}>
                         {isGrading ? 'Grading your answers...' : 'Lock Answers & Grade →'}
                     </Button>
-                    <Button variant="secondary" onClick={resetScanner} style={{ width: '100%', minHeight: '48px' }}>
-                        Cancel & Rescan
+                    <Button variant="secondary" onClick={resetScanner} className="omr-action-btn">
+                        Cancel &amp; Rescan
                     </Button>
                 </div>
             )
 
             /* ═══ INITIAL UPLOAD STATE ═══ */
             : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+                <div className="omr-step-container">
 
                     {/* Step 1: Select Test */}
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+                        <label className="omr-step-label">
                             1. Select Test Paper
                         </label>
                         {testsLoading ? (
                             <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />
                         ) : tests.length === 0 ? (
-                            <Card style={{ padding: '16px', textAlign: 'center', border: '1px dashed var(--border-color)' }}>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '8px' }}>No test papers available yet.</p>
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>PYQ papers will appear here once uploaded.</p>
+                            <Card className="omr-empty-tests">
+                                <p className="omr-empty-text">No test papers available yet.</p>
+                                <p className="omr-empty-subtext">PYQ papers will appear here once uploaded.</p>
                             </Card>
                         ) : (
                             <>
                                 <select
-                                    className="input"
-                                    style={{
-                                        width: '100%',
-                                        padding: '14px 16px',
-                                        minHeight: '48px',
-                                        fontSize: '0.95rem',
-                                        cursor: 'pointer',
-                                    }}
+                                    className="input omr-test-select"
                                     value={selectedTestId}
                                     onChange={(e) => setSelectedTestId(e.target.value)}
                                 >
                                     {tests.map(t => (
-                                        <option key={t.id} value={t.id} style={{ background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+                                        <option key={t.id} value={t.id} className="omr-test-option">
                                             {t.test_name} ({t.total_questions} Qs)
                                         </option>
                                     ))}
@@ -433,15 +413,7 @@ export default function OMRScannerPage() {
                                     const selected = tests.find(t => t.id === selectedTestId);
                                     if (selected?.subject_breakdown) {
                                         return (
-                                            <div style={{
-                                                marginTop: '8px',
-                                                padding: '8px 12px',
-                                                background: 'rgba(99, 102, 241, 0.06)',
-                                                borderRadius: 'var(--radius-sm)',
-                                                fontSize: '0.8rem',
-                                                color: 'var(--text-secondary)',
-                                                fontWeight: 500,
-                                            }}>
+                                            <div className="omr-subject-breakdown">
                                                 📋 {selected.subject_breakdown}
                                             </div>
                                         );
@@ -454,64 +426,30 @@ export default function OMRScannerPage() {
 
                     {/* Step 2: Capture OMR Sheet */}
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '12px' }}>
+                        <label className="omr-step-label-mb12">
                             2. Capture OMR Sheet
                         </label>
 
                         {/* Dual Capture Buttons */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                        <div className="omr-capture-grid">
                             {/* Camera Button */}
                             <button
                                 onClick={() => cameraInputRef.current?.click()}
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    padding: '20px 12px',
-                                    minHeight: '100px',
-                                    background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1))',
-                                    border: '2px solid rgba(99,102,241,0.3)',
-                                    borderRadius: 'var(--radius-lg)',
-                                    cursor: 'pointer',
-                                    color: 'var(--text-primary)',
-                                    fontFamily: 'inherit',
-                                    transition: 'border-color var(--transition-fast), background var(--transition-fast)',
-                                }}
-                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)'; }}
+                                className="omr-capture-btn omr-capture-btn--camera"
                             >
-                                <span style={{ fontSize: '2rem' }}>📷</span>
-                                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Take Photo</span>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Open camera</span>
+                                <span className="omr-capture-icon">📷</span>
+                                <span className="omr-capture-title">Take Photo</span>
+                                <span className="omr-capture-subtitle">Open camera</span>
                             </button>
 
                             {/* Gallery/PDF Button */}
                             <button
                                 onClick={() => galleryInputRef.current?.click()}
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    padding: '20px 12px',
-                                    minHeight: '100px',
-                                    background: 'var(--bg-glass)',
-                                    border: '2px solid var(--border-color)',
-                                    borderRadius: 'var(--radius-lg)',
-                                    cursor: 'pointer',
-                                    color: 'var(--text-primary)',
-                                    fontFamily: 'inherit',
-                                    transition: 'border-color var(--transition-fast), background var(--transition-fast)',
-                                }}
-                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-glow)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+                                className="omr-capture-btn omr-capture-btn--gallery"
                             >
-                                <span style={{ fontSize: '2rem' }}>🖼️</span>
-                                <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Upload from Gallery</span>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Photo or PDF</span>
+                                <span className="omr-capture-icon">🖼️</span>
+                                <span className="omr-capture-title">Upload from Gallery</span>
+                                <span className="omr-capture-subtitle">Photo or PDF</span>
                             </button>
                         </div>
 
@@ -534,42 +472,22 @@ export default function OMRScannerPage() {
 
                         {/* Image Preview */}
                         {imagePreview && (
-                            <Card style={{ padding: '0', overflow: 'hidden', position: 'relative', marginBottom: '8px' }}>
+                            <Card className="omr-preview-card">
                                 {fileInfo?.isPdf ? (
-                                    <div style={{
-                                        padding: '32px',
-                                        textAlign: 'center',
-                                        background: 'var(--bg-glass)',
-                                    }}>
-                                        <span style={{ fontSize: '3rem', display: 'block', marginBottom: '8px' }}>📄</span>
-                                        <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>PDF Uploaded</span>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>{fileInfo.sizeLabel}</div>
+                                    <div className="omr-preview-pdf">
+                                        <span className="omr-preview-pdf-icon">📄</span>
+                                        <span className="omr-preview-pdf-title">PDF Uploaded</span>
+                                        <div className="omr-preview-pdf-size">{fileInfo.sizeLabel}</div>
                                     </div>
                                 ) : (
                                     <div style={{ position: 'relative' }}>
                                         <img
                                             src={imagePreview}
                                             alt="OMR Sheet Preview"
-                                            style={{
-                                                width: '100%',
-                                                maxHeight: '300px',
-                                                objectFit: 'contain',
-                                                display: 'block',
-                                                background: '#000',
-                                            }}
+                                            className="omr-preview-img"
                                         />
                                         {fileInfo?.sizeLabel && (
-                                            <div style={{
-                                                position: 'absolute',
-                                                bottom: '8px',
-                                                right: '8px',
-                                                background: 'rgba(0,0,0,0.7)',
-                                                color: 'white',
-                                                padding: '4px 8px',
-                                                borderRadius: 'var(--radius-sm)',
-                                                fontSize: '0.7rem',
-                                                fontWeight: 600,
-                                            }}>
+                                            <div className="omr-preview-size">
                                                 {fileInfo.sizeLabel}
                                             </div>
                                         )}
@@ -579,22 +497,7 @@ export default function OMRScannerPage() {
                                 {/* Re-capture button */}
                                 <button
                                     onClick={resetScanner}
-                                    style={{
-                                        position: 'absolute',
-                                        top: '8px',
-                                        right: '8px',
-                                        background: 'rgba(0,0,0,0.6)',
-                                        border: 'none',
-                                        borderRadius: '50%',
-                                        width: '32px',
-                                        height: '32px',
-                                        color: 'white',
-                                        cursor: 'pointer',
-                                        fontSize: '1rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
+                                    className="omr-preview-close"
                                     title="Remove and re-capture"
                                 >
                                     ✕
@@ -604,17 +507,7 @@ export default function OMRScannerPage() {
 
                         {/* Dimension Warning */}
                         {fileInfo?.warning && (
-                            <div style={{
-                                background: 'rgba(245, 158, 11, 0.1)',
-                                border: '1px solid rgba(245, 158, 11, 0.3)',
-                                color: 'var(--warning)',
-                                padding: '12px',
-                                borderRadius: 'var(--radius-md)',
-                                fontSize: '0.85rem',
-                                display: 'flex',
-                                gap: '8px',
-                                alignItems: 'center',
-                            }}>
+                            <div className="omr-dim-warning">
                                 <span>⚠️</span> {fileInfo.warning}
                             </div>
                         )}
@@ -626,8 +519,7 @@ export default function OMRScannerPage() {
                         size="lg"
                         onClick={handleVisionScan}
                         disabled={!imagePreview || isScanning || !selectedTestId}
-                        className="critical-flow"
-                        style={{ width: '100%', padding: '16px', fontSize: '1.1rem', minHeight: '56px' }}
+                        className="critical-flow omr-extract-btn"
                     >
                         {isScanning ? (
                             <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>

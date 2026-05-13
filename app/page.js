@@ -48,31 +48,31 @@ function CoachingHome({ user, stats, statsLoading }) {
     const isNewUser = !statsLoading && (!stats || stats.total_tests === 0);
 
     return (
-        <div className="page" style={{ maxWidth: '680px', paddingTop: '24px' }}>
+        <div className="page landing-wrapper">
             
             {/* Header Area */}
-            <div className="page-header" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="landing-header">
                 <div>
-                    <h1 className="page-title" style={{ fontSize: '2.2rem' }}>Hey {firstName} 👋</h1>
-                    <p className="page-subtitle" style={{ fontSize: '1rem', marginTop: '4px' }}>Ready to crush your goals today?</p>
+                    <h1 className="landing-title">Hey {firstName} 👋</h1>
+                    <p className="landing-subtitle">Ready to crush your goals today?</p>
                 </div>
                 <div>
-                    <Badge variant={streak > 0 ? 'warning' : 'neutral'} style={{ padding: '6px 12px', fontSize: '0.9rem' }}>
+                    <Badge variant={streak > 0 ? 'warning' : 'neutral'} className="landing-streak-badge">
                         {streak > 0 ? `🔥 ${streak}-Day Streak` : 'Start a streak!'}
                     </Badge>
                 </div>
             </div>
 
             {/* NEET Countdown Section */}
-            <Card style={{ marginBottom: '32px', borderLeft: '4px solid var(--accent-primary)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '1.1rem', color: 'var(--text-secondary)' }}>NEET 2027 Countdown</h3>
-                    <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent-primary)' }}>{daysLeft} <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>days left</span></div>
+            <Card className="landing-countdown-card">
+                <div className="landing-countdown-header">
+                    <h3 className="landing-countdown-title">NEET 2027 Countdown</h3>
+                    <div className="landing-countdown-val">{daysLeft} <span className="landing-countdown-unit">days left</span></div>
                 </div>
                 <div className="progress-bar">
                     <div className="progress-fill" style={{ width: `${yearProgress}%` }}></div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                <div className="landing-countdown-meta">
                     <span>Prep Started</span>
                     <span>{yearProgress}% of year complete</span>
                 </div>
@@ -80,7 +80,7 @@ function CoachingHome({ user, stats, statsLoading }) {
 
             {/* Quick Stats Grid */}
             {!isNewUser && (
-                <div className="grid grid-3" style={{ marginBottom: '40px' }}>
+                <div className="grid grid-3 landing-stats-grid">
                     {statsLoading ? (
                         <>
                             <Skeleton style={{ height: '110px' }} />
@@ -107,22 +107,22 @@ function CoachingHome({ user, stats, statsLoading }) {
             )}
 
             {/* Primary Action (Academic & Focused) */}
-            <Link href="/test/configure?type=adaptive" style={{ textDecoration: 'none', display: 'block', marginBottom: '40px' }}>
-                <Card interactive className="flex items-center justify-between" style={{ background: 'var(--bg-glass-hover)', padding: '24px 32px' }}>
+            <Link href="/test/configure?type=adaptive" style={{ textDecoration: 'none', display: 'block' }}>
+                <Card interactive className="flex items-center justify-between landing-cta-card">
                     <div>
-                        <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '4px', color: 'var(--text-primary)' }}>Start Daily Practice</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>AI will select questions based on your weak areas.</p>
+                        <h2 className="landing-cta-title">Start Daily Practice</h2>
+                        <p className="landing-cta-desc">AI will select questions based on your weak areas.</p>
                     </div>
-                    <div style={{ fontSize: '1.8rem' }}>⚡</div>
+                    <div className="landing-cta-icon">⚡</div>
                 </Card>
             </Link>
 
             {/* New User Onboarding */}
             {isNewUser && (
-                <Card style={{ marginBottom: '40px', textAlign: 'center', padding: '40px 24px', border: '1px solid var(--success)' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🎯</div>
-                    <h2 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px' }}>Take your first diagnostic test</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '24px', maxWidth: '400px', margin: '0 auto 24px' }}>
+                <Card className="landing-onboard-card">
+                    <div className="landing-onboard-icon">🎯</div>
+                    <h2 className="landing-onboard-title">Take your first diagnostic test</h2>
+                    <p className="landing-onboard-desc">
                         Complete one test to unlock your personal dashboard with AI-powered weak topic analysis.
                     </p>
                     <Link href="/test/configure">
@@ -134,15 +134,15 @@ function CoachingHome({ user, stats, statsLoading }) {
             {/* Weak Topic Nudge */}
             {!statsLoading && stats?.weakest && (
                 <div style={{ marginBottom: '40px' }}>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>Focus Required</h3>
+                    <h3 className="landing-section-title">Focus Required</h3>
                     <Link href="/test/configure" style={{ textDecoration: 'none' }}>
-                        <Card interactive style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px', borderLeft: '4px solid var(--danger)' }}>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', flexShrink: 0 }}>
+                        <Card interactive className="landing-weak-card">
+                            <div className="landing-weak-icon">
                                 ⚠️
                             </div>
                             <div style={{ flex: 1 }}>
-                                <div style={{ color: 'var(--danger)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px' }}>Your weakest area</div>
-                                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{stats.weakest.chapter} <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>({stats.weakest.accuracy}% accuracy)</span></div>
+                                <div className="landing-weak-label">Your weakest area</div>
+                                <div className="landing-weak-val">{stats.weakest.chapter} <span className="landing-weak-meta">({stats.weakest.accuracy}% accuracy)</span></div>
                             </div>
                             <Button variant="danger" size="sm" style={{ pointerEvents: 'none' }}>Fix Now</Button>
                         </Card>
@@ -153,14 +153,14 @@ function CoachingHome({ user, stats, statsLoading }) {
             {/* Recent Tests */}
             {!statsLoading && stats?.recent_tests?.length > 0 && (
                 <div style={{ marginBottom: '40px' }}>
-                    <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>Recent Tests</h3>
-                    <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }}>
+                    <h3 className="landing-section-title">Recent Tests</h3>
+                    <div className="landing-recent-scroll">
                         {stats.recent_tests.map(test => (
                             <Link key={test.id} href={`/test/${test.id}/results`} style={{ textDecoration: 'none' }}>
-                                <Card interactive style={{ minWidth: '160px', padding: '20px' }}>
-                                    <Badge variant="info" style={{ marginBottom: '12px' }}>{testTypeLabel(test.type)}</Badge>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{test.score}<span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>/{test.total_marks}</span></div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{timeAgo(test.completed_at)}</div>
+                                <Card interactive className="landing-recent-card">
+                                    <Badge variant="info" className="landing-recent-badge">{testTypeLabel(test.type)}</Badge>
+                                    <div className="landing-recent-score">{test.score}<span className="landing-recent-total">/{test.total_marks}</span></div>
+                                    <div className="landing-recent-time">{timeAgo(test.completed_at)}</div>
                                 </Card>
                             </Link>
                         ))}
@@ -170,8 +170,8 @@ function CoachingHome({ user, stats, statsLoading }) {
 
             {/* Quick Tools Grid */}
             <div style={{ marginBottom: '40px' }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>Quick Tools</h3>
-                <div className="grid grid-2">
+                <h3 className="landing-section-title">Quick Tools</h3>
+                <div className="grid grid-2 landing-tools-grid">
                     {[
                         { icon: '💬', label: 'Ask Doubt', desc: 'AI instant help', path: '/doubts', variant: 'success' },
                         { icon: '📸', label: 'OMR Scan', desc: 'Scan answer sheet', path: '/omr', variant: 'info' },
@@ -179,11 +179,11 @@ function CoachingHome({ user, stats, statsLoading }) {
                         { icon: '📚', label: 'NCERT', desc: 'Chapter reading', path: '/ncert', variant: 'neet' },
                     ].map(action => (
                         <Link key={action.path} href={action.path} style={{ textDecoration: 'none' }}>
-                            <Card interactive style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '20px' }}>
-                                <Badge variant={action.variant} style={{ width: 'fit-content', padding: '8px', fontSize: '1.2rem' }}>{action.icon}</Badge>
+                            <Card interactive className="landing-tool-card">
+                                <Badge variant={action.variant} className="landing-tool-badge">{action.icon}</Badge>
                                 <div>
-                                    <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>{action.label}</div>
-                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{action.desc}</div>
+                                    <div className="landing-tool-label">{action.label}</div>
+                                    <div className="landing-tool-desc">{action.desc}</div>
                                 </div>
                             </Card>
                         </Link>
@@ -197,19 +197,19 @@ function CoachingHome({ user, stats, statsLoading }) {
 // ─── Guest Landing Page ───
 function GuestLanding() {
     return (
-        <div className="page" style={{ maxWidth: '800px', textAlign: 'center' }}>
+        <div className="page guest-wrapper">
             {/* Hero Section */}
-            <div style={{ padding: '60px 0 80px' }}>
-                <Badge variant="danger" style={{ marginBottom: '24px', fontSize: '0.9rem', padding: '6px 16px' }}>
+            <div className="guest-hero">
+                <Badge variant="danger" className="guest-hero-badge">
                     NEW: AI DIAGNOSTIC ENGINE
                 </Badge>
-                <h1 style={{ fontSize: '3rem', fontWeight: 800, lineHeight: 1.1, marginBottom: '24px', letterSpacing: '-0.03em' }}>
+                <h1 className="guest-hero-title">
                     Are you scoring below 600 in mock tests?
                 </h1>
-                <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 40px', lineHeight: 1.6 }}>
+                <p className="guest-hero-desc">
                     Don't guess what's wrong. Take our 10-minute AI diagnostic test to find the exact chapter destroying your NEET score.
                 </p>
-                <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <div className="guest-hero-actions">
                     <Link href="/test/diagnostic">
                         <Button size="lg" variant="primary">Find My Weakest Chapter →</Button>
                     </Link>
@@ -220,37 +220,37 @@ function GuestLanding() {
             </div>
 
             {/* Social Proof */}
-            <div className="grid grid-3" style={{ marginBottom: '80px' }}>
+            <div className="grid grid-3 guest-proof-grid">
                 {[
                     { value: '12,400+', label: 'Tests Generated', icon: '📝' },
                     { value: 'Gemini AI', label: 'Powered By Google', icon: '🧠' },
                     { value: '4.6 ★', label: 'Play Store Rating', icon: '⭐' },
                 ].map((item, i) => (
-                    <Card key={i} style={{ padding: '24px' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '12px' }}>{item.icon}</div>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{item.value}</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>{item.label}</div>
+                    <Card key={i} className="guest-proof-card">
+                        <div className="guest-proof-icon">{item.icon}</div>
+                        <div className="guest-proof-val">{item.value}</div>
+                        <div className="guest-proof-label">{item.label}</div>
                     </Card>
                 ))}
             </div>
 
             {/* Feature Preview */}
-            <div style={{ textAlign: 'left', marginBottom: '80px', maxWidth: '600px', margin: '0 auto 80px' }}>
-                <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '32px', textAlign: 'center' }}>
+            <div className="guest-features">
+                <h2 className="guest-features-title">
                     Everything you need to secure your rank.
                 </h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="guest-features-list">
                     {[
                         { icon: '📝', title: 'Infinite AI Mock Tests', desc: 'Custom, adaptive, PYQ — all test types generated instantly.' },
                         { icon: '💬', title: '24/7 AI Doubt Solver', desc: 'Step-by-step NEET explanations tailored to your level.' },
                         { icon: '📊', title: 'Performance Analytics', desc: 'Weak topics, accuracy trends, and rank prediction models.' },
                         { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests with your mobile camera instantly.' },
                     ].map((f, i) => (
-                        <Card key={i} style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '24px' }}>
-                            <div style={{ fontSize: '2rem', flexShrink: 0, opacity: 0.9 }}>{f.icon}</div>
+                        <Card key={i} className="guest-feature-card">
+                            <div className="guest-feature-icon">{f.icon}</div>
                             <div>
-                                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>{f.title}</h3>
-                                <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>{f.desc}</p>
+                                <h3 className="guest-feature-label">{f.title}</h3>
+                                <p className="guest-feature-desc">{f.desc}</p>
                             </div>
                         </Card>
                     ))}
@@ -258,9 +258,9 @@ function GuestLanding() {
             </div>
 
             {/* App Download CTA */}
-            <Card style={{ background: 'var(--bg-secondary)', padding: '48px', border: '1px solid var(--border-glow)' }}>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '12px' }}>📱 Study seamlessly on mobile</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: '400px', margin: '0 auto 32px' }}>
+            <Card className="guest-app-card">
+                <h3 className="guest-app-title">📱 Study seamlessly on mobile</h3>
+                <p className="guest-app-desc">
                     Download the Android app for offline mode, camera OMR scanning, and daily push notification streaks.
                 </p>
                 <Link href="/download">
@@ -303,9 +303,9 @@ export default function Home() {
 
     if (authLoading) {
         return (
-            <div className="page" style={{ maxWidth: '680px', paddingTop: '24px' }}>
+            <div className="page landing-wrapper">
                 {/* Header skeleton */}
-                <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="landing-header">
                     <div>
                         <Skeleton style={{ width: '220px', height: '32px', marginBottom: '8px' }} />
                         <Skeleton style={{ width: '180px', height: '18px' }} />
@@ -317,7 +317,7 @@ export default function Home() {
                 <Skeleton style={{ height: '120px', marginBottom: '32px', borderRadius: 'var(--radius-lg)' }} />
 
                 {/* Stats grid skeleton */}
-                <div className="grid grid-3" style={{ marginBottom: '40px' }}>
+                <div className="grid grid-3 landing-stats-grid">
                     <Skeleton style={{ height: '90px' }} />
                     <Skeleton style={{ height: '90px' }} />
                     <Skeleton style={{ height: '90px' }} />

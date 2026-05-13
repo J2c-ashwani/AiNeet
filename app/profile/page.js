@@ -68,16 +68,16 @@ export default function ProfilePage() {
     if (!hasMounted) return null;
 
     if (loading) return (
-        <div className="page" style={{ maxWidth: 700, margin: '0 auto' }}>
-            <Card style={{ padding: '40px', textAlign: 'center', marginBottom: '24px' }}>
-                <Skeleton style={{ width: '80px', height: '80px', borderRadius: '50%', margin: '0 auto 16px' }} />
-                <Skeleton style={{ height: '24px', width: '200px', margin: '0 auto 8px' }} />
-                <Skeleton style={{ height: '16px', width: '150px', margin: '0 auto' }} />
+        <div className="page profile-wrapper">
+            <Card className="profile-loading-card">
+                <Skeleton className="profile-loading-avatar" />
+                <Skeleton className="profile-loading-title" />
+                <Skeleton className="profile-loading-subtitle" />
             </Card>
-            <div className="grid grid-4" style={{ marginBottom: '24px' }}>
-                {[1,2,3,4].map(i => <Card key={i}><Skeleton style={{ height: '60px' }} /></Card>)}
+            <div className="grid grid-4 profile-loading-grid">
+                {[1,2,3,4].map(i => <Card key={i}><Skeleton className="profile-loading-stat" /></Card>)}
             </div>
-            <Card><Skeleton style={{ height: '200px' }} /></Card>
+            <Card><Skeleton className="profile-loading-achievements" /></Card>
         </div>
     );
 
@@ -85,56 +85,48 @@ export default function ProfilePage() {
 
     return (
         <div className="page">
-            <div style={{ maxWidth: 700, margin: '0 auto' }}>
+            <div className="profile-wrapper">
                 {/* Profile Hero */}
-                <Card style={{ textAlign: 'center', padding: '40px 24px', position: 'relative', overflow: 'hidden', marginBottom: '24px' }}>
-                    <div style={{
-                        position: 'absolute', top: 0, left: 0, right: 0, height: '120px',
-                        background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(167,139,250,0.1))',
-                    }}></div>
-                    <div style={{
-                        width: 80, height: 80, borderRadius: '50%', background: 'var(--accent-gradient)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '2rem', fontWeight: 800, color: 'white', margin: '0 auto 16px',
-                        border: '3px solid var(--accent-primary)', position: 'relative', zIndex: 1
-                    }}>
+                <Card className="profile-hero-card">
+                    <div className="profile-hero-bg"></div>
+                    <div className="profile-hero-avatar">
                         {user?.name?.charAt(0)?.toUpperCase()}
                     </div>
-                    <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{user?.name}</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>{user?.email}</p>
+                    <h1 className="profile-hero-name">{user?.name}</h1>
+                    <p className="profile-hero-email">{user?.email}</p>
                     
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', margin: '24px 0' }}>
+                    <div className="profile-stats-container">
                         <div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.levelInfo?.level}</div>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Level</div>
+                            <div className="profile-stat-val">{user?.levelInfo?.level}</div>
+                            <div className="profile-stat-label">Level</div>
                         </div>
                         <div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.xp || 0}</div>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>XP</div>
+                            <div className="profile-stat-val">{user?.xp || 0}</div>
+                            <div className="profile-stat-label">XP</div>
                         </div>
                         <div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>🔥 {user?.streak || 0}</div>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Streak</div>
+                            <div className="profile-stat-val">🔥 {user?.streak || 0}</div>
+                            <div className="profile-stat-label">Streak</div>
                         </div>
                     </div>
 
-                    <div style={{ maxWidth: 300, margin: '0 auto' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '8px', fontWeight: 500 }}>
+                    <div className="profile-level-container">
+                        <div className="profile-level-header">
                             <span>{user?.levelInfo?.name}</span>
                             <span>{user?.levelInfo?.xpToNext} XP to next</span>
                         </div>
-                        <div style={{ height: '8px', background: 'var(--border)', borderRadius: '4px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${levelProgress}%`, background: 'var(--accent-primary)', borderRadius: '4px' }}></div>
+                        <div className="profile-level-bar-bg">
+                            <div className="profile-level-bar-fill" style={{ width: `${levelProgress}%` }}></div>
                         </div>
                     </div>
                 </Card>
 
                 {/* Subscription Management Card */}
-                <Card style={{ marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+                <Card className="profile-sub-card">
+                    <div className="profile-sub-header">
                         <div>
-                            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>Subscription Details</h3>
-                            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Manage your billing and plan settings.</p>
+                            <h3 className="profile-sub-title">Subscription Details</h3>
+                            <p className="profile-sub-desc">Manage your billing and plan settings.</p>
                         </div>
                         {entitlement?.is_premium ? (
                             <Badge variant="success" style={{ textTransform: 'capitalize' }}>
@@ -145,37 +137,37 @@ export default function ProfilePage() {
                         )}
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px', marginBottom: '24px', background: 'var(--bg-glass)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                    <div className="profile-sub-grid">
                         <div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Current Plan</div>
-                            <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem', textTransform: 'capitalize' }}>
+                            <div className="profile-sub-grid-label">Current Plan</div>
+                            <div className="profile-sub-grid-val">
                                 {entitlement?.current_plan === 'free' ? 'Basic (Free)' : entitlement?.current_plan}
                             </div>
                         </div>
                         <div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Renewal / Expiry</div>
-                            <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>
+                            <div className="profile-sub-grid-label">Renewal / Expiry</div>
+                            <div className="profile-sub-grid-val">
                                 {entitlement?.current_plan === 'free' ? '—' : (entitlement?.expires_at ? new Date(entitlement.expires_at).toLocaleDateString() : '—')}
                             </div>
                         </div>
                         <div>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px', fontWeight: 600 }}>Billing Source</div>
-                            <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem', textTransform: 'capitalize' }}>
+                            <div className="profile-sub-grid-label">Billing Source</div>
+                            <div className="profile-sub-grid-val">
                                 {entitlement?.current_plan === 'free' ? '—' : (entitlement?.billing_source === 'play' ? 'Google Play' : 'Cashfree (Web)')}
                             </div>
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <div className="profile-sub-actions">
                         {!entitlement?.is_premium ? (
                             <>
-                                <Link href="/pricing" style={{ flex: 1, minWidth: '200px' }}>
+                                <Link href="/pricing" className="profile-sub-btn-upgrade">
                                     <Button variant="accent" style={{ width: '100%' }}>
                                         Upgrade to Pro / Premium
                                     </Button>
                                 </Link>
                                 {typeof window !== 'undefined' && window.showInterstitialAd && (
-                                    <Button variant="outline" onClick={handleRestorePurchases} disabled={isRestoring} style={{ flex: 1, minWidth: '150px' }}>
+                                    <Button variant="outline" onClick={handleRestorePurchases} disabled={isRestoring} className="profile-sub-btn">
                                         {isRestoring ? 'Restoring...' : 'Restore Purchases'}
                                     </Button>
                                 )}
@@ -188,10 +180,10 @@ export default function ProfilePage() {
                                     } else {
                                         alert('Redirecting to Cashfree Billing Portal...');
                                     }
-                                }} style={{ flex: 1, minWidth: '150px' }}>
+                                }} className="profile-sub-btn">
                                     Manage Subscription
                                 </Button>
-                                <Button variant="outline" onClick={() => alert('Redirecting to Support Chat...')} style={{ flex: 1, minWidth: '150px' }}>
+                                <Button variant="outline" onClick={() => alert('Redirecting to Support Chat...')} className="profile-sub-btn">
                                     Billing Help
                                 </Button>
                             </>
@@ -200,53 +192,49 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Stats */}
-                <div className="grid grid-4" style={{ marginBottom: '24px' }}>
-                    <Card style={{ textAlign: 'center', padding: '20px 16px' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{stats?.total_tests || 0}</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Tests</div>
+                <div className="grid grid-4 profile-perf-grid">
+                    <Card className="profile-perf-card">
+                        <div className="profile-perf-val">{stats?.total_tests || 0}</div>
+                        <div className="profile-perf-label">Tests</div>
                     </Card>
-                    <Card style={{ textAlign: 'center', padding: '20px 16px' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{stats?.avg_accuracy || 0}%</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Accuracy</div>
+                    <Card className="profile-perf-card">
+                        <div className="profile-perf-val">{stats?.avg_accuracy || 0}%</div>
+                        <div className="profile-perf-label">Accuracy</div>
                     </Card>
-                    <Card style={{ textAlign: 'center', padding: '20px 16px' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{Math.round(stats?.best_score || 0)}</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Best Score</div>
+                    <Card className="profile-perf-card">
+                        <div className="profile-perf-val">{Math.round(stats?.best_score || 0)}</div>
+                        <div className="profile-perf-label">Best Score</div>
                     </Card>
-                    <Card style={{ textAlign: 'center', padding: '20px 16px' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>{Math.round(stats?.avg_score || 0)}</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Avg Score</div>
+                    <Card className="profile-perf-card">
+                        <div className="profile-perf-val">{Math.round(stats?.avg_score || 0)}</div>
+                        <div className="profile-perf-label">Avg Score</div>
                     </Card>
                 </div>
 
                 {/* Achievements */}
                 <Card style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '20px' }}>🏅 Achievements</h3>
+                    <h3 className="profile-section-title">🏅 Achievements</h3>
                     {badges.length > 0 ? (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '16px' }}>
+                        <div className="profile-achievements-grid">
                             {badges.map((b, i) => (
-                                <div key={i} style={{
-                                    padding: '20px 12px', background: 'var(--bg-glass)',
-                                    borderRadius: 'var(--radius-md)', textAlign: 'center',
-                                    border: '1px solid var(--border)'
-                                }}>
-                                    <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>{ACHIEVEMENT_ICONS[b.achievement_id] || '🏆'}</div>
-                                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>{b.name || b.achievement_id}</div>
+                                <div key={i} className="profile-achievement-card">
+                                    <div className="profile-achievement-icon">{ACHIEVEMENT_ICONS[b.achievement_id] || '🏆'}</div>
+                                    <div className="profile-achievement-label">{b.name || b.achievement_id}</div>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div style={{ textAlign: 'center', padding: '32px 20px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' }}>
-                            <div style={{ fontSize: '3rem', marginBottom: '16px', opacity: 0.8 }}>🎯</div>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 500 }}>Take tests to unlock achievements!</p>
+                        <div className="profile-achievements-empty">
+                            <div className="profile-empty-icon">🎯</div>
+                            <p className="profile-empty-text">Take tests to unlock achievements!</p>
                         </div>
                     )}
                 </Card>
 
                 {/* Quick Links */}
                 <Card style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '20px' }}>⚡ Quick Links</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <h3 className="profile-section-title">⚡ Quick Links</h3>
+                    <div className="profile-links-container">
                         {[
                             { href: '/test/configure', icon: '📝', label: 'Take a Test' },
                             { href: '/analytics', icon: '📈', label: 'View Analytics' },
@@ -254,24 +242,19 @@ export default function ProfilePage() {
                             { href: '/mistakes', icon: '📓', label: 'Mistake Notebook' },
                             { href: '/leaderboard', icon: '🏆', label: 'Leaderboard' },
                         ].map(link => (
-                            <Link key={link.href} href={link.href} style={{
-                                display: 'flex', alignItems: 'center', gap: '16px', padding: '16px',
-                                background: 'var(--bg-glass)', borderRadius: 'var(--radius-md)',
-                                textDecoration: 'none', color: 'var(--text-primary)', fontSize: '0.95rem',
-                                fontWeight: 600, border: '1px solid transparent', transition: 'border-color 0.2s ease'
-                            }}>
-                                <span style={{ fontSize: '1.4rem' }}>{link.icon}</span>{link.label}
+                            <Link key={link.href} href={link.href} className="profile-link-card">
+                                <span className="profile-link-icon">{link.icon}</span>{link.label}
                             </Link>
                         ))}
                     </div>
                 </Card>
 
                 {/* Parent Connect Settings */}
-                <div style={{ marginBottom: '32px' }}>
+                <div className="profile-parent-settings">
                     <ParentSettings />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
+                <div className="profile-logout-container">
                     <Button variant="danger" onClick={handleLogout}>
                         Logout
                     </Button>
