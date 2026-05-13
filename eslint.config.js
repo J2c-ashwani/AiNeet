@@ -17,7 +17,7 @@ module.exports = [
         rules: {
             // ── Ban raw navigator.share in pages/components ───
             'no-restricted-syntax': [
-                'warn', // MD Directive: Start as warning for UI gates
+                'error', // MD-MANDATED: Hard error for UI gates
                 {
                     selector: "MemberExpression[object.name='navigator'][property.name='share']",
                     message:
