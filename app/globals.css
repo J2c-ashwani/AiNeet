@@ -341,6 +341,109 @@ html {
   font-weight: 600;
 }
 
+/* --- Dashboard Component Classes --- */
+.dash-page { padding: 20px 16px; gap: 24px; display: flex; flex-direction: column; }
+.dash-header { display: flex; justify-content: space-between; align-items: center; }
+.dash-user-row { display: flex; align-items: center; gap: 16px; }
+.dash-greeting { font-size: 1.4rem; font-weight: 800; margin: 0 0 4px; color: var(--text-primary); }
+.dash-xp-label { font-size: 0.85rem; color: var(--text-secondary); }
+
+.dash-kpi-row { display: flex; gap: 12px; }
+.dash-kpi-card {
+  flex: 1;
+  background: var(--surface-card, var(--bg-card));
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border, var(--border-color));
+  cursor: pointer;
+  transition: transform var(--transition-fast) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dash-kpi-card:active { transform: scale(0.96); }
+.dash-kpi-value { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); }
+.dash-kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.dash-kpi-icon { margin-bottom: 8px; }
+
+.dash-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dash-stat-card {
+  background: var(--surface-card, var(--bg-card));
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border, var(--border-color));
+}
+.dash-stat-value { font-size: 1.4rem; font-weight: 800; color: var(--text-primary); }
+.dash-stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+
+.dash-next-section {
+  background: var(--surface-elevated, var(--bg-card-hover));
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border, var(--border-color));
+  background-image: linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.05) 100%);
+}
+.dash-next-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.dash-next-title { font-size: 1.1rem; font-weight: 800; margin: 0; }
+.dash-next-body { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
+.dash-next-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dash-activity { display: flex; flex-direction: column; gap: 20px; }
+.dash-activity-title { font-size: 1.2rem; font-weight: 800; margin: 12px 0 0; }
+.dash-heatmap-card {
+  background: var(--surface-card, var(--bg-card));
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border, var(--border-color));
+}
+.dash-history-list { display: flex; flex-direction: column; gap: 12px; }
+.dash-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  background: var(--surface-card, var(--bg-card));
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border, var(--border-color));
+  text-decoration: none;
+  color: inherit;
+}
+.dash-history-item-name { font-size: 0.95rem; font-weight: 700; }
+.dash-history-item-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+.dash-history-item-score { font-weight: 800; color: var(--accent-primary); font-size: 1.1rem; }
+
+/* --- Error / Loading States --- */
+.dash-error-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+.dash-error-icon { font-size: 3rem; margin-bottom: 16px; }
+.dash-error-title { color: var(--text-primary); margin-bottom: 8px; }
+.dash-error-body { color: var(--text-secondary); margin-bottom: 24px; }
+.dash-error-cta {
+  background: var(--accent-gradient);
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 700;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-primary);
