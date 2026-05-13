@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "typecheck": "tsc --noEmit",
-    "build": "npm run lint:design && next build",
+    "build": "npm run lint:design && npm run lint:primary-routes && next build",
     "start": "next start",
     "lint": "npx eslint . || true && node scripts/lint-report.js",
     "test:visual": "npx playwright test",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
-    "lint:design": "node scripts/check-design-system.js"
+    "lint:design": "node scripts/check-design-system.js",
+    "lint:routes": "node scripts/validate-routes.js",
+    "lint:primary-routes": "node scripts/assert-primary-routes.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
