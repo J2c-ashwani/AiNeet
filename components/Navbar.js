@@ -43,45 +43,20 @@ export default function Navbar() {
 
     return (
         <>
-        <nav style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-            height: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            background: 'rgba(8, 12, 24, 0.9)',
-            
-            borderBottom: '1px solid rgba(255,255,255,0.06)',
-        }}>
+        <nav className="navbar-root">
             {/* Brand */}
-            <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                <img src="/logo.png" alt="AI NEET Coach" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
-                <span style={{ fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', whiteSpace: 'nowrap' }}>
-                    AI NEET Coach
-                </span>
+            <a href="/" className="navbar-brand">
+                <img src="/logo.png" alt="AI NEET Coach" className="navbar-logo" />
+                <span className="navbar-brand-text">AI NEET Coach</span>
             </a>
 
             {/* Nav Links */}
-            <ul className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2px', listStyle: 'none', margin: 0, padding: 0, overflow: 'hidden' }}>
+            <ul className="navbar-links">
                 {navItems.map(item => (
                     <li key={item.path}>
                         <a
                             href={item.path}
-                            style={{
-                                display: 'block',
-                                padding: '6px 10px',
-                                fontSize: '0.85rem',
-                                fontWeight: 500,
-                                color: pathname === item.path ? '#f8fafc' : '#64748b',
-                                textDecoration: 'none',
-                                borderRadius: '8px',
-                                background: pathname === item.path ? 'rgba(99,102,241,0.15)' : 'transparent',
-                                whiteSpace: 'nowrap',
-                                transition: 'color 0.15s, background 0.15s',
-                            }}
+                            className={`navbar-link${pathname === item.path ? ' is-active' : ''}`}
                         >
                             {item.name}
                         </a>
@@ -90,32 +65,25 @@ export default function Navbar() {
             </ul>
 
             {/* Auth Actions */}
-            <div className="desktop-auth-actions" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+            <div className="navbar-actions">
                 {loading ? (
-                    <div style={{ width: '80px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', animation: 'pulse 1.5s infinite' }} />
+                    <div className="navbar-skeleton" />
                 ) : user ? (
                     <>
-                        <a href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', textDecoration: 'none', color: '#f1f5f9', fontSize: '0.85rem', fontWeight: 500 }}>
-                            <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'white', fontWeight: 700 }}>
+                        <a href="/profile" className="navbar-profile-btn">
+                            <span className="navbar-avatar">
                                 {(user.full_name || user.email || 'U')[0].toUpperCase()}
                             </span>
                             {user.full_name?.split(' ')[0] || 'Account'}
                         </a>
-                        <button
-                            onClick={logout}
-                            style={{ padding: '6px 12px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#ef4444', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}
-                        >
+                        <button onClick={logout} className="navbar-logout-btn">
                             Logout
                         </button>
                     </>
                 ) : (
                     <>
-                        <a href="/login" style={{ padding: '6px 12px', borderRadius: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}>
-                            Sign In
-                        </a>
-                        <a href="/register" style={{ padding: '7px 14px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 700, boxShadow: '0 4px 12px rgba(99,102,241,0.3)' }}>
-                            Register Free
-                        </a>
+                        <a href="/login" className="navbar-signin-link">Sign In</a>
+                        <a href="/register" className="navbar-register-btn">Register Free</a>
                     </>
                 )}
             </div>
@@ -126,79 +94,79 @@ export default function Navbar() {
 
             {/* Mobile Features Drawer Overlay */}
             {isDrawerOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(8,12,24,0.95)',  }}>
-                    <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', margin: 0 }}>Study Tools</h2>
-                        <button onClick={() => setIsDrawerOpen(false)} aria-label="Close tools drawer" style={{ background: 'rgba(255,255,255,0.1)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', color: 'white', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <div className="navbar-drawer-overlay">
+                    <div className="navbar-drawer-header">
+                        <h2 className="navbar-drawer-title">Study Tools</h2>
+                        <button onClick={() => setIsDrawerOpen(false)} aria-label="Close tools drawer" className="navbar-drawer-close">
                             <X size={18} aria-hidden="true" />
                         </button>
                     </div>
-                    <div style={{ padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '100px' }}>
-                        
+                    <div className="navbar-drawer-body">
+
                         {/* PRACTICE GROUP (Primary) */}
                         <div>
-                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Practice</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <a href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05))', border: '1px solid rgba(99,102,241,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <BookOpen size={28} style={{ color: '#818cf8' }} aria-hidden="true" />
-                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>Custom Mock Test</span>
+                            <h3 className="navbar-section-label">Practice</h3>
+                            <div className="navbar-tool-grid">
+                                <a href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary">
+                                    <BookOpen size={28} style={{ color: 'var(--accent-primary)' }} aria-hidden="true" />
+                                    <span className="navbar-tool-label-lg">Custom Mock Test</span>
                                 </a>
-                                <a href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05))', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <Camera size={28} style={{ color: '#38bdf8' }} aria-hidden="true" />
-                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>OMR Scanner</span>
+                                <a href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-cyan">
+                                    <Camera size={28} style={{ color: 'var(--text-accent)' }} aria-hidden="true" />
+                                    <span className="navbar-tool-label-lg">OMR Scanner</span>
                                 </a>
-                                <a href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
-                                    <Swords size={20} style={{ color: '#f59e0b', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Battleground</span>
+                                <a href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
+                                    <Swords size={20} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Battleground</span>
                                 </a>
                             </div>
                         </div>
 
                         {/* IMPROVE GROUP */}
                         <div>
-                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Improve</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <a href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '16px', padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: '8px', gridColumn: '1 / -1' }}>
-                                    <Lightbulb size={28} style={{ color: '#10b981' }} aria-hidden="true" />
-                                    <span style={{ color: '#f8fafc', fontSize: '0.9rem', fontWeight: 700 }}>AI Doubt Solver</span>
+                            <h3 className="navbar-section-label">Improve</h3>
+                            <div className="navbar-tool-grid">
+                                <a href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-green">
+                                    <Lightbulb size={28} style={{ color: 'var(--success)' }} aria-hidden="true" />
+                                    <span className="navbar-tool-label-lg">AI Doubt Solver</span>
                                 </a>
-                                <a href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <NotebookPen size={18} style={{ color: '#9b6dff', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Mistakes</span>
+                                <a href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                    <NotebookPen size={18} style={{ color: 'var(--accent-secondary)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Mistakes</span>
                                 </a>
-                                <a href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <RotateCcw size={18} style={{ color: '#38bdf8', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Revision</span>
+                                <a href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                    <RotateCcw size={18} style={{ color: 'var(--text-accent)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Revision</span>
                                 </a>
                             </div>
                         </div>
 
                         {/* TRACK GROUP */}
                         <div>
-                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Track</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-                                <a href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <BookMarked size={18} style={{ color: '#a78bfa', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Blueprint</span>
+                            <h3 className="navbar-section-label">Track</h3>
+                            <div className="navbar-tool-grid">
+                                <a href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                    <BookMarked size={18} style={{ color: 'var(--accent-secondary)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Blueprint</span>
                                 </a>
-                                <a href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <CalendarDays size={18} style={{ color: '#f59e0b', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Study Plan</span>
+                                <a href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                    <CalendarDays size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Study Plan</span>
                                 </a>
-                                <a href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px', gridColumn: '1 / -1' }}>
-                                    <BarChart2 size={18} style={{ color: '#22c55e', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Dashboard Analytics</span>
+                                <a href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
+                                    <BarChart2 size={18} style={{ color: 'var(--success)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Dashboard Analytics</span>
                                 </a>
                             </div>
                         </div>
 
                         {/* COMPETE GROUP */}
                         <div>
-                            <h3 style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#94a3b8', marginBottom: '16px', fontWeight: 700 }}>Compete</h3>
+                            <h3 className="navbar-section-label">Compete</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
-                                <a href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '12px', padding: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <Trophy size={18} style={{ color: '#f59e0b', flexShrink: 0 }} aria-hidden="true" />
-                                    <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 600 }}>Global Leaderboard</span>
+                                <a href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                    <Trophy size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
+                                    <span className="navbar-tool-label">Global Leaderboard</span>
                                 </a>
                             </div>
                         </div>

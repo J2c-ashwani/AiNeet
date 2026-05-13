@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{ user, loading, logout, setUser }}>
             {ghostDefeat && (
-                <div style={{ position: 'fixed', zIndex: 9999, top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(8, 12, 24, 0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                <div style={{ position: 'fixed', zIndex: 'var(--z-critical)', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(8, 12, 24, 0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
                     <div style={{ background: 'linear-gradient(145deg, #1e293b, #0f172a)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 24, padding: '40px 40px 32px 40px', maxWidth: 480, width: '100%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)', position: 'relative' }}>
                         
                         <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>📉</div>

@@ -8,7 +8,7 @@ export default function Loading() {
             alignItems: 'center',
             justifyContent: 'center',
             background: '#080c18', // Hardcoded background for instant cold-start render
-            zIndex: 9999,
+            zIndex: 'var(--z-critical)',
             fontFamily: "'Inter', sans-serif"
         }}>
             <div style={{

@@ -401,7 +401,7 @@ export default function TestPage({ params }) {
             
             {/* Network Fallback Recovery Banner */}
             {offlineSyncPending && (
-                <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 50, position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
+                <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 'var(--z-sticky)', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
                     <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
                     <Button onClick={handleSubmit} disabled={submitting} variant="secondary" size="sm">
                         {submitting ? 'Syncing...' : 'Retry Submission Sync'}

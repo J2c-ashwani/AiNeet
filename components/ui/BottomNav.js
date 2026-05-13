@@ -39,7 +39,7 @@ export function BottomNav() {
                     bottom:          0,
                     left:            0,
                     right:           0,
-                    zIndex:          'var(--z-nav)',
+                    zIndex:          'var(--z-sticky)',
                     height:          'calc(64px + env(safe-area-inset-bottom, 0px))',
                     paddingBottom:   'env(safe-area-inset-bottom, 0px)',
                     background:      'var(--nav-bg)',
@@ -126,7 +126,7 @@ function NavItem({ href, label, Icon, isActive }) {
                 aria-hidden="true"
             />
             <span style={{
-                fontSize:   '10px',
+                fontSize:   'var(--text-xs, 0.625rem)',
                 fontWeight: isActive ? 600 : 400,
                 color:      isActive ? 'var(--text-primary)' : 'var(--text-muted)',
                 letterSpacing: '0.02em',
@@ -150,15 +150,15 @@ function HeroTestButton({ href, Icon, isActive }) {
                 flexDirection:   'column',
                 alignItems:      'center',
                 justifyContent:  'center',
-                gap:             '3px',
-                width:           '56px',
-                height:          '56px',
+                gap:             'var(--space-1, 3px)',
+                width:           '3.5rem',
+                height:          '3.5rem',
                 borderRadius:    '50%',
                 background:      'var(--accent-gradient)',
                 boxShadow:       isActive
                     ? 'var(--shadow-accent), 0 0 0 3px rgba(124,77,255,0.25)'
                     : 'var(--shadow-accent)',
-                marginBottom:    '8px',
+                marginBottom:    'var(--space-2, 8px)',
                 textDecoration:  'none',
                 transition:      `transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
                                   box-shadow 160ms ease-out`,
@@ -173,13 +173,13 @@ function HeroTestButton({ href, Icon, isActive }) {
             <Icon
                 size={24}
                 strokeWidth={2}
-                style={{ color: '#ffffff' }}
+                style={{ color: 'white' }}
                 aria-hidden="true"
             />
             <span style={{
-                fontSize:   '9px',
+                fontSize:   'var(--text-2xs, 0.5625rem)',
                 fontWeight:  700,
-                color:       '#ffffff',
+                color:       'white',
                 letterSpacing: '0.05em',
                 textTransform: 'uppercase',
                 lineHeight: 1,

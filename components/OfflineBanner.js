@@ -42,7 +42,7 @@ export default function OfflineBanner() {
                 top: 0,
                 left: 0,
                 right: 0,
-                zIndex: 9999,
+                zIndex: 'var(--z-critical)',
                 padding: '10px 16px',
                 textAlign: 'center',
                 fontSize: '0.85rem',

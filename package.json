@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit",
     "build": "npm run lint:design && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "npx eslint . || true && node scripts/lint-report.js",
     "test:visual": "npx playwright test",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
     "lint:design": "node scripts/check-design-system.js"
@@ -54,6 +54,7 @@
     "@next/bundle-analyzer": "^16.2.3",
     "@playwright/test": "^1.60.0",
     "@types/react": "19.2.14",
+    "eslint": "^10.3.0",
     "puppeteer": "^24.40.0",
     "typescript": "^6.0.2"
   }

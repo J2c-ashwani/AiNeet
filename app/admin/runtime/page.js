@@ -1,6 +1,141 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 
+// ─── UI Governance Health Widget ─────────────────────────────
+function UIGovernanceHealth() {
+    const [report, setReport] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Try to load the CI-generated report artifact
+        fetch('/ui-governance-report.json')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { setReport(data); setLoading(false); })
+            .catch(() => setLoading(false));
+    }, []);
+
+    // MD Directive: Color Language
+    const getStatus = (warnings) => {
+        if (warnings === null || warnings === undefined) return { color: 'var(--text-muted)', label: 'N/A', status: 'neutral' };
+        if (warnings > 2200) return { color: 'var(--danger)',  label: 'Critical', status: 'critical' };
+        if (warnings > 1400) return { color: 'var(--warning)', label: 'Warning',  status: 'warn' };
+        return { color: 'var(--success)', label: 'Healthy', status: 'ok' };
+    };
+
+    const warnStatus = getStatus(report?.total_warnings);
+    const adoptionColor = !report ? 'var(--text-muted)' : report.token_adoption_pct >= 80 ? 'var(--success)' : report.token_adoption_pct >= 50 ? 'var(--warning)' : 'var(--danger)';
+
+    // Governance metrics config
+    const metrics = [
+        {
+            label: 'ESLint Warnings Remaining',
+            value: loading ? '...' : (report?.total_warnings ?? 'N/A'),
+            unit: ' warnings',
+            color: warnStatus.color,
+            sub: `Week 1 Target: ≤ 2,200 · Status: ${warnStatus.label}`,
+        },
+        {
+            label: 'Token Adoption',
+            value: loading ? '...' : `${report?.token_adoption_pct ?? 'N/A'}`,
+            unit: '%',
+            color: adoptionColor,
+            sub: 'Files using canonical design tokens vs total',
+        },
+        {
+            label: 'Inline Styles Remaining',
+            value: loading ? '...' : (report?.inline_styles_remaining ?? 'N/A'),
+            unit: ' violations',
+            color: !report ? 'var(--text-muted)' : report.inline_styles_remaining > 500 ? 'var(--danger)' : report.inline_styles_remaining > 200 ? 'var(--warning)' : 'var(--success)',
+            sub: 'Inline color + pixel violations tracked',
+        },
+        {
+            label: 'Snapshot Pass Rate',
+            value: loading ? '...' : (report?.snapshot_failures === 0 ? '100' : 'N/A'),
+            unit: '%',
+            color: report?.snapshot_failures === 0 ? 'var(--success)' : 'var(--danger)',
+            sub: 'Playwright visual regression baseline',
+        },
+    ];
+
+    const weeklyTargets = [
+        { week: 'Week 1', target: 2200, label: '3000 → 2200' },
+        { week: 'Week 2', target: 1400, label: '2200 → 1400' },
+        { week: 'Week 3', target: 700,  label: '1400 → 700' },
+        { week: 'Week 4', target: 200,  label: '700 → <200' },
+    ];
+
+    const currentWarnings = report?.total_warnings ?? 3021;
+
+    return (
+        <div className="card" style={{ padding: 24, marginTop: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div>
+                    <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: warnStatus.color }} />
+                        UI Governance Health
+                    </h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                        Design debt burndown · ESLint UI Gate tracking · Snapshot regression status
+                    </p>
+                </div>
+                {report?.timestamp && (
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                        Last scan: {new Date(report.timestamp).toLocaleString()}
+                    </span>
+                )}
+            </div>
+
+            {/* Metric Cards Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 24 }}>
+                {metrics.map(m => (
+                    <div key={m.label} style={{
+                        background: 'var(--bg-elevated)',
+                        border: `1px solid ${m.color}33`,
+                        borderLeft: `3px solid ${m.color}`,
+                        borderRadius: 'var(--radius-md)',
+                        padding: '16px 20px',
+                    }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>{m.label}</div>
+                        <div style={{ fontSize: '1.6rem', fontWeight: 900, color: m.color }}>
+                            {m.value}<span style={{ fontSize: '0.8rem', fontWeight: 500, marginLeft: 3, color: 'var(--text-muted)' }}>{m.unit}</span>
+                        </div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>{m.sub}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Debt Burndown Progress */}
+            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', marginBottom: 12, color: 'var(--text-secondary)' }}>Design Debt Burndown Plan</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {weeklyTargets.map(wt => {
+                        const achieved = currentWarnings <= wt.target;
+                        const progressPct = Math.min(100, Math.max(0, ((3021 - currentWarnings) / (3021 - wt.target)) * 100));
+                        return (
+                            <div key={wt.week} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <div style={{ width: 60, fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>{wt.week}</div>
+                                <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
+                                    <div style={{
+                                        height: '100%',
+                                        width: `${progressPct}%`,
+                                        background: achieved ? 'var(--success)' : 'var(--accent-primary)',
+                                        borderRadius: 'var(--radius-full)',
+                                        transition: 'width 0.6s ease',
+                                    }} />
+                                </div>
+                                <div style={{ width: 80, fontSize: '0.75rem', color: achieved ? 'var(--success)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 600 }}>
+                                    {wt.label}
+                                </div>
+                                <div style={{ width: 20 }}>{achieved ? '✅' : '⏳'}</div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ─── Metric Card ────────────────────────────────────────────
 function MetricCard({ label, value, unit = '', status = 'ok', sub = null }) {
     const colors = { ok: '#10b981', warn: '#f59e0b', critical: '#ef4444', neutral: '#6366f1' };
@@ -201,6 +336,9 @@ export default function RuntimeDashboard() {
                     ))}
                 </div>
             </div>
+
+            {/* UI Governance Health — Wave 7 Design Debt Observability */}
+            <UIGovernanceHealth />
         </div>
     );
 }
