@@ -1,6 +1,7 @@
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import MathRenderer from '@/components/MathRenderer';
+import { TrustBadge } from '@/components/trust/TrustBadge';
 
 // --- SEO Helpers ---
 function cleanQuestionText(text) {
@@ -182,9 +183,12 @@ export default async function QuestionPage({ params }) {
                             ⏱️ Avg Time: {question.difficulty === 'hard' ? '90s' : question.difficulty === 'easy' ? '30s' : '60s'}
                         </span>
                         {question.year_asked && (
-                            <span className="difficulty-badge" style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--accent-primary)', borderColor: 'rgba(99,102,241,0.2)' }}>
-                                📅 NEET {question.year_asked}
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <TrustBadge type="verified-pyq" />
+                                <span className="difficulty-badge" style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--accent-primary)', borderColor: 'rgba(99,102,241,0.2)' }}>
+                                    📅 NEET {question.year_asked}
+                                </span>
+                            </div>
                         )}
                     </div>
 
@@ -212,9 +216,14 @@ export default async function QuestionPage({ params }) {
 
                     {/* Answer First & Explanation (Helpful Content exposed to Googlebot) */}
                     <div className="mt-8 pt-8 border-t border-gray-800 relative">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                            <span className="text-2xl">💡</span> Step-by-Step Explanation
-                        </h3>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2 m-0">
+                                <span className="text-2xl">💡</span> Step-by-Step Explanation
+                            </h3>
+                            {(question.is_ai_generated === 1 || question.ai_confidence) && (
+                                <TrustBadge type="ai-confidence" meta={{ score: question.ai_confidence || 0.95 }} />
+                            )}
+                        </div>
                         
                         {question.explanation ? (
                             <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed">

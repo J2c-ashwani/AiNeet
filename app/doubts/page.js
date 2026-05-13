@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import SnapSolver from '@/components/SnapSolver';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/context/AuthContext';
+import { TrustBadge } from '@/components/trust/TrustBadge';
 
 export default function DoubtSolver() {
     const router = useRouter();
@@ -117,6 +118,11 @@ export default function DoubtSolver() {
                                 <div className="chat-bubble">
                                     {msg.role === 'assistant' ? (
                                         <div className="prose prose-invert max-w-none text-gray-200">
+                                            {!msg.isError && (
+                                                <div className="mb-3">
+                                                    <TrustBadge type="ai-confidence" meta={{ score: 0.95 }} />
+                                                </div>
+                                            )}
                                             <ReactMarkdown>{msg.content}</ReactMarkdown>
                                             {msg.isError && (
                                                 <button

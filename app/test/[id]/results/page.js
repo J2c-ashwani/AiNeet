@@ -3,6 +3,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { TrustBadge } from '@/components/trust/TrustBadge';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 export default function ResultsPage({ params }) {
@@ -169,7 +170,12 @@ export default function ResultsPage({ params }) {
                             <div key={idx} className="animate-fade-in" style={{ animationDelay: `${Math.min(idx * 0.03, 0.5)}s` }}>
                                 <Card style={{ padding: '24px', background: 'var(--bg-glass)', border: `1px solid ${a.is_correct ? 'rgba(16,185,129,0.3)' : a.selected_option ? 'rgba(239,68,68,0.3)' : 'var(--border)'}` }}>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                        <Badge variant="secondary" style={{ fontWeight: 700 }}>Question {idx + 1}</Badge>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <Badge variant="secondary" style={{ fontWeight: 700 }}>Question {idx + 1}</Badge>
+                                            {(a.year_asked || a.exam_name) && (
+                                                <TrustBadge type="verified-pyq" />
+                                            )}
+                                        </div>
                                         <span style={{ fontWeight: 800, fontSize: '0.9rem', color: a.is_correct ? 'var(--success)' : a.selected_option ? 'var(--danger)' : 'var(--text-muted)' }}>
                                             {a.is_correct ? '✓ Correct (+4)' : a.selected_option ? '✗ Incorrect (-1)' : '— Skipped (0)'}
                                         </span>
@@ -217,7 +223,13 @@ export default function ResultsPage({ params }) {
 
                                     {showExplanation[idx] && (
                                         <div style={{ marginTop: '20px', padding: '16px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-                                            <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '12px' }}>💡 Explanation</h4>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>💡 Explanation</h4>
+                                                {/* If AI generated, render confidence band */}
+                                                {(a.is_ai_generated === 1 || a.ai_confidence) && (
+                                                    <TrustBadge type="ai-confidence" meta={{ score: a.ai_confidence || 0.95 }} />
+                                                )}
+                                            </div>
                                             {a.explanation ? (
                                                 <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{a.explanation}</p>
                                             ) : (

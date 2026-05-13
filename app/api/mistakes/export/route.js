@@ -28,7 +28,7 @@ export async function GET(request) {
             .select(`
                 last_mistake_at,
                 questions!inner(
-                    text, option_a, option_b, option_c, option_d, correct_option, explanation,
+                    text, option_a, option_b, option_c, option_d, correct_option, explanation, year_asked,
                     subjects(name)
                 )
             `)
@@ -76,7 +76,10 @@ export async function GET(request) {
                 
                 ${mistakes.map((m, i) => `
                     <div class="question-card">
-                        ${m.subject_name ? `<div class="tag">${m.subject_name}</div>` : ''}
+                        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                            ${m.subject_name ? `<div class="tag">${m.subject_name}</div>` : ''}
+                            ${m.year_asked ? `<div class="tag" style="background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe;">✓ Verified PYQ (${m.year_asked})</div>` : ''}
+                        </div>
                         <div class="q-number">Question ${i + 1}</div>
                         <div class="q-text">${m.text?.replace(/\n/g, '<br/>')}</div>
                         <div class="options">

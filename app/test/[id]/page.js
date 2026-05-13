@@ -5,7 +5,7 @@ import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
 import { STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button, Badge } from '@/components/ui';
-import { AutosaveIndicator } from '@/components/ui/TrustBadge';
+import { AutosaveIndicator, TrustBadge } from '@/components/trust/TrustBadge';
 
 /**
  * P0-1 Trust Hardening: Test Page with Durable State Persistence
@@ -439,9 +439,12 @@ export default function TestPage({ params }) {
                                 </Badge>
                             )}
                             {(question.year_asked || question.exam_name) && (
-                                <Badge variant="accent" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                                    {question.exam_name ? `${question.exam_name} ${question.year_asked}` : `NEET ${question.year_asked}`}
-                                </Badge>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginRight: '8px', verticalAlign: 'middle' }}>
+                                    <TrustBadge type="verified-pyq" />
+                                    <Badge variant="accent">
+                                        {question.exam_name ? `${question.exam_name} ${question.year_asked}` : `NEET ${question.year_asked}`}
+                                    </Badge>
+                                </span>
                             )}
                             <MathRenderer>{question.text}</MathRenderer>
                         </div>

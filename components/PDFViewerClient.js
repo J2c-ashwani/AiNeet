@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactMarkdown from 'react-markdown';
+import { TrustBadge } from '@/components/trust/TrustBadge';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -140,7 +141,10 @@ export default function PDFViewerClient({ book }) {
                     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4" onClick={() => setExplanation(null)}>
                         <div className="bg-gray-900 border border-gray-700 shadow-2xl p-6 rounded-2xl max-w-lg w-full text-white m-4" onClick={e => e.stopPropagation()}>
                             <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-800">
-                                <h3 className="text-xl font-bold flex items-center gap-2">✨ AI Explanation</h3>
+                                <div className="flex items-center gap-3">
+                                    <h3 className="text-xl font-bold flex items-center gap-2 m-0">✨ AI Explanation</h3>
+                                    {!loadingAI && <TrustBadge type="ai-confidence" meta={{ score: 0.95 }} />}
+                                </div>
                                 <button onClick={() => setExplanation(null)} aria-label="Close explanation" className="w-11 h-11 flex items-center justify-center text-gray-400 hover:text-white text-2xl" style={{ margin: '-12px -12px 0 0' }}>×</button>
                             </div>
 
