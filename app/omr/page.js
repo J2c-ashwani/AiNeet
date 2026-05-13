@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { Card, Button } from '@/components/ui';
+import { TrustBadge } from '@/components/trust/TrustBadge';
 
 // ── Image Validation Helpers ──
 function validateImage(file) {
@@ -60,6 +61,31 @@ export default function OMRScannerPage() {
     // Verification Grid State
     const [needsVerification, setNeedsVerification] = useState(false);
     const [scannedAnswers, setScannedAnswers] = useState({});
+    const [lastSaved, setLastSaved] = useState(null);
+
+    // Draft persistence
+    useEffect(() => {
+        const draft = localStorage.getItem('omr_draft');
+        if (draft) {
+            try {
+                const parsed = JSON.parse(draft);
+                if (parsed.testId && parsed.answers && Object.keys(parsed.answers).length > 0) {
+                    setSelectedTestId(parsed.testId);
+                    setScannedAnswers(parsed.answers);
+                    setNeedsVerification(true);
+                }
+            } catch(e) {}
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!needsVerification) return;
+        const t = setTimeout(() => {
+            localStorage.setItem('omr_draft', JSON.stringify({ answers: scannedAnswers, testId: selectedTestId }));
+            setLastSaved(Date.now());
+        }, 1000);
+        return () => clearTimeout(t);
+    }, [scannedAnswers, needsVerification, selectedTestId]);
 
     // Grading State
     const [isGrading, setIsGrading] = useState(false);
@@ -221,6 +247,7 @@ export default function OMRScannerPage() {
             const data = await res.json();
             if (res.ok) {
                 setNeedsVerification(false);
+                localStorage.removeItem('omr_draft');
                 setFinalResult(data);
             } else {
                 setScanError(data.error);
@@ -240,6 +267,8 @@ export default function OMRScannerPage() {
         setScanError(null);
         setNeedsVerification(false);
         setScannedAnswers({});
+        localStorage.removeItem('omr_draft');
+        setLastSaved(null);
     };
 
     return (
@@ -325,7 +354,12 @@ export default function OMRScannerPage() {
             : needsVerification ? (
                 <div className="animate-fade-in">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--warning)' }}>Verify extracted answers</h3>
+                        <div>
+                            <h3 style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--warning)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                Verify extracted answers
+                                {lastSaved && <TrustBadge type="autosave" meta={{ seconds: Math.floor((Date.now() - lastSaved)/1000) }} />}
+                            </h3>
+                        </div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tap to correct</span>
                     </div>
 

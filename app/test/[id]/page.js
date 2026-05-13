@@ -6,6 +6,7 @@ import { OfflineStorage, TestSessionStore } from '@/lib/idb';
 import { STORAGE_KEYS } from '@/lib/storage-resilient';
 import { Card, Button, Badge } from '@/components/ui';
 import { AutosaveIndicator, TrustBadge } from '@/components/trust/TrustBadge';
+import { RecoveryBanner } from '@/components/trust/RecoveryBanner';
 
 /**
  * P0-1 Trust Hardening: Test Page with Durable State Persistence
@@ -164,6 +165,7 @@ export default function TestPage({ params }) {
 
         setTimeLeft(remaining);
         setRecoveryState('none');
+        setShowRecoveryBanner(true);
         delete window.__pendingRecovery;
     }, []);
 
@@ -395,6 +397,8 @@ export default function TestPage({ params }) {
 
     return (
         <div style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
+            <RecoveryBanner show={showRecoveryBanner} />
+            
             {/* Network Fallback Recovery Banner */}
             {offlineSyncPending && (
                 <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 50, position: 'relative', boxShadow: 'var(--shadow-xl)' }}>

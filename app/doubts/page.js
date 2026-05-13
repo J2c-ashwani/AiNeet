@@ -13,7 +13,22 @@ export default function DoubtSolver() {
     const [input, setInput] = useState('');
     const [sending, setSending] = useState(false);
     const [conversationId, setConversationId] = useState(null);
+    const [lastSaved, setLastSaved] = useState(null);
     const chatContainerRef = useRef(null);
+
+    useEffect(() => {
+        const draft = localStorage.getItem('doubt_draft');
+        if (draft) setInput(draft);
+    }, []);
+
+    useEffect(() => {
+        if (!input.trim()) return;
+        const t = setTimeout(() => {
+            localStorage.setItem('doubt_draft', input);
+            setLastSaved(Date.now());
+        }, 1000);
+        return () => clearTimeout(t);
+    }, [input]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -36,7 +51,11 @@ export default function DoubtSolver() {
         }
         const userMsg = retryMsg || input.trim();
         if (!userMsg || sending) return;
-        if (!retryMsg) setInput('');
+        if (!retryMsg) {
+            setInput('');
+            localStorage.removeItem('doubt_draft');
+            setLastSaved(null);
+        }
         if (!retryMsg) setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
         setSending(true);
 
@@ -153,7 +172,12 @@ export default function DoubtSolver() {
                         )}
                     </div>
 
-                    <div className="chat-input-area">
+                    <div className="chat-input-area" style={{ position: 'relative' }}>
+                        {lastSaved && (
+                            <div style={{ position: 'absolute', top: '-30px', right: '16px' }}>
+                                <TrustBadge type="autosave" meta={{ seconds: Math.floor((Date.now() - lastSaved)/1000) }} />
+                            </div>
+                        )}
                         <div className="chat-input-wrapper">
                             <textarea
                                 className="chat-input"

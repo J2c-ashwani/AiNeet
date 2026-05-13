@@ -41,16 +41,19 @@ export function TrustBadge({ type, meta = {}, className = '' }) {
                 display:      'inline-flex',
                 alignItems:   'center',
                 gap:          '5px',
-                padding:      '4px 10px',
-                borderRadius: 'var(--radius-full)',
+                height:       '24px',
+                paddingInline: '8px',
+                borderRadius: '999px',
                 background:   cfg.bg,
                 border:       `1px solid ${cfg.color}33`,
+                whiteSpace:   'nowrap',
+                boxSizing:    'border-box'
             }}
         >
-            <Icon size={11} style={{ color: cfg.color }} strokeWidth={2.5} aria-hidden="true" />
+            <Icon size={12} style={{ color: cfg.color }} strokeWidth={2.5} aria-hidden="true" />
             <span style={{
                 fontSize:   '11px',
-                fontWeight:  600,
+                fontWeight:  500,
                 color: cfg.color,
                 letterSpacing: '0.01em',
                 lineHeight: 1,
@@ -78,6 +81,26 @@ export function AutosaveIndicator({ lastSavedAt }) {
         <TrustBadge
             type="autosaved"
             meta={{ seconds: secondsAgo }}
+        />
+    );
+}
+
+/**
+ * TrustBadgeSkeleton — Prevents layout shifts during loading
+ */
+export function TrustBadgeSkeleton({ width = 100, className = '' }) {
+    return (
+        <div
+            className={`animate-pulse ${className}`}
+            style={{
+                display: 'inline-flex',
+                height: '24px',
+                width: `${width}px`,
+                borderRadius: '999px',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.05)'
+            }}
+            aria-hidden="true"
         />
     );
 }

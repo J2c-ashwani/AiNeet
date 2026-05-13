@@ -175,6 +175,9 @@ export default function ResultsPage({ params }) {
                                             {(a.year_asked || a.exam_name) && (
                                                 <TrustBadge type="verified-pyq" />
                                             )}
+                                            {a.is_teacher_reviewed && (
+                                                <TrustBadge type="teacher-reviewed" />
+                                            )}
                                         </div>
                                         <span style={{ fontWeight: 800, fontSize: '0.9rem', color: a.is_correct ? 'var(--success)' : a.selected_option ? 'var(--danger)' : 'var(--text-muted)' }}>
                                             {a.is_correct ? '✓ Correct (+4)' : a.selected_option ? '✗ Incorrect (-1)' : '— Skipped (0)'}
