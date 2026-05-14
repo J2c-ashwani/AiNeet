@@ -1,114 +1,112 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { z } from 'zod';
 
+import { Card, Button, Input } from '@/components/ui';
+import { Form, FormField } from '@/components/forms/Form';
+
+// ── Schema ────────────────────────────────────────────────────────────────────
+const updatePasswordSchema = z.object({
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters.')
+        .regex(/\d/, 'Password must contain at least one number.')
+        .regex(/[a-zA-Z]/, 'Password must contain at least one letter.'),
+    confirm: z.string(),
+}).refine(d => d.password === d.confirm, {
+    message: 'Passwords do not match.',
+    path: ['confirm'],
+});
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 export default function UpdatePasswordPage() {
-    const router = useRouter();
-    const [form, setForm] = useState({ password: '', confirm: '' });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+    const methods = useForm({
+        resolver: zodResolver(updatePasswordSchema),
+        defaultValues: { password: '', confirm: '' },
+    });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-
-        if (form.password !== form.confirm) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        if (form.password.length < 8 || !/\d/.test(form.password) || !/[a-zA-Z]/.test(form.password)) {
-            setError('Password must be at least 8 characters long and contain both letters and numbers.');
-            return;
-        }
-
-        setLoading(true);
-
-        try {
+    const updateMutation = useMutation({
+        mutationFn: async ({ password }) => {
             const res = await fetch('/api/auth/update-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: form.password })
+                body: JSON.stringify({ password }),
             });
             const data = await res.json();
-            
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to update password.');
-            }
+            if (!res.ok) throw new Error(data.error || 'Failed to update password.');
+            return data;
+        },
+        onSuccess: () => {
+            // Wait 1.5s for UX completion feeling before redirect
+            setTimeout(() => { window.location.href = '/'; }, 1500);
+        },
+        onError: (err) => {
+            methods.setError('root.serverError', { type: 'server', message: err.message });
+        },
+    });
 
-            setSuccess(true);
-            // Wait 1.5 seconds for UX completion feeling before aggressive hard-route to dashboard
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1500);
+    const rootError = methods.formState.errors.root?.serverError?.message;
 
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (updateMutation.isSuccess) {
+        return (
+            <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4">
+                <Card className="w-full max-w-[440px] p-8 text-center">
+                    <div role="status" className="p-5 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <h2 className="text-lg font-bold text-emerald-700 mb-2">Password Secured</h2>
+                        <p className="text-emerald-600 text-sm">Redirecting you to the dashboard...</p>
+                    </div>
+                </Card>
+            </div>
+        );
+    }
 
     return (
-        <div className="auth-page">
-            <div className="auth-card animate-fade-in-up">
-                <div className="auth-header">
-                    <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🛡️</div>
-                    <h1>Secure New Password</h1>
-                    <p>Almost there. Enter your new credentials.</p>
+        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
+            <Card className="w-full max-w-[440px] p-8 animate-fade-in-up">
+                <div className="text-center mb-8">
+                    <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-2">
+                        Secure New Password
+                    </h1>
+                    <p className="text-[var(--text-secondary)] text-sm">
+                        Almost there. Enter your new credentials.
+                    </p>
                 </div>
 
-                {success ? (
-                    <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)', borderRadius: '12px' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: 10 }}>✅</div>
-                        <h3 style={{ color: '#4ade80', margin: '0 0 8px 0' }}>Password Secured</h3>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-                            Redirecting you to the dashboard...
-                        </p>
+                {rootError && (
+                    <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
+                        {rootError}
                     </div>
-                ) : (
-                    <>
-                        {error && (
-                            <div style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
-                                {error}
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit}>
-                            <div className="input-group">
-                                <label>New Password</label>
-                                <input 
-                                    className="input" 
-                                    type="password" 
-                                    placeholder="8+ characters, letters & numbers" 
-                                    required 
-                                    value={form.password}
-                                    onChange={(e) => setForm({ ...form, password: e.target.value })} 
-                                    disabled={loading}
-                                />
-                            </div>
-                            
-                            <div className="input-group" style={{ marginBottom: 24 }}>
-                                <label>Confirm Password</label>
-                                <input 
-                                    className="input" 
-                                    type="password" 
-                                    placeholder="Repeat new password" 
-                                    required 
-                                    value={form.confirm}
-                                    onChange={(e) => setForm({ ...form, confirm: e.target.value })} 
-                                    disabled={loading}
-                                />
-                            </div>
-                            
-                            <button className="btn btn-primary w-full" type="submit" disabled={loading || !form.password || !form.confirm}>
-                                {loading ? 'Securing Account...' : 'Confirm & Login →'}
-                            </button>
-                        </form>
-                    </>
                 )}
-            </div>
+
+                <Form methods={methods} onSubmit={(d) => updateMutation.mutate(d)} className="flex flex-col gap-5">
+                    <FormField name="password" label="New Password" description="8+ characters, letters & numbers">
+                        <Input
+                            {...methods.register('password')}
+                            type="password"
+                            placeholder="Create a strong password"
+                            disabled={updateMutation.isPending}
+                            autoFocus
+                        />
+                    </FormField>
+                    <FormField name="confirm" label="Confirm Password">
+                        <Input
+                            {...methods.register('confirm')}
+                            type="password"
+                            placeholder="Repeat new password"
+                            disabled={updateMutation.isPending}
+                        />
+                    </FormField>
+                    <Button
+                        type="submit"
+                        loading={updateMutation.isPending}
+                        className="mt-2 w-full"
+                    >
+                        Confirm &amp; Login →
+                    </Button>
+                </Form>
+            </Card>
         </div>
     );
 }

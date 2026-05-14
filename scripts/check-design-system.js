@@ -35,12 +35,24 @@ const BLOCKED_PATTERNS = [
         message: 'Forbidden Tailwind spacing class. Use global spacing tokens or canonical primitives.'
     },
     {
-        regex: /<button\s+[^>]*className=["'][^"']*["']/g,
-        message: 'Raw HTML button with custom classes detected. Import and use <Button> from @/components/ui instead.'
+        regex: /<button\b/g,
+        message: 'Raw HTML button detected. Import and use <Button> from @/components/ui instead.'
     },
     {
-        regex: /<input\s+[^>]*className=["'][^"']*["']/g,
-        message: 'Raw HTML input with custom classes detected. Import and use <Input> from @/components/ui instead.'
+        regex: /<input\b/g,
+        message: 'Raw HTML input detected. Import and use <Input> from @/components/ui instead.'
+    },
+    {
+        regex: /<select\b/g,
+        message: 'Raw HTML select detected. Import and use <Select> from @/components/ui instead.'
+    },
+    {
+        regex: /<textarea\b/g,
+        message: 'Raw HTML textarea detected. Import and use <Textarea> from @/components/ui instead.'
+    },
+    {
+        regex: /<dialog\b/g,
+        message: 'Raw HTML dialog detected. Import and use <Modal> from @/components/ui instead.'
     },
     {
         regex: /style=\{\{\s*[^}]*(color|background|borderColor)\s*:\s*['"]#[0-9a-fA-F]{3,6}['"]/g,

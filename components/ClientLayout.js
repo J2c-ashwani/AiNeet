@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OfflineBanner from '@/components/OfflineBanner';
 import { AuthProvider } from '@/context/AuthContext';
+import QueryProvider from '@/providers/query-provider';
 
 export default function ClientLayout({ children }) {
     useEffect(() => {
@@ -26,13 +27,16 @@ export default function ClientLayout({ children }) {
     }, []);
 
     return (
-        <AuthProvider>
-            <OfflineBanner />
-            <Navbar />
-            <main style={{ flex: 1 }}>
-                {children}
-            </main>
-            <Footer />
-        </AuthProvider>
+        // QueryProvider wraps everything to give React Query + SWR context to all client components
+        <QueryProvider>
+            <AuthProvider>
+                <OfflineBanner />
+                <Navbar />
+                <main style={{ flex: 1 }}>
+                    {children}
+                </main>
+                <Footer />
+            </AuthProvider>
+        </QueryProvider>
     );
 }

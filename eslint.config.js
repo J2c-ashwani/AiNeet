@@ -2,11 +2,16 @@
 // Compatible with ESLint v9/v10 in any Node environment.
 // Bans raw browser APIs in product pages/components.
 
+const jsxA11y = require('eslint-plugin-jsx-a11y');
+
 /** @type {import('eslint').Linter.FlatConfig[]} */
 module.exports = [
     {
         // Applies to all product page and component source files
         files: ['app/**/*.js', 'app/**/*.jsx', 'src/**/*.js', 'src/**/*.jsx', 'components/**/*.js', 'components/**/*.jsx', 'context/**/*.js', 'context/**/*.jsx'],
+        plugins: {
+            'jsx-a11y': jsxA11y
+        },
         languageOptions: {
             ecmaVersion: 2022,
             sourceType: 'module',
@@ -15,6 +20,14 @@ module.exports = [
             },
         },
         rules: {
+            // Include essential a11y rules directly to fail builds on violation
+            'jsx-a11y/alt-text': 'error',
+            'jsx-a11y/aria-props': 'error',
+            'jsx-a11y/aria-proptypes': 'error',
+            'jsx-a11y/aria-unsupported-elements': 'error',
+            'jsx-a11y/role-has-required-aria-props': 'error',
+            'jsx-a11y/role-supports-aria-props': 'error',
+
             // ── Ban raw navigator.share in pages/components ───
             'no-restricted-syntax': [
                 'warn', // MD Directive: Start as warning for UI gates to prevent breaking legacy codebase
