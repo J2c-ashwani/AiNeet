@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
 import { STORAGE_KEYS } from '@/lib/storage-resilient';
-import { Card, Button, Badge } from '@/components/ui';
+import { useMutation } from '@tanstack/react-query';
+import { Card, Button, Badge, Select, Textarea } from '@/components/ui';
 import { AutosaveIndicator, TrustBadge } from '@/components/trust/TrustBadge';
 import { RecoveryBanner } from '@/components/trust/RecoveryBanner';
 
@@ -41,7 +42,7 @@ export default function TestPage({ params }) {
     const [timeLeft, setTimeLeft] = useState(0);
     const [questionTimes, setQuestionTimes] = useState({});
     const [lastQTime, setLastQTime] = useState(Date.now());
-    const [submitting, setSubmitting] = useState(false);
+    const [lastQTime, setLastQTime] = useState(Date.now());
     const [offlineSyncPending, setOfflineSyncPending] = useState(false);
     const [showNav, setShowNav] = useState(false);
     const [initialReportState, setReportState] = useState({ show: false, reason: 'error', comment: '' });
@@ -235,28 +236,34 @@ export default function TestPage({ params }) {
         return () => clearInterval(timer);
     }, [testData, offlineSyncPending, recoveryState]);
 
-    const submitReport = async () => {
-        if (!testData) return;
-        try {
+    // ─── MD MANDATE: React Query for Transactional Flows ───
+    const reportMutation = useMutation({
+        mutationFn: async (reportData) => {
             const res = await fetch('/api/questions/report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    questionId: testData.questions[currentQ].id,
-                    reason: initialReportState.reason,
-                    comment: initialReportState.comment
-                })
+                body: JSON.stringify(reportData)
             });
-            if (res.ok) {
-                alert('Report submitted. Thank you for your feedback!');
-                setReportState({ show: false, reason: 'error', comment: '' });
-            } else {
-                alert('Failed to submit report.');
-            }
-        } catch (e) {
+            if (!res.ok) throw new Error('Failed to submit report');
+            return res.json().catch(() => ({}));
+        },
+        onSuccess: () => {
+            alert('Report submitted. Thank you for your feedback!');
+            setReportState({ show: false, reason: 'error', comment: '' });
+        },
+        onError: (e) => {
             console.error(e);
             alert('Error submitting report.');
         }
+    });
+
+    const submitReport = () => {
+        if (!testData) return;
+        reportMutation.mutate({
+            questionId: testData.questions[currentQ].id,
+            reason: initialReportState.reason,
+            comment: initialReportState.comment
+        });
     };
 
     const trackTime = useCallback(() => {
@@ -291,10 +298,52 @@ export default function TestPage({ params }) {
         setShowNav(false);
     };
 
+    // ─── MD MANDATE: React Query for Test Submission & Retries ───
+    const testSubmitMutation = useMutation({
+        mutationFn: async (payload) => {
+            const res = await fetch('/api/tests/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (res.status === 400 && data.error === 'Test already submitted') {
+                return { alreadySubmitted: true };
+            }
+            if (!res.ok) throw new Error(data.error || 'Network Drop');
+            return data;
+        },
+        retry: 2, // Auto-retry sensitive submissions before offline fallback
+        onSuccess: async (data, variables) => {
+            if (data.alreadySubmitted) {
+                await TestSessionStore.clearSession(testId);
+                await OfflineStorage.removeItem(`draft_${testId}`);
+                sessionStorage.removeItem('currentTest');
+                window.location.href = `/test/${testId}/results`;
+                return;
+            }
+
+            sessionStorage.setItem('testResults', JSON.stringify(data));
+            sessionStorage.removeItem('currentTest');
+            await TestSessionStore.clearSession(testId);
+            await OfflineStorage.removeItem(`draft_${testId}`);
+            window.location.href = `/test/${testId}/results`;
+        },
+        onError: async (err, variables) => {
+            console.error('Submission Failed:', err);
+            setOfflineSyncPending(true);
+            await OfflineStorage.setItem(`draft_${testId}`, { 
+                answers: variables.rawAnswers, 
+                pendingSubmit: true, 
+                payload: variables 
+            });
+        }
+    });
+
     // Direct submit with explicit session data (for auto-submit on resume with expired timer)
-    const handleSubmitDirect = async (session) => {
-        if (submitting) return;
-        setSubmitting(true);
+    const handleSubmitDirect = (session) => {
+        if (testSubmitMutation.isPending) return;
 
         const td = session?.testData || testData;
         const ans = session?.answers || answers;
@@ -311,44 +360,17 @@ export default function TestPage({ params }) {
             testId,
             answers: answerPayload,
             timeTaken: Math.round((Date.now() - sa) / 1000),
-            idempotencyKey: crypto.randomUUID()
+            idempotencyKey: crypto.randomUUID(),
+            rawAnswers: ans // pass raw for offline IDB draft
         };
 
-        try {
-            const res = await fetch('/api/tests/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-
-            if (res.status === 400 && data.error === 'Test already submitted') {
-                await TestSessionStore.clearSession(testId);
-                await OfflineStorage.removeItem(`draft_${testId}`);
-                sessionStorage.removeItem('currentTest');
-                window.location.href = `/test/${testId}/results`;
-                return;
-            }
-
-            if (!res.ok) throw new Error(data.error || 'Network Drop');
-
-            sessionStorage.setItem('testResults', JSON.stringify(data));
-            sessionStorage.removeItem('currentTest');
-            await TestSessionStore.clearSession(testId);
-            await OfflineStorage.removeItem(`draft_${testId}`);
-            window.location.href = `/test/${testId}/results`;
-        } catch (err) {
-            console.error('Submission Failed:', err);
-            setOfflineSyncPending(true);
-            await OfflineStorage.setItem(`draft_${testId}`, { answers: ans, pendingSubmit: true, payload });
-            setSubmitting(false);
-        }
+        testSubmitMutation.mutate(payload);
     };
 
-    const handleSubmit = async () => {
-        if (submitting) return;
+    const handleSubmit = () => {
+        if (testSubmitMutation.isPending) return;
         trackTime();
-        await handleSubmitDirect(null);
+        handleSubmitDirect(null);
     };
 
     // ─── P0-1: Recovery Prompt UI ───
@@ -403,8 +425,8 @@ export default function TestPage({ params }) {
             {offlineSyncPending && (
                 <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 'var(--z-sticky)', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
                     <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
-                    <Button onClick={handleSubmit} disabled={submitting} variant="secondary" size="sm">
-                        {submitting ? 'Syncing...' : 'Retry Submission Sync'}
+                    <Button onClick={handleSubmit} disabled={testSubmitMutation.isPending} variant="secondary" size="sm">
+                        {testSubmitMutation.isPending ? 'Syncing...' : 'Retry Submission Sync'}
                     </Button>
                 </div>
             )}
@@ -425,8 +447,8 @@ export default function TestPage({ params }) {
                     <Button variant="ghost" size="sm" onClick={() => setShowNav(!showNav)}>
                         📋 Navigator
                     </Button>
-                    <Button variant="danger" size="sm" onClick={handleSubmit} disabled={submitting} className="critical-flow">
-                        {submitting ? 'Submitting...' : 'Submit Test'}
+                    <Button variant="danger" size="sm" onClick={handleSubmit} disabled={testSubmitMutation.isPending} className="critical-flow">
+                        {testSubmitMutation.isPending ? 'Submitting...' : 'Submit Test'}
                     </Button>
                 </div>
             </div>
@@ -493,7 +515,7 @@ export default function TestPage({ params }) {
                                     Next →
                                 </Button>
                             ) : (
-                                <Button variant="success" onClick={handleSubmit} disabled={submitting} className="critical-flow">
+                                <Button variant="success" onClick={handleSubmit} disabled={testSubmitMutation.isPending} className="critical-flow">
                                     Submit Test ✓
                                 </Button>
                             )}
@@ -540,24 +562,23 @@ export default function TestPage({ params }) {
                         <p style={{ marginBottom: '16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Help us improve question quality.</p>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
-                            <select className="input-field" value={initialReportState.reason} onChange={(e) => setReportState({ ...initialReportState, reason: e.target.value })}>
+                            <Select value={initialReportState.reason} onChange={(e) => setReportState({ ...initialReportState, reason: e.target.value })}>
                                 <option value="error">Factual Error</option>
                                 <option value="ambiguous">Ambiguous / Confusing</option>
                                 <option value="syllabus">Out of Syllabus</option>
                                 <option value="other">Other</option>
-                            </select>
-                            <textarea
-                                className="input-field"
+                            </Select>
+                            <Textarea
                                 placeholder="Describe the issue..."
                                 rows={3}
                                 value={initialReportState.comment}
                                 onChange={(e) => setReportState({ ...initialReportState, comment: e.target.value })}
-                            ></textarea>
+                            />
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                             <Button variant="ghost" onClick={() => setReportState({ show: false, reason: 'error', comment: '' })}>Cancel</Button>
-                            <Button variant="danger" onClick={submitReport}>Submit Report</Button>
+                            <Button variant="danger" onClick={submitReport} loading={reportMutation.isPending}>Submit Report</Button>
                         </div>
                     </Card>
                 </div>
