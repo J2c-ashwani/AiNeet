@@ -158,27 +158,29 @@ function DiagnosticComponent() {
                             const isSelected = answers[currentQ.id] === optKey;
                             
                             return (
-                                <button
+                                <Button
                                     key={optKey}
                                     onClick={() => handleAnswerSelect(optKey)}
+                                    variant="ghost"
                                     style={{
                                         display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px',
                                         background: isSelected ? 'var(--bg-glass-hover)' : 'var(--bg-card)',
                                         border: `1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
                                         borderRadius: 'var(--radius-md)', cursor: 'pointer', transition: 'all 0.2s ease',
-                                        color: 'var(--text-primary)', fontSize: '1.05rem', textAlign: 'left', outline: 'none'
+                                        color: 'var(--text-primary)', fontSize: '1.05rem', textAlign: 'left', outline: 'none',
+                                        width: '100%'
                                     }}
                                 >
                                     <div style={{ 
                                         width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: isSelected ? 'var(--primary)' : 'var(--bg-glass)', 
                                         color: isSelected ? '#fff' : 'var(--text-primary)',
-                                        borderRadius: '50%', fontSize: '0.9rem', fontWeight: 600 
+                                        borderRadius: '50%', fontSize: '0.9rem', fontWeight: 600, flexShrink: 0
                                     }}>
                                         {optKey}
                                     </div>
-                                    <div style={{ flex: 1 }}>{optValue}</div>
-                                </button>
+                                    <div style={{ flex: 1, textAlign: 'left' }}>{optValue}</div>
+                                </Button>
                             );
                         })}
                     </div>

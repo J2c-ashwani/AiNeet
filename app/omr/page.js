@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { Card, Button } from '@/components/ui';
+import { Card, Button, Input, Select } from '@/components/ui';
 import { TrustBadge } from '@/components/trust/TrustBadge';
+import { useMutation } from '@tanstack/react-query';
 
 // ── Image Validation Helpers ──
 function validateImage(file) {
@@ -55,7 +56,6 @@ export default function OMRScannerPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileInfo, setFileInfo] = useState(null); // { sizeLabel, isPdf, warning }
-    const [isScanning, setIsScanning] = useState(false);
     const [scanError, setScanError] = useState(null);
 
     // Verification Grid State
@@ -88,7 +88,6 @@ export default function OMRScannerPage() {
     }, [scannedAnswers, needsVerification, selectedTestId]);
 
     // Grading State
-    const [isGrading, setIsGrading] = useState(false);
     const [finalResult, setFinalResult] = useState(null);
 
     // Refs for hidden file inputs
@@ -156,13 +155,35 @@ export default function OMRScannerPage() {
         e.target.value = '';
     };
 
+    const scanMutation = useMutation({
+        mutationFn: async ({ pureBase64, selectedTestId }) => {
+            const res = await fetch('/api/omr/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    imageBase64: pureBase64,
+                    testId: selectedTestId
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.reason || "Couldn't detect bubbles clearly. Try better lighting or upload a clearer image.");
+            return data;
+        },
+        onSuccess: (data) => {
+            setScannedAnswers(data.answers || {});
+            setNeedsVerification(true);
+        },
+        onError: (error) => {
+            setScanError(error.message);
+        }
+    });
+
     const handleVisionScan = async () => {
         if (!selectedFile || !selectedTestId) {
             setScanError('Please select a test and capture/upload your OMR sheet first.');
             return;
         }
 
-        setIsScanning(true);
         setScanError(null);
 
         try {
@@ -175,30 +196,11 @@ export default function OMRScannerPage() {
             });
             const pureBase64 = base64String.split(',')[1];
 
-            const res = await fetch('/api/omr/scan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    imageBase64: pureBase64,
-                    testId: selectedTestId
-                })
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setScanError(data.reason || 'Couldn\'t detect bubbles clearly. Try better lighting or upload a clearer image.');
-                setIsScanning(false);
-                return;
-            }
-
-            setScannedAnswers(data.answers || {});
-            setNeedsVerification(true);
+            scanMutation.mutate({ pureBase64, selectedTestId });
 
         } catch (e) {
-            setScanError('Couldn\'t detect bubbles clearly. Please try again with better lighting or a clearer photo.');
+            setScanError("Couldn't read the file. Please try again.");
         }
-        setIsScanning(false);
     };
 
     const handleBubbleCorrection = (qNum, newValue) => {
@@ -207,6 +209,30 @@ export default function OMRScannerPage() {
             [qNum]: newValue
         }));
     };
+
+    const gradeMutation = useMutation({
+        mutationFn: async ({ scannedAnswers, selectedTestId }) => {
+            const res = await fetch('/api/omr/grade', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    verifiedAnswers: scannedAnswers,
+                    testId: selectedTestId
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to grade answers.');
+            return data;
+        },
+        onSuccess: (data) => {
+            setNeedsVerification(false);
+            localStorage.removeItem('omr_draft');
+            setFinalResult(data);
+        },
+        onError: (error) => {
+            setScanError(error.message);
+        }
+    });
 
     const handleGradeSubmit = async () => {
         // Pre-grade validation
@@ -233,29 +259,7 @@ export default function OMRScannerPage() {
             if (!proceed) return;
         }
 
-        setIsGrading(true);
-        try {
-            const res = await fetch('/api/omr/grade', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    verifiedAnswers: scannedAnswers,
-                    testId: selectedTestId
-                })
-            });
-
-            const data = await res.json();
-            if (res.ok) {
-                setNeedsVerification(false);
-                localStorage.removeItem('omr_draft');
-                setFinalResult(data);
-            } else {
-                setScanError(data.error);
-            }
-        } catch (e) {
-            setScanError('Failed to grade answers. Please try again.');
-        }
-        setIsGrading(false);
+        gradeMutation.mutate({ scannedAnswers, selectedTestId });
     };
 
     const resetScanner = () => {
@@ -355,7 +359,7 @@ export default function OMRScannerPage() {
                         {Object.keys(scannedAnswers).map(qNum => (
                             <div key={qNum} className="omr-verify-item">
                                 <span className="omr-verify-num">{qNum}.</span>
-                                <select
+                                <Select
                                     className="input omr-verify-select"
                                     value={scannedAnswers[qNum] || ''}
                                     onChange={(e) => handleBubbleCorrection(qNum, e.target.value)}
@@ -365,13 +369,13 @@ export default function OMRScannerPage() {
                                     <option value="B" className="omr-verify-option">B</option>
                                     <option value="C" className="omr-verify-option">C</option>
                                     <option value="D" className="omr-verify-option">D</option>
-                                </select>
+                                </Select>
                             </div>
                         ))}
                     </div>
 
-                    <Button variant="success" onClick={handleGradeSubmit} disabled={isGrading} className="critical-flow omr-action-btn" style={{ marginBottom: '12px' }}>
-                        {isGrading ? 'Grading your answers...' : 'Lock Answers & Grade →'}
+                    <Button variant="success" onClick={handleGradeSubmit} disabled={gradeMutation.isPending} className="critical-flow omr-action-btn" style={{ marginBottom: '12px' }}>
+                        {gradeMutation.isPending ? 'Grading your answers...' : 'Lock Answers & Grade →'}
                     </Button>
                     <Button variant="secondary" onClick={resetScanner} className="omr-action-btn">
                         Cancel &amp; Rescan
@@ -397,7 +401,7 @@ export default function OMRScannerPage() {
                             </Card>
                         ) : (
                             <>
-                                <select
+                                <Select
                                     className="input omr-test-select"
                                     value={selectedTestId}
                                     onChange={(e) => setSelectedTestId(e.target.value)}
@@ -407,7 +411,7 @@ export default function OMRScannerPage() {
                                             {t.test_name} ({t.total_questions} Qs)
                                         </option>
                                     ))}
-                                </select>
+                                </Select>
                                 {/* Subject breakdown */}
                                 {(() => {
                                     const selected = tests.find(t => t.id === selectedTestId);
@@ -433,28 +437,30 @@ export default function OMRScannerPage() {
                         {/* Dual Capture Buttons */}
                         <div className="omr-capture-grid">
                             {/* Camera Button */}
-                            <button
+                            <Button
                                 onClick={() => cameraInputRef.current?.click()}
                                 className="omr-capture-btn omr-capture-btn--camera"
+                                variant="ghost"
                             >
                                 <span className="omr-capture-icon">📷</span>
                                 <span className="omr-capture-title">Take Photo</span>
                                 <span className="omr-capture-subtitle">Open camera</span>
-                            </button>
+                            </Button>
 
                             {/* Gallery/PDF Button */}
-                            <button
+                            <Button
                                 onClick={() => galleryInputRef.current?.click()}
                                 className="omr-capture-btn omr-capture-btn--gallery"
+                                variant="ghost"
                             >
                                 <span className="omr-capture-icon">🖼️</span>
                                 <span className="omr-capture-title">Upload from Gallery</span>
                                 <span className="omr-capture-subtitle">Photo or PDF</span>
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Hidden File Inputs */}
-                        <input
+                        <Input
                             ref={cameraInputRef}
                             type="file"
                             accept="image/*"
@@ -462,7 +468,7 @@ export default function OMRScannerPage() {
                             onChange={handleFileSelect}
                             style={{ display: 'none' }}
                         />
-                        <input
+                        <Input
                             ref={galleryInputRef}
                             type="file"
                             accept="image/jpeg,image/png,image/webp,image/heic,image/heif,application/pdf"
@@ -495,13 +501,14 @@ export default function OMRScannerPage() {
                                 )}
 
                                 {/* Re-capture button */}
-                                <button
+                                <Button
                                     onClick={resetScanner}
                                     className="omr-preview-close"
                                     title="Remove and re-capture"
+                                    variant="ghost"
                                 >
                                     ✕
-                                </button>
+                                </Button>
                             </Card>
                         )}
 
@@ -518,10 +525,10 @@ export default function OMRScannerPage() {
                         variant="primary"
                         size="lg"
                         onClick={handleVisionScan}
-                        disabled={!imagePreview || isScanning || !selectedTestId}
+                        disabled={!imagePreview || scanMutation.isPending || !selectedTestId}
                         className="critical-flow omr-extract-btn"
                     >
-                        {isScanning ? (
+                        {scanMutation.isPending ? (
                             <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                                 <div className="spinner" style={{ width: '20px', height: '20px' }} />
                                 Analyzing OMR Sheet…

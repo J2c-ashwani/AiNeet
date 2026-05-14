@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createBrowserClient } from '@supabase/ssr';
 
-import { Card, Button, Input, Skeleton } from '@/components/ui';
+import { Card, Button, Input, Skeleton, Alert, Select } from '@/components/ui';
 import { Form, FormField } from '@/components/forms/Form';
 import { registerSchema, otpSchema } from '@/lib/validation/auth';
 
@@ -14,7 +14,7 @@ import { registerSchema, otpSchema } from '@/lib/validation/auth';
 function StepIndicator({ currentStep }) {
     const steps = ['form', 'otp'];
     return (
-        <div className="flex gap-2 justify-center mb-8" aria-label="Registration progress">
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }} aria-label="Registration progress">
             {steps.map((s, i) => (
                 <div
                     key={s}
@@ -22,8 +22,11 @@ function StepIndicator({ currentStep }) {
                     aria-valuenow={steps.indexOf(currentStep) + 1}
                     aria-valuemin={1}
                     aria-valuemax={steps.length}
-                    className="w-[50px] h-1 rounded-sm transition-all duration-300"
                     style={{
+                        width: '50px',
+                        height: '4px',
+                        borderRadius: 'var(--radius-sm)',
+                        transition: 'all 0.3s',
                         background: steps.indexOf(currentStep) >= i
                             ? 'var(--accent-primary)'
                             : 'var(--border)',
@@ -78,19 +81,14 @@ function RegistrationFormStep({ refCode, onSuccess }) {
     return (
         <>
             {refCode && (
-                <div
-                    role="status"
-                    className="p-4 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-700 text-sm mb-6 text-center font-medium"
-                >
+                <Alert type="success">
                     You were invited by a friend! Sign up to start practicing.
-                </div>
+                </Alert>
             )}
             {rootError && (
-                <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                    {rootError}
-                </div>
+                <Alert type="error">{rootError}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => registerMutation.mutate(d)} className="flex flex-col gap-5">
+            <Form methods={methods} onSubmit={(d) => registerMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <FormField name="name" label="Full Name">
                     <Input
                         {...methods.register('name')}
@@ -116,25 +114,33 @@ function RegistrationFormStep({ refCode, onSuccess }) {
                     />
                 </FormField>
                 <FormField name="targetYear" label="NEET Target Year">
-                    {/* Using native select temporarily — Select primitive to be created in Phase 2 */}
-                    <select
+                    <Select
                         {...methods.register('targetYear')}
                         disabled={registerMutation.isPending}
                         aria-label="Select your NEET target year"
-                        className="w-full px-4 py-3 rounded-md border border-[var(--border)] bg-[var(--bg-glass)] text-[var(--text-primary)] text-base outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+                        style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-glass)',
+                            color: 'var(--text-primary)',
+                            fontSize: '1rem',
+                            outline: 'none'
+                        }}
                     >
                         <option value="2027">NEET 2027</option>
                         <option value="2028">NEET 2028</option>
                         <option value="2029">NEET 2029</option>
-                    </select>
+                    </Select>
                 </FormField>
-                <Button type="submit" loading={registerMutation.isPending} className="mt-2 w-full">
+                <Button type="submit" loading={registerMutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
                     Create Account →
                 </Button>
             </Form>
-            <p className="text-center mt-8 text-sm text-[var(--text-muted)]">
+            <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                 Already have an account?{' '}
-                <a href="/login" className="text-[var(--text-primary)] font-semibold hover:underline">Sign In</a>
+                <a href="/login" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Sign In</a>
             </p>
         </>
     );
@@ -205,23 +211,16 @@ function OtpVerificationStep({ email, password, challengeId }) {
 
     if (isSuccess) {
         return (
-            <div
-                role="status"
-                className="text-center p-5 bg-emerald-50 border border-emerald-200 rounded-lg"
-            >
-                <p className="text-emerald-700 text-sm font-medium">Account verified! Redirecting...</p>
-            </div>
+            <Alert type="success">Account verified! Redirecting...</Alert>
         );
     }
 
     return (
         <>
             {rootError && (
-                <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                    {rootError}
-                </div>
+                <Alert type="error">{rootError}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => verifyMutation.mutate(d)} className="flex flex-col gap-5">
+            <Form methods={methods} onSubmit={(d) => verifyMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <FormField name="otp" label="Verification Code" description={`Enter the code sent to ${email}`}>
                     <Input
                         {...methods.register('otp')}
@@ -232,18 +231,18 @@ function OtpVerificationStep({ email, password, challengeId }) {
                         placeholder="Enter code"
                         disabled={isSubmitting}
                         autoFocus
-                        className="text-2xl tracking-[0.5em] text-center font-bold"
+                        style={{ fontSize: '1.5rem', letterSpacing: '0.5em', textAlign: 'center', fontWeight: 700 }}
                         onChange={(e) => {
                             const cleaned = e.target.value.replace(/\D/g, '').slice(0, 8);
                             methods.setValue('otp', cleaned, { shouldValidate: true });
                         }}
                     />
                 </FormField>
-                <Button type="submit" loading={isSubmitting} className="mt-2 w-full">
+                <Button type="submit" loading={isSubmitting} style={{ marginTop: '8px', width: '100%' }}>
                     Verify &amp; Continue →
                 </Button>
             </Form>
-            <div className="text-center mt-4">
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
                 <Button
                     variant="ghost"
                     size="sm"
@@ -275,12 +274,12 @@ function RegisterContent() {
     const { heading, sub } = stepTitles[step] || {};
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
-            <Card className="w-full max-w-[440px] p-8 animate-fade-in-up">
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-2">{heading}</h1>
-                    <p className="text-[var(--text-secondary)] text-sm">{sub}</p>
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>{heading}</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{sub}</p>
                 </div>
 
                 {/* Step Indicator */}
@@ -313,8 +312,8 @@ export const dynamic = 'force-dynamic';
 export default function RegisterPage() {
     return (
         <Suspense fallback={
-            <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
-                <Skeleton className="w-full max-w-[440px] h-[500px]" />
+            <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+                <Skeleton style={{ maxWidth: '440px', width: '100%', height: '500px' }} />
             </div>
         }>
             <RegisterContent />

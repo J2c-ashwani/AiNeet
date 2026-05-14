@@ -8,7 +8,7 @@ const jsxA11y = require('eslint-plugin-jsx-a11y');
 module.exports = [
     {
         // Applies to all product page and component source files
-        files: ['app/**/*.js', 'app/**/*.jsx', 'src/**/*.js', 'src/**/*.jsx', 'components/**/*.js', 'components/**/*.jsx', 'context/**/*.js', 'context/**/*.jsx'],
+        files: ['app/**/*.js', 'app/**/*.jsx', 'src/**/*.js', 'src/**/*.jsx', 'components/**/*.js', 'components/**/*.jsx', 'context/**/*.js', 'context/**/*.jsx', 'providers/**/*.js', 'providers/**/*.jsx'],
         plugins: {
             'jsx-a11y': jsxA11y
         },
@@ -82,6 +82,26 @@ module.exports = [
                     // Ban raw hex in tailwind classNames (e.g., text-[#7c4dff])
                     selector: "JSXAttribute[name.name='className'] Literal[value=/\\[#[0-9a-fA-F]{3,6}\\]/]",
                     message: 'Raw hex colors in Tailwind classNames are banned. Use token utilities.',
+                },
+                {
+                    selector: "JSXOpeningElement[name.name='button']",
+                    message: 'Raw <button> primitive is banned. Use <Button /> from @/components/ui.',
+                },
+                {
+                    selector: "JSXOpeningElement[name.name='input']",
+                    message: 'Raw <input> primitive is banned. Use <Input /> from @/components/ui.',
+                },
+                {
+                    selector: "JSXOpeningElement[name.name='select']",
+                    message: 'Raw <select> primitive is banned. Use <Select /> from @/components/ui.',
+                },
+                {
+                    selector: "JSXOpeningElement[name.name='textarea']",
+                    message: 'Raw <textarea> primitive is banned. Use <Textarea /> from @/components/ui.',
+                },
+                {
+                    selector: "JSXOpeningElement[name.name='dialog']",
+                    message: 'Raw <dialog> primitive is banned. Use <Modal /> from @/components/ui.',
                 }
             ],
         },

@@ -1,39 +1,129 @@
-# Neet Coach Frontend Platform Architecture
+# Frontend Platform Architecture
 
-**Status:** ACTIVE GOVERNANCE DOCUMENT
-**Owner:** Engineering Team
+## Status: 🟢 ACTIVE
+## Classification: P0 — Architectural Governance
 
-This document outlines the strict policies for components, hydration, rendering, and suspense across the Neet Coach frontend platform.
+This document defines the rules, boundaries, and governance constraints for the frontend architecture of the platform. All future development must strictly adhere to these policies.
 
-## 1. Component Rendering Policy (Server vs. Client)
+---
 
-By default, Neet Coach assumes **Server Components** to ensure minimal JavaScript payload.
+## 1. Data Abstraction & Cache Governance
 
-### When to use Server Components (Default):
-- Read-only data displays (e.g., test history lists).
-- Static marketing and SEO pages.
-- Leaderboard structures (pre-fetching).
-- Any component that does not require interactivity or state.
+We employ a **Hybrid Architecture** for data fetching and state orchestration. Do not create competing cache philosophies or manual `useEffect` + `fetch` chains.
 
-### When to use Client Components (`"use client"`):
-- Components requiring `useState`, `useEffect`, or custom hooks.
-- Forms (Login, Registration, Tests).
-- Interactive charts and UI elements (buttons, modals).
-- Data fetching driven by user interaction (via React Query/SWR).
+### 1a. SWR (Simple Read-Heavy)
+Use `useSWR` (via `/lib/swr/`) exclusively for:
+- Leaderboard
+- Analytics cards
+- Read-only profile stats
+- Dashboard summaries
+- Rankings
 
-## 2. Suspense and Hydration Boundaries
+### 1b. React Query (Transactional & Complex)
+Use `useMutation` and `useQuery` (via `/lib/query/` and `@tanstack/react-query`) exclusively for:
+- Tests and submissions
+- Offline replay and background sync
+- Adaptive engine interactions
+- Optimistic mutations
+- Retry-sensitive or runtime-critical systems
 
-Consistent hydration patterns are required to prevent silent degradation and CLS (Cumulative Layout Shift).
+---
 
-### Required Loading Boundaries:
-Every major data-fetching block must be wrapped in a `<Suspense>` boundary with a deterministic fallback (Skeleton).
-- **DO NOT** leave components empty while fetching. 
-- Skeletons must match the dimensions of the final loaded component to prevent CLS.
+## 2. Form Governance System
 
-### Error Boundaries:
-Every major route segment must implement `error.js` or utilize `<ErrorBoundary>` from our shared primitives to prevent the entire tree from crashing on localized failures.
+Forms manage trust-sensitive academic state, billing, and profile data. 
+**No raw forms allowed.** All forms must go through the centralized `/components/forms/` layer.
 
-## 3. The Query Abstraction Rule
-No raw `fetch()` or `useEffect()` for data loading is permitted.
-- Use **SWR** (`lib/swr`) for read-heavy displays.
-- Use **React Query** (`lib/query`) for stateful mutations, test submissions, and offline replay.
+### Requirements:
+- **Validation**: Must use `zod` schema (`/lib/validation/`).
+- **Orchestration**: Must use `react-hook-form` coupled with `@hookform/resolvers/zod`.
+- **Rendering**: Must use canonical error rendering and accessibility labels.
+- **State**: Must support optimistic disable states and robust loading states.
+
+---
+
+## 3. Primitive & UI Entropy Governance
+
+No raw HTML primitives are allowed inside the `/app/` directory.
+
+### Banned Raw Primitives:
+`<button>`, `<input>`, `<select>`, `<textarea>`, `<dialog>`
+
+### Allowed Canonical Primitives (from `@/components/ui/`):
+`<Button />`, `<Input />`, `<Select />`, `<Textarea />`, `<Modal />`, `<Card />`, `<Badge />`
+
+Exceptions are strictly limited to internal primitive implementation files (e.g., inside `@/components/ui/`) and highly specialized accessibility wrappers.
+
+---
+
+## 4. Component Ownership & Documentation
+
+Shared primitives must have explicit documentation to reduce entropy. 
+See `/docs/design-system/` for usage rules, constraints, and examples for components like `Button`, `Card`, `TrustBadge`, etc. 
+(Storybook serves as the interactive visual documentation and QA environment).
+
+---
+
+## 5. Accessibility (a11y) Governance
+
+Accessibility is a release gate, not an optional enhancement.
+- Violations of `eslint-plugin-jsx-a11y` must fail PR checks (configured as errors, not warnings).
+- `axe-core` audits must pass for critical flows.
+
+---
+
+## 6. Rendering & Hydration Policy
+
+### 6a. Component Rendering Policies
+- **Server Components (RSC)**: Default. Use for non-interactive data fetching, layouts, and SEO-critical content.
+- **Client Components**: Opt-in via `'use client'`. Use strictly for interactive elements, browser APIs, and stateful widgets. Keep them as far down the component tree as possible.
+- **Suspense Boundaries**: Wrap asynchronous server components and data-fetching views in `<Suspense>` with standardized `<LoadingBoundary>` fallbacks.
+
+### 6b. Performance Governance
+- Aggressively memoize high-frequency render targets (leaderboard rows, analytics graphs, nav items, trust badges).
+- Track unnecessary re-renders via React Profiler.
+
+---
+
+## 7. Error Boundary Governance
+
+Every major surface must fail gracefully to protect user trust.
+
+### Standardized Boundaries:
+- `<ErrorBoundary>`: For fatal runtime crashes.
+- `<AsyncBoundary>`: For suspended data trees.
+- `<LoadingBoundary>`: For skeletal loading states.
+
+Must be implemented on: `dashboard`, `tests`, `analytics`, `leaderboard`, `doubts`, `AI explanations`.
+
+---
+
+## 8. Frontend Observability
+
+Must track and pipe into `mobile_runtime_events`:
+- Hydration errors
+- Render crashes / Error boundary triggers
+- CLS (Cumulative Layout Shift) spikes
+- Long interaction tasks
+- Failed suspense boundaries
+
+---
+
+## 9. Contract & Logic Testing
+
+Unit testing must cover infrastructure systems deterministically.
+
+### P0 Logic Tests:
+- Adaptive engine scoring
+- Recovery manager & snapshot schemas
+- Offline replay queue
+- Billing reconciliation
+- Fraud detection
+- Trust badge logic
+
+### Contract Testing:
+Prevent silent API drift by verifying the shape of:
+- Bridge payloads (Web <-> Flutter)
+- API responses
+- Feature flag schemas
+- Telemetry payload schemas

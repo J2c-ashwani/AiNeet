@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { usePlatformShare } from '@/lib/hooks/usePlatformShare';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Badge, Skeleton } from '@/components/ui';
+import { Card, Button, Badge, Skeleton, Input } from '@/components/ui';
 import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 export default function DiagnosticResultsLock() {
@@ -177,12 +177,12 @@ export default function DiagnosticResultsLock() {
                                     <Button variant="success" onClick={handleViralShare} style={{ width: '100%', padding: '14px 20px', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
                                         📱 Share your score with friends
                                     </Button>
-                                    <input 
+                                    <Input 
                                         type="tel" 
                                         placeholder="WhatsApp # (Optional: Alert me if beaten)" 
                                         value={ghostPhone}
                                         onChange={(e) => setGhostPhone(e.target.value)}
-                                        style={{ width: '100%', padding: '12px 14px', borderRadius: 'var(--radius-md)', background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: '0.95rem', outline: 'none' }}
+                                        style={{ width: '100%', margin: 0 }}
                                     />
                                 </Card>
                                 

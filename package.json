@@ -10,9 +10,11 @@
     "lint": "npx eslint . || true && node scripts/lint-report.js",
     "test:visual": "npx playwright test",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
-    "lint:design": "node scripts/check-design-system.js",
+    "lint:design": "node scripts/check-design-system.js && node scripts/validate-routes.js && node scripts/validate-css-classes.js",
     "lint:routes": "node scripts/validate-routes.js",
-    "lint:primary-routes": "node scripts/assert-primary-routes.js"
+    "lint:primary-routes": "node scripts/assert-primary-routes.js",
+    "test:a11y": "npx playwright test tests/a11y/",
+    "prepare": "husky"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -60,10 +62,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@next/bundle-analyzer": "^16.2.3",
     "@playwright/test": "^1.60.0",
     "@types/react": "19.2.14",
     "eslint": "^10.3.0",
+    "husky": "^9.1.7",
     "puppeteer": "^24.40.0",
     "typescript": "^6.0.2"
   }

@@ -4,17 +4,19 @@ import { useRouter } from 'next/navigation';
 import { LeaderboardSkeleton } from '@/components/skeletons';
 import { EmptyState } from '@/components/ui/EmptyState';
 
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swr';
+
 export default function LeaderboardPage() {
     const router = useRouter();
-    const [leaderboard, setLeaderboard] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetch('/api/leaderboard').then(r => r.json()).then(data => {
-            setLeaderboard(data.leaderboard || []);
-            setLoading(false);
-        }).catch(() => setLoading(false));
-    }, []);
+    const { data, error, isLoading } = useSWR('/api/leaderboard', fetcher, {
+        revalidateOnFocus: false, // Leaderboard doesn't need to refresh every focus
+        refreshInterval: 60000,   // Poll every minute for updates
+    });
+
+    const leaderboard = data?.leaderboard || [];
+    const loading = isLoading;
 
     if (loading) return (
         <div style={{ minHeight: '100vh', padding: '0px' }}>

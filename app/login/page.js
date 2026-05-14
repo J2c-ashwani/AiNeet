@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 
-import { Card, Button, Input, Skeleton } from '@/components/ui';
+import { Card, Button, Input, Skeleton, Alert } from '@/components/ui';
 import { Form, FormField } from '@/components/forms/Form';
 import { loginSchema } from '@/lib/validation/auth';
 
@@ -56,24 +56,18 @@ function LoginContent() {
     const rootError = methods.formState.errors.root?.serverError?.message || getUrlError();
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
-            <Card className="w-full max-w-[440px] p-8 animate-fade-in-up">
-                <div className="text-center mb-8">
-                    {/* Banned raw emoji replaced with text/icon equivalent if we had an Icon component, omitting for strict compliance or using simple text */}
-                    <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-2">Welcome Back</h1>
-                    <p className="text-[var(--text-secondary)]">Continue your NEET preparation</p>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>Welcome Back</h1>
+                    <p style={{ color: 'var(--text-secondary)' }}>Continue your NEET preparation</p>
                 </div>
 
                 {rootError && (
-                    <div 
-                        role="alert"
-                        className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium"
-                    >
-                        {rootError}
-                    </div>
+                    <Alert type="error">{rootError}</Alert>
                 )}
 
-                <Form methods={methods} onSubmit={onSubmit} className="flex flex-col gap-5">
+                <Form methods={methods} onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <FormField name="email" label="Email">
                         <Input 
                             {...methods.register('email')}
@@ -92,8 +86,8 @@ function LoginContent() {
                         />
                     </FormField>
                     
-                    <div className="flex justify-end">
-                        <a href="/forgot-password" className="text-sm font-semibold text-[var(--accent-primary)] hover:underline">
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <a href="/forgot-password" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--accent-primary)', textDecoration: 'none' }}>
                             Forgot Password?
                         </a>
                     </div>
@@ -101,14 +95,14 @@ function LoginContent() {
                     <Button 
                         type="submit" 
                         loading={loginMutation.isPending}
-                        className="mt-2 w-full"
+                        style={{ marginTop: '8px', width: '100%' }}
                     >
                         Sign In →
                     </Button>
                 </Form>
 
-                <p className="text-center mt-8 text-sm text-[var(--text-muted)]">
-                    Don't have an account? <a href="/register" className="text-[var(--text-primary)] font-semibold hover:underline">Create Account</a>
+                <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    Don't have an account? <a href="/register" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Create Account</a>
                 </p>
             </Card>
         </div>
@@ -120,8 +114,8 @@ export const dynamic = 'force-dynamic';
 export default function LoginPage() {
     return (
         <Suspense fallback={
-            <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
-                <Skeleton className="w-full max-w-[440px] h-[400px]" />
+            <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
+                <Skeleton style={{ maxWidth: '440px', width: '100%', height: '400px' }} />
             </div>
         }>
             <LoginContent />

@@ -5,6 +5,8 @@ import ParentSettings from '@/components/ParentSettings';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import Link from 'next/link';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swr';
 
 const ACHIEVEMENT_ICONS = {
     'first_test': '🎯', 'test_veteran': '🏆', 'perfect_score': '💯',
@@ -16,28 +18,23 @@ const ACHIEVEMENT_ICONS = {
 export default function ProfilePage() {
     const router = useRouter();
     const { user, loading: authLoading, logout } = useAuth();
-    const [stats, setStats] = useState(null);
-    const [badges, setBadges] = useState([]);
-    const [entitlement, setEntitlement] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [isRestoring, setIsRestoring] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
         setHasMounted(true);
         if (authLoading) return;
-        if (!user) { window.location.href = '/login'; return; }
-        Promise.all([
-            fetch('/api/performance').then(r => r.json()),
-            fetch('/api/achievements').then(r => r.json()),
-            fetch('/api/subscription/status').then(r => r.json())
-        ]).then(([perf, achv, ent]) => {
-            setStats(perf.overallStats || {});
-            setBadges(achv.badges || []);
-            setEntitlement(ent || { current_plan: 'free', active_status: 'free' });
-            setLoading(false);
-        }).catch(() => window.location.href = '/login');
-    }, [user, authLoading, router]);
+        if (!user) { window.location.href = '/login'; }
+    }, [user, authLoading]);
+
+    const { data: perf, isLoading: loadingPerf } = useSWR(!authLoading && user ? '/api/performance' : null, fetcher);
+    const { data: achv, isLoading: loadingAchv } = useSWR(!authLoading && user ? '/api/achievements' : null, fetcher);
+    const { data: ent, mutate: mutateEnt, isLoading: loadingEnt } = useSWR(!authLoading && user ? '/api/subscription/status' : null, fetcher);
+
+    const stats = perf?.overallStats || {};
+    const badges = achv?.badges || [];
+    const entitlement = ent || { current_plan: 'free', active_status: 'free' };
+    const loading = authLoading || loadingPerf || loadingAchv || loadingEnt;
 
     const handleLogout = async () => {
         await logout();
@@ -52,7 +49,7 @@ export default function ProfilePage() {
                 alert('Restoring purchases... please wait.');
                 // Refresh state after 3 seconds
                 setTimeout(() => {
-                    fetch('/api/subscription/status').then(r => r.json()).then(ent => setEntitlement(ent));
+                    mutateEnt();
                     setIsRestoring(false);
                 }, 3000);
             } catch (err) {

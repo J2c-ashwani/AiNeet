@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button } from '@/components/ui';
+import { Card, Button, Input } from '@/components/ui';
 
 function TestConfigContent() {
     const router = useRouter();
@@ -376,7 +376,7 @@ function TestConfigContent() {
             {showLockModal && (
                 <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--bg-overlay)', zIndex: 'var(--z-modal)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     <Card className="modal-content" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
-                        <button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        <Button variant="ghost" onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '20px', right: '20px' }}>×</Button>
 
                         <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🔒</div>
                         <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '16px', color: 'var(--text-primary)' }}>Premium Feature Locked</h2>
@@ -387,11 +387,11 @@ function TestConfigContent() {
                         <Card style={{ background: 'var(--bg-glass)', border: '1px dashed var(--primary)', padding: '20px', marginBottom: '32px' }}>
                             <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Unique Invite Link</div>
                             <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: 'var(--bg-card)', padding: '10px', borderRadius: 'var(--radius-md)' }}>
-                                <input
+                                <Input
                                     type="text"
                                     readOnly
                                     value={`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`}
-                                    style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text-primary)', outline: 'none' }}
+                                    style={{ flex: 1, margin: 0 }}
                                 />
                                 <Button
                                     onClick={() => navigator.clipboard.writeText(`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`)}

@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { Card, Button, Input } from '@/components/ui';
+import { Card, Button, Input, Alert } from '@/components/ui';
 import { Form, FormField } from '@/components/forms/Form';
 
 // ── Local Schemas ─────────────────────────────────────────────────────────────
@@ -34,12 +34,15 @@ const STEPS = ['email', 'otp', 'password'];
 
 function StepIndicator({ currentStep }) {
     return (
-        <div className="flex gap-2 justify-center mb-8" aria-label="Password reset progress">
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }} aria-label="Password reset progress">
             {STEPS.map((s, i) => (
                 <div
                     key={s}
-                    className="w-[40px] h-1 rounded-sm transition-all duration-300"
                     style={{
+                        width: '40px',
+                        height: '4px',
+                        borderRadius: 'var(--radius-sm)',
+                        transition: 'all 0.3s',
                         background: STEPS.indexOf(currentStep) >= i
                             ? 'var(--accent-primary)'
                             : 'var(--border)',
@@ -71,11 +74,9 @@ function EmailStep({ onSuccess }) {
     return (
         <>
             {methods.formState.errors.root?.serverError?.message && (
-                <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                    {methods.formState.errors.root.serverError.message}
-                </div>
+                <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} className="flex flex-col gap-5">
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <FormField name="email" label="Email Address">
                     <Input
                         {...methods.register('email')}
@@ -85,7 +86,7 @@ function EmailStep({ onSuccess }) {
                         autoFocus
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} className="mt-2 w-full">
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
                     Send Reset Code →
                 </Button>
             </Form>
@@ -114,11 +115,9 @@ function OtpStep({ email, onSuccess, onBack }) {
     return (
         <>
             {methods.formState.errors.root?.serverError?.message && (
-                <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                    {methods.formState.errors.root.serverError.message}
-                </div>
+                <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} className="flex flex-col gap-5">
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <FormField name="otp" label="Verification Code" description={`We sent a 6-digit code to ${email}`}>
                     <Input
                         {...methods.register('otp')}
@@ -136,11 +135,11 @@ function OtpStep({ email, onSuccess, onBack }) {
                         }}
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} className="mt-2 w-full">
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
                     Verify Code →
                 </Button>
             </Form>
-            <div className="text-center mt-4">
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
                 <Button variant="ghost" size="sm" onClick={onBack}>
                     Didn&apos;t receive it? Send again
                 </Button>
@@ -173,11 +172,9 @@ function NewPasswordStep({ onSuccess }) {
     return (
         <>
             {methods.formState.errors.root?.serverError?.message && (
-                <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                    {methods.formState.errors.root.serverError.message}
-                </div>
+                <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} className="flex flex-col gap-5">
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <FormField name="newPassword" label="New Password" description="8+ characters, letters & numbers">
                     <Input
                         {...methods.register('newPassword')}
@@ -195,7 +192,7 @@ function NewPasswordStep({ onSuccess }) {
                         disabled={mutation.isPending}
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} className="mt-2 w-full">
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
                     Set New Password →
                 </Button>
             </Form>
@@ -218,11 +215,11 @@ export default function ForgotPasswordPage() {
     const { title, sub } = stepConfig[step];
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
-            <Card className="w-full max-w-[440px] p-8 animate-fade-in-up">
-                <div className="text-center mb-8">
-                    <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-2">{title}</h1>
-                    <p className="text-[var(--text-secondary)] text-sm">{sub}</p>
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>{title}</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{sub}</p>
                 </div>
 
                 {step !== 'done' && <StepIndicator currentStep={step} />}
@@ -241,15 +238,13 @@ export default function ForgotPasswordPage() {
                     <NewPasswordStep onSuccess={() => setStep('done')} />
                 )}
                 {step === 'done' && (
-                    <div role="status" className="text-center p-5 bg-emerald-50 border border-emerald-200 rounded-lg">
-                        <p className="text-emerald-700 text-sm font-medium">Your password has been updated. Redirecting...</p>
-                    </div>
+                    <Alert type="success">Your password has been updated. Redirecting...</Alert>
                 )}
 
                 {step !== 'done' && (
-                    <p className="text-center mt-8 text-sm text-[var(--text-muted)]">
+                    <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                         Remember it?{' '}
-                        <a href="/login" className="text-[var(--accent-primary)] font-semibold hover:underline">
+                        <a href="/login" style={{ color: 'var(--accent-primary)', fontWeight: 600, textDecoration: 'none' }}>
                             Back to Login
                         </a>
                     </p>

@@ -1,5 +1,5 @@
-import { z } from 'zod';
-
+const { z } = require('zod');
+const { test, expect } = require('@playwright/test');
 /**
  * CONTRACT TESTING
  * 
@@ -16,8 +16,8 @@ const telemetryPayloadSchema = z.object({
   client_version: z.string(),
 });
 
-describe('Contract Tests: Telemetry Bridge', () => {
-  it('validates a correct telemetry payload', () => {
+test.describe('Contract Tests: Telemetry Bridge', () => {
+  test('validates a correct telemetry payload', () => {
     const mockPayload = {
       event_type: 'TEST_SUBMITTED',
       user_id: '123e4567-e89b-12d3-a456-426614174000',
@@ -29,7 +29,7 @@ describe('Contract Tests: Telemetry Bridge', () => {
     expect(() => telemetryPayloadSchema.parse(mockPayload)).not.toThrow();
   });
 
-  it('rejects an invalid telemetry payload (missing required field)', () => {
+  test('rejects an invalid telemetry payload (missing required field)', () => {
     const invalidPayload = {
       event_type: 'TEST_SUBMITTED',
       // missing user_id

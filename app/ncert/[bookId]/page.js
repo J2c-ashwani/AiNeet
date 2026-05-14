@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { NCERT_BOOKS, getChapterPdfUrl } from '@/lib/ncert-data';
+import { Button } from '@/components/ui';
 
 // react-pdf uses DOM APIs (like DOMMatrix) which crash during SSR. Force client-side rendering.
 const PDFViewerClient = dynamic(() => import('@/components/PDFViewerClient'), {
@@ -96,9 +97,9 @@ function NCERTReaderContent() {
 
             {/* Mobile Back Button */}
             <div className="md:hidden" style={{ padding: '8px', background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button onClick={() => window.location.href = '/ncert'} style={{ color: 'var(--accent)', fontSize: '0.875rem', fontWeight: 800, background: 'none', border: 'none', cursor: 'pointer' }}>
+                <Button variant="ghost" onClick={() => window.location.href = '/ncert'} style={{ color: 'var(--accent)', fontSize: '0.875rem', fontWeight: 800, padding: 0 }}>
                     ← Back
-                </button>
+                </Button>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>{bookData.title}</div>
             </div>
 

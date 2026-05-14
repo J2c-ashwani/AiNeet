@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swr';
 import { ScoreTrendChart, SubjectRadarChart } from '@/components/Charts';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button } from '@/components/ui';
@@ -11,17 +13,24 @@ import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 export default function AnalyticsPage() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { window.location.href = '/login'; return; }
-        fetch('/api/performance').then(r => r.json()).then(perf => {
-            setData(perf);
-            setLoading(false);
-        }).catch(() => window.location.href = '/login');
-    }, [user, authLoading, router]);
+        if (!user) { window.location.href = '/login'; }
+    }, [user, authLoading]);
+
+    const { data, error, isLoading: isSwrLoading } = useSWR(
+        !authLoading && user ? '/api/performance' : null,
+        fetcher,
+        { revalidateOnFocus: true }
+    );
+
+    useEffect(() => {
+        if (error) {
+            window.location.href = '/login';
+        }
+    }, [error]);
+
+    const loading = authLoading || isSwrLoading || (!data && !error);
 
     if (loading) return (
         <div style={{ minHeight: '100vh' }}>

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { Card, Button, Input } from '@/components/ui';
+import { Card, Button, Input, Alert } from '@/components/ui';
 import { Form, FormField } from '@/components/forms/Form';
 
 // ── Schema ────────────────────────────────────────────────────────────────────
@@ -51,36 +51,34 @@ export default function UpdatePasswordPage() {
 
     if (updateMutation.isSuccess) {
         return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4">
-                <Card className="w-full max-w-[440px] p-8 text-center">
-                    <div role="status" className="p-5 bg-emerald-50 border border-emerald-200 rounded-lg">
-                        <h2 className="text-lg font-bold text-emerald-700 mb-2">Password Secured</h2>
-                        <p className="text-emerald-600 text-sm">Redirecting you to the dashboard...</p>
-                    </div>
+            <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
+                <Card style={{ maxWidth: '440px', width: '100%', padding: '32px', textAlign: 'center' }}>
+                    <Alert type="success">
+                        <strong style={{ display: 'block', fontSize: '1.125rem', marginBottom: '8px' }}>Password Secured</strong>
+                        Redirecting you to the dashboard...
+                    </Alert>
                 </Card>
             </div>
         );
     }
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4 py-8">
-            <Card className="w-full max-w-[440px] p-8 animate-fade-in-up">
-                <div className="text-center mb-8">
-                    <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-2">
+        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
+            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
                         Secure New Password
                     </h1>
-                    <p className="text-[var(--text-secondary)] text-sm">
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
                         Almost there. Enter your new credentials.
                     </p>
                 </div>
 
                 {rootError && (
-                    <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm mb-6 font-medium">
-                        {rootError}
-                    </div>
+                    <Alert type="error">{rootError}</Alert>
                 )}
 
-                <Form methods={methods} onSubmit={(d) => updateMutation.mutate(d)} className="flex flex-col gap-5">
+                <Form methods={methods} onSubmit={(d) => updateMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <FormField name="password" label="New Password" description="8+ characters, letters & numbers">
                         <Input
                             {...methods.register('password')}
@@ -101,7 +99,7 @@ export default function UpdatePasswordPage() {
                     <Button
                         type="submit"
                         loading={updateMutation.isPending}
-                        className="mt-2 w-full"
+                        style={{ marginTop: '8px', width: '100%' }}
                     >
                         Confirm &amp; Login →
                     </Button>

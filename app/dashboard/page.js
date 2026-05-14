@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swr';
 import { ActivityHeatmap } from '@/components/Charts';
 import RevisionCard from '@/components/RevisionCard';
 import CoachWidget from '@/components/CoachWidget';
@@ -24,25 +26,20 @@ function streakColor(streak) {
 export default function Dashboard() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
-    const [performance, setPerformance] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [apiError, setApiError] = useState(false);
     const [showPricing, setShowPricing] = useState(false);
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { window.location.href = '/login'; return; }
-        fetch('/api/performance').then(r => {
-            if (!r.ok) throw new Error('API error');
-            return r.json();
-        }).then(perfData => {
-            setPerformance(perfData);
-            setLoading(false);
-        }).catch(() => {
-            setApiError(true);
-            setLoading(false);
-        });
+        if (!user) { window.location.href = '/login'; }
     }, [user, authLoading]);
+
+    const { data: performance, error: apiError, isLoading: isSwrLoading } = useSWR(
+        !authLoading && user ? '/api/performance' : null,
+        fetcher,
+        { revalidateOnFocus: true }
+    );
+
+    const loading = authLoading || isSwrLoading || (!performance && !apiError);
 
     const isFree = !user?.subscription_tier || user?.subscription_tier === 'free';
 

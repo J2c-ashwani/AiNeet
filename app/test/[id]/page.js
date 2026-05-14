@@ -42,7 +42,6 @@ export default function TestPage({ params }) {
     const [timeLeft, setTimeLeft] = useState(0);
     const [questionTimes, setQuestionTimes] = useState({});
     const [lastQTime, setLastQTime] = useState(Date.now());
-    const [lastQTime, setLastQTime] = useState(Date.now());
     const [offlineSyncPending, setOfflineSyncPending] = useState(false);
     const [showNav, setShowNav] = useState(false);
     const [initialReportState, setReportState] = useState({ show: false, reason: 'error', comment: '' });
@@ -529,11 +528,11 @@ export default function TestPage({ params }) {
                         <h4 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Question Navigator</h4>
                         <div className="question-nav">
                             {testData.questions.map((_, idx) => (
-                                <button key={idx}
+                                <div key={idx} role="button"
                                     className={`question-nav-btn ${idx === currentQ ? 'current' : ''} ${answers[idx] ? 'answered' : ''} ${marked.has(idx) ? 'marked' : ''}`}
                                     onClick={() => goToQuestion(idx)}>
                                     {idx + 1}
-                                </button>
+                                </div>
                             ))}
                         </div>
                         <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>

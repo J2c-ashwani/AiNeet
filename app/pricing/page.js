@@ -299,14 +299,14 @@ export default function PricingPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {FAQ.map((item, i) => (
                             <Card key={i} style={{ padding: '0' }} interactive>
-                                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{
+                                <div role="button" onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{
                                     width: '100%', padding: '24px', display: 'flex', justifyContent: 'space-between',
                                     alignItems: 'center', background: 'transparent', border: 'none', cursor: 'pointer',
                                     color: 'var(--text-primary)', fontSize: '1.05rem', fontWeight: 700, textAlign: 'left'
                                 }}>
                                     {item.q}
                                     <span style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s', color: 'var(--text-muted)' }}>▾</span>
-                                </button>
+                                </div>
                                 {openFaq === i && (
                                     <div style={{ padding: '0 24px 24px', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
                                         {item.a}

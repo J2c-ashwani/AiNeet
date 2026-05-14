@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import SnapSolver from '@/components/SnapSolver';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/context/AuthContext';
+import { useMutation } from '@tanstack/react-query';
 import { TrustBadge } from '@/components/trust/TrustBadge';
 
 export default function DoubtSolver() {
@@ -11,7 +12,6 @@ export default function DoubtSolver() {
     const { user } = useAuth();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
-    const [sending, setSending] = useState(false);
     const [conversationId, setConversationId] = useState(null);
     const [lastSaved, setLastSaved] = useState(null);
     const chatContainerRef = useRef(null);
@@ -44,39 +44,23 @@ export default function DoubtSolver() {
         setMessages(prev => [...prev, userMsg, aiMsg]);
     };
 
-    const handleSend = async (retryMsg = null) => {
-        if (!user) {
-            window.location.href = '/login?redirect=/doubts';
-            return;
-        }
-        const userMsg = retryMsg || input.trim();
-        if (!userMsg || sending) return;
-        if (!retryMsg) {
-            setInput('');
-            localStorage.removeItem('doubt_draft');
-            setLastSaved(null);
-        }
-        if (!retryMsg) setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-        setSending(true);
-
-        // 20-second timeout — if AI hangs longer, student gets a clear retry option
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
-
-        try {
+    const doubtMutation = useMutation({
+        mutationFn: async ({ message, conversationId, signal }) => {
             const res = await fetch('/api/doubt', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMsg, conversationId }),
-                signal: controller.signal
+                body: JSON.stringify({ message, conversationId }),
+                signal
             });
-            clearTimeout(timeout);
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'AI returned an error');
+            return data;
+        },
+        onSuccess: (data) => {
             setConversationId(data.conversationId);
             setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-        } catch (err) {
-            clearTimeout(timeout);
+        },
+        onError: (err, variables) => {
             const isTimeout = err.name === 'AbortError';
             setMessages(prev => [...prev, {
                 role: 'assistant',
@@ -84,9 +68,32 @@ export default function DoubtSolver() {
                     ? '⏱️ Our AI is a bit busy right now. Please try again in a moment.'
                     : '⚠️ Something went wrong. Please try again.',
                 isError: true,
-                retryMsg: userMsg
+                retryMsg: variables.message
             }]);
-        } finally { setSending(false); }
+        }
+    });
+
+    const handleSend = async (retryMsg = null) => {
+        if (!user) {
+            window.location.href = '/login?redirect=/doubts';
+            return;
+        }
+        const userMsg = retryMsg || input.trim();
+        if (!userMsg || doubtMutation.isPending) return;
+        if (!retryMsg) {
+            setInput('');
+            localStorage.removeItem('doubt_draft');
+            setLastSaved(null);
+        }
+        if (!retryMsg) setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+
+        // 20-second timeout — if AI hangs longer, student gets a clear retry option
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+
+        doubtMutation.mutate({ message: userMsg, conversationId, signal: controller.signal }, {
+            onSettled: () => clearTimeout(timeout)
+        });
     };
 
     const quickPrompts = [
@@ -159,7 +166,7 @@ export default function DoubtSolver() {
                             </div>
                         ))}
 
-                        {sending && (
+                        {doubtMutation.isPending && (
                             <div className="chat-message assistant">
                                 <div className="chat-avatar">🤖</div>
                                 <div className="chat-bubble">
@@ -187,7 +194,7 @@ export default function DoubtSolver() {
                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                                 rows={1}
                             />
-                            <button className="chat-send-btn" onClick={handleSend} disabled={!input.trim() || sending}>
+                            <button className="chat-send-btn" onClick={() => handleSend(null)} disabled={!input.trim() || doubtMutation.isPending}>
                                 ➤
                             </button>
                         </div>

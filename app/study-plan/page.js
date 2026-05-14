@@ -1,18 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swr';
 
 export default function StudyPlanPage() {
     const router = useRouter();
-    const [plan, setPlan] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetch('/api/study-plan').then(r => r.json()).then(planData => {
-            setPlan(planData.plan);
-            setLoading(false);
-        }).catch(() => setLoading(false));
-    }, []);
+    const { data, isLoading: loading } = useSWR('/api/study-plan', fetcher, {
+        revalidateOnFocus: true
+    });
+    const plan = data?.plan;
 
     if (loading) return (
         <div className="loading-overlay" style={{ minHeight: '100vh' }}>

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-// Link import removed — using <a> tags to prevent removeChild crashes
+import { Card, Button } from '@/components/ui';
 
 const SUBJECT_ICONS = { physics: '⚡', chemistry: '🧪', biology: '🧬' };
 const SUBJECT_COLORS = { physics: '#6366f1', chemistry: '#06b6d4', biology: '#22c55e' };
@@ -66,27 +66,27 @@ export default function NCERTLibrary() {
                 {/* Filters */}
                 <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
                     {['all', 'physics', 'chemistry', 'biology'].map(s => (
-                        <button key={s} onClick={() => setActiveSubject(s)} style={{
+                        <Button key={s} variant="ghost" onClick={() => setActiveSubject(s)} style={{
                             padding: '10px 20px', borderRadius: 10,
                             border: activeSubject === s ? `2px solid var(--primary)` : '2px solid var(--border)',
                             background: activeSubject === s ? `var(--primary-light, rgba(99, 102, 241, 0.1))` : 'var(--bg-glass)',
                             color: activeSubject === s ? 'var(--primary)' : 'var(--text-secondary)',
-                            fontWeight: 700, cursor: 'pointer', textTransform: 'capitalize',
+                            fontWeight: 700, textTransform: 'capitalize',
                         }}>
                             {s === 'all' ? '📖 All' : `${SUBJECT_ICONS[s]} ${s}`}
-                        </button>
+                        </Button>
                     ))}
                     <div style={{ borderLeft: '1px solid var(--border)', padding: '0 12px' }} />
                     {['all', '11', '12'].map(c => (
-                        <button key={c} onClick={() => setActiveClass(c)} style={{
+                        <Button key={c} variant="ghost" onClick={() => setActiveClass(c)} style={{
                             padding: '10px 20px', borderRadius: 10,
                             border: activeClass === c ? '2px solid var(--accent)' : '2px solid var(--border)',
                             background: activeClass === c ? 'var(--accent-light, rgba(245, 158, 11, 0.1))' : 'var(--bg-glass)',
                             color: activeClass === c ? 'var(--accent)' : 'var(--text-secondary)',
-                            fontWeight: 700, cursor: 'pointer',
+                            fontWeight: 700,
                         }}>
                             {c === 'all' ? 'All Classes' : `Class ${c}`}
-                        </button>
+                        </Button>
                     ))}
                 </div>
 
@@ -120,11 +120,12 @@ export default function NCERTLibrary() {
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                            <button onClick={(e) => { e.stopPropagation(); setExpandedBook(isExpanded ? null : i); }}
-                                                className="btn btn-secondary btn-sm"
+                                            <Button onClick={(e) => { e.stopPropagation(); setExpandedBook(isExpanded ? null : i); }}
+                                                variant="secondary"
+                                                size="sm"
                                                 style={{ padding: '8px 16px', borderRadius: 8, background: `${color}22`, color, fontWeight: 700, fontSize: '0.85rem', border: `1px solid ${color}44` }}>
                                                 {isExpanded ? 'Collapse' : '📂 Chapter-wise'}
-                                            </button>
+                                            </Button>
                                             <span style={{ color: 'var(--text-secondary)', fontSize: '1.5rem', transition: 'transform 0.3s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▾</span>
                                         </div>
                                     </div>
@@ -156,12 +157,13 @@ export default function NCERTLibrary() {
                                                                     No PYQs asked yet
                                                                 </div>
                                                             ) : (
-                                                                <button
+                                                                <Button
                                                                     onClick={() => handleStartPyq(ch.title, ch.pyqCount)}
                                                                     disabled={generating === ch.title || noPyqChapter === ch.title}
-                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: noPyqChapter === ch.title ? 'var(--danger-light, rgba(239, 68, 68, 0.1))' : 'var(--accent-light, rgba(245, 158, 11, 0.1))', color: noPyqChapter === ch.title ? 'var(--danger)' : 'var(--accent)', fontSize: '0.85rem', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid var(--danger)' : '1px solid var(--accent)', cursor: (generating === ch.title || noPyqChapter === ch.title) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
+                                                                    variant="ghost"
+                                                                    style={{ flex: 1, padding: '10px', borderRadius: 8, background: noPyqChapter === ch.title ? 'var(--danger-light, rgba(239, 68, 68, 0.1))' : 'var(--accent-light, rgba(245, 158, 11, 0.1))', color: noPyqChapter === ch.title ? 'var(--danger)' : 'var(--accent)', fontSize: '0.85rem', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid var(--danger)' : '1px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
                                                                     {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderColor: 'var(--accent)', borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? '❌ No PYQs Available' : `🎯 Solve PYQs (${ch.pyqCount})`}
-                                                                </button>
+                                                                </Button>
                                                             )}
                                                         </div>
                                                     </div>
