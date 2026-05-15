@@ -61,6 +61,7 @@ export default function AdminLayout({ children }) {
     const navItems = [
         { name: 'Overview', path: '/admin', icon: '📊' },
         { name: 'Runtime Dashboard', path: '/admin/runtime', icon: '🖥️' },
+        { name: 'Content Quality', path: '/admin/content-quality', icon: '🎓', badge: 'MD Mandate' },
         { name: 'Integrity', path: '/admin/integrity', icon: '🛡️' },
         { name: 'Ops Control Room', path: '/admin/ops', icon: '🧯' },
         { name: 'Question Bank', path: '/admin/questions', icon: '📝' },
@@ -114,7 +115,15 @@ export default function AdminLayout({ children }) {
                                 }}>
                                     <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
                                     <span>{item.name}</span>
-                                    {isActive && (
+                                    {item.badge && (
+                                        <span style={{
+                                            marginLeft: 'auto', fontSize: '0.55rem', fontWeight: 700,
+                                            padding: '2px 6px', borderRadius: 4,
+                                            background: 'rgba(245,158,11,0.15)', color: '#fbbf24',
+                                            border: '1px solid rgba(245,158,11,0.25)', letterSpacing: '0.05em'
+                                        }}>{item.badge}</span>
+                                    )}
+                                    {isActive && !item.badge && (
                                         <div style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: '#6366f1', boxShadow: '0 0 10px #6366f1' }}></div>
                                     )}
                                 </a>
