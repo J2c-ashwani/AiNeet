@@ -59,7 +59,7 @@ function CoachingHome({ user, stats, statsLoading }) {
                 </div>
                 <div>
                     <Badge variant={streak > 0 ? 'warning' : 'neutral'} className="landing-streak-badge">
-                        {streak > 0 ? `<Icon name="Flame" /> ${streak}-Day Streak` : 'Start a streak!'}
+                        {streak > 0 ? <><Icon name="Flame" size={14} /> {streak}-Day Streak</> : 'Start a streak!'}
                     </Badge>
                 </div>
             </div>
