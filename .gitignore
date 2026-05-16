@@ -88,3 +88,11 @@ public/workbox-*.js
 public/workbox-*.js.map
 public/worker-*.js
 public/worker-*.js.map
+
+# ─── NCERT PDF Cache (large files — do not commit) ─────────────
+.ncert-cache/
+
+# ─── RAG Evaluation Reports (local only) ───────────────────────
+rag_validation_report_*.json
+evaluation_*.log
+embed_*.log
