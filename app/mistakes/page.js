@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/components/ui/Button';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -46,21 +47,21 @@ export default function MistakesPage() {
             
 
             <div className="page" style={{ maxWidth: 800 }}>
-                <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                <div className="page-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <NotebookPen size={22} style={{ color: 'var(--accent-secondary)' }} aria-hidden="true" />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <NotebookPen size={22}  aria-hidden="true" />
                             <h1 className="page-title" style={{ margin: 0 }}>Mistake Notebook</h1>
                         </div>
                         <p className="page-subtitle">Your weak areas and repeated mistakes — focus here for maximum improvement</p>
                     </div>
                     {mistakes.length > 0 && (
-                        <button onClick={handleExportPDF} disabled={exporting} className="btn btn-primary" style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '7px' }}>
+                        <Button onClick={handleExportPDF} disabled={exporting} className="btn btn-primary" style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 7 }}>
                             {exporting
                                 ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} aria-hidden="true" /> Generating PDF...</>
                                 : <><Download size={15} aria-hidden="true" /> Download PDF</>
                             }
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -90,26 +91,26 @@ export default function MistakesPage() {
 
             {/* Referral Lock Modal for PDF Export */}
             {showLockModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 'var(--z-modal)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
-                        <button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-                            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(124,77,255,0.12)', border: '1.5px solid rgba(124,77,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <Download size={28} style={{ color: 'var(--accent-secondary)' }} aria-hidden="true" />
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                    <div style={{ border: '1px solid var(--border-color)', padding: 40, maxWidth: 500, width: '100%', textAlign: 'center', position: 'relative' }}>
+                        <Button onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: 16, right: 16, border: 'none', cursor: 'pointer' }}>×</Button>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+                            <div style={{ width: 64, height: 64, border: '1.5px solid rgba(124,77,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Download size={28}  aria-hidden="true" />
                             </div>
                         </div>
-                        <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '12px' }}>PDF Export Locked</h2>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.6 }}>Refer 2 friends to unlock unlimited Mistake Notebook PDF exports for last-minute revision.</p>
-                        <button
+                        <h2 style={{ fontWeight: 800, marginBottom: 12 }}>PDF Export Locked</h2>
+                        <p style={{ marginBottom: 24, lineHeight: 1.6 }}>Refer 2 friends to unlock unlimited Mistake Notebook PDF exports for last-minute revision.</p>
+                        <Button
                             onClick={() => {
                                 const text = `I'm preparing for NEET 2026 with AI NEET Coach!\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                 openWhatsAppShare(text);
                             }}
                             className="btn btn-success btn-lg w-full"
-                            style={{ fontSize: '1.1rem', padding: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                            style={{ padding: 14, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                         >
                             <Share2 size={18} aria-hidden="true" /> Share via WhatsApp
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

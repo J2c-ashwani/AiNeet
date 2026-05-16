@@ -34,14 +34,13 @@ const STEPS = ['email', 'otp', 'password'];
 
 function StepIndicator({ currentStep }) {
     return (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }} aria-label="Password reset progress">
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 32 }} aria-label="Password reset progress">
             {STEPS.map((s, i) => (
                 <div
                     key={s}
                     style={{
-                        width: '40px',
-                        height: '4px',
-                        borderRadius: 'var(--radius-sm)',
+                        width: 40,
+                        height: 4,
                         transition: 'all 0.3s',
                         background: STEPS.indexOf(currentStep) >= i
                             ? 'var(--accent-primary)'
@@ -76,7 +75,7 @@ function EmailStep({ onSuccess }) {
             {methods.formState.errors.root?.serverError?.message && (
                 <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <FormField name="email" label="Email Address">
                     <Input
                         {...methods.register('email')}
@@ -86,7 +85,7 @@ function EmailStep({ onSuccess }) {
                         autoFocus
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: 8, width: '100%' }}>
                     Send Reset Code →
                 </Button>
             </Form>
@@ -117,7 +116,7 @@ function OtpStep({ email, onSuccess, onBack }) {
             {methods.formState.errors.root?.serverError?.message && (
                 <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <FormField name="otp" label="Verification Code" description={`We sent a 6-digit code to ${email}`}>
                     <Input
                         {...methods.register('otp')}
@@ -135,11 +134,11 @@ function OtpStep({ email, onSuccess, onBack }) {
                         }}
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: 8, width: '100%' }}>
                     Verify Code →
                 </Button>
             </Form>
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <Button variant="ghost" size="sm" onClick={onBack}>
                     Didn&apos;t receive it? Send again
                 </Button>
@@ -174,7 +173,7 @@ function NewPasswordStep({ onSuccess }) {
             {methods.formState.errors.root?.serverError?.message && (
                 <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <FormField name="newPassword" label="New Password" description="8+ characters, letters & numbers">
                     <Input
                         {...methods.register('newPassword')}
@@ -192,7 +191,7 @@ function NewPasswordStep({ onSuccess }) {
                         disabled={mutation.isPending}
                     />
                 </FormField>
-                <Button type="submit" loading={mutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
+                <Button type="submit" loading={mutation.isPending} style={{ marginTop: 8, width: '100%' }}>
                     Set New Password →
                 </Button>
             </Form>
@@ -216,10 +215,10 @@ export default function ForgotPasswordPage() {
 
     return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
-            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>{title}</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{sub}</p>
+            <Card style={{ maxWidth: 440, width: '100%', padding: 32 }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                    <h1 style={{ fontWeight: 800, marginBottom: 8 }}>{title}</h1>
+                    <p >{sub}</p>
                 </div>
 
                 {step !== 'done' && <StepIndicator currentStep={step} />}
@@ -242,9 +241,9 @@ export default function ForgotPasswordPage() {
                 )}
 
                 {step !== 'done' && (
-                    <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                    <p style={{ textAlign: 'center', marginTop: 32, }}>
                         Remember it?{' '}
-                        <a href="/login" style={{ color: 'var(--accent-primary)', fontWeight: 600, textDecoration: 'none' }}>
+                        <a href="/login" style={{ fontWeight: 600, textDecoration: 'none' }}>
                             Back to Login
                         </a>
                     </p>

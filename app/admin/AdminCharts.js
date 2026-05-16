@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function AdminCharts({ chartData, pieData, totalSubs }) {
@@ -6,10 +7,9 @@ export default function AdminCharts({ chartData, pieData, totalSubs }) {
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginBottom: 32 }}>
             {/* Activity Chart */}
             <div style={{
-                background: 'rgba(17,24,39,0.8)', border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 16, padding: 24, backdropFilter: 'blur(20px)'
-            }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 24, color: '#f1f5f9' }}>📈 Test Activity (Last 7 Days)</h3>
+                border: '1px solid rgba(255,255,255,0.08)',
+                padding: 24, }}>
+                <h3 style={{ fontWeight: 700, marginBottom: 24, }}><Icon name="TrendingUp" /> Test Activity (Last 7 Days)</h3>
                 <div style={{ height: 280 }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={chartData}>
@@ -26,8 +26,8 @@ export default function AdminCharts({ chartData, pieData, totalSubs }) {
                             <XAxis dataKey="date" stroke="#475569" fontSize={12} tickLine={false} axisLine={false} />
                             <YAxis stroke="#475569" fontSize={12} tickLine={false} axisLine={false} />
                             <Tooltip
-                                contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#f1f5f9' }}
-                                labelStyle={{ color: '#94a3b8' }}
+                                contentStyle={{ border: '1px solid rgba(255,255,255,0.1)', }}
+                                labelStyle={{ }}
                             />
                             <Area type="monotone" dataKey="tests" stroke="#6366f1" strokeWidth={2} fill="url(#colorTests)" name="Tests" />
                             <Area type="monotone" dataKey="accuracy" stroke="#10b981" strokeWidth={2} fill="url(#colorAccuracy)" name="Avg Accuracy %" />
@@ -38,10 +38,9 @@ export default function AdminCharts({ chartData, pieData, totalSubs }) {
 
             {/* Subscription Breakdown */}
             <div style={{
-                background: 'rgba(17,24,39,0.8)', border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 16, padding: 24, backdropFilter: 'blur(20px)'
-            }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 16, color: '#f1f5f9' }}>📊 User Plans</h3>
+                border: '1px solid rgba(255,255,255,0.08)',
+                padding: 24, }}>
+                <h3 style={{ fontWeight: 700, marginBottom: 16, }}><Icon name="BarChart2" /> User Plans</h3>
                 <div style={{ height: 180, display: 'flex', justifyContent: 'center' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -50,21 +49,21 @@ export default function AdminCharts({ chartData, pieData, totalSubs }) {
                                     <Cell key={index} fill={entry.color} />
                                 ))}
                             </Pie>
-                            <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, color: '#f1f5f9' }} />
+                            <Tooltip contentStyle={{ border: '1px solid rgba(255,255,255,0.1)', }} />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 8 }}>
                     {pieData.map((d, i) => (
-                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem' }}>
-                            <div style={{ width: 10, height: 10, borderRadius: '50%', background: d.color }}></div>
-                            <span style={{ color: '#94a3b8' }}>{d.name} ({d.value})</span>
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, }}>
+                            <div style={{ width: 10, height: 10, background: d.color }}></div>
+                            <span >{d.name} ({d.value})</span>
                         </div>
                     ))}
                 </div>
                 <div style={{ marginTop: 20, textAlign: 'center' }}>
-                    <p style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9' }}>{totalSubs}</p>
-                    <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Users</p>
+                    <p style={{ fontWeight: 800, }}>{totalSubs}</p>
+                    <p style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Users</p>
                 </div>
             </div>
         </div>

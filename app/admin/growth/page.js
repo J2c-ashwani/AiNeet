@@ -1,4 +1,8 @@
 'use client';
+import { Textarea } from '@/components/ui/Textarea';
+import { Select } from '@/components/ui/Select';
+import { Icon } from '@/components/ui/Icon';
+import { Button } from '@/components/ui/Button';
 import { useState, useEffect } from 'react';
 import { copyToClipboard } from '@/lib/utils/clipboard';
 
@@ -84,9 +88,9 @@ export default function GrowthCopilotPage() {
     };
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 20px', minHeight: '100vh', }}>
             <div className="flex items-center gap-3 mb-8">
-                <span className="text-4xl">🚀</span>
+                <span className="text-4xl"><Icon name="Zap" /></span>
                 <div>
                     <h1 className="text-3xl font-black mb-1">Growth Copilot</h1>
                     <p className="text-muted">Human-in-the-Loop Organic Customer Acquisition</p>
@@ -96,62 +100,62 @@ export default function GrowthCopilotPage() {
             <div className="grid grid-2 gap-8 items-start">
                 
                 {/* INTERFACE LAYER */}
-                <div className="card" style={{ padding: '32px' }}>
+                <div className="card" style={{ padding: 32 }}>
                     <h3 className="text-xl font-bold mb-4">1. Ingest Doubt</h3>
                     <p className="text-sm text-muted mb-6">Take a screenshot of a Facebook/Telegram doubt and press <strong className="text-white bg-slate-800 px-2 py-1 rounded">Cmd + V</strong> to paste it.</p>
 
                     <div 
-                        style={{ border: '2px dashed var(--border-color)', borderRadius: '12px', minHeight: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', background: imagePreview ? 'transparent' : 'rgba(255,255,255,0.02)', position: 'relative', overflow: 'hidden' }}
+                        style={{ border: '2px dashed var(--border-color)', minHeight: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, background: imagePreview ? 'transparent' : 'var(--bg-glass)', position: 'relative', overflow: 'hidden' }}
                     >
                         {imagePreview ? (
-                            <img src={imagePreview} style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: '300px' }} alt="Pasted Doubt" />
+                            <img src={imagePreview} style={{ width: '100%', height: '100%', objectFit: 'contain', maxHeight: 300 }} alt="Pasted Doubt" />
                         ) : (
                             <span className="text-muted font-bold text-sm">Paste Image Here</span>
                         )}
                         {imagePreview && (
-                            <button onClick={() => {setImagePreview(null); setImageBase64(null)}} style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(0,0,0,0.8)', padding: '4px 10px', borderRadius: '4px', fontSize: '12px' }}>Clear</button>
+                            <Button onClick={() => {setImagePreview(null); setImageBase64(null)}} style={{ position: 'absolute', top: 12, right: 12, padding: '4px 10px', }}>Clear</Button>
                         )}
                     </div>
 
                     <div className="mb-6">
                         <label className="block text-sm font-bold text-gray-400 mb-2">Or Paste Text</label>
-                        <textarea 
+                        <Textarea 
                             value={doubtText}
                             onChange={(e) => setDoubtText(e.target.value)}
                             placeholder="E.g. I don't understand how Newton's 3rd Law applies to the tension puzzle..."
                             className="input"
-                            style={{ minHeight: '100px' }}
+                            style={{ minHeight: 100 }}
                         />
                     </div>
 
                     <div className="flex justify-between items-center mt-6 py-4 border-t border-gray-800">
                         <div className="flex items-center gap-3">
                             <span className="text-sm font-bold text-gray-400">Target</span>
-                            <select className="input" value={platform} onChange={(e) => setPlatform(e.target.value)} style={{ padding: '6px 12px', height: 'auto' }}>
+                            <Select className="input" value={platform} onChange={(e) => setPlatform(e.target.value)} style={{ padding: '6px 12px', height: 'auto' }}>
                                 <option value="facebook">Facebook</option>
                                 <option value="telegram">Telegram</option>
                                 <option value="reddit">Reddit</option>
-                            </select>
+                            </Select>
                         </div>
-                        <button 
+                        <Button 
                             onClick={handleGenerate} 
                             disabled={isGenerating}
                             className="btn btn-primary"
                         >
-                            {isGenerating ? 'Firing Vision Engine...' : '⚡ Generate Variants'}
-                        </button>
+                            {isGenerating ? 'Firing Vision Engine...' : '<Icon name="Zap" /> Generate Variants'}
+                        </Button>
                     </div>
                 </div>
 
                 {/* OUTPUT LAYER */}
                 <div>
                     {!results && !isGenerating ? (
-                        <div style={{ padding: '60px', textAlign: 'center', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'rgba(0,0,0,0.2)' }}>
-                            <span className="text-5xl opacity-50 block mb-4">🧠</span>
+                        <div style={{ padding: 60, textAlign: 'center', border: '1px solid var(--border-color)', }}>
+                            <span className="text-5xl opacity-50 block mb-4"><Icon name="Brain" /></span>
                             <h3 className="text-xl text-gray-400">Awaiting Target Data</h3>
                         </div>
                     ) : isGenerating ? (
-                        <div style={{ padding: '60px', textAlign: 'center', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'rgba(0,0,0,0.2)' }}>
+                        <div style={{ padding: 60, textAlign: 'center', border: '1px solid var(--border-color)', }}>
                             <div className="spinner mb-4 mx-auto" />
                             <h3 className="text-xl text-gray-400 animate-pulse">Running AI Copilot...</h3>
                         </div>
@@ -168,9 +172,9 @@ export default function GrowthCopilotPage() {
                                 <div className="card" style={{ borderLeft: '4px solid #3b82f6' }}>
                                     <div className="flex justify-between items-center mb-3">
                                         <h4 className="font-bold text-blue-400">1. Concise Variant</h4>
-                                        <button onClick={() => handleCopy('concise', results.concise)} className="text-xs bg-blue-900 text-white px-3 py-1 rounded">
+                                        <Button onClick={() => handleCopy('concise', results.concise)} className="text-xs bg-blue-900 text-white px-3 py-1 rounded">
                                             {copiedIndex === 'concise' ? '✓ Copied' : 'Copy Text'}
-                                        </button>
+                                        </Button>
                                     </div>
                                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{results.concise}</p>
                                 </div>
@@ -179,9 +183,9 @@ export default function GrowthCopilotPage() {
                                 <div className="card" style={{ borderLeft: '4px solid #10b981' }}>
                                     <div className="flex justify-between items-center mb-3">
                                         <h4 className="font-bold text-emerald-400">2. Detailed Breakdown</h4>
-                                        <button onClick={() => handleCopy('detailed', results.detailed)} className="text-xs bg-emerald-900 text-white px-3 py-1 rounded">
+                                        <Button onClick={() => handleCopy('detailed', results.detailed)} className="text-xs bg-emerald-900 text-white px-3 py-1 rounded">
                                             {copiedIndex === 'detailed' ? '✓ Copied' : 'Copy Text'}
-                                        </button>
+                                        </Button>
                                     </div>
                                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{results.detailed}</p>
                                 </div>
@@ -190,9 +194,9 @@ export default function GrowthCopilotPage() {
                                 <div className="card" style={{ borderLeft: '4px solid #f59e0b' }}>
                                     <div className="flex justify-between items-center mb-3">
                                         <h4 className="font-bold text-amber-400">3. Highly Conversational</h4>
-                                        <button onClick={() => handleCopy('conversational', results.conversational)} className="text-xs bg-amber-900 text-white px-3 py-1 rounded">
+                                        <Button onClick={() => handleCopy('conversational', results.conversational)} className="text-xs bg-amber-900 text-white px-3 py-1 rounded">
                                             {copiedIndex === 'conversational' ? '✓ Copied' : 'Copy Text'}
-                                        </button>
+                                        </Button>
                                     </div>
                                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{results.conversational}</p>
                                 </div>

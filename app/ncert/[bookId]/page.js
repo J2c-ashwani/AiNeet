@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
@@ -60,18 +61,15 @@ function NCERTReaderContent() {
     );
 
     if (error || !bookData) return (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '40px', gap: '16px' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '8px' }}>📖</div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800 }}>{error || 'Failed to load PDF.'}</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>The chapter PDF could not be loaded.</p>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 40, gap: 16 }}>
+            <div style={{ marginBottom: 8 }}><Icon name="Star" size={16} /></div>
+            <h2 style={{ fontWeight: 800 }}>{error || 'Failed to load PDF.'}</h2>
+            <p >The chapter PDF could not be loaded.</p>
             <a
                 href="/ncert"
                 style={{
-                    display: 'inline-flex', alignItems: 'center', gap: '6px',
-                    marginTop: '8px', padding: '10px 24px', borderRadius: '10px',
-                    background: 'var(--accent-gradient)', color: '#fff',
-                    fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem',
-                }}
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    marginTop: 0, padding: '12px 24px', fontWeight: 700, textDecoration: 'none', }}
             >
                 ← Back to Library
             </a>
@@ -80,36 +78,36 @@ function NCERTReaderContent() {
 
     return (
         <div style={{ flex: 1, overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', padding: '12px', alignItems: 'center', justifyContent: 'space-between', zIndex: 10, display: 'flex' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ borderBottom: '1px solid var(--border)', padding: 12, alignItems: 'center', justifyContent: 'space-between', display: 'flex' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                     <a
                         href="/ncert"
-                        style={{ padding: '6px 14px', borderRadius: '8px', background: 'var(--bg-glass)', border: '1px solid var(--border)', color: 'var(--text-primary)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600 }}
+                        style={{ padding: '6px 14px', border: '1px solid var(--border)', textDecoration: 'none', fontWeight: 600 }}
                     >
                         ← Back
                     </a>
-                    <h1 style={{ fontSize: '1.125rem', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '400px' }}>{bookData.title}</h1>
+                    <h1 style={{ fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 400 }}>{bookData.title}</h1>
                 </div>
-                <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                <div >
                     Select text to AI Explain ✨
                 </div>
             </div>
 
             {/* Mobile Back Button */}
-            <div className="md:hidden" style={{ padding: '8px', background: 'var(--bg-elevated)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Button variant="ghost" onClick={() => window.location.href = '/ncert'} style={{ color: 'var(--accent)', fontSize: '0.875rem', fontWeight: 800, padding: 0 }}>
+            <div className="md:hidden" style={{ padding: 8, borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Button variant="ghost" onClick={() => window.location.href = '/ncert'} style={{ fontWeight: 800, padding: 0 }}>
                     ← Back
                 </Button>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>{bookData.title}</div>
+                <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 200 }}>{bookData.title}</div>
             </div>
 
             <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
                 <PDFViewerClient book={bookData} />
                 {/* Fallback: always give user a direct escape hatch */}
-                <div style={{ textAlign: 'center', padding: '12px', borderTop: '1px solid var(--border)' }}>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>PDF not loading? </span>
+                <div style={{ textAlign: 'center', padding: 12, borderTop: '1px solid var(--border)' }}>
+                    <span >PDF not loading? </span>
                     <a href={bookData.directUrl} target="_blank" rel="noopener noreferrer"
-                        style={{ color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
+                        style={{ fontWeight: 600, textDecoration: 'none' }}>
                         Open in New Tab ↗
                     </a>
                 </div>

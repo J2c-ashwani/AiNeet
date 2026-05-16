@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -53,12 +54,12 @@ function CoachingHome({ user, stats, statsLoading }) {
             {/* Header Area */}
             <div className="landing-header">
                 <div>
-                    <h1 className="landing-title">Hey {firstName} 👋</h1>
+                    <h1 className="landing-title">Hey {firstName} <Icon name="Smile" /></h1>
                     <p className="landing-subtitle">Ready to crush your goals today?</p>
                 </div>
                 <div>
                     <Badge variant={streak > 0 ? 'warning' : 'neutral'} className="landing-streak-badge">
-                        {streak > 0 ? `🔥 ${streak}-Day Streak` : 'Start a streak!'}
+                        {streak > 0 ? `<Icon name="Flame" /> ${streak}-Day Streak` : 'Start a streak!'}
                     </Badge>
                 </div>
             </div>
@@ -83,9 +84,9 @@ function CoachingHome({ user, stats, statsLoading }) {
                 <div className="grid grid-3 landing-stats-grid">
                     {statsLoading ? (
                         <>
-                            <Skeleton style={{ height: '110px' }} />
-                            <Skeleton style={{ height: '110px' }} />
-                            <Skeleton style={{ height: '110px' }} />
+                            <Skeleton style={{ height: 110 }} />
+                            <Skeleton style={{ height: 110 }} />
+                            <Skeleton style={{ height: 110 }} />
                         </>
                     ) : (
                         <>
@@ -113,14 +114,14 @@ function CoachingHome({ user, stats, statsLoading }) {
                         <h2 className="landing-cta-title">Start Daily Practice</h2>
                         <p className="landing-cta-desc">AI will select questions based on your weak areas.</p>
                     </div>
-                    <div className="landing-cta-icon">⚡</div>
+                    <div className="landing-cta-icon"><Icon name="Zap" /></div>
                 </Card>
             </Link>
 
             {/* New User Onboarding */}
             {isNewUser && (
                 <Card className="landing-onboard-card">
-                    <div className="landing-onboard-icon">🎯</div>
+                    <div className="landing-onboard-icon"><Icon name="Target" /></div>
                     <h2 className="landing-onboard-title">Take your first diagnostic test</h2>
                     <p className="landing-onboard-desc">
                         Complete one test to unlock your personal dashboard with AI-powered weak topic analysis.
@@ -133,12 +134,12 @@ function CoachingHome({ user, stats, statsLoading }) {
 
             {/* Weak Topic Nudge */}
             {!statsLoading && stats?.weakest && (
-                <div style={{ marginBottom: '40px' }}>
+                <div style={{ marginBottom: 40 }}>
                     <h3 className="landing-section-title">Focus Required</h3>
                     <Link href="/test/configure" style={{ textDecoration: 'none' }}>
                         <Card interactive className="landing-weak-card">
                             <div className="landing-weak-icon">
-                                ⚠️
+                                <Icon name="AlertCircle" />
                             </div>
                             <div style={{ flex: 1 }}>
                                 <div className="landing-weak-label">Your weakest area</div>
@@ -152,7 +153,7 @@ function CoachingHome({ user, stats, statsLoading }) {
 
             {/* Recent Tests */}
             {!statsLoading && stats?.recent_tests?.length > 0 && (
-                <div style={{ marginBottom: '40px' }}>
+                <div style={{ marginBottom: 40 }}>
                     <h3 className="landing-section-title">Recent Tests</h3>
                     <div className="landing-recent-scroll">
                         {stats.recent_tests.map(test => (
@@ -169,14 +170,14 @@ function CoachingHome({ user, stats, statsLoading }) {
             )}
 
             {/* Quick Tools Grid */}
-            <div style={{ marginBottom: '40px' }}>
+            <div style={{ marginBottom: 40 }}>
                 <h3 className="landing-section-title">Quick Tools</h3>
                 <div className="grid grid-2 landing-tools-grid">
                     {[
-                        { icon: '💬', label: 'Ask Doubt', desc: 'AI instant help', path: '/doubts', variant: 'success' },
+                        { icon: '<Icon name="MessageCircle" />', label: 'Ask Doubt', desc: 'AI instant help', path: '/doubts', variant: 'success' },
                         { icon: '📸', label: 'OMR Scan', desc: 'Scan answer sheet', path: '/omr', variant: 'info' },
                         { icon: '📓', label: 'Mistakes', desc: 'Review wrong Qs', path: '/mistakes', variant: 'warning' },
-                        { icon: '📚', label: 'NCERT', desc: 'Chapter reading', path: '/ncert', variant: 'neet' },
+                        { icon: '<Icon name="BookOpen" />', label: 'NCERT', desc: 'Chapter reading', path: '/ncert', variant: 'neet' },
                     ].map(action => (
                         <Link key={action.path} href={action.path} style={{ textDecoration: 'none' }}>
                             <Card interactive className="landing-tool-card">
@@ -222,9 +223,9 @@ function GuestLanding() {
             {/* Social Proof */}
             <div className="grid grid-3 guest-proof-grid">
                 {[
-                    { value: '12,400+', label: 'Tests Generated', icon: '📝' },
-                    { value: 'Gemini AI', label: 'Powered By Google', icon: '🧠' },
-                    { value: '4.6 ★', label: 'Play Store Rating', icon: '⭐' },
+                    { value: '12,400+', label: 'Tests Generated', icon: '<Icon name="FileText" />' },
+                    { value: 'Gemini AI', label: 'Powered By Google', icon: '<Icon name="Brain" />' },
+                    { value: '4.6 ★', label: 'Play Store Rating', icon: '<Icon name="Star" />' },
                 ].map((item, i) => (
                     <Card key={i} className="guest-proof-card">
                         <div className="guest-proof-icon">{item.icon}</div>
@@ -241,9 +242,9 @@ function GuestLanding() {
                 </h2>
                 <div className="guest-features-list">
                     {[
-                        { icon: '📝', title: 'Infinite AI Mock Tests', desc: 'Custom, adaptive, PYQ — all test types generated instantly.' },
-                        { icon: '💬', title: '24/7 AI Doubt Solver', desc: 'Step-by-step NEET explanations tailored to your level.' },
-                        { icon: '📊', title: 'Performance Analytics', desc: 'Weak topics, accuracy trends, and rank prediction models.' },
+                        { icon: '<Icon name="FileText" />', title: 'Infinite AI Mock Tests', desc: 'Custom, adaptive, PYQ — all test types generated instantly.' },
+                        { icon: '<Icon name="MessageCircle" />', title: '24/7 AI Doubt Solver', desc: 'Step-by-step NEET explanations tailored to your level.' },
+                        { icon: '<Icon name="BarChart2" />', title: 'Performance Analytics', desc: 'Weak topics, accuracy trends, and rank prediction models.' },
                         { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests with your mobile camera instantly.' },
                     ].map((f, i) => (
                         <Card key={i} className="guest-feature-card">
@@ -259,7 +260,7 @@ function GuestLanding() {
 
             {/* App Download CTA */}
             <Card className="guest-app-card">
-                <h3 className="guest-app-title">📱 Study seamlessly on mobile</h3>
+                <h3 className="guest-app-title"><Icon name="Star" size={16} /> Study seamlessly on mobile</h3>
                 <p className="guest-app-desc">
                     Download the Android app for offline mode, camera OMR scanning, and daily push notification streaks.
                 </p>
@@ -307,32 +308,32 @@ export default function Home() {
                 {/* Header skeleton */}
                 <div className="landing-header">
                     <div>
-                        <Skeleton style={{ width: '220px', height: '32px', marginBottom: '8px' }} />
-                        <Skeleton style={{ width: '180px', height: '18px' }} />
+                        <Skeleton style={{ width: 220, height: 32, marginBottom: 8 }} />
+                        <Skeleton style={{ width: 180, height: 18 }} />
                     </div>
-                    <Skeleton style={{ width: '120px', height: '28px', borderRadius: '999px' }} />
+                    <Skeleton style={{ width: 120, height: 28, }} />
                 </div>
 
                 {/* Countdown card skeleton */}
-                <Skeleton style={{ height: '120px', marginBottom: '32px', borderRadius: 'var(--radius-lg)' }} />
+                <Skeleton style={{ height: 120, marginBottom: 32, }} />
 
                 {/* Stats grid skeleton */}
                 <div className="grid grid-3 landing-stats-grid">
-                    <Skeleton style={{ height: '90px' }} />
-                    <Skeleton style={{ height: '90px' }} />
-                    <Skeleton style={{ height: '90px' }} />
+                    <Skeleton style={{ height: 90 }} />
+                    <Skeleton style={{ height: 90 }} />
+                    <Skeleton style={{ height: 90 }} />
                 </div>
 
                 {/* CTA skeleton */}
-                <Skeleton style={{ height: '80px', marginBottom: '40px', borderRadius: 'var(--radius-lg)' }} />
+                <Skeleton style={{ height: 80, marginBottom: 40, }} />
 
                 {/* Quick tools skeleton */}
-                <Skeleton style={{ width: '100px', height: '16px', marginBottom: '16px' }} />
+                <Skeleton style={{ width: 100, height: 16, marginBottom: 16 }} />
                 <div className="grid grid-2">
-                    <Skeleton style={{ height: '100px' }} />
-                    <Skeleton style={{ height: '100px' }} />
-                    <Skeleton style={{ height: '100px' }} />
-                    <Skeleton style={{ height: '100px' }} />
+                    <Skeleton style={{ height: 100 }} />
+                    <Skeleton style={{ height: 100 }} />
+                    <Skeleton style={{ height: 100 }} />
+                    <Skeleton style={{ height: 100 }} />
                 </div>
             </div>
         );

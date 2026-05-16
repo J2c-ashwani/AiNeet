@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -65,7 +66,7 @@ export default function DiagnosticResultsLock() {
 
         const shareUrl = `${rootUrl}/test/diagnostic?c_score=${Math.round(result.accuracy)}&c_chap=${encodeURIComponent(result.weakestChapter)}&c_ghost=${ghostId}`;
         const pct = 100 - result.percentile; // Inverse logic to show Top %
-        const shareText = `Top ${pct}% in NEET ${result.weakestChapter} 🔥\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
+        const shareText = `Top ${pct}% in NEET ${result.weakestChapter} <Icon name="Flame" />\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
 
         const { share } = usePlatformShare();
         await share({ title: 'NEET AI Assessment', text: shareText, url: shareUrl });
@@ -74,9 +75,9 @@ export default function DiagnosticResultsLock() {
 
     if (noResult) return (
         <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', textAlign: 'center' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⏱️</div>
-            <h2 style={{ fontWeight: 800, marginBottom: '12px', color: 'var(--text-primary)' }}>Your session expired</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '28px', maxWidth: 400 }}>
+            <div style={{ marginBottom: 16 }}><Icon name="Clock" /></div>
+            <h2 style={{ fontWeight: 800, marginBottom: 12, }}>Your session expired</h2>
+            <p style={{ marginBottom: 28, maxWidth: 400 }}>
                 Your diagnostic results are no longer available in this browser. Retake the test — it only takes 3 minutes.
             </p>
             <Link href="/test/diagnostic">
@@ -93,20 +94,20 @@ export default function DiagnosticResultsLock() {
         <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 20px', overflowX: 'hidden' }}>
             
             {/* Real Telemetry Social Proof */}
-            <Badge variant="warning" style={{ marginBottom: '24px', padding: '8px 16px', fontSize: '0.85rem' }}>
-                🔥 {aspirantCount || '...'} students took this test today | Average: 61%
+            <Badge variant="warning" style={{ marginBottom: 24, padding: '8px 16px', }}>
+                <Icon name="Flame" /> {aspirantCount || '...'} students took this test today | Average: 61%
             </Badge>
 
             {/* The Hook: Immediate Reality Check */}
             <div style={{ textAlign: 'center', maxWidth: 640, marginBottom: 40, animation: 'fadeInDown 0.6s ease-out' }}>
-                <Badge variant="danger" style={{ marginBottom: '16px', fontWeight: 800, letterSpacing: '0.5px' }}>
+                <Badge variant="danger" style={{ marginBottom: 16, fontWeight: 800, letterSpacing: 0.5 }}>
                     CRITICAL DIAGNOSIS COMPLETE
                 </Badge>
-                <h1 style={{ fontSize: '2.5rem', margin: 0, fontWeight: 900, lineHeight: 1.2, color: 'var(--text-primary)' }}>
+                <h1 style={{ margin: 0, fontWeight: 900, lineHeight: 1.2, }}>
                     Your primary weakness is <br/>
-                    <span style={{ color: 'var(--danger)' }}>{result.weakestChapter}</span>
+                    <span >{result.weakestChapter}</span>
                 </h1>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: 16 }}>
+                <p style={{ marginTop: 16 }}>
                     This single chapter is dragging down your entire NEET preparation trajectory.
                 </p>
             </div>
@@ -115,37 +116,37 @@ export default function DiagnosticResultsLock() {
             <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 900, marginBottom: 60 }}>
                 {/* Fear Panel */}
                 <Card style={{ border: '1px solid var(--danger)', width: 280, padding: 24 }}>
-                    <div style={{ fontSize: '2rem', marginBottom: 8 }}>📉</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--danger)', fontWeight: 800 }}>-{result.lostMarks} Marks</h3>
-                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Projected score penalty in the actual NEET exam due to this blind spot.</p>
+                    <div style={{ marginBottom: 8 }}><Icon name="Activity" /></div>
+                    <h3 style={{ margin: 0, fontWeight: 800 }}>-{result.lostMarks} Marks</h3>
+                    <p style={{ margin: '8px 0 0', }}>Projected score penalty in the actual NEET exam due to this blind spot.</p>
                 </Card>
 
                 {/* Peer Pressure Panel */}
                 <Card style={{ border: '1px solid var(--warning)', width: 280, padding: 24 }}>
-                    <div style={{ fontSize: '2rem', marginBottom: 8 }}>👥</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--warning)', fontWeight: 800 }}>Bottom {result.percentile}%</h3>
-                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Your accuracy places you behind {100 - result.percentile}% of active NEET aspirants this week.</p>
+                    <div style={{ marginBottom: 8 }}><Icon name="Star" size={16} /></div>
+                    <h3 style={{ margin: 0, fontWeight: 800 }}>Bottom {result.percentile}%</h3>
+                    <p style={{ margin: '8px 0 0', }}>Your accuracy places you behind {100 - result.percentile}% of active NEET aspirants this week.</p>
                 </Card>
 
                 {/* Hope Panel */}
                 <Card style={{ border: '1px solid var(--success)', width: 280, padding: 24 }}>
-                    <div style={{ fontSize: '2rem', marginBottom: 8 }}>🚀</div>
-                    <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--success)', fontWeight: 800 }}>{result.peerImprovementText}</h3>
-                    <p style={{ color: 'var(--text-secondary)', margin: '8px 0 0', fontSize: '0.95rem' }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
+                    <div style={{ marginBottom: 8 }}><Icon name="Zap" /></div>
+                    <h3 style={{ margin: 0, fontWeight: 800 }}>{result.peerImprovementText}</h3>
+                    <p style={{ margin: '8px 0 0', }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
                 </Card>
             </div>
 
 
             {/* The Lock Screen & Blur (Dynamically clears on unlock state!) */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: 800, borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.5s ease' }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: 800, overflow: 'hidden', border: '1px solid var(--border)', transition: 'all 0.5s ease' }}>
                 {/* Fake Blurred Dashboard content to trigger FOMO */}
-                <Card style={{ padding: 40, filter: unlocked ? 'none' : 'blur(12px)', opacity: unlocked ? 1 : 0.5, pointerEvents: unlocked ? 'auto' : 'none', userSelect: unlocked ? 'auto' : 'none', transition: 'all 0.5s ease', border: 'none', background: 'var(--bg-glass)' }}>
+                <Card style={{ padding: 40, filter: unlocked ? 'none' : 'blur(12px)', opacity: unlocked ? 1 : 0.5, pointerEvents: unlocked ? 'auto' : 'none', userSelect: unlocked ? 'auto' : 'none', transition: 'all 0.5s ease', border: 'none', }}>
                     <div className="grid grid-2" style={{ marginBottom: 30 }}>
-                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
-                            {unlocked && <h3 style={{ color: 'var(--primary)' }}>Deep Analysis Active</h3>}
+                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+                            {unlocked && <h3 >Deep Analysis Active</h3>}
                         </Card>
-                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
-                            {unlocked && <h3 style={{ color: 'var(--success)' }}>Action Plan Active</h3>}
+                        <Card style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+                            {unlocked && <h3 >Action Plan Active</h3>}
                         </Card>
                     </div>
                     <Skeleton style={{ height: 60, marginBottom: 16 }} />
@@ -161,20 +162,20 @@ export default function DiagnosticResultsLock() {
 
                 {/* The Soft CTA Override (The Share/Register Gate) */}
                 {!unlocked && (
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-overlay)' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
                         <Card style={{ padding: '40px 32px', textAlign: 'center', maxWidth: 440, width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-                            <div style={{ width: 64, height: 64, background: 'var(--bg-glass-hover)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                                <span style={{ fontSize: '1.8rem' }}>🔒</span>
+                            <div style={{ width: 64, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                                <span ><Icon name="Lock" /></span>
                             </div>
-                            <h2 style={{ fontSize: '1.6rem', marginBottom: 12, fontWeight: 800, color: 'var(--text-primary)' }}>Unlock your full improvement plan</h2>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: '0.95rem' }}>
+                            <h2 style={{ marginBottom: 12, fontWeight: 800, }}>Unlock your full improvement plan</h2>
+                            <p style={{ marginBottom: 24, }}>
                                 Choose one of the following to reveal your complete analytics.
                             </p>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                 <Card style={{ padding: 16, border: '1px solid var(--border)' }}>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>1. The Viral Path</div>
-                                    <Button variant="success" onClick={handleViralShare} style={{ width: '100%', padding: '14px 20px', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
+                                    <div style={{ marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>1. The Viral Path</div>
+                                    <Button variant="success" onClick={handleViralShare} style={{ width: '100%', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 12 }}>
                                         📱 Share your score with friends
                                     </Button>
                                     <Input 
@@ -186,12 +187,12 @@ export default function DiagnosticResultsLock() {
                                     />
                                 </Card>
                                 
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 700 }}>OR</div>
+                                <div style={{ fontWeight: 700 }}>OR</div>
 
                                 <Card style={{ padding: 16, border: '1px solid var(--border)' }}>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
+                                    <div style={{ marginBottom: 12, textAlign: 'left', fontWeight: 600 }}>2. The Solo Path</div>
                                     <Link href="/register?claim_diagnostic=true" style={{ width: '100%' }}>
-                                        <Button variant="accent" style={{ width: '100%', fontSize: '1.05rem' }}>
+                                        <Button variant="accent" style={{ width: '100%', }}>
                                             Create Free Account
                                         </Button>
                                     </Link>

@@ -1,5 +1,7 @@
-
 'use client';
+import { Icon } from '@/components/ui/Icon';
+import { Button } from '@/components/ui/Button';
+
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -32,8 +34,8 @@ export default function AdminLayout({ children }) {
 
     if (authState === 'loading') {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#050510' }}>
-                <div style={{ width: 40, height: 40, border: '2px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', }}>
+                <div style={{ width: 40, height: 40, border: '2px solid #6366f1', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }}></div>
                 <style jsx>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
@@ -41,31 +43,31 @@ export default function AdminLayout({ children }) {
 
     if (authState === 'denied') {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#050510', color: 'white', gap: 16 }}>
-                <div style={{ fontSize: '4rem' }}>🔒</div>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ef4444' }}>Access Denied</h1>
-                <p style={{ color: '#64748b', maxWidth: 400, textAlign: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 16 }}>
+                <div ><Icon name="Lock" /></div>
+                <h1 style={{ fontWeight: 800, }}>Access Denied</h1>
+                <p style={{ maxWidth: 400, textAlign: 'center' }}>
                     You don't have permission to access the Admin Portal. This area is restricted to administrators only.
                 </p>
-                <button onClick={() => window.location.href = '/dashboard'} style={{
-                    marginTop: 16, padding: '12px 32px', borderRadius: 12, border: '1px solid rgba(99,102,241,0.3)',
-                    background: 'rgba(99,102,241,0.1)', color: '#a5b4fc', fontWeight: 600, cursor: 'pointer',
-                    fontSize: '0.9rem', transition: 'all 0.2s'
+                <Button onClick={() => window.location.href = '/dashboard'} style={{
+                    marginTop: 16, padding: '12px 32px', border: '1px solid rgba(99,102,241,0.3)',
+                    fontWeight: 600, cursor: 'pointer',
+                    transition: 'all 0.2s'
                 }}>
                     ← Back to Dashboard
-                </button>
+                </Button>
             </div>
         );
     }
 
     const navItems = [
-        { name: 'Overview', path: '/admin', icon: '📊' },
+        { name: 'Overview', path: '/admin', icon: '<Icon name="BarChart2" />' },
         { name: 'Runtime Dashboard', path: '/admin/runtime', icon: '🖥️' },
-        { name: 'Content Quality', path: '/admin/content-quality', icon: '🎓', badge: 'MD Mandate' },
+        { name: 'Content Quality', path: '/admin/content-quality', icon: '<Icon name="GraduationCap" />', badge: 'MD Mandate' },
         { name: 'Integrity', path: '/admin/integrity', icon: '🛡️' },
         { name: 'Ops Control Room', path: '/admin/ops', icon: '🧯' },
-        { name: 'Question Bank', path: '/admin/questions', icon: '📝' },
-        { name: 'NCERT Library', path: '/admin/ncert', icon: '📚' },
+        { name: 'Question Bank', path: '/admin/questions', icon: '<Icon name="FileText" />' },
+        { name: 'NCERT Library', path: '/admin/ncert', icon: '<Icon name="BookOpen" />' },
         { name: 'User Management', path: '/admin/users', icon: '👥' },
         { name: 'Revenue', path: '/admin/revenue', icon: '💰' },
     ];
@@ -75,28 +77,26 @@ export default function AdminLayout({ children }) {
     ];
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: '#050510', color: 'white' }}>
+        <div style={{ display: 'flex', minHeight: '100vh', }}>
             {/* Ambient Background Glow */}
-            <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, width: 500, height: 500, background: 'rgba(99,102,241,0.04)', borderRadius: '50%', filter: 'blur(120px)' }}></div>
-                <div style={{ position: 'absolute', bottom: 0, right: 0, width: 500, height: 500, background: 'rgba(139,92,246,0.04)', borderRadius: '50%', filter: 'blur(120px)' }}></div>
+            <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: 500, height: 500, filter: 'blur(120px)' }}></div>
+                <div style={{ position: 'absolute', bottom: 0, right: 0, width: 500, height: 500, filter: 'blur(120px)' }}></div>
             </div>
 
             {/* Glass Sidebar */}
             <aside style={{
-                width: 280, background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)',
-                borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column',
-                zIndex: 20, position: 'relative'
+                width: 280, borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column',
+                position: 'relative'
             }}>
                 <div style={{ padding: '28px 24px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <h1 style={{
-                        fontSize: '1.3rem', fontWeight: 800,
-                        background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
+                        fontWeight: 800,
                         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
                     }}>
                         Admin Portal
                     </h1>
-                    <p style={{ fontSize: '0.65rem', color: '#475569', marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Command Center</p>
+                    <p style={{ marginTop: 4, textTransform: 'uppercase', letterSpacing: '0.15em' }}>Command Center</p>
                 </div>
 
                 <nav style={{ flex: 1, padding: '12px 12px' }}>
@@ -106,25 +106,23 @@ export default function AdminLayout({ children }) {
                             return (
                                 <a key={item.path} href={item.path} style={{
                                     display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
-                                    borderRadius: 12, textDecoration: 'none', transition: 'all 0.2s',
-                                    fontSize: '0.9rem', fontWeight: 500,
-                                    background: isActive ? 'rgba(99,102,241,0.1)' : 'transparent',
-                                    color: isActive ? '#a5b4fc' : '#64748b',
+                                    textDecoration: 'none', transition: 'all 0.2s',
+                                    fontWeight: 500,
+                                    background: isActive ? 'var(--bg-glass)' : 'transparent',
+                                    color: isActive ? 'var(--text-primary)' : 'var(--text-primary)',
                                     border: isActive ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
                                     boxShadow: isActive ? '0 0 20px rgba(99,102,241,0.1)' : 'none'
                                 }}>
-                                    <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
+                                    <span >{item.icon}</span>
                                     <span>{item.name}</span>
                                     {item.badge && (
                                         <span style={{
-                                            marginLeft: 'auto', fontSize: '0.55rem', fontWeight: 700,
-                                            padding: '2px 6px', borderRadius: 4,
-                                            background: 'rgba(245,158,11,0.15)', color: '#fbbf24',
-                                            border: '1px solid rgba(245,158,11,0.25)', letterSpacing: '0.05em'
+                                            marginLeft: 'auto', fontWeight: 700,
+                                            padding: '2px 6px', border: '1px solid rgba(245,158,11,0.25)', letterSpacing: '0.05em'
                                         }}>{item.badge}</span>
                                     )}
                                     {isActive && !item.badge && (
-                                        <div style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: '#6366f1', boxShadow: '0 0 10px #6366f1' }}></div>
+                                        <div style={{ marginLeft: 'auto', width: 6, height: 6, boxShadow: '0 0 10px #6366f1' }}></div>
                                     )}
                                 </a>
                             );
@@ -136,10 +134,9 @@ export default function AdminLayout({ children }) {
                     {bottomItems.map(item => (
                         <a key={item.path} href={item.path} style={{
                             display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
-                            borderRadius: 12, textDecoration: 'none', color: '#64748b',
-                            fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.15s'
+                            textDecoration: 'none', fontWeight: 500, transition: 'all 0.15s'
                         }}>
-                            <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
+                            <span >{item.icon}</span>
                             <span>{item.name}</span>
                         </a>
                     ))}
@@ -147,20 +144,19 @@ export default function AdminLayout({ children }) {
 
                 <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     <div style={{
-                        background: 'linear-gradient(135deg, rgba(17,24,39,0.9), rgba(0,0,0,0.9))',
-                        padding: 16, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)'
+                        padding: 16, border: '1px solid rgba(255,255,255,0.08)'
                     }}>
-                        <p style={{ fontSize: '0.65rem', color: '#475569', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>System Status</p>
+                        <p style={{ marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.1em' }}>System Status</p>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ width: 8, height: 8, background: '#22c55e', borderRadius: '50%', boxShadow: '0 0 8px rgba(34,197,94,0.5)' }}></span>
-                            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#4ade80' }}>Operational</span>
+                            <span style={{ width: 8, height: 8, boxShadow: '0 0 8px rgba(34,197,94,0.5)' }}></span>
+                            <span style={{ fontWeight: 600, }}>Operational</span>
                         </div>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <main style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 10 }}>
+            <main style={{ flex: 1, overflow: 'auto', position: 'relative', }}>
                 <div style={{ maxWidth: 1200, margin: '0 auto' }}>
                     {children}
                 </div>

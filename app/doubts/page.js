@@ -1,4 +1,7 @@
 'use client';
+import { Textarea } from '@/components/ui/Textarea';
+import { Icon } from '@/components/ui/Icon';
+import { Button } from '@/components/ui/Button';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import SnapSolver from '@/components/SnapSolver';
@@ -65,8 +68,8 @@ export default function DoubtSolver() {
             setMessages(prev => [...prev, {
                 role: 'assistant',
                 content: isTimeout
-                    ? '⏱️ Our AI is a bit busy right now. Please try again in a moment.'
-                    : '⚠️ Something went wrong. Please try again.',
+                    ? '<Icon name="Clock" /> Our AI is a bit busy right now. Please try again in a moment.'
+                    : '<Icon name="AlertCircle" /> Something went wrong. Please try again.',
                 isError: true,
                 retryMsg: variables.message
             }]);
@@ -111,7 +114,7 @@ export default function DoubtSolver() {
 
             <div className="page" style={{ maxWidth: 800, margin: '0 auto', minHeight: 'calc(100dvh - 60px)', display: 'flex', flexDirection: 'column' }}>
 
-                <h1 className="text-2xl font-bold mb-4">AI Doubt Solver 🤖</h1>
+                <h1 className="text-2xl font-bold mb-4">AI Doubt Solver <Icon name="Cpu" /></h1>
 
                 {/* Vision Camera Feature */}
                 <SnapSolver
@@ -123,14 +126,14 @@ export default function DoubtSolver() {
                     <div className="chat-messages" ref={chatContainerRef} style={{ scrollBehavior: 'smooth' }}>
                         {messages.length === 0 && (
                             <div className="text-center animate-fade-in" style={{ padding: '40px 0' }}>
-                                <div style={{ fontSize: '3rem', marginBottom: 16 }}>🤖</div>
+                                <div style={{ marginBottom: 16 }}><Icon name="Cpu" /></div>
                                 <h2>AI Doubt Solver</h2>
                                 <p className="text-secondary text-sm mt-2 mb-6">Ask me anything about Physics, Chemistry, or Biology. I'll explain in NEET-focused, easy-to-understand language.</p>
                                 <div className="flex flex-wrap gap-2 justify-center">
                                     {quickPrompts.map((p, i) => (
-                                        <button key={i} className="chip" onClick={() => { setInput(p); }}>
+                                        <Button key={i} className="chip" onClick={() => { setInput(p); }}>
                                             {p}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
@@ -139,7 +142,7 @@ export default function DoubtSolver() {
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`chat-message ${msg.role}`}>
                                 <div className="chat-avatar">
-                                    {msg.role === 'user' ? '👤' : '🤖'}
+                                    {msg.role === 'user' ? '👤' : '<Icon name="Cpu" />'}
                                 </div>
                                 <div className="chat-bubble">
                                     {msg.role === 'assistant' ? (
@@ -151,12 +154,12 @@ export default function DoubtSolver() {
                                             )}
                                             <ReactMarkdown>{msg.content}</ReactMarkdown>
                                             {msg.isError && (
-                                                <button
+                                                <Button
                                                     onClick={() => handleSend(msg.retryMsg)}
-                                                    style={{ marginTop: 10, padding: '6px 14px', background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 8, color: '#818cf8', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 600 }}
+                                                    style={{ marginTop: 10, padding: '6px 14px', border: '1px solid rgba(99,102,241,0.3)', cursor: 'pointer', fontWeight: 600 }}
                                                 >
-                                                    🔄 Retry
-                                                </button>
+                                                    <Icon name="RefreshCw" /> Retry
+                                                </Button>
                                             )}
                                         </div>
                                     ) : (
@@ -168,7 +171,7 @@ export default function DoubtSolver() {
 
                         {doubtMutation.isPending && (
                             <div className="chat-message assistant">
-                                <div className="chat-avatar">🤖</div>
+                                <div className="chat-avatar"><Icon name="Cpu" /></div>
                                 <div className="chat-bubble">
                                     <div className="flex items-center gap-2">
                                         <div className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }}></div>
@@ -179,14 +182,14 @@ export default function DoubtSolver() {
                         )}
                     </div>
 
-                    <div className="chat-input-area" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
+                    <div className="chat-input-area" style={{ position: 'sticky', bottom: 0, }}>
                         {lastSaved && (
-                            <div style={{ position: 'absolute', top: '-30px', right: '16px' }}>
+                            <div style={{ position: 'absolute', top: '-30px', right: 16 }}>
                                 <TrustBadge type="autosave" meta={{ seconds: Math.floor((Date.now() - lastSaved)/1000) }} />
                             </div>
                         )}
                         <div className="chat-input-wrapper">
-                            <textarea
+                            <Textarea
                                 className="chat-input"
                                 placeholder="Ask your doubt... (e.g., Explain the Krebs cycle)"
                                 value={input}
@@ -194,9 +197,9 @@ export default function DoubtSolver() {
                                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                                 rows={1}
                             />
-                            <button className="chat-send-btn" onClick={() => handleSend(null)} disabled={!input.trim() || doubtMutation.isPending}>
+                            <Button className="chat-send-btn" onClick={() => handleSend(null)} disabled={!input.trim() || doubtMutation.isPending}>
                                 ➤
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

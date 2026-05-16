@@ -3,7 +3,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import path from 'path';
 
-const envPath = path.resolve(process.cwd(), '../.env.local');
+const envPath = path.resolve(process.cwd(), '.env.local');
 dotenv.config({ path: envPath });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
@@ -45,7 +45,7 @@ async function getIds() {
 
 async function seed() {
     const { subjectMap, chapterMap, topicMap } = await getIds();
-    const pyqFile = 'yearly_pyqs_2013_2019_ocr.json';
+    const pyqFile = 'scripts/yearly_pyqs_2013_2019_ocr.json';
 
     if (!fs.existsSync(pyqFile)) {
         console.error(`File not found: ${pyqFile}`);

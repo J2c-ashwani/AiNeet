@@ -1,22 +1,19 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { Icon } from '@/components/ui/Icon';
 
 // -- Stat Card Component --
-function StatCard({ label, value, sub, color = '#6366f1', icon }) {
+function StatCard({ label, value, sub, icon }) {
     return (
-        <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: `1px solid rgba(255,255,255,0.08)`,
-            borderRadius: 16, padding: '20px 24px',
-            position: 'relative', overflow: 'hidden',
-            transition: 'all 0.3s',
-        }}>
-            <div style={{ position: 'absolute', top: 0, right: 0, width: 80, height: 80, background: color, borderRadius: '50%', filter: 'blur(50px)', opacity: 0.15 }} />
-            <div style={{ fontSize: '1.5rem', marginBottom: 8 }}>{icon}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
-            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: 6 }}>{label}</div>
-            {sub && <div style={{ fontSize: '0.7rem', color: '#475569', marginTop: 2 }}>{sub}</div>}
-        </div>
+        <Card flat className="dash-stat-card ops-circuit-card" style={{ position: 'relative', overflow: 'hidden' }}>
+            <div className="dash-kpi-icon"><Icon name={icon || 'Activity'} size={24} color="var(--accent-primary)" /></div>
+            <div className="dash-stat-value">{value}</div>
+            <div className="dash-stat-label">{label}</div>
+            {sub && <div className="dash-kpi-label">{sub}</div>}
+        </Card>
     );
 }
 
@@ -24,132 +21,85 @@ function StatCard({ label, value, sub, color = '#6366f1', icon }) {
 function ReviewCard({ question, onApprove, onReject, loading }) {
     const [expanded, setExpanded] = useState(false);
 
-    const confidenceColor = question.confidence_score >= 0.92 ? '#22c55e'
-        : question.confidence_score >= 0.80 ? '#f59e0b' : '#ef4444';
-
-    const qualityColor = question.quality_score >= 80 ? '#22c55e'
-        : question.quality_score >= 60 ? '#f59e0b' : '#ef4444';
-
     return (
-        <div style={{
-            background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 16, overflow: 'hidden',
-            transition: 'all 0.3s',
-        }}>
+        <Card flat className="dash-history-list" style={{ marginBottom: 12 }}>
             {/* Header */}
-            <div style={{ padding: '16px 20px', cursor: 'pointer', display: 'flex', gap: 16, alignItems: 'flex-start' }}
-                onClick={() => setExpanded(!expanded)}>
+            <div className="dash-history-item" onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer', border: 'none', }}>
                 {/* Type badge */}
-                <div style={{
-                    minWidth: 48, height: 48, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: question.is_pyq ? 'rgba(34,197,94,0.1)' : 'rgba(99,102,241,0.1)',
-                    border: `1px solid ${question.is_pyq ? 'rgba(34,197,94,0.2)' : 'rgba(99,102,241,0.2)'}`,
-                    fontSize: '1.2rem'
-                }}>
-                    {question.is_pyq ? '📜' : '🤖'}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
-                        <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: 6, background: 'rgba(99,102,241,0.1)', color: '#a5b4fc' }}>
-                            {question.subject}
-                        </span>
-                        {question.topic && <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.05)', color: '#94a3b8' }}>
-                            {question.topic}
-                        </span>}
-                        <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.05)', color: '#475569' }}>
-                            ID #{question.id}
-                        </span>
+                <Badge variant={question.is_pyq ? 'neet' : 'info'} icon={question.is_pyq ? <Icon name="BookOpen" size={12} /> : <Icon name="Cpu" size={12} />} />
+                
+                <div style={{ flex: 1, minWidth: 0, paddingLeft: 12 }}>
+                    <div className="analytics-subject-row-left" style={{ flexWrap: 'wrap', marginBottom: 6 }}>
+                        <Badge variant={question.subject.toLowerCase()}>{question.subject}</Badge>
+                        {question.topic && <Badge variant="neutral">{question.topic}</Badge>}
+                        <Badge variant="neutral">ID #{question.id}</Badge>
                     </div>
-                    <p style={{ fontSize: '0.875rem', color: '#e2e8f0', lineHeight: 1.5, margin: 0 }}>
+                    <p className="omr-insight">
                         {question.text.substring(0, 150)}{question.text.length > 150 ? '...' : ''}
                     </p>
                 </div>
                 {/* Scores */}
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: qualityColor }}>{question.quality_score}</div>
-                        <div style={{ fontSize: '0.6rem', color: '#475569' }}>Quality</div>
+                <div className="analytics-subject-row-left" style={{ flexShrink: 0 }}>
+                    <div style={{ textAlign: 'center', padding: '0 8px' }}>
+                        <div className="dash-kpi-value">{question.quality_score}</div>
+                        <div className="dash-kpi-label">Quality</div>
                     </div>
-                    <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.08)' }} />
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: confidenceColor }}>
+                    <div className="ops-trust-bar-bg" style={{ width: 1, height: 32 }} />
+                    <div style={{ textAlign: 'center', padding: '0 8px' }}>
+                        <div className="dash-kpi-value">
                             {Math.round((question.confidence_score || 0) * 100)}%
                         </div>
-                        <div style={{ fontSize: '0.6rem', color: '#475569' }}>Conf.</div>
+                        <div className="dash-kpi-label">Conf.</div>
                     </div>
-                    <div style={{ fontSize: '1rem', color: '#475569', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</div>
+                    <div className="dash-kpi-label" style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</div>
                 </div>
             </div>
 
             {/* Expanded content */}
             {expanded && (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="ops-trust-row" style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border-color)' }}>
                     {/* Options */}
-                    <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                    <div className="ops-grid-1-1" style={{ gap: 8, marginBottom: 16 }}>
                         {['A', 'B', 'C', 'D'].map(opt => (
-                            <div key={opt} style={{
-                                padding: '10px 14px', borderRadius: 10,
-                                background: question.correct_option === opt ? 'rgba(34,197,94,0.1)' : 'rgba(255,255,255,0.03)',
-                                border: `1px solid ${question.correct_option === opt ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.06)'}`,
-                                display: 'flex', gap: 10, alignItems: 'flex-start'
-                            }}>
-                                <span style={{
-                                    fontSize: '0.7rem', fontWeight: 700, color: question.correct_option === opt ? '#4ade80' : '#64748b',
-                                    minWidth: 16
-                                }}>{opt}</span>
-                                <span style={{ fontSize: '0.8rem', color: question.correct_option === opt ? '#86efac' : '#94a3b8' }}>
+                            <Card key={opt} flat className={question.correct_option === opt ? 'omr-stat-box--correct' : ''} style={{ padding: 14, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                                <span className={question.correct_option === opt ? 'results-option-label--correct' : 'results-option-label--neutral'} style={{ minWidth: 16 }}>{opt}</span>
+                                <span className={question.correct_option === opt ? 'results-option-label--correct' : 'results-option-label--neutral'}>
                                     {question[`option_${opt.toLowerCase()}`]}
                                 </span>
-                            </div>
+                            </Card>
                         ))}
                     </div>
 
                     {/* Explanation */}
-                    <div style={{ padding: '0 20px 16px' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#6366f1', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <div style={{ marginBottom: 16 }}>
+                        <div className="dash-kpi-label" style={{ marginBottom: 8 }}>
                             Explanation (v{question.explanation_version || 'legacy'})
                         </div>
-                        <div style={{
-                            fontSize: '0.8rem', color: '#94a3b8', lineHeight: 1.7,
-                            background: 'rgba(255,255,255,0.02)', padding: 14, borderRadius: 10,
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            maxHeight: 200, overflowY: 'auto'
-                        }}>
+                        <div className="omr-insight ops-circuit-card" style={{ maxHeight: 200, overflowY: 'auto' }}>
                             {question.explanation}
                         </div>
                     </div>
 
                     {/* Action buttons */}
-                    <div style={{ padding: '12px 20px 16px', display: 'flex', gap: 10, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                        <button
+                    <div className="analytics-subject-row-left" style={{ paddingTop: 16, borderTop: '1px solid var(--border-color)' }}>
+                        <Button
                             id={`approve-${question.id}`}
+                            variant="success"
                             disabled={loading === question.id}
-                            onClick={() => onApprove(question.id)}
-                            style={{
-                                padding: '10px 24px', borderRadius: 10, border: '1px solid rgba(34,197,94,0.3)',
-                                background: 'rgba(34,197,94,0.1)', color: '#4ade80', fontWeight: 700,
-                                cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.2s',
-                                opacity: loading === question.id ? 0.6 : 1
-                            }}>
-                            {loading === question.id ? '...' : '✓ Approve & Lock'}
-                        </button>
-                        <button
+                            onClick={() => onApprove(question.id)}>
+                            {loading === question.id ? '...' : <><Icon name="CheckCircle" size={16} /> Approve & Lock</>}
+                        </Button>
+                        <Button
                             id={`reject-${question.id}`}
+                            variant="danger"
                             disabled={loading === question.id}
-                            onClick={() => onReject(question.id)}
-                            style={{
-                                padding: '10px 24px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.3)',
-                                background: 'rgba(239,68,68,0.1)', color: '#f87171', fontWeight: 700,
-                                cursor: 'pointer', fontSize: '0.85rem', transition: 'all 0.2s',
-                                opacity: loading === question.id ? 0.6 : 1
-                            }}>
-                            ✗ Reject
-                        </button>
+                            onClick={() => onReject(question.id)}>
+                            <Icon name="XCircle" size={16} /> Reject
+                        </Button>
                     </div>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }
 
@@ -158,7 +108,7 @@ export default function ContentQualityDashboard() {
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(null);
     const [toast, setToast] = useState(null);
-    const [tab, setTab] = useState('queue'); // queue | rejections | reports
+    const [tab, setTab] = useState('queue');
 
     const fetchData = useCallback(async () => {
         try {
@@ -203,15 +153,9 @@ export default function ContentQualityDashboard() {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{
-                        width: 48, height: 48, border: '2px solid #6366f1', borderTopColor: 'transparent',
-                        borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px'
-                    }} />
-                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Loading quality dashboard...</p>
-                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                </div>
+            <div className="dash-error-container">
+                <div className="spinner" style={{ width: 48, height: 48, borderTopColor: 'var(--accent-primary)', marginBottom: 16 }} />
+                <p className="dash-error-body">Loading quality dashboard...</p>
             </div>
         );
     }
@@ -226,120 +170,81 @@ export default function ContentQualityDashboard() {
         : 0;
 
     return (
-        <div style={{ padding: '32px 32px', fontFamily: "'Inter', sans-serif" }}>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-                * { box-sizing: border-box; }
-                ::-webkit-scrollbar { width: 6px; }
-                ::-webkit-scrollbar-track { background: transparent; }
-                ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
-                @keyframes spin { to { transform: rotate(360deg); } }
-                @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-            `}</style>
-
+        <div className="ops-page">
             {/* Toast Notification */}
             {toast && (
-                <div style={{
-                    position: 'fixed', top: 24, right: 24, zIndex: 1000,
-                    padding: '12px 20px', borderRadius: 12, fontWeight: 600, fontSize: '0.875rem',
-                    background: toast.type === 'error' ? 'rgba(239,68,68,0.9)' : 'rgba(34,197,94,0.9)',
-                    color: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                    animation: 'slideIn 0.3s ease', backdropFilter: 'blur(12px)'
+                <div className={toast.type === 'error' ? 'omr-error-banner' : 'omr-dim-warning'} style={{
+                    position: 'fixed', top: 24, right: 24,
+                    padding: '12px 20px', boxShadow: 'var(--shadow-lg)'
                 }}>
                     {toast.msg}
                 </div>
             )}
 
             {/* Page Header */}
-            <div style={{ marginBottom: 32, animation: 'fadeUp 0.5s ease' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                        <h1 style={{
-                            fontSize: '1.75rem', fontWeight: 800, margin: 0,
-                            background: 'linear-gradient(135deg, #e2e8f0, #a78bfa)',
-                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
-                        }}>
-                            Academic Governance Dashboard
-                        </h1>
-                        <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: 6 }}>
-                            MD Mandate: Every question must be teacher-verified before student exposure.
-                        </p>
-                    </div>
-                    <div style={{
-                        padding: '8px 16px', borderRadius: 10,
-                        background: m.pendingReviewCount > 0 ? 'rgba(245,158,11,0.1)' : 'rgba(34,197,94,0.1)',
-                        border: `1px solid ${m.pendingReviewCount > 0 ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.3)'}`,
-                        color: m.pendingReviewCount > 0 ? '#fbbf24' : '#4ade80',
-                        fontSize: '0.8rem', fontWeight: 700
-                    }}>
-                        {m.pendingReviewCount > 0 ? `⚠️ ${m.pendingReviewCount} awaiting review` : '✅ Review queue clear'}
-                    </div>
+            <div className="ops-header">
+                <div>
+                    <h1 className="ops-title">
+                        Academic Governance Dashboard
+                    </h1>
+                    <p className="ops-subtitle">
+                        MD Mandate: Every question must be teacher-verified before student exposure.
+                    </p>
+                </div>
+                <div className={m.pendingReviewCount > 0 ? "omr-dim-warning" : "omr-dim-warning"} style={{ borderColor: m.pendingReviewCount > 0 ? 'var(--warning)' : 'var(--success)', color: m.pendingReviewCount > 0 ? 'var(--warning)' : 'var(--success)', }}>
+                    {m.pendingReviewCount > 0 ? <><Icon name="AlertCircle" size={16} /> {m.pendingReviewCount} awaiting review</> : <><Icon name="CheckCircle" size={16} /> Review queue clear</>}
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 32, animation: 'fadeUp 0.5s ease 0.1s both' }}>
-                <StatCard icon="📊" label="Avg Quality Score" value={m.avgQuality || '—'} sub={`Target: ≥ 80`} color="#6366f1" />
-                <StatCard icon="🎯" label="Avg Confidence" value={m.avgConfidence ? `${Math.round(m.avgConfidence * 100)}%` : '—'} sub="Target: ≥ 85%" color="#8b5cf6" />
-                <StatCard icon="✅" label="High Quality (≥70)" value={m.highQualityCount || 0} color="#22c55e" />
-                <StatCard icon="🔒" label="Teacher Approved" value={m.lockedCount || 0} sub="Locked & immutable" color="#06b6d4" />
-                <StatCard icon="⏳" label="Awaiting Review" value={m.pendingReviewCount || 0} color="#f59e0b" />
-                <StatCard icon="⚠️" label="Student Reports" value={reports.pending || 0} sub="Pending resolution" color="#ef4444" />
-                <StatCard icon="📈" label="Quality Coverage" value={`${adoptionPct}%`} sub="Questions scored" color="#a78bfa" />
-                <StatCard icon="📚" label="Total Questions" value={m.totalQuestions || 0} color="#64748b" />
+            <div className="dash-stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', marginBottom: 32 }}>
+                <StatCard icon="BarChart2" label="Avg Quality Score" value={m.avgQuality || '—'} sub={`Target: ≥ 80`} />
+                <StatCard icon="Target" label="Avg Confidence" value={m.avgConfidence ? `${Math.round(m.avgConfidence * 100)}%` : '—'} sub="Target: ≥ 85%" />
+                <StatCard icon="CheckCircle" label="High Quality (≥70)" value={m.highQualityCount || 0} />
+                <StatCard icon="Lock" label="Teacher Approved" value={m.lockedCount || 0} sub="Locked & immutable" />
+                <StatCard icon="Clock" label="Awaiting Review" value={m.pendingReviewCount || 0} />
+                <StatCard icon="AlertCircle" label="Student Reports" value={reports.pending || 0} sub="Pending resolution" />
+                <StatCard icon="TrendingUp" label="Quality Coverage" value={`${adoptionPct}%`} sub="Questions scored" />
+                <StatCard icon="Layers" label="Total Questions" value={m.totalQuestions || 0} />
             </div>
 
             {/* MD Mandate Banner */}
-            <div style={{
-                padding: '14px 20px', borderRadius: 12, marginBottom: 28,
-                background: 'rgba(99,102,241,0.05)', border: '1px solid rgba(99,102,241,0.15)',
-                display: 'flex', gap: 16, alignItems: 'center',
-                animation: 'fadeUp 0.5s ease 0.2s both'
-            }}>
-                <div style={{ fontSize: '1.5rem' }}>📋</div>
+            <Card flat className="ops-section" style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '14px 20px', marginBottom: 28 }}>
+                <Icon name="Shield" size={32} color="var(--accent-primary)" />
                 <div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a5b4fc', marginBottom: 2 }}>REVIEW TIERS (MD Mandate)</div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b', display: 'flex', gap: 24 }}>
-                        <span><span style={{ color: '#4ade80' }}>●</span> Confidence ≥ 92% AND quality ≥ 85 → Auto-approve</span>
-                        <span><span style={{ color: '#fbbf24' }}>●</span> Confidence 80–92% → Human review required</span>
-                        <span><span style={{ color: '#f87171' }}>●</span> Confidence {'<'} 80% → Hard reject (no queue)</span>
+                    <div className="dash-kpi-label" style={{ marginBottom: 2 }}>REVIEW TIERS (MD Mandate)</div>
+                    <div className="dash-history-item-meta" style={{ display: 'flex', gap: 24 }}>
+                        <span><span >●</span> Confidence ≥ 92% AND quality ≥ 85 → Auto-approve</span>
+                        <span><span >●</span> Confidence 80–92% → Human review required</span>
+                        <span><span >●</span> Confidence {'<'} 80% → Hard reject (no queue)</span>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: 4, marginBottom: 20, background: 'rgba(255,255,255,0.03)', padding: 4, borderRadius: 12, width: 'fit-content', animation: 'fadeUp 0.5s ease 0.3s both' }}>
+            <div className="analytics-subject-row-left" style={{ marginBottom: 20, padding: 4 }}>
                 {[
-                    { id: 'queue', label: `Review Queue (${queue.length})`, icon: '👁️' },
-                    { id: 'rejections', label: `Recent Rejections (${rejections.length})`, icon: '❌' },
-                    { id: 'reports', label: `Student Reports`, icon: '🚨' },
+                    { id: 'queue', label: `Review Queue (${queue.length})`, icon: 'Eye' },
+                    { id: 'rejections', label: `Recent Rejections (${rejections.length})`, icon: 'XCircle' },
+                    { id: 'reports', label: `Student Reports`, icon: 'AlertCircle' },
                 ].map(t => (
-                    <button key={t.id} id={`tab-${t.id}`} onClick={() => setTab(t.id)} style={{
-                        padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                        background: tab === t.id ? 'rgba(99,102,241,0.2)' : 'transparent',
-                        color: tab === t.id ? '#a5b4fc' : '#64748b', fontWeight: 600, fontSize: '0.8rem',
-                        transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6
-                    }}>
-                        <span>{t.icon}</span><span>{t.label}</span>
-                    </button>
+                    <Button key={t.id} id={`tab-${t.id}`} onClick={() => setTab(t.id)} variant={tab === t.id ? 'secondary' : 'ghost'} className="navbar-link">
+                        <Icon name={t.icon} size={16} /> <span>{t.label}</span>
+                    </Button>
                 ))}
             </div>
 
             {/* Review Queue Tab */}
             {tab === 'queue' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, animation: 'fadeUp 0.4s ease' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {queue.length === 0 ? (
-                        <div style={{
-                            textAlign: 'center', padding: '60px 20px',
-                            background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.1)', borderRadius: 16
-                        }}>
-                            <div style={{ fontSize: '3rem', marginBottom: 12 }}>✅</div>
-                            <h3 style={{ color: '#4ade80', fontWeight: 700 }}>Review Queue is Clear!</h3>
-                            <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
+                        <Card flat className="dash-error-container" style={{ minHeight: 'auto', padding: '60px 20px' }}>
+                            <Icon name="CheckCircle" size={48} color="var(--success)" className="dash-error-icon" />
+                            <h3 className="dash-error-title" >Review Queue is Clear!</h3>
+                            <p className="dash-error-body">
                                 All AI-generated and enriched content has been reviewed. Run the generation or enrichment pipelines to add more questions.
                             </p>
-                        </div>
+                        </Card>
                     ) : queue.map(q => (
                         <ReviewCard
                             key={q.id}
@@ -354,31 +259,24 @@ export default function ContentQualityDashboard() {
 
             {/* Rejections Tab */}
             {tab === 'rejections' && (
-                <div style={{ animation: 'fadeUp 0.4s ease' }}>
+                <div>
                     {rejections.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b' }}>
+                        <div className="dash-error-body" style={{ textAlign: 'center', padding: '60px 20px' }}>
                             No rejections logged yet.
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {rejections.map((r, i) => (
-                                <div key={i} style={{
-                                    padding: '14px 18px', borderRadius: 12,
-                                    background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)',
-                                    display: 'grid', gridTemplateColumns: '100px 1fr auto', gap: 16, alignItems: 'center'
-                                }}>
-                                    <div style={{
-                                        padding: '4px 10px', borderRadius: 6, textAlign: 'center',
-                                        background: 'rgba(239,68,68,0.1)', color: '#f87171', fontSize: '0.65rem', fontWeight: 700
-                                    }}>{r.rejection_gate}</div>
+                                <Card key={i} flat className="omr-error-banner" style={{ display: 'grid', gridTemplateColumns: '100px 1fr auto', gap: 16, alignItems: 'center', padding: '14px 18px', marginBottom: 0 }}>
+                                    <div className="dash-kpi-label" style={{ textAlign: 'center' }}>{r.rejection_gate}</div>
                                     <div>
-                                        <div style={{ fontSize: '0.8rem', color: '#e2e8f0', marginBottom: 2 }}>{r.rejection_reason}</div>
-                                        {r.topic && <div style={{ fontSize: '0.7rem', color: '#475569' }}>Topic: {r.topic}</div>}
+                                        <div className="dash-history-item-name" >{r.rejection_reason}</div>
+                                        {r.topic && <div className="dash-history-item-meta">Topic: {r.topic}</div>}
                                     </div>
-                                    <div style={{ fontSize: '0.7rem', color: '#475569', whiteSpace: 'nowrap' }}>
+                                    <div className="dash-history-item-meta" style={{ whiteSpace: 'nowrap' }}>
                                         {new Date(r.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                                     </div>
-                                </div>
+                                </Card>
                             ))}
                         </div>
                     )}
@@ -387,21 +285,17 @@ export default function ContentQualityDashboard() {
 
             {/* Student Reports Tab */}
             {tab === 'reports' && (
-                <div style={{ animation: 'fadeUp 0.4s ease' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-                        <StatCard icon="🚨" label="Total Reports" value={reports.total} color="#ef4444" />
-                        <StatCard icon="⏳" label="Pending" value={reports.pending} color="#f59e0b" />
-                        <StatCard icon="❌" label="Wrong Answer" value={reports.wrongAnswer} color="#f87171" />
-                        <StatCard icon="💬" label="Unclear Explanation" value={reports.unclearExplanation} color="#fb923c" />
+                <div>
+                    <div className="dash-stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: 24 }}>
+                        <StatCard icon="AlertCircle" label="Total Reports" value={reports.total} />
+                        <StatCard icon="Clock" label="Pending" value={reports.pending} />
+                        <StatCard icon="XCircle" label="Wrong Answer" value={reports.wrongAnswer} />
+                        <StatCard icon="MessageCircle" label="Unclear Explanation" value={reports.unclearExplanation} />
                     </div>
-                    <div style={{
-                        textAlign: 'center', padding: '40px 20px',
-                        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16,
-                        color: '#475569', fontSize: '0.875rem'
-                    }}>
-                        <div style={{ fontSize: '2rem', marginBottom: 12 }}>📬</div>
-                        Student issue reporting is active. Detailed report management coming in the next sprint.
-                    </div>
+                    <Card flat className="dash-error-container" style={{ minHeight: 'auto', padding: '40px 20px' }}>
+                        <Icon name="BookMarked" size={48} className="dash-error-icon" color="var(--text-muted)" />
+                        <p className="dash-error-body">Student issue reporting is active. Detailed report management coming in the next sprint.</p>
+                    </Card>
                 </div>
             )}
         </div>

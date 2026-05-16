@@ -1,0 +1,29 @@
+[dotenv@17.3.1] injecting env (22) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+🚀 NCERT Embedding Pipeline — Enterprise v1.0
+   Mode: LIVE
+   Filter: subject=chemistry
+   pgvector: OK
+
+📖 Chemistry Part I (Class 11, chemistry)
+
+  📄 Ch. 1: Some Basic Concepts of Chemistry
+     URL: https://ncert.nic.in/textbook/pdf/kech101.pdf
+    [CACHE HIT] https___ncert_nic_in_textbook_pdf_kech101_pdf.pdf
+(node:41217) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/lib/ncert-data.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+     Chunks: 56 (avg ~295 words)
+     [1/56] Extracting metadata... Embedding...
+🔄 [API Limits] Rotating to Gemini API Key #2...
+
+
+🔄 [API Limits] Rotating to Gemini API Key #3...
+
+
+🔄 [API Limits] Rotating to Gemini API Key #4...
+
+❌ Fatal: TypeError: Cannot read properties of undefined (reading 'join')
+    at upsertChunk (file:///Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/scripts/embed-ncert-chunks.mjs:259:23)
+    at main (file:///Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/scripts/embed-ncert-chunks.mjs:355:27)

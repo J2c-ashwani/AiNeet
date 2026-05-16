@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ParentSettings from '@/components/ParentSettings';
@@ -9,10 +10,10 @@ import useSWR from 'swr';
 import { fetcher } from '@/lib/swr';
 
 const ACHIEVEMENT_ICONS = {
-    'first_test': '🎯', 'test_veteran': '🏆', 'perfect_score': '💯',
-    'streak_7': '🔥', 'streak_30': '🌋', 'xp_1000': '⭐',
-    'xp_5000': '💎', 'physics_master': '⚛️', 'chemistry_master': '🧪',
-    'biology_master': '🧬', 'speed_demon': '⚡', 'consistent': '📅'
+    'first_test': '<Icon name="Target" />', 'test_veteran': '<Icon name="Trophy" />', 'perfect_score': '💯',
+    'streak_7': '<Icon name="Flame" />', 'streak_30': '🌋', 'xp_1000': '<Icon name="Star" />',
+    'xp_5000': '💎', 'physics_master': '<Icon name="Atom" />', 'chemistry_master': '🧪',
+    'biology_master': '<Icon name="Dna" />', 'speed_demon': '<Icon name="Zap" />', 'consistent': '<Icon name="CalendarDays" />'
 };
 
 export default function ProfilePage() {
@@ -102,7 +103,7 @@ export default function ProfilePage() {
                             <div className="profile-stat-label">XP</div>
                         </div>
                         <div>
-                            <div className="profile-stat-val">🔥 {user?.streak || 0}</div>
+                            <div className="profile-stat-val"><Icon name="Flame" /> {user?.streak || 0}</div>
                             <div className="profile-stat-label">Streak</div>
                         </div>
                     </div>
@@ -209,35 +210,35 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Achievements */}
-                <Card style={{ marginBottom: '24px' }}>
-                    <h3 className="profile-section-title">🏅 Achievements</h3>
+                <Card style={{ marginBottom: 24 }}>
+                    <h3 className="profile-section-title"><Icon name="Star" size={16} /> Achievements</h3>
                     {badges.length > 0 ? (
                         <div className="profile-achievements-grid">
                             {badges.map((b, i) => (
                                 <div key={i} className="profile-achievement-card">
-                                    <div className="profile-achievement-icon">{ACHIEVEMENT_ICONS[b.achievement_id] || '🏆'}</div>
+                                    <div className="profile-achievement-icon">{ACHIEVEMENT_ICONS[b.achievement_id] || '<Icon name="Trophy" />'}</div>
                                     <div className="profile-achievement-label">{b.name || b.achievement_id}</div>
                                 </div>
                             ))}
                         </div>
                     ) : (
                         <div className="profile-achievements-empty">
-                            <div className="profile-empty-icon">🎯</div>
+                            <div className="profile-empty-icon"><Icon name="Target" /></div>
                             <p className="profile-empty-text">Take tests to unlock achievements!</p>
                         </div>
                     )}
                 </Card>
 
                 {/* Quick Links */}
-                <Card style={{ marginBottom: '24px' }}>
-                    <h3 className="profile-section-title">⚡ Quick Links</h3>
+                <Card style={{ marginBottom: 24 }}>
+                    <h3 className="profile-section-title"><Icon name="Zap" /> Quick Links</h3>
                     <div className="profile-links-container">
                         {[
-                            { href: '/test/configure', icon: '📝', label: 'Take a Test' },
-                            { href: '/analytics', icon: '📈', label: 'View Analytics' },
-                            { href: '/study-plan', icon: '📅', label: 'Study Plan' },
+                            { href: '/test/configure', icon: '<Icon name="FileText" />', label: 'Take a Test' },
+                            { href: '/analytics', icon: '<Icon name="TrendingUp" />', label: 'View Analytics' },
+                            { href: '/study-plan', icon: '<Icon name="CalendarDays" />', label: 'Study Plan' },
                             { href: '/mistakes', icon: '📓', label: 'Mistake Notebook' },
-                            { href: '/leaderboard', icon: '🏆', label: 'Leaderboard' },
+                            { href: '/leaderboard', icon: '<Icon name="Trophy" />', label: 'Leaderboard' },
                         ].map(link => (
                             <Link key={link.href} href={link.href} className="profile-link-card">
                                 <span className="profile-link-icon">{link.icon}</span>{link.label}

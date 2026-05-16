@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 export const metadata = {
     title: 'Download AI NEET Coach App — Free Android APK',
     description:
@@ -13,12 +14,12 @@ export const metadata = {
 
 export default function DownloadPage() {
     const features = [
-        { icon: '🧠', title: 'AI Mock Tests', desc: 'Personalized tests that adapt to your weak areas' },
-        { icon: '💬', title: 'Instant Doubt Solving', desc: 'Snap a photo, get AI explanations in seconds' },
-        { icon: '📊', title: 'Rank Prediction', desc: 'Know exactly where you stand among lakhs of aspirants' },
-        { icon: '📅', title: 'Smart Study Plans', desc: 'AI-crafted daily plans based on your goal date' },
+        { icon: '<Icon name="Brain" />', title: 'AI Mock Tests', desc: 'Personalized tests that adapt to your weak areas' },
+        { icon: '<Icon name="MessageCircle" />', title: 'Instant Doubt Solving', desc: 'Snap a photo, get AI explanations in seconds' },
+        { icon: '<Icon name="BarChart2" />', title: 'Rank Prediction', desc: 'Know exactly where you stand among lakhs of aspirants' },
+        { icon: '<Icon name="CalendarDays" />', title: 'Smart Study Plans', desc: 'AI-crafted daily plans based on your goal date' },
         { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests instantly into your phone' },
-        { icon: '🔄', title: 'Spaced Repetition', desc: 'Never forget what you\'ve learned with smart revision' },
+        { icon: '<Icon name="RefreshCw" />', title: 'Spaced Repetition', desc: 'Never forget what you\'ve learned with smart revision' },
         { icon: '⚔️', title: 'Battle Mode', desc: 'Compete with friends in real-time quiz battles' },
     ];
 
@@ -69,11 +70,11 @@ export default function DownloadPage() {
                 </a>
 
                 <div style={styles.meta}>
-                    <span style={styles.metaItem}>📱 Android 7.0+</span>
+                    <span style={styles.metaItem}><Icon name="Star" size={16} /> Android 7.0+</span>
                     <span style={styles.metaDivider}>•</span>
-                    <span style={styles.metaItem}>📦 46 MB</span>
+                    <span style={styles.metaItem}><Icon name="Star" size={16} /> 46 MB</span>
                     <span style={styles.metaDivider}>•</span>
-                    <span style={styles.metaItem}>🔒 Safe & Secure</span>
+                    <span style={styles.metaItem}><Icon name="Lock" /> Safe & Secure</span>
                 </div>
             </section>
 
@@ -107,7 +108,7 @@ export default function DownloadPage() {
             {/* Trust Banner */}
             <section style={styles.trustSection}>
                 <div style={styles.trustCard}>
-                    <h3 style={styles.trustTitle}>🛡️ Is this APK safe?</h3>
+                    <h3 style={styles.trustTitle}><Icon name="Star" size={16} />️ Is this APK safe?</h3>
                     <p style={styles.trustText}>
                         Absolutely! This is the official AI NEET Coach app built by the same team that runs{' '}
                         <a href="https://aineetcoach.com" style={styles.link}>aineetcoach.com</a>.

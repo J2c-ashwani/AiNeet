@@ -1,10 +1,12 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
+import { Button } from '@/components/ui/Button';
 import React, { useState, useEffect } from 'react';
 
 const SUBJECT_CONFIG = {
-    physics: { icon: '⚡', color: '#6366f1', label: 'Physics', total: 45 },
+    physics: { icon: '<Icon name="Zap" />', color: '#6366f1', label: 'Physics', total: 45 },
     chemistry: { icon: '🧪', color: '#06b6d4', label: 'Chemistry', total: 45 },
-    biology: { icon: '🧬', color: '#22c55e', label: 'Biology', total: 90 },
+    biology: { icon: '<Icon name="Dna" />', color: '#22c55e', label: 'Biology', total: 90 },
 };
 
 function HeatCell({ value, maxValue }) {
@@ -14,7 +16,7 @@ function HeatCell({ value, maxValue }) {
             : intensity > 0 ? 'rgba(34,197,94,0.3)'
                 : 'rgba(255,255,255,0.03)';
     return (
-        <td style={{ background: bg, textAlign: 'center', padding: '8px 12px', fontWeight: value > 3 ? 800 : 500, color: '#f1f5f9', fontSize: '0.9rem', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <td style={{ background: bg, textAlign: 'center', padding: '8px 12px', fontWeight: value > 3 ? 800 : 500, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
             {value || '—'}
         </td>
     );
@@ -107,56 +109,54 @@ export default function BlueprintPage() {
             
             <div className="page">
                 <div className="page-header">
-                    <h1 className="page-title">📊 NEET Exam Blueprint</h1>
+                    <h1 className="page-title"><Icon name="BarChart2" /> NEET Exam Blueprint</h1>
                     <p className="page-subtitle">Historical question distribution across topics and chapters</p>
                 </div>
 
                 {/* View Type Toggle */}
-                <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,0.05)', padding: 6, borderRadius: 12, width: 'fit-content', margin: '0 0 24px 0' }}>
-                    <button
+                <div style={{ display: 'flex', gap: 4, padding: 6, width: 'fit-content', margin: '0 0 24px 0' }}>
+                    <Button
                         onClick={() => setViewType('topic')}
                         style={{
-                            padding: '8px 24px', borderRadius: 8, fontSize: '0.9rem', fontWeight: 600,
-                            background: viewType === 'topic' ? '#3b82f6' : 'transparent',
-                            color: viewType === 'topic' ? '#fff' : '#94a3b8',
+                            padding: '8px 24px', fontWeight: 600,
+                            background: viewType === 'topic' ? 'var(--text-primary)' : 'transparent',
+                            color: viewType === 'topic' ? 'var(--text-primary)' : 'var(--text-primary)',
                             border: 'none', cursor: 'pointer', transition: 'all 0.2s'
                         }}
                     >
                         Topic-wise (2021-2024)
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => setViewType('chapter')}
                         style={{
-                            padding: '8px 24px', borderRadius: 8, fontSize: '0.9rem', fontWeight: 600,
-                            background: viewType === 'chapter' ? '#8b5cf6' : 'transparent',
-                            color: viewType === 'chapter' ? '#fff' : '#94a3b8',
+                            padding: '8px 24px', fontWeight: 600,
+                            background: viewType === 'chapter' ? 'var(--text-primary)' : 'transparent',
+                            color: viewType === 'chapter' ? 'var(--text-primary)' : 'var(--text-primary)',
                             border: 'none', cursor: 'pointer', transition: 'all 0.2s'
                         }}
                     >
                         Chapter-wise (2009-2025)
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Subject Tabs */}
                 <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
                     {Object.entries(SUBJECT_CONFIG).map(([key, cfg]) => (
-                        <button
+                        <Button
                             key={key}
                             onClick={() => setActiveSubject(key)}
                             style={{
                                 padding: '12px 24px',
-                                borderRadius: 12,
                                 border: activeSubject === key ? `2px solid ${cfg.color}` : '2px solid rgba(255,255,255,0.1)',
-                                background: activeSubject === key ? `${cfg.color}22` : 'rgba(255,255,255,0.03)',
-                                color: activeSubject === key ? cfg.color : '#94a3b8',
+                                background: activeSubject === key ? `${cfg.color}22` : 'var(--bg-glass)',
+                                color: activeSubject === key ? cfg.color : 'var(--text-primary)',
                                 fontWeight: 700,
-                                fontSize: '1rem',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
                             }}
                         >
                             {cfg.icon} {cfg.label} ({cfg.total}Q)
-                        </button>
+                        </Button>
                     ))}
                 </div>
 
@@ -164,17 +164,17 @@ export default function BlueprintPage() {
                 <div className="grid grid-3 gap-4" style={{ marginBottom: 24 }}>
                     <div className="card" style={{ borderLeft: `4px solid ${cfg.color}` }}>
                         <div className="text-muted text-sm">Total Chapters</div>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: cfg.color }}>{processedChapters.length}</div>
+                        <div style={{ fontWeight: 900, color: cfg.color }}>{processedChapters.length}</div>
                     </div>
                     <div className="card" style={{ borderLeft: '4px solid #f59e0b' }}>
                         <div className="text-muted text-sm">Questions/Year</div>
-                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#f59e0b' }}>{cfg.total}</div>
+                        <div style={{ fontWeight: 900, }}>{cfg.total}</div>
                     </div>
                     <div className="card" style={{ borderLeft: '4px solid #ef4444' }}>
                         <div className="text-muted text-sm">Highest Weightage</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: '#ef4444' }}>
+                        <div style={{ fontWeight: 700, }}>
                             {processedChapters[0]?.chapter || '—'}
-                            <span style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8' }}>
+                            <span style={{ display: 'block', }}>
                                 ~{processedChapters[0]?.avg} Q/year avg
                             </span>
                         </div>
@@ -182,19 +182,19 @@ export default function BlueprintPage() {
                 </div>
 
                 {/* Heatmap Legend */}
-                <div style={{ display: 'flex', gap: 16, marginBottom: 16, alignItems: 'center', fontSize: '0.85rem', color: '#94a3b8' }}>
+                <div style={{ display: 'flex', gap: 16, marginBottom: 16, alignItems: 'center', }}>
                     <span>Weightage:</span>
-                    <span style={{ padding: '2px 10px', borderRadius: 4, background: 'rgba(34,197,94,0.3)' }}>Low (1-2)</span>
-                    <span style={{ padding: '2px 10px', borderRadius: 4, background: 'rgba(245,158,11,0.5)' }}>Medium (3)</span>
-                    <span style={{ padding: '2px 10px', borderRadius: 4, background: 'rgba(239,68,68,0.7)' }}>High (4+)</span>
+                    <span style={{ padding: '2px 10px', }}>Low (1-2)</span>
+                    <span style={{ padding: '2px 10px', }}>Medium (3)</span>
+                    <span style={{ padding: '2px 10px', }}>High (4+)</span>
                 </div>
 
                 {/* Blueprint Table */}
                 <div className="card" style={{ overflowX: 'auto', padding: 0 }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', }}>
                         <thead>
-                            <tr style={{ background: 'rgba(255,255,255,0.05)' }}>
-                                <th style={{ textAlign: 'left', padding: '14px 16px', color: '#f1f5f9', fontWeight: 700, position: 'sticky', left: 0, background: '#0d1322', zIndex: 1 }}>
+                            <tr >
+                                <th style={{ textAlign: 'left', padding: '14px 16px', fontWeight: 700, position: 'sticky', left: 0, }}>
                                     Chapter / Topic
                                 </th>
                                 {years.map(y => (
@@ -202,8 +202,8 @@ export default function BlueprintPage() {
                                         {y}
                                     </th>
                                 ))}
-                                <th style={{ textAlign: 'center', padding: '14px 12px', color: '#f59e0b', fontWeight: 800 }}>Total</th>
-                                <th style={{ textAlign: 'center', padding: '14px 12px', color: '#22c55e', fontWeight: 700 }}>Avg</th>
+                                <th style={{ textAlign: 'center', padding: '14px 12px', fontWeight: 800 }}>Total</th>
+                                <th style={{ textAlign: 'center', padding: '14px 12px', fontWeight: 700 }}>Avg</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -219,10 +219,10 @@ export default function BlueprintPage() {
                                         onMouseEnter={(e) => c.isNested && (e.currentTarget.style.background = 'rgba(255,255,255,0.03)')}
                                         onMouseLeave={(e) => c.isNested && (e.currentTarget.style.background = 'transparent')}
                                     >
-                                        <td style={{ padding: '10px 16px', fontWeight: 600, color: '#e2e8f0', position: 'sticky', left: 0, background: i % 2 === 0 ? '#0d1322' : '#111827', zIndex: 1, whiteSpace: 'nowrap' }}>
-                                            <span style={{ color: '#64748b', marginRight: 8, fontSize: '0.8rem', fontWeight: 400 }}>#{i + 1}</span>
+                                        <td style={{ padding: '10px 16px', fontWeight: 600, position: 'sticky', left: 0, background: i % 2 === 0 ? 'var(--text-primary)' : 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                                            <span style={{ marginRight: 8, fontWeight: 400 }}>#{i + 1}</span>
                                             {c.isNested && (
-                                                <span style={{ display: 'inline-block', width: 20, color: '#3b82f6', fontSize: '1.2rem', verticalAlign: 'middle', userSelect: 'none' }}>
+                                                <span style={{ display: 'inline-block', width: 20, verticalAlign: 'middle', userSelect: 'none' }}>
                                                     {expandedChapters[c.chapter] ? '▾' : '▸'}
                                                 </span>
                                             )}
@@ -231,30 +231,30 @@ export default function BlueprintPage() {
                                         {years.map(y => (
                                             <HeatCell key={y} value={c.yearData[y] || 0} maxValue={maxQ} />
                                         ))}
-                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 800, color: '#f59e0b', background: 'rgba(245,158,11,0.08)' }}>{c.total}</td>
-                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 600, color: '#22c55e' }}>{c.avg}</td>
+                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 800, }}>{c.total}</td>
+                                        <td style={{ textAlign: 'center', padding: '10px 12px', fontWeight: 600, }}>{c.avg}</td>
                                     </tr>
 
                                     {/* Render Subtopics if expanded */}
                                     {c.isNested && expandedChapters[c.chapter] && c.subTopics.map((topic, tIdx) => (
-                                        <tr key={topic.topic} style={{ background: 'rgba(0,0,0,0.2)', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                                            <td style={{ padding: '8px 16px 8px 48px', fontWeight: 400, color: '#94a3b8', position: 'sticky', left: 0, background: '#0a0f18', zIndex: 1, whiteSpace: 'nowrap' }}>
-                                                <span style={{ color: '#475569', marginRight: 6 }}>↳</span> {topic.topic}
+                                        <tr key={topic.topic} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                                            <td style={{ padding: '8px 16px 8px 48px', fontWeight: 400, position: 'sticky', left: 0, whiteSpace: 'nowrap' }}>
+                                                <span style={{ marginRight: 6 }}>↳</span> {topic.topic}
                                             </td>
                                             {years.map(y => (
                                                 <HeatCell key={`sub-${y}`} value={topic.yearData[y] || 0} maxValue={maxQ} />
                                             ))}
-                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 600, color: 'rgba(245,158,11,0.7)', fontSize: '0.85rem' }}>{topic.total}</td>
-                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 500, color: 'rgba(34,197,94,0.7)', fontSize: '0.85rem' }}>{topic.avg}</td>
+                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 600, }}>{topic.total}</td>
+                                            <td style={{ textAlign: 'center', padding: '8px 12px', fontWeight: 500, }}>{topic.avg}</td>
                                         </tr>
                                     ))}
                                 </React.Fragment>
                             ))}
                             {processedChapters.length === 0 && (
                                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                                    <td colSpan={years.length + 3} style={{ padding: '60px', textAlign: 'center', color: '#94a3b8' }}>
-                                        <div style={{ fontSize: '2rem', marginBottom: 16 }}>🚧</div>
-                                        <h3 style={{ margin: '0 0 8px', color: '#f1f5f9' }}>Data coming soon!</h3>
+                                    <td colSpan={years.length + 3} style={{ padding: 60, textAlign: 'center', }}>
+                                        <div style={{ marginBottom: 16 }}><Icon name="Star" size={16} /></div>
+                                        <h3 style={{ margin: '0 0 8px', }}>Data coming soon!</h3>
                                         <p style={{ margin: 0 }}>Chapter-wise data for {cfg.label} is currently being compiled by our experts.</p>
                                     </td>
                                 </tr>
@@ -264,10 +264,10 @@ export default function BlueprintPage() {
                 </div>
 
                 {/* Pro Tip */}
-                <div className="card" style={{ marginTop: 24, borderLeft: '4px solid #6366f1', background: 'rgba(99,102,241,0.05)' }}>
-                    <p style={{ fontWeight: 700, color: '#6366f1', margin: '0 0 8px' }}>💡 Strategy Tip</p>
-                    <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>
-                        Focus on the <strong style={{ color: '#ef4444' }}>red-highlighted chapters</strong> first — they consistently have 4+ questions per year.
+                <div className="card" style={{ marginTop: 24, borderLeft: '4px solid #6366f1', }}>
+                    <p style={{ fontWeight: 700, margin: '0 0 8px' }}><Icon name="Star" size={16} /> Strategy Tip</p>
+                    <p style={{ margin: 0, lineHeight: 1.6 }}>
+                        Focus on the <strong >red-highlighted chapters</strong> first — they consistently have 4+ questions per year.
                         Mastering the top 10 chapters in each subject can secure 60–70% of marks.
                         Use this data with your Study Plan to prioritize revision.
                     </p>

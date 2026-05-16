@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -58,25 +59,25 @@ export default async function SharePage({ params }) {
     const imageUrl = `/api/tests/scorecard?testId=${testId}`;
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', padding: '40px 20px' }}>
-            <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.5rem', fontWeight: 800 }}>
-                <span>🧠</span> <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 20px' }}>
+            <div style={{ marginBottom: 40, display: 'flex', alignItems: 'center', gap: 10, fontWeight: 800 }}>
+                <span><Icon name="Brain" /></span> <span style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AI NEET Coach</span>
             </div>
 
-            <div style={{ maxWidth: '800px', width: '100%', textAlign: 'center' }}>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '20px' }}>
+            <div style={{ maxWidth: 800, width: '100%', textAlign: 'center' }}>
+                <h1 style={{ fontWeight: 800, marginBottom: 20 }}>
                     {test.name}'s NEET Assessment
                 </h1>
 
                 <img
                     src={imageUrl}
                     alt="Test Scorecard"
-                    style={{ width: '100%', maxWidth: '600px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', border: '1px solid var(--border)', marginBottom: '40px' }}
+                    style={{ width: '100%', maxWidth: 600, boxShadow: 'var(--shadow-xl)', border: '1px solid var(--border)', marginBottom: 40 }}
                 />
 
-                <Card style={{ padding: '40px', marginBottom: '40px' }}>
-                    <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '16px' }}>Can you beat this score?</h2>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '32px' }}>
+                <Card style={{ padding: 40, marginBottom: 40 }}>
+                    <h2 style={{ fontWeight: 700, marginBottom: 16 }}>Can you beat this score?</h2>
+                    <p style={{ marginBottom: 32 }}>
                         Generate your own personalized AI mock test, get your All India Rank prediction, and see where you stand.
                     </p>
                     <a href="/register" style={{ textDecoration: 'none' }}>

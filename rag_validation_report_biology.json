@@ -1,0 +1,919 @@
+{
+  "totalEvaluated": 100,
+  "highConfidence": 0,
+  "ncertGrounded": 0,
+  "moderateConfidence": 15,
+  "needsVerification": 69,
+  "insufficientFallback": 84,
+  "avgSimilarity": "0.5240",
+  "avgDriftScore": "0.00",
+  "avgComprehensionScore": "15.00",
+  "failures": [
+    {
+      "questionId": 10161,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 49.933440502s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"49s\"}]"
+    },
+    {
+      "questionId": 11407,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 45.599038311s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"45s\"}]"
+    },
+    {
+      "questionId": 13079,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 44.62619869s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"44s\"}]"
+    },
+    {
+      "questionId": 12742,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 39.353558526s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"model\":\"gemini-3-flash\",\"location\":\"global\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"39s\"}]"
+    },
+    {
+      "questionId": 12106,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 37.862029281s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"37s\"}]"
+    },
+    {
+      "questionId": 12949,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 37.065210849s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"37s\"}]"
+    },
+    {
+      "questionId": 12790,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 36.141269315s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"36s\"}]"
+    },
+    {
+      "questionId": 13903,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 34.081963056s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"34s\"}]"
+    },
+    {
+      "questionId": 13606,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 32.374148571s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"32s\"}]"
+    },
+    {
+      "questionId": 11894,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 31.440939723s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"31s\"}]"
+    },
+    {
+      "questionId": 11211,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 30.538908266s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"30s\"}]"
+    },
+    {
+      "questionId": 12595,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 25.875256578s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"25s\"}]"
+    },
+    {
+      "questionId": 13493,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 25.036315326s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"model\":\"gemini-3-flash\",\"location\":\"global\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"25s\"}]"
+    },
+    {
+      "questionId": 13190,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 24.232123928s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"24s\"}]"
+    },
+    {
+      "questionId": 12291,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 20.621565858s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"20s\"}]"
+    },
+    {
+      "questionId": 11180,
+      "error": "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 14.573574012s. [{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"14s\"}]"
+    }
+  ],
+  "results": [
+    {
+      "questionId": 12849,
+      "text": "Glenoid cavity articulates",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.694152261586974,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 13752,
+      "text": "Montreal Protocol was signed in 1987 for control of",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.590339987030624,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13185,
+      "text": "Taylor conducted the experiments to prove semi-\nconservative mode of chromosome replication on",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.684195160865789,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 12550,
+      "text": "The process by which organisms with different evolutionary\nhistory evolve similar phenotypic adaptations in response to\na common environmental challenge, is called",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.639482235831358,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12061,
+      "text": "exhibit minimum paramagnetic behaviour?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.614576990715593,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13444,
+      "text": "Select the correct statement.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.633109030107485,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10836,
+      "text": "If you suspect major deficiency of antibodies in a person, to which of the following would you look for confirmatory evidences?",
+      "chapter": "Body Fluids and Circulation",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.590623316354552,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13682,
+      "text": "(c) 157. (d) 158.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.644342160871947,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13613,
+      "text": "The shorter and longer arms of a submetacentric chromosome\nare referred to as",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.725604278828379,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 12655,
+      "text": "Norepinephrine\n(i) is released by sympathetic fibers\n(ii) is released by parasympathetic fibers\n(iii) increases the heart rate\n(iv) decreases blood pressure.\nWhich of the above statements are correct?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.689326169132549,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 13319,
+      "text": "With reference to factors affecting the rate of photosynthesis,\nwhich of the following statements is not correct?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.739866839671105,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 10949,
+      "text": "Match List-I with List-II.\nA. Metacentric → i. Centromere situated close to the chromosome end forming one extremely short and one very long arms\nB. Acrocentric → ii. Centromere at the terminal end chromosome\nC. Sub-metacentric → iii. Centromere in the middle forming two equal arms of chromosomes\nD. Telocentric → iv. Centromere slightly away from the chromosome middle forming one shorter arm and one longer arm",
+      "chapter": "Cell: The Unit of Life",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.607363628463317,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11847,
+      "text": "Which one of the following molecular hydrides acts as a\nLewis acid ?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.614797867226475,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 14005,
+      "text": "One of the legal methods of birth control is:",
+      "chapter": "Reproductive Health",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.58819161794286,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13654,
+      "text": "Which of the following statements is not correct?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.636633453068148,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10934,
+      "text": "The osmotic expansion of a cell kept in water is chiefly regulated by:",
+      "chapter": "Cell: The Unit of Life",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.649613519001417,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10876,
+      "text": "Match the following events that occur in their respective phases of cell cycle and select the correct option:\n1. G1 phase → (i) Cell grows and organelle duplication\n2. S phase → (ii) DNA replication and chromosome duplication\n3. G2 phase → (iii) Cytoplasmic growth\n4. Metaphase in M-phase → (iv) Alignment of chromosomes",
+      "chapter": "Cell Cycle and Cell Division",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.642424387642814,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11865,
+      "text": "ABO blood groups in humans are controlled by the gene I. It\nhas three alleles - I“, I? and i. Since there are three different\nalleles, six different genotypes are possible. How many\nphenotypes can occur?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.710414421371521,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11773,
+      "text": "(b) 192. (d) 193.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.64408431517828,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13605,
+      "text": "Which of the following can be used as a biocontrol agent in the\ntreatment of plant disease?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.650573571043419,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 12297,
+      "text": "Ribosomal RNA is actively synthesized in",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.707778201666232,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11196,
+      "text": "Which of the following can be used as a biocontrol agent in the treatment of plant disease?",
+      "chapter": "Microbes in Human Welfare",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.665047844636973,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 13678,
+      "text": "(c) 117. (c) 118",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.625790413539745,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13084,
+      "text": "Which part of the tobacco plant is infected by Meloidogyne\nincognita?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.634688647911236,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13217,
+      "text": "Which of the following is correct regarding AIDS causative\nagent HIV?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.656177801095134,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11260,
+      "text": "Pneumatophores occur in",
+      "chapter": "Morphology of Flowering Plants",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.602970612403232,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13764,
+      "text": "According to Robert May, the global species diversity is about",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.680468954984079,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11209,
+      "text": "DNA fragments are:",
+      "chapter": "Molecular Basis of Inheritance",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.584537250264371,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13166,
+      "text": "How many plants among Indigofera, Sesbania, Salvia,\nAllium, Aloe, mustard, groundnut, radish, gram and turnip\nhave stamens with different lengths in their flowers?",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.689216180028967,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11845,
+      "text": "AB crystallizes in a body centred cubic lattice with edge length\n‘a’ equal to 387 pm. The distance between two oppositely\ncharged ions in the lattice is",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.626356601715092,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10675,
+      "text": "The species confined to a particular region and not found elsewhere is termed as:",
+      "chapter": "Biodiversity and Conservation",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.5,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11354,
+      "text": "Anoxygenic photosynthesis is characteristic of:",
+      "chapter": "Photosynthesis in Higher Plants",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.626184225082397,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11208,
+      "text": "The association of histone H1 with a nucleosome indicates:",
+      "chapter": "Molecular Basis of Inheritance",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.584256793006851,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11902,
+      "text": "(4) 122",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.587916177871354,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12229,
+      "text": "(©) 104.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.608539065537745,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13215,
+      "text": "(d) accumulation of uric acid leading to inflammation of\njoints.\n\nSerum differs from blood in",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.699518033732843,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 10805,
+      "text": "Given below are two statements: one is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): Polymerase chain reaction is used in DNA amplification\nReason (R): The ampicillin resistant gene is used as a selectable marker to check transformation\nIn the light of the above statements, choose the correct answer from the options given below.",
+      "chapter": "Biotechnology: Principles and Processes",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.639198308134392,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10906,
+      "text": "Arrange the following events of meiosis in correct sequence:\nA. Crossing over\nB. Synapsis\nC. Terminalisation of chiasmata\nD. Disappearance of nucleolus",
+      "chapter": "Cell Cycle and Cell Division",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.637319586436774,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12854,
+      "text": "Select the correct matching in the following pairs.",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.667768597405805,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 13873,
+      "text": "Production of Cucumber has increased manifold in recent years. Application of which of the following phytohormones has resulted in this increased yield as the hormone is known to produce female flowers in the plants:",
+      "chapter": "Plant Growth and Development",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.618362834199098,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11305,
+      "text": "Which part of the brain is responsible for thermoregulation?",
+      "chapter": "Neural Control and Coordination",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.583736913911609,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11236,
+      "text": "If there are 999 bases in an RNA that codes for a protein with 333 amino acids, and the base at position 901 is deleted such that the length of the RNA becomes 998 bases, how many codons will be altered?",
+      "chapter": "Molecular Basis of Inheritance",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.597849488258366,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11067,
+      "text": "The chronological order of human evolution from early to the recent is:",
+      "chapter": "Genetics and Evolution",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.591108847724341,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13130,
+      "text": "(d) 177. (ad) 178.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.60312415491756,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12972,
+      "text": "Outbreeding is an important strategy of animal husbandry\nbecause it",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.639774086495594,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12641,
+      "text": "The figure shows a section of human ovary. Select the option\nwhich gives the correct identification of either A or B with\nfunction/characteristic.",
+      "chapter": "The Living World",
+      "confidenceBand": "Moderate Confidence",
+      "similarity": 0.719267208314168,
+      "driftScore": 0,
+      "comprehensionScore": 100,
+      "explanationPreview": "Insufficient NCERT grounding available..."
+    },
+    {
+      "questionId": 11770,
+      "text": "(d) 162. (b) 163. (b) 164.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.626735098349734,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11175,
+      "text": "Which of the following muscular disorder is inherited?",
+      "chapter": "Locomotion and Movement",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.54293545312846,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13679,
+      "text": "(b) 127. (c) 128 (b) 129.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.63807485586182,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11844,
+      "text": "Which one is most reactive towards S,1 reaction?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.600978875101873,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10694,
+      "text": "Select the wrong statement:",
+      "chapter": "Biological Classification",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.601106953422973,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10686,
+      "text": "The primitive prokaryotes responsible for the production of biogas from the dung of ruminant animals, include the:",
+      "chapter": "Biological Classification",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.610170089592342,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11039,
+      "text": "Analogous structures are a result of:",
+      "chapter": "Genetics and Evolution",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.624114237778558,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10844,
+      "text": "Blood pressure in the mammalian aorta is maximum during:",
+      "chapter": "Body Fluids and Circulation",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.585861781630091,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10657,
+      "text": "Habitat loss and fragmentation, over exploitation, alien species invasion and co-extinction are causes for:",
+      "chapter": "Biodiversity and Conservation",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.5,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10971,
+      "text": "Match the following columns and select the correct option:\n1. Pituitary gland → (i) Grave's disease\n2. Thyroid gland → (ii) Diabetes mellitus\n3. Adrenal gland → (iii) Diabetes insipidus\n4. Pancreas → (iv) Addison's disease",
+      "chapter": "Chemical Coordination and Integration",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.626609239967054,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10859,
+      "text": "Identify the wrong statement with reference to transport of oxygen.",
+      "chapter": "Breathing and Exchange of Gases",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.594696872952301,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13210,
+      "text": "Choose the correct statement.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.629253074019785,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13768,
+      "text": "Which of the following statements is not correct?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.636633453068148,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11242,
+      "text": "In an E.coli strain i gene gets mutated and its product can not bind the inducer molecule. If growth medium is provided with lactose, what will be the outcome?",
+      "chapter": "Molecular Basis of Inheritance",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.647214647629525,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13193,
+      "text": "Which kind of therapy was given in 1990 to a four-year-old\ngirl with adenosine deaminase (ADA) deficiency?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.567009022862528,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13186,
+      "text": "The mechanism that causes a gene to move from one linkage\ngroup to another is called",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.646315036384618,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13872,
+      "text": "Plants follow different pathways in response to environment or phase of life to form different kinds of structures. This ability is called:",
+      "chapter": "Plant Growth and Development",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.5953959126609,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10975,
+      "text": "Graves' disease is caused due to:",
+      "chapter": "Chemical Coordination and Integration",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.582907984603404,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10866,
+      "text": "Which of the following options correctly represents the lung conditions in asthma and emphysema, respectively?",
+      "chapter": "Breathing and Exchange of Gases",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.572091315513341,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10597,
+      "text": "Match List-I with List-II\nA. Lenticels → (i) Phellogen\nB. Cork cambium → (ii) Suberin deposition\nC. Secondary cortex → (iii) Exchange of gases\nD. Cork → (iv) Phelloderm\nChoose the correct answer.",
+      "chapter": "Anatomy of Flowering Plants",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.637793562543777,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 12552,
+      "text": "Advantage of cleistogamy is",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.636618451669036,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 14011,
+      "text": "Artificial insemination means:",
+      "chapter": "Reproductive Health",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.616237603650237,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11169,
+      "text": "The pivot joint between atlas and axis is a type of:",
+      "chapter": "Locomotion and Movement",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.561107840471993,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10803,
+      "text": "The colonies of recombinant bacteria appear white in contrast to blue colonies of non-recombinant bacteria because of:",
+      "chapter": "Biotechnology: Principles and Processes",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.597595382023412,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11341,
+      "text": "Which one of the following statements cannot be connected to Predation?",
+      "chapter": "Organisms and Populations",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.647433377419923,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10599,
+      "text": "Which of the following statements about cork cambium is incorrect?",
+      "chapter": "Anatomy of Flowering Plants",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.630746772191553,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10783,
+      "text": "DNA strands on a gel stained with ethidium bromide when viewed under UV radiation, appear as:",
+      "chapter": "Biotechnology: Principles and Processes",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.589216295118245,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 13237,
+      "text": "(d) 127. (d) 128 () 129.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.60320425033571,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11227,
+      "text": "Which is the “Only enzyme” that has “Capability” to catalyse Initiation, Elongation and Termination in the process of transcription in prokaryotes?",
+      "chapter": "Molecular Basis of Inheritance",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.605759360465779,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11896,
+      "text": "Stirred-tank bioreactors have been designed for",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.632690668106097,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10623,
+      "text": "Which of the following characteristics is mainly responsible for diversification of insects on land?",
+      "chapter": "Animal Kingdom",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.642395210979946,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10996,
+      "text": "Which one of the following is a characteristic feature of cropland ecosystem?",
+      "chapter": "Ecosystem",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.5,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10644,
+      "text": "Choose the correct statement:",
+      "chapter": "Animal Kingdom",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.588792611504486,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10977,
+      "text": "Which one of the following hormones is not involved in sugar metabolism?",
+      "chapter": "Chemical Coordination and Integration",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.618977912847187,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 10904,
+      "text": "In meiosis, crossing over is initiated at:",
+      "chapter": "Cell Cycle and Cell Division",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.615266763254002,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11360,
+      "text": "In photosynthesis, the light-independent reactions take place at:",
+      "chapter": "Photosynthesis in Higher Plants",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.600340032557248,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11841,
+      "text": "Which one of the following is employed as a tranquilizer\n\ndrug ?",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.632765290090319,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    },
+    {
+      "questionId": 11570,
+      "text": "(b) 182. (b) 183.",
+      "chapter": "The Living World",
+      "confidenceBand": "Needs Verification",
+      "similarity": 0.646029710769658,
+      "driftScore": null,
+      "comprehensionScore": null,
+      "explanationPreview": "Insufficient NCERT grounding available for this question. Please consult your NCERT textbook directl..."
+    }
+  ]
+}

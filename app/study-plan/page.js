@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
@@ -23,7 +24,7 @@ export default function StudyPlanPage() {
 
             <div className="page" style={{ maxWidth: 800 }}>
                 <div className="page-header">
-                    <h1 className="page-title">📅 AI Study Plan</h1>
+                    <h1 className="page-title"><Icon name="CalendarDays" /> AI Study Plan</h1>
                     <p className="page-subtitle">Your personalized study schedule for {plan?.date || 'today'}</p>
                 </div>
 
@@ -58,10 +59,10 @@ export default function StudyPlanPage() {
                 {/* Recommendations */}
                 {plan?.recommendations && (
                     <div className="card mt-6">
-                        <h3 className="mb-4">💡 AI Recommendations</h3>
+                        <h3 className="mb-4"><Icon name="Star" size={16} /> AI Recommendations</h3>
                         <div className="flex flex-col gap-2">
                             {plan.recommendations.map((rec, i) => (
-                                <div key={i} style={{ padding: '10px 14px', background: 'var(--bg-glass)', borderRadius: 'var(--radius-sm)', fontSize: '0.9rem' }}>
+                                <div key={i} style={{ padding: '10px 14px', }}>
                                     {rec}
                                 </div>
                             ))}
@@ -70,8 +71,8 @@ export default function StudyPlanPage() {
                 )}
 
                 <div className="flex gap-3 mt-6">
-                    <a href="/test/configure" className="btn btn-primary">📝 Start Practice Test</a>
-                    <a href="/doubts" className="btn btn-secondary">🤖 Ask a Doubt</a>
+                    <a href="/test/configure" className="btn btn-primary"><Icon name="FileText" /> Start Practice Test</a>
+                    <a href="/doubts" className="btn btn-secondary"><Icon name="Cpu" /> Ask a Doubt</a>
                 </div>
             </div>
         </div>

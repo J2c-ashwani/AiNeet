@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
@@ -70,7 +71,7 @@ export async function GET(request) {
             <body>
                 <div class="watermark">AI NEET Coach (aineetcoach.com)</div>
                 <div class="header">
-                    <h1>🧠 AI Mistake Notebook</h1>
+                    <h1><Icon name="Brain" /> AI Mistake Notebook</h1>
                     <p>Generated for ${user.name} • ${mistakes.length} Concepts to Revise Before NEET</p>
                 </div>
                 

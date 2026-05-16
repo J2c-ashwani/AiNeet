@@ -1,4 +1,5 @@
 "use client";
+import { Button } from '@/components/ui/Button';
 
 import Link from 'next/link';
 
@@ -14,12 +15,12 @@ export default function OfflinePage() {
             <p className="text-slate-400 mb-8 max-w-md">
                 It looks like you've lost your internet connection. Some features of AI NEET Coach require an active connection to sync questions and save your progress.
             </p>
-            <button
+            <Button
                 onClick={() => window.location.reload()}
                 className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors cursor-pointer"
             >
                 Try Again
-            </button>
+            </Button>
         </div>
     );
 }

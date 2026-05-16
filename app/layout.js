@@ -175,7 +175,7 @@ function JsonLd() {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" suppressHydrationWarning style={{ background: '#080c18' }}>
+        <html lang="en" suppressHydrationWarning >
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/icon-192.png" />
@@ -223,7 +223,7 @@ export default function RootLayout({ children }) {
                     }
                 `}} />
             </head>
-            <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#080c18' }}>
+            <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', }}>
                 {/* Splash creation script — MUST be in body so document.body exists.
                     React tracks this <script> tag but NOT the div it creates,
                     so remove() is safe and won't crash React's reconciler. */}

@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
@@ -377,14 +378,14 @@ export default function TestPage({ params }) {
         return (
             <div className="page" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
                 <Card className="animate-fade-in" style={{ maxWidth: 480, width: '100%', textAlign: 'center', padding: '40px 32px' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: 16 }}>📝</div>
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: 12, color: 'var(--text-primary)' }}>
+                    <div style={{ marginBottom: 16 }}><Icon name="FileText" /></div>
+                    <h2 style={{ fontWeight: 800, marginBottom: 12, }}>
                         Resume your test?
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: 32, lineHeight: 1.6 }}>
+                    <p style={{ marginBottom: 32, lineHeight: 1.6 }}>
                         You have an unfinished test. Your answers and progress have been saved.
                     </p>
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
                         <Button variant="primary" size="lg" onClick={handleResume} style={{ minWidth: 160 }}>
                             Resume Test →
                         </Button>
@@ -417,13 +418,13 @@ export default function TestPage({ params }) {
     const answeredCount = Object.values(answers).filter(a => a).length;
 
     return (
-        <div style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
+        <div style={{ minHeight: '100vh' }}>
             <RecoveryBanner show={showRecoveryBanner} />
             
             {/* Network Fallback Recovery Banner */}
             {offlineSyncPending && (
-                <div style={{ background: 'var(--danger)', color: 'white', padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 'var(--z-sticky)', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
-                    <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>⚠️ Connection dropped. Your test is paused and safely saved offline.</p>
+                <div style={{ padding: '12px 24px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', boxShadow: 'var(--shadow-xl)' }}>
+                    <p style={{ fontWeight: 600, margin: 0 }}><Icon name="AlertCircle" /> Connection dropped. Your test is paused and safely saved offline.</p>
                     <Button onClick={handleSubmit} disabled={testSubmitMutation.isPending} variant="secondary" size="sm">
                         {testSubmitMutation.isPending ? 'Syncing...' : 'Retry Submission Sync'}
                     </Button>
@@ -432,19 +433,19 @@ export default function TestPage({ params }) {
 
             {/* Test Header */}
             <div className="test-header" style={{ margin: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                     <span className="question-number">Q {currentQ + 1}/{testData.totalQuestions}</span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{answeredCount} answered</span>
+                    <span >{answeredCount} answered</span>
                     <div className="hidden md:block">
                         <AutosaveIndicator lastSavedAt={testData ? Date.now() : null} />
                     </div>
                 </div>
                 <div className={`timer ${timeLeft > 300 ? 'safe' : ''}`}>
-                    ⏱️ {formatTime(timeLeft)}
+                    <Icon name="Clock" /> {formatTime(timeLeft)}
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: 8 }}>
                     <Button variant="ghost" size="sm" onClick={() => setShowNav(!showNav)}>
-                        📋 Navigator
+                        <Icon name="FileText" /> Navigator
                     </Button>
                     <Button variant="danger" size="sm" onClick={handleSubmit} disabled={testSubmitMutation.isPending} className="critical-flow">
                         {testSubmitMutation.isPending ? 'Submitting...' : 'Submit Test'}
@@ -452,19 +453,19 @@ export default function TestPage({ params }) {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
+            <div style={{ display: 'flex', maxWidth: 1200, margin: '0 auto', padding: 24 }}>
                 {/* Main Question Area */}
                 <div style={{ flex: 1, paddingRight: showNav ? 24 : 0 }}>
                     <Card className="animate-fade-in" key={currentQ}>
                         {/* Question */}
                         <div className="question-text">
                             {question.is_ai_generated === 1 && (
-                                <Badge variant="primary" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
-                                    ⚡ AI Generated
+                                <Badge variant="primary" style={{ marginRight: 8, verticalAlign: 'middle' }}>
+                                    <Icon name="Zap" /> AI Generated
                                 </Badge>
                             )}
                             {(question.year_asked || question.exam_name) && (
-                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginRight: '8px', verticalAlign: 'middle' }}>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginRight: 8, verticalAlign: 'middle' }}>
                                     <TrustBadge type="verified-pyq" />
                                     <Badge variant="accent">
                                         {question.exam_name ? `${question.exam_name} ${question.year_asked}` : `NEET ${question.year_asked}`}
@@ -475,7 +476,7 @@ export default function TestPage({ params }) {
                         </div>
 
                         {/* Options */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                             {[
                                 { key: 'A', text: question.option_a },
                                 { key: 'B', text: question.option_b },
@@ -493,8 +494,8 @@ export default function TestPage({ params }) {
                     </Card>
 
                     {/* Navigation Buttons */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
+                        <div style={{ display: 'flex', gap: 8 }}>
                             <Button variant="secondary" onClick={() => goToQuestion(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
                                 ← Previous
                             </Button>
@@ -505,7 +506,7 @@ export default function TestPage({ params }) {
                                 🚩
                             </Button>
                         </div>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: 8 }}>
                             {answers[currentQ] && (
                                 <Button variant="ghost" size="sm" onClick={() => handleAnswer(answers[currentQ])}>Clear</Button>
                             )}
@@ -525,7 +526,7 @@ export default function TestPage({ params }) {
                 {/* Question Navigator Panel */}
                 {showNav && (
                     <Card className="animate-slide-in" style={{ width: 280, flexShrink: 0, alignSelf: 'flex-start', position: 'sticky', top: 140 }}>
-                        <h4 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Question Navigator</h4>
+                        <h4 style={{ marginBottom: 16, fontWeight: 800 }}>Question Navigator</h4>
                         <div className="question-nav">
                             {testData.questions.map((_, idx) => (
                                 <div key={idx} role="button"
@@ -535,18 +536,18 @@ export default function TestPage({ params }) {
                                 </div>
                             ))}
                         </div>
-                        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span className="question-nav-btn current" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Current
+                        <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8, }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span className="question-nav-btn current" style={{ width: 16, height: 16, minWidth: 16 }}></span> Current
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span className="question-nav-btn answered" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Answered
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span className="question-nav-btn answered" style={{ width: 16, height: 16, minWidth: 16 }}></span> Answered
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span className="question-nav-btn marked" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Marked
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span className="question-nav-btn marked" style={{ width: 16, height: 16, minWidth: 16 }}></span> Marked
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span className="question-nav-btn" style={{ width: 16, height: 16, fontSize: '0.5rem', minWidth: 16 }}></span> Not visited
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                <span className="question-nav-btn" style={{ width: 16, height: 16, minWidth: 16 }}></span> Not visited
                             </div>
                         </div>
                     </Card>
@@ -557,10 +558,10 @@ export default function TestPage({ params }) {
             {initialReportState.show && (
                 <div className="modal-overlay">
                     <Card className="modal-content animate-scale-in">
-                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>Report Issue with Q{currentQ + 1}</h3>
-                        <p style={{ marginBottom: '16px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Help us improve question quality.</p>
+                        <h3 style={{ fontWeight: 800, marginBottom: 8 }}>Report Issue with Q{currentQ + 1}</h3>
+                        <p style={{ marginBottom: 16, }}>Help us improve question quality.</p>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
                             <Select value={initialReportState.reason} onChange={(e) => setReportState({ ...initialReportState, reason: e.target.value })}>
                                 <option value="error">Factual Error</option>
                                 <option value="ambiguous">Ambiguous / Confusing</option>
@@ -575,7 +576,7 @@ export default function TestPage({ params }) {
                             />
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
                             <Button variant="ghost" onClick={() => setReportState({ show: false, reason: 'error', comment: '' })}>Cancel</Button>
                             <Button variant="danger" onClick={submitReport} loading={reportMutation.isPending}>Submit Report</Button>
                         </div>

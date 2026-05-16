@@ -14,7 +14,7 @@ import { registerSchema, otpSchema } from '@/lib/validation/auth';
 function StepIndicator({ currentStep }) {
     const steps = ['form', 'otp'];
     return (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }} aria-label="Registration progress">
+        <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 32 }} aria-label="Registration progress">
             {steps.map((s, i) => (
                 <div
                     key={s}
@@ -23,9 +23,8 @@ function StepIndicator({ currentStep }) {
                     aria-valuemin={1}
                     aria-valuemax={steps.length}
                     style={{
-                        width: '50px',
-                        height: '4px',
-                        borderRadius: 'var(--radius-sm)',
+                        width: 50,
+                        height: 4,
                         transition: 'all 0.3s',
                         background: steps.indexOf(currentStep) >= i
                             ? 'var(--accent-primary)'
@@ -88,7 +87,7 @@ function RegistrationFormStep({ refCode, onSuccess }) {
             {rootError && (
                 <Alert type="error">{rootError}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => registerMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Form methods={methods} onSubmit={(d) => registerMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <FormField name="name" label="Full Name">
                     <Input
                         {...methods.register('name')}
@@ -121,11 +120,7 @@ function RegistrationFormStep({ refCode, onSuccess }) {
                         style={{
                             width: '100%',
                             padding: '12px 16px',
-                            borderRadius: 'var(--radius-md)',
                             border: '1px solid var(--border)',
-                            background: 'var(--bg-glass)',
-                            color: 'var(--text-primary)',
-                            fontSize: '1rem',
                             outline: 'none'
                         }}
                     >
@@ -134,13 +129,13 @@ function RegistrationFormStep({ refCode, onSuccess }) {
                         <option value="2029">NEET 2029</option>
                     </Select>
                 </FormField>
-                <Button type="submit" loading={registerMutation.isPending} style={{ marginTop: '8px', width: '100%' }}>
+                <Button type="submit" loading={registerMutation.isPending} style={{ marginTop: 8, width: '100%' }}>
                     Create Account →
                 </Button>
             </Form>
-            <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+            <p style={{ textAlign: 'center', marginTop: 32, }}>
                 Already have an account?{' '}
-                <a href="/login" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Sign In</a>
+                <a href="/login" style={{ fontWeight: 600, textDecoration: 'none' }}>Sign In</a>
             </p>
         </>
     );
@@ -220,7 +215,7 @@ function OtpVerificationStep({ email, password, challengeId }) {
             {rootError && (
                 <Alert type="error">{rootError}</Alert>
             )}
-            <Form methods={methods} onSubmit={(d) => verifyMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Form methods={methods} onSubmit={(d) => verifyMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <FormField name="otp" label="Verification Code" description={`Enter the code sent to ${email}`}>
                     <Input
                         {...methods.register('otp')}
@@ -231,18 +226,18 @@ function OtpVerificationStep({ email, password, challengeId }) {
                         placeholder="Enter code"
                         disabled={isSubmitting}
                         autoFocus
-                        style={{ fontSize: '1.5rem', letterSpacing: '0.5em', textAlign: 'center', fontWeight: 700 }}
+                        style={{ letterSpacing: '0.5em', textAlign: 'center', fontWeight: 700 }}
                         onChange={(e) => {
                             const cleaned = e.target.value.replace(/\D/g, '').slice(0, 8);
                             methods.setValue('otp', cleaned, { shouldValidate: true });
                         }}
                     />
                 </FormField>
-                <Button type="submit" loading={isSubmitting} style={{ marginTop: '8px', width: '100%' }}>
+                <Button type="submit" loading={isSubmitting} style={{ marginTop: 8, width: '100%' }}>
                     Verify &amp; Continue →
                 </Button>
             </Form>
-            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+            <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <Button
                     variant="ghost"
                     size="sm"
@@ -275,11 +270,11 @@ function RegisterContent() {
 
     return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
-            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
+            <Card style={{ maxWidth: 440, width: '100%', padding: 32 }} className="animate-fade-in-up">
                 {/* Header */}
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>{heading}</h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{sub}</p>
+                <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                    <h1 style={{ fontWeight: 800, marginBottom: 8 }}>{heading}</h1>
+                    <p >{sub}</p>
                 </div>
 
                 {/* Step Indicator */}
@@ -313,7 +308,7 @@ export default function RegisterPage() {
     return (
         <Suspense fallback={
             <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
-                <Skeleton style={{ maxWidth: '440px', width: '100%', height: '500px' }} />
+                <Skeleton style={{ maxWidth: 440, width: '100%', height: 500 }} />
             </div>
         }>
             <RegisterContent />

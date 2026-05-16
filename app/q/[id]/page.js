@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 import { getSupabase } from '@/lib/supabase';
 import Link from 'next/link';
 import MathRenderer from '@/components/MathRenderer';
@@ -179,14 +180,14 @@ export default async function QuestionPage({ params }) {
                         <span className={`difficulty-badge ${question.difficulty || 'medium'}`}>
                             Difficulty: {(question.difficulty || 'medium').toUpperCase()}
                         </span>
-                        <span className="difficulty-badge" style={{ background: '#1f2937', color: '#9ca3af', borderColor: '#374151' }}>
-                            ⏱️ Avg Time: {question.difficulty === 'hard' ? '90s' : question.difficulty === 'easy' ? '30s' : '60s'}
+                        <span className="difficulty-badge" >
+                            <Icon name="Clock" /> Avg Time: {question.difficulty === 'hard' ? '90s' : question.difficulty === 'easy' ? '30s' : '60s'}
                         </span>
                         {question.year_asked && (
                             <div className="flex items-center gap-2">
                                 <TrustBadge type="verified-pyq" />
-                                <span className="difficulty-badge" style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--accent-primary)', borderColor: 'rgba(99,102,241,0.2)' }}>
-                                    📅 NEET {question.year_asked}
+                                <span className="difficulty-badge" >
+                                    <Icon name="CalendarDays" /> NEET {question.year_asked}
                                 </span>
                             </div>
                         )}
@@ -209,7 +210,7 @@ export default async function QuestionPage({ params }) {
                                 <div className={`pt-1 ${isCorrect ? 'text-green-50 font-medium' : 'text-gray-300'}`}>
                                     <MathRenderer>{opt}</MathRenderer>
                                 </div>
-                                {isCorrect && <div className="ml-auto text-green-400 text-xs sm:text-sm font-bold bg-green-900/40 border border-green-500/30 px-3 py-1 rounded-full whitespace-nowrap">✓ Correct Answer</div>}
+                                {isCorrect && <div className="ml-auto text-green-400 text-xs sm:text-sm font-bold bg-green-900/40 border border-green-500/30 px-3 py-1 rounded-full whitespace-nowrap"><Icon name="Star" size={16} /> Correct Answer</div>}
                             </div>
                         )})}
                     </div>
@@ -218,7 +219,7 @@ export default async function QuestionPage({ params }) {
                     <div className="mt-8 pt-8 border-t border-gray-800 relative">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-xl font-bold text-white flex items-center gap-2 m-0">
-                                <span className="text-2xl">💡</span> Step-by-Step Explanation
+                                <span className="text-2xl"><Icon name="Star" size={16} /></span> Step-by-Step Explanation
                             </h3>
                             {(question.is_ai_generated === 1 || question.ai_confidence) && (
                                 <TrustBadge type="ai-confidence" meta={{ score: question.ai_confidence || 0.95 }} />
@@ -253,7 +254,7 @@ export default async function QuestionPage({ params }) {
                 {relatedLinks.length > 0 && (
                     <div className="mb-20">
                         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <span className="text-indigo-400">⚡</span> Next Steps: Master this Concept
+                            <span className="text-indigo-400"><Icon name="Zap" /></span> Next Steps: Master this Concept
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {relatedLinks.map((link, idx) => (

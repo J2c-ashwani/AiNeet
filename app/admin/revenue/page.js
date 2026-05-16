@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -21,7 +22,7 @@ export default function AdminRevenuePage() {
 
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-            <div style={{ width: 40, height: 40, border: '2px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            <div style={{ width: 40, height: 40, border: '2px solid #6366f1', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }}></div>
         </div>
     );
 
@@ -34,18 +35,18 @@ export default function AdminRevenuePage() {
         : '0';
 
     const revenueCards = [
-        { title: 'Monthly Revenue', value: `₹${totalMRR.toLocaleString()}`, subtitle: 'Estimated MRR', icon: '💰', color: '#10b981' },
-        { title: 'Paid Users', value: (subs.pro + subs.premium), subtitle: `${conversionRate}% conversion`, icon: '💎', color: '#6366f1' },
-        { title: 'Free Users', value: subs.free, subtitle: 'Potential upsell', icon: '🆓', color: '#64748b' },
-        { title: 'AI API Calls', value: stats?.questions || 0, subtitle: 'Questions generated', icon: '🤖', color: '#f59e0b' },
+        { title: 'Monthly Revenue', value: `₹${totalMRR.toLocaleString()}`, subtitle: 'Estimated MRR', icon: '💰', },
+        { title: 'Paid Users', value: (subs.pro + subs.premium), subtitle: `${conversionRate}% conversion`, icon: '💎', },
+        { title: 'Free Users', value: subs.free, subtitle: 'Potential upsell', icon: '🆓', },
+        { title: 'AI API Calls', value: stats?.questions || 0, subtitle: 'Questions generated', icon: '<Icon name="Cpu" />', },
     ];
 
     const planRevData = [
-        { name: 'Pro (₹299)', value: proRevenue, color: '#3b82f6' },
-        { name: 'Premium (₹599)', value: premiumRevenue, color: '#f59e0b' },
+        { name: 'Pro (₹299)', value: proRevenue, },
+        { name: 'Premium (₹599)', value: premiumRevenue, },
     ].filter(d => d.value > 0);
 
-    if (planRevData.length === 0) planRevData.push({ name: 'No Revenue', value: 1, color: '#334155' });
+    if (planRevData.length === 0) planRevData.push({ name: 'No Revenue', value: 1, });
 
     const tierBarData = [
         { name: 'Free', users: subs.free, fill: '#475569' },
@@ -56,25 +57,24 @@ export default function AdminRevenuePage() {
     return (
         <div style={{ padding: 32 }}>
             <header style={{ marginBottom: 32 }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 800, background: 'linear-gradient(135deg, #10b981, #34d399)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <h1 style={{ fontWeight: 800, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     Revenue Dashboard
                 </h1>
-                <p style={{ color: '#64748b', marginTop: 8 }}>Track monetization, subscriptions, and AI cost metrics.</p>
+                <p style={{ marginTop: 8 }}>Track monetization, subscriptions, and AI cost metrics.</p>
             </header>
 
             {/* Revenue Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 32 }}>
                 {revenueCards.map((card, i) => (
                     <div key={i} style={{
-                        background: 'rgba(17,24,39,0.8)', border: '1px solid rgba(255,255,255,0.08)',
-                        borderRadius: 16, padding: 24, position: 'relative', overflow: 'hidden',
-                        backdropFilter: 'blur(20px)'
-                    }}>
-                        <div style={{ position: 'absolute', right: -15, top: -15, width: 70, height: 70, borderRadius: '50%', background: card.color, opacity: 0.08 }}></div>
-                        <p style={{ color: '#64748b', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.title}</p>
-                        <h3 style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9', marginTop: 8 }}>{card.value}</h3>
-                        <p style={{ fontSize: '0.8rem', color: '#475569', marginTop: 4 }}>{card.subtitle}</p>
-                        <span style={{ position: 'absolute', right: 20, top: 20, fontSize: '1.5rem' }}>{card.icon}</span>
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        padding: 24, position: 'relative', overflow: 'hidden',
+                        }}>
+                        <div style={{ position: 'absolute', right: -15, top: -15, width: 70, height: 70, background: card.color, opacity: 0.08 }}></div>
+                        <p style={{ fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.title}</p>
+                        <h3 style={{ fontWeight: 800, marginTop: 8 }}>{card.value}</h3>
+                        <p style={{ marginTop: 4 }}>{card.subtitle}</p>
+                        <span style={{ position: 'absolute', right: 20, top: 20, }}>{card.icon}</span>
                     </div>
                 ))}
             </div>
@@ -83,28 +83,28 @@ export default function AdminRevenuePage() {
             <RevenueCharts planRevData={planRevData} tierBarData={tierBarData} />
 
             {/* Pricing Summary */}
-            <div style={{ background: 'rgba(17,24,39,0.8)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 16, padding: 24, backdropFilter: 'blur(20px)' }}>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f1f5f9', marginBottom: 20 }}>📋 Plan Pricing Summary</h3>
+            <div style={{ border: '1px solid rgba(255,255,255,0.08)', padding: 24, }}>
+                <h3 style={{ fontWeight: 700, marginBottom: 20 }}><Icon name="FileText" /> Plan Pricing Summary</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
                     {[
-                        { name: 'Free', price: '₹0', color: '#475569', features: ['5 doubts/day', '2 AI tests/day', 'Basic analytics'], users: subs.free },
-                        { name: 'Pro', price: '₹299/mo', color: '#3b82f6', features: ['30 doubts/day', '10 AI tests/day', 'Advanced analytics', 'Priority support'], users: subs.pro },
-                        { name: 'Premium', price: '₹599/mo', color: '#f59e0b', features: ['Unlimited doubts', 'Unlimited tests', 'Vision AI (Snap & Solve)', 'Parent reports', 'Priority support'], users: subs.premium },
+                        { name: 'Free', price: '₹0', features: ['5 doubts/day', '2 AI tests/day', 'Basic analytics'], users: subs.free },
+                        { name: 'Pro', price: '₹299/mo', features: ['30 doubts/day', '10 AI tests/day', 'Advanced analytics', 'Priority support'], users: subs.pro },
+                        { name: 'Premium', price: '₹599/mo', features: ['Unlimited doubts', 'Unlimited tests', 'Vision AI (Snap & Solve)', 'Parent reports', 'Priority support'], users: subs.premium },
                     ].map((plan, i) => (
                         <div key={i} style={{
-                            padding: 20, borderRadius: 14, border: `1px solid ${plan.color}33`,
+                            padding: 20, border: `1px solid ${plan.color}33`,
                             background: `${plan.color}08`
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                                <h4 style={{ fontWeight: 700, color: plan.color, fontSize: '1rem' }}>{plan.name}</h4>
-                                <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#f1f5f9' }}>{plan.price}</span>
+                                <h4 style={{ fontWeight: 700, color: plan.color, }}>{plan.name}</h4>
+                                <span style={{ fontWeight: 800, }}>{plan.price}</span>
                             </div>
-                            <div style={{ fontSize: '2rem', fontWeight: 800, color: '#f1f5f9', marginBottom: 8 }}>{plan.users}</div>
-                            <p style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Active Users</p>
+                            <div style={{ fontWeight: 800, marginBottom: 8 }}>{plan.users}</div>
+                            <p style={{ textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Active Users</p>
                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                                 {plan.features.map((f, j) => (
-                                    <li key={j} style={{ fontSize: '0.8rem', color: '#94a3b8', padding: '3px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                                        <span style={{ color: plan.color }}>✓</span> {f}
+                                    <li key={j} style={{ padding: '3px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <span style={{ color: plan.color }}><Icon name="Star" size={16} /></span> {f}
                                     </li>
                                 ))}
                             </ul>

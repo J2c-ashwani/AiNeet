@@ -57,17 +57,17 @@ function LoginContent() {
 
     return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
-            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>Welcome Back</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Continue your NEET preparation</p>
+            <Card style={{ maxWidth: 440, width: '100%', padding: 32 }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                    <h1 style={{ fontWeight: 800, marginBottom: 8 }}>Welcome Back</h1>
+                    <p >Continue your NEET preparation</p>
                 </div>
 
                 {rootError && (
                     <Alert type="error">{rootError}</Alert>
                 )}
 
-                <Form methods={methods} onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <Form methods={methods} onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     <FormField name="email" label="Email">
                         <Input 
                             {...methods.register('email')}
@@ -87,7 +87,7 @@ function LoginContent() {
                     </FormField>
                     
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <a href="/forgot-password" style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--accent-primary)', textDecoration: 'none' }}>
+                        <a href="/forgot-password" style={{ fontWeight: 600, textDecoration: 'none' }}>
                             Forgot Password?
                         </a>
                     </div>
@@ -95,14 +95,14 @@ function LoginContent() {
                     <Button 
                         type="submit" 
                         loading={loginMutation.isPending}
-                        style={{ marginTop: '8px', width: '100%' }}
+                        style={{ marginTop: 8, width: '100%' }}
                     >
                         Sign In →
                     </Button>
                 </Form>
 
-                <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Don't have an account? <a href="/register" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>Create Account</a>
+                <p style={{ textAlign: 'center', marginTop: 32, }}>
+                    Don't have an account? <a href="/register" style={{ fontWeight: 600, textDecoration: 'none' }}>Create Account</a>
                 </p>
             </Card>
         </div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
     return (
         <Suspense fallback={
             <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
-                <Skeleton style={{ maxWidth: '440px', width: '100%', height: '400px' }} />
+                <Skeleton style={{ maxWidth: 440, width: '100%', height: 400 }} />
             </div>
         }>
             <LoginContent />

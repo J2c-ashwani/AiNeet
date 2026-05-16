@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect, useRef } from 'react';
 import { Card, Button, Input, Select } from '@/components/ui';
 import { TrustBadge } from '@/components/trust/TrustBadge';
@@ -279,7 +280,7 @@ export default function OMRScannerPage() {
         <div className="page omr-wrapper">
 
             <header className="omr-header">
-                <span className="omr-header-icon">📸</span>
+                <span className="omr-header-icon"><Icon name="Star" size={16} /></span>
                 <h1 className="omr-title">OMR Scanner</h1>
                 <p className="omr-subtitle">Scan your offline answer sheet &amp; get instant results</p>
             </header>
@@ -287,7 +288,7 @@ export default function OMRScannerPage() {
             {/* ERROR BANNER */}
             {scanError && (
                 <div className="omr-error-banner">
-                    <span className="omr-error-icon">⚠️</span>
+                    <span className="omr-error-icon"><Icon name="AlertCircle" /></span>
                     <span>{scanError}</span>
                 </div>
             )}
@@ -302,11 +303,11 @@ export default function OMRScannerPage() {
                         {/* Correct / Wrong / Skipped stats */}
                         <div className="omr-stats-container">
                             <div className="omr-stat-box omr-stat-box--correct">
-                                <div className="omr-stat-val--correct">✓ {finalResult.correct || 0}</div>
+                                <div className="omr-stat-val--correct"><Icon name="Star" size={16} /> {finalResult.correct || 0}</div>
                                 <div className="omr-stat-label">Correct</div>
                             </div>
                             <div className="omr-stat-box omr-stat-box--wrong">
-                                <div className="omr-stat-val--wrong">✗ {finalResult.wrong || 0}</div>
+                                <div className="omr-stat-val--wrong"><Icon name="Star" size={16} /> {finalResult.wrong || 0}</div>
                                 <div className="omr-stat-label">Wrong</div>
                             </div>
                             <div className="omr-stat-box omr-stat-box--skipped">
@@ -327,12 +328,12 @@ export default function OMRScannerPage() {
                     <div className="omr-actions">
                         <a href="/mistakes" style={{ textDecoration: 'none', display: 'block' }}>
                             <Button variant="primary" className="omr-action-btn">
-                                📝 View My Mistakes
+                                <Icon name="FileText" /> View My Mistakes
                             </Button>
                         </a>
                         <a href="/dashboard" style={{ textDecoration: 'none', display: 'block' }}>
                             <Button variant="secondary" className="omr-action-btn">
-                                📊 Go to Dashboard
+                                <Icon name="BarChart2" /> Go to Dashboard
                             </Button>
                         </a>
                         <Button variant="secondary" className="omr-action-btn" onClick={resetScanner}>
@@ -374,7 +375,7 @@ export default function OMRScannerPage() {
                         ))}
                     </div>
 
-                    <Button variant="success" onClick={handleGradeSubmit} disabled={gradeMutation.isPending} className="critical-flow omr-action-btn" style={{ marginBottom: '12px' }}>
+                    <Button variant="success" onClick={handleGradeSubmit} disabled={gradeMutation.isPending} className="critical-flow omr-action-btn" style={{ marginBottom: 12 }}>
                         {gradeMutation.isPending ? 'Grading your answers...' : 'Lock Answers & Grade →'}
                     </Button>
                     <Button variant="secondary" onClick={resetScanner} className="omr-action-btn">
@@ -393,7 +394,7 @@ export default function OMRScannerPage() {
                             1. Select Test Paper
                         </label>
                         {testsLoading ? (
-                            <div className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />
+                            <div className="skeleton" style={{ height: 48, }} />
                         ) : tests.length === 0 ? (
                             <Card className="omr-empty-tests">
                                 <p className="omr-empty-text">No test papers available yet.</p>
@@ -418,7 +419,7 @@ export default function OMRScannerPage() {
                                     if (selected?.subject_breakdown) {
                                         return (
                                             <div className="omr-subject-breakdown">
-                                                📋 {selected.subject_breakdown}
+                                                <Icon name="FileText" /> {selected.subject_breakdown}
                                             </div>
                                         );
                                     }
@@ -442,7 +443,7 @@ export default function OMRScannerPage() {
                                 className="omr-capture-btn omr-capture-btn--camera"
                                 variant="ghost"
                             >
-                                <span className="omr-capture-icon">📷</span>
+                                <span className="omr-capture-icon"><Icon name="Star" size={16} /></span>
                                 <span className="omr-capture-title">Take Photo</span>
                                 <span className="omr-capture-subtitle">Open camera</span>
                             </Button>
@@ -453,7 +454,7 @@ export default function OMRScannerPage() {
                                 className="omr-capture-btn omr-capture-btn--gallery"
                                 variant="ghost"
                             >
-                                <span className="omr-capture-icon">🖼️</span>
+                                <span className="omr-capture-icon"><Icon name="Star" size={16} />️</span>
                                 <span className="omr-capture-title">Upload from Gallery</span>
                                 <span className="omr-capture-subtitle">Photo or PDF</span>
                             </Button>
@@ -481,7 +482,7 @@ export default function OMRScannerPage() {
                             <Card className="omr-preview-card">
                                 {fileInfo?.isPdf ? (
                                     <div className="omr-preview-pdf">
-                                        <span className="omr-preview-pdf-icon">📄</span>
+                                        <span className="omr-preview-pdf-icon"><Icon name="Star" size={16} /></span>
                                         <span className="omr-preview-pdf-title">PDF Uploaded</span>
                                         <div className="omr-preview-pdf-size">{fileInfo.sizeLabel}</div>
                                     </div>
@@ -515,7 +516,7 @@ export default function OMRScannerPage() {
                         {/* Dimension Warning */}
                         {fileInfo?.warning && (
                             <div className="omr-dim-warning">
-                                <span>⚠️</span> {fileInfo.warning}
+                                <span><Icon name="AlertCircle" /></span> {fileInfo.warning}
                             </div>
                         )}
                     </div>
@@ -529,8 +530,8 @@ export default function OMRScannerPage() {
                         className="critical-flow omr-extract-btn"
                     >
                         {scanMutation.isPending ? (
-                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                                <div className="spinner" style={{ width: '20px', height: '20px' }} />
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                                <div className="spinner" style={{ width: 20, height: 20 }} />
                                 Analyzing OMR Sheet…
                             </span>
                         ) : 'Extract Answers'}

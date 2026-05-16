@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
@@ -62,7 +63,7 @@ const PLANS = [
         gradient: 'var(--bg-glass-hover)',
         borderColor: 'var(--accent-primary)',
         accentColor: 'var(--accent-primary)',
-        badge: '⭐ MOST POPULAR',
+        badge: '<Icon name="Star" /> MOST POPULAR',
         features: [
             { text: '100 Custom AI Tests / month', included: true },
             { text: 'Unlimited AI Doubts', included: true },
@@ -124,7 +125,7 @@ export default function PricingPage() {
                 });
                 const verifyData = await verifyRes.json();
                 if (verifyRes.ok) {
-                    alert(`✅ Upgraded to ${planId.toUpperCase()} successfully!`);
+                    alert(`<Icon name="CheckCircle" /> Upgraded to ${planId.toUpperCase()} successfully!`);
                     window.location.href = '/profile';
                 } else {
                     throw new Error(verifyData.error || 'Verification Failed');
@@ -140,30 +141,30 @@ export default function PricingPage() {
     };
 
     return (
-        <div className="page" style={{ paddingBottom: '80px' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="page" style={{ paddingBottom: 80 }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
                 {/* Hero Header */}
-                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                    <Badge variant="primary" style={{ marginBottom: '24px', padding: '8px 16px', fontSize: '0.9rem' }}>
-                        🚀 Join 50,000+ NEET aspirants already using AI Coach
+                <div style={{ textAlign: 'center', marginBottom: 60 }}>
+                    <Badge variant="primary" style={{ marginBottom: 24, padding: '8px 16px', }}>
+                        <Icon name="Zap" /> Join 50,000+ NEET aspirants already using AI Coach
                     </Badge>
-                    <h1 style={{ fontSize: '3rem', fontWeight: 900, lineHeight: 1.2, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                    <h1 style={{ fontWeight: 900, lineHeight: 1.2, marginBottom: 16 }}>
                         Invest in Your NEET Score,<br />Not Just Coaching Fees
                     </h1>
-                    <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
+                    <p style={{ maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
                         Traditional coaching costs ₹2-4 Lakhs/year. Get AI-powered personalized preparation for less than ₹13/day.
                     </p>
                 </div>
 
                 {error && (
-                    <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: 'var(--radius-md)', color: 'var(--danger)', fontSize: '0.95rem', marginBottom: '32px', textAlign: 'center', fontWeight: 500 }}>
+                    <div style={{ padding: 16, border: '1px solid rgba(239, 68, 68, 0.2)', marginBottom: 32, textAlign: 'center', fontWeight: 500 }}>
                         {error}
                     </div>
                 )}
 
                 {/* Pricing Cards */}
-                <div className="grid grid-3" style={{ marginBottom: '80px', alignItems: 'stretch' }}>
+                <div className="grid grid-3" style={{ marginBottom: 80, alignItems: 'stretch' }}>
                     {PLANS.map((plan) => {
                         const isCurrentPlan = user?.subscription_tier === plan.id;
                         const isFree = plan.id === 'free';
@@ -177,42 +178,42 @@ export default function PricingPage() {
                                 flexDirection: 'column',
                                 position: 'relative',
                                 transform: isPremium ? 'scale(1.05)' : 'none',
-                                zIndex: isPremium ? 10 : 1,
+                                
                             }}>
                                 {plan.badge && (
                                     <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)' }}>
-                                        <Badge variant="accent" style={{ padding: '6px 16px', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px' }}>
+                                        <Badge variant="accent" style={{ padding: '6px 16px', fontWeight: 800, letterSpacing: 1 }}>
                                             {plan.badge}
                                         </Badge>
                                     </div>
                                 )}
 
-                                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+                                <h2 style={{ fontWeight: 800, marginBottom: 8 }}>
                                     {plan.name}
                                 </h2>
-                                <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '24px', lineHeight: 1.4 }}>
+                                <p style={{ marginBottom: 24, lineHeight: 1.4 }}>
                                     {plan.tagline}
                                 </p>
 
-                                <div style={{ marginBottom: '32px' }}>
-                                    <span style={{ fontSize: '3rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                                <div style={{ marginBottom: 32 }}>
+                                    <span style={{ fontWeight: 900, }}>
                                         {plan.price}
                                     </span>
-                                    <span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+                                    <span style={{ fontWeight: 500 }}>
                                         {plan.period}
                                     </span>
                                     {!isFree && (
-                                        <div style={{ fontSize: '0.85rem', color: plan.accentColor, marginTop: '4px', fontWeight: 700 }}>
+                                        <div style={{ color: plan.accentColor, marginTop: 4, fontWeight: 700 }}>
                                             {plan.id === 'pro' ? '= ₹6.6/day' : '= ₹13/day'}
                                         </div>
                                     )}
                                 </div>
 
-                                <div style={{ height: '1px', background: 'var(--border)', marginBottom: '24px' }} />
+                                <div style={{ height: 1, marginBottom: 24 }} />
 
-                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {plan.features.map((f, i) => (
-                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.95rem', color: f.included ? 'var(--text-primary)' : 'var(--text-muted)', opacity: f.included ? 1 : 0.6 }}>
+                                        <li key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, color: f.included ? 'var(--text-primary)' : 'var(--text-muted)', opacity: f.included ? 1 : 0.6 }}>
                                             <span style={{ flexShrink: 0, color: f.included ? plan.accentColor : 'var(--text-muted)', fontWeight: 800 }}>
                                                 {f.included ? '✓' : '✗'}
                                             </span>
@@ -228,7 +229,7 @@ export default function PricingPage() {
                                     disabled={loading || isFree || isCurrentPlan}
                                     loading={loading === plan.id}
                                     className="critical-flow"
-                                    style={{ marginTop: '32px', width: '100%' }}
+                                    style={{ marginTop: 32, width: '100%' }}
                                 >
                                     {isCurrentPlan ? '✓ Current Plan' : isFree ? 'Your Free Plan' : plan.cta}
                                 </Button>
@@ -238,22 +239,22 @@ export default function PricingPage() {
                 </div>
 
                 {/* Social Proof */}
-                <div style={{ marginBottom: '80px' }}>
-                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                <div style={{ marginBottom: 80 }}>
+                    <h2 style={{ textAlign: 'center', fontWeight: 800, marginBottom: 16 }}>
                         Trusted by NEET Toppers
                     </h2>
-                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '48px', fontSize: '1.1rem' }}>
+                    <p style={{ textAlign: 'center', marginBottom: 48, }}>
                         Real results from real students
                     </p>
                     <div className="grid grid-3">
                         {TESTIMONIALS.map((t, i) => (
-                            <Card key={i} style={{ padding: '32px' }}>
-                                <div style={{ fontSize: '2rem', marginBottom: '16px', opacity: 0.5, color: 'var(--primary)' }}>"</div>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '24px', fontStyle: 'italic' }}>
+                            <Card key={i} style={{ padding: 32 }}>
+                                <div style={{ marginBottom: 16, opacity: 0.5, }}>"</div>
+                                <p style={{ lineHeight: 1.6, marginBottom: 24, fontStyle: 'italic' }}>
                                     {t.text}
                                 </p>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1rem' }}>{t.name}</span>
+                                    <span style={{ fontWeight: 700, }}>{t.name}</span>
                                     <Badge variant="success" style={{ fontWeight: 800 }}>
                                         {t.score}
                                     </Badge>
@@ -264,18 +265,18 @@ export default function PricingPage() {
                 </div>
 
                 {/* Comparison Table */}
-                <div style={{ marginBottom: '80px' }}>
-                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '40px' }}>
+                <div style={{ marginBottom: 80 }}>
+                    <h2 style={{ textAlign: 'center', fontWeight: 800, marginBottom: 40 }}>
                         Why AI NEET Coach vs Traditional Coaching?
                     </h2>
                     <Card style={{ padding: '0', overflow: 'hidden' }}>
                         {[
                             { feature: 'Monthly Cost', traditional: '₹15,000 - ₹30,000', ai: '₹199 - ₹399' },
-                            { feature: 'Available 24/7', traditional: '❌ Fixed hours', ai: '✅ Anytime' },
-                            { feature: 'Personalized Tests', traditional: '❌ Same for all', ai: '✅ AI adapts to you' },
-                            { feature: 'Instant Doubt Solving', traditional: '❌ Wait for class', ai: '✅ < 10 seconds' },
-                            { feature: 'Performance Tracking', traditional: '❌ Manual', ai: '✅ Real-time AI analytics' },
-                            { feature: 'Revision Alerts', traditional: '❌ None', ai: '✅ Spaced repetition' },
+                            { feature: 'Available 24/7', traditional: '<Icon name="XCircle" /> Fixed hours', ai: '<Icon name="CheckCircle" /> Anytime' },
+                            { feature: 'Personalized Tests', traditional: '<Icon name="XCircle" /> Same for all', ai: '<Icon name="CheckCircle" /> AI adapts to you' },
+                            { feature: 'Instant Doubt Solving', traditional: '<Icon name="XCircle" /> Wait for class', ai: '<Icon name="CheckCircle" /> < 10 seconds' },
+                            { feature: 'Performance Tracking', traditional: '<Icon name="XCircle" /> Manual', ai: '<Icon name="CheckCircle" /> Real-time AI analytics' },
+                            { feature: 'Revision Alerts', traditional: '<Icon name="XCircle" /> None', ai: '<Icon name="CheckCircle" /> Spaced repetition' },
                         ].map((row, i) => (
                             <div key={i} style={{
                                 display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
@@ -283,32 +284,32 @@ export default function PricingPage() {
                                 padding: '20px 24px', alignItems: 'center',
                                 background: i === 0 ? 'var(--bg-glass)' : 'transparent'
                             }}>
-                                <span style={{ color: 'var(--text-primary)', fontWeight: i === 0 ? 800 : 600, fontSize: '0.95rem' }}>{row.feature}</span>
-                                <span style={{ color: 'var(--danger)', fontSize: '0.9rem', textAlign: 'center', fontWeight: 500 }}>{row.traditional}</span>
-                                <span style={{ color: 'var(--success)', fontSize: '0.9rem', textAlign: 'center', fontWeight: 700 }}>{row.ai}</span>
+                                <span style={{ fontWeight: i === 0 ? 800 : 600, }}>{row.feature}</span>
+                                <span style={{ textAlign: 'center', fontWeight: 500 }}>{row.traditional}</span>
+                                <span style={{ textAlign: 'center', fontWeight: 700 }}>{row.ai}</span>
                             </div>
                         ))}
                     </Card>
                 </div>
 
                 {/* FAQ */}
-                <div style={{ maxWidth: '700px', margin: '0 auto', marginBottom: '80px' }}>
-                    <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '40px' }}>
+                <div style={{ maxWidth: 700, margin: '0 auto', marginBottom: 80 }}>
+                    <h2 style={{ textAlign: 'center', fontWeight: 800, marginBottom: 40 }}>
                         Frequently Asked Questions
                     </h2>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         {FAQ.map((item, i) => (
                             <Card key={i} style={{ padding: '0' }} interactive>
                                 <div role="button" onClick={() => setOpenFaq(openFaq === i ? null : i)} style={{
-                                    width: '100%', padding: '24px', display: 'flex', justifyContent: 'space-between',
-                                    alignItems: 'center', background: 'transparent', border: 'none', cursor: 'pointer',
-                                    color: 'var(--text-primary)', fontSize: '1.05rem', fontWeight: 700, textAlign: 'left'
+                                    width: '100%', padding: 24, display: 'flex', justifyContent: 'space-between',
+                                    alignItems: 'center', border: 'none', cursor: 'pointer',
+                                    fontWeight: 700, textAlign: 'left'
                                 }}>
                                     {item.q}
-                                    <span style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s', color: 'var(--text-muted)' }}>▾</span>
+                                    <span style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s', }}>▾</span>
                                 </div>
                                 {openFaq === i && (
-                                    <div style={{ padding: '0 24px 24px', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                                    <div style={{ padding: '0 24px 24px', lineHeight: 1.6 }}>
                                         {item.a}
                                     </div>
                                 )}
@@ -318,11 +319,11 @@ export default function PricingPage() {
                 </div>
 
                 {/* Final CTA */}
-                <Card style={{ textAlign: 'center', padding: '60px 24px', background: 'var(--bg-glass)', border: '1px solid var(--primary-dark)' }}>
-                    <h2 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                <Card style={{ textAlign: 'center', padding: '60px 24px', border: '1px solid var(--primary-dark)' }}>
+                    <h2 style={{ fontWeight: 800, marginBottom: 16 }}>
                         Still thinking? Start with Free.
                     </h2>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', fontSize: '1.1rem' }}>
+                    <p style={{ marginBottom: 32, }}>
                         No credit card required. Upgrade only when you see results.
                     </p>
                     <Link href="/register">

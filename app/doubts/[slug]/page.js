@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 import { notFound } from 'next/navigation';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import ReactMarkdown from 'react-markdown';
@@ -52,27 +53,27 @@ export default async function DoubtSEOPage({ params }) {
                 />
             )}
 
-            <main style={{ maxWidth: 800, margin: '0 auto', padding: '40px 20px', minHeight: '100vh', color: '#f8fafc' }}>
+            <main style={{ maxWidth: 800, margin: '0 auto', padding: '40px 20px', minHeight: '100vh', }}>
                 <header style={{ marginBottom: 40, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 24 }}>
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 16 }}>
-                        <span style={{ fontSize: '0.75rem', background: 'rgba(99,102,241,0.1)', color: '#818cf8', padding: '4px 10px', borderRadius: 20, fontWeight: 700, letterSpacing: '0.05em' }}>
+                        <span style={{ padding: '4px 10px', fontWeight: 700, letterSpacing: '0.05em' }}>
                             NEET MASTERCLASS
                         </span>
-                        <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                        <span >
                             Updated: {new Date(page.updated_at).toLocaleDateString()}
                         </span>
                     </div>
                     
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800, lineHeight: 1.2, marginBottom: 16 }}>
+                    <h1 style={{ fontWeight: 800, lineHeight: 1.2, marginBottom: 16 }}>
                         {page.title}
                     </h1>
                     
-                    <p style={{ fontSize: '1.2rem', color: '#94a3b8', lineHeight: 1.6 }}>
+                    <p style={{ lineHeight: 1.6 }}>
                         {page.meta_description}
                     </p>
                 </header>
 
-                <article className="prose prose-invert lg:prose-xl" style={{ lineHeight: 1.8, fontSize: '1.1rem' }}>
+                <article className="prose prose-invert lg:prose-xl" style={{ lineHeight: 1.8, }}>
                     <ReactMarkdown 
                         remarkPlugins={[remarkGfm, remarkMath]} 
                         rehypePlugins={[rehypeKatex]}
@@ -82,15 +83,15 @@ export default async function DoubtSEOPage({ params }) {
                 </article>
 
                 {/* Call To Action (Distribution Loop) */}
-                <div style={{ marginTop: 60, padding: 32, background: 'linear-gradient(135deg, rgba(99,102,241,0.1), rgba(168,85,247,0.1))', borderRadius: 16, border: '1px solid rgba(99,102,241,0.2)', textAlign: 'center' }}>
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f1f5f9', marginBottom: 12 }}>
+                <div style={{ marginTop: 60, padding: 32, border: '1px solid rgba(99,102,241,0.2)', textAlign: 'center' }}>
+                    <h3 style={{ fontWeight: 800, marginBottom: 12 }}>
                         Test yourself on similar NEET questions
                     </h3>
-                    <p style={{ color: '#cbd5e1', marginBottom: 24, fontSize: '1rem' }}>
+                    <p style={{ marginBottom: 24, }}>
                         Join 3000+ students tracking their mistake heatmaps to crush the exact topics you struggle with.
                     </p>
-                    <a href="/register?utm_source=seo&utm_medium=doubt_page&utm_campaign=programmatic_seo" style={{ display: 'inline-block', background: '#6366f1', color: '#fff', padding: '12px 28px', borderRadius: 8, fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s', fontSize: '1.1rem' }}>
-                        Start Free Mock Test 🚀
+                    <a href="/register?utm_source=seo&utm_medium=doubt_page&utm_campaign=programmatic_seo" style={{ display: 'inline-block', padding: '12px 28px', fontWeight: 700, textDecoration: 'none', transition: 'background 0.2s', }}>
+                        Start Free Mock Test <Icon name="Zap" />
                     </a>
                 </div>
             </main>

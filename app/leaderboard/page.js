@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LeaderboardSkeleton } from '@/components/skeletons';
@@ -19,7 +20,7 @@ export default function LeaderboardPage() {
     const loading = isLoading;
 
     if (loading) return (
-        <div style={{ minHeight: '100vh', padding: '0px' }}>
+        <div style={{ minHeight: '100vh', padding: 0 }}>
             <LeaderboardSkeleton rows={10} />
         </div>
     );
@@ -30,7 +31,7 @@ export default function LeaderboardPage() {
 
             <div className="page" style={{ maxWidth: 700 }}>
                 <div className="page-header">
-                    <h1 className="page-title">🏆 Leaderboard</h1>
+                    <h1 className="page-title"><Icon name="Trophy" /> Leaderboard</h1>
                     <p className="page-subtitle">Top performers on the platform</p>
                 </div>
 
@@ -44,7 +45,7 @@ export default function LeaderboardPage() {
                                 <div className="leaderboard-avatar">{user.initial}</div>
                                 <div className="leaderboard-name">
                                     <div>{user.name}</div>
-                                    <div className="text-xs text-muted">Level {user.level?.level} • {user.level?.name} • 🔥{user.streak}</div>
+                                    <div className="text-xs text-muted">Level {user.level?.level} • {user.level?.name} • <Icon name="Flame" />{user.streak}</div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
                                     <div className="leaderboard-score">{user.xp} XP</div>

@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -96,16 +97,16 @@ function DiagnosticComponent() {
     if (loading) return (
         <div className="page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
             <div className="spinner" style={{ width: 50, height: 50, marginBottom: 24 }}></div>
-            <h2 style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Preparing your test...</h2>
-            <p style={{ color: 'var(--text-secondary)' }}>Picking 15 questions across all subjects</p>
+            <h2 style={{ fontWeight: 600, marginBottom: 8 }}>Preparing your test...</h2>
+            <p >Picking 15 questions across all subjects</p>
         </div>
     );
 
     if (limitReached) return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
-            <Card style={{ maxWidth: 500, textAlign: 'center', background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '12px' }}>🎉 You've unlocked today's free diagnostics!</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
+            <Card style={{ maxWidth: 500, textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                <h2 style={{ fontWeight: 800, marginBottom: 12 }}><Icon name="Star" size={16} /> You've unlocked today's free diagnostics!</h2>
+                <p style={{ marginBottom: 0, }}>Create a free account to get unlimited tests, track your progress, and get AI-powered study plans.</p>
                 <Button variant="primary" style={{ width: '100%' }} onClick={() => window.location.href = '/login'}>Sign Up Free</Button>
             </Card>
         </div>
@@ -113,9 +114,9 @@ function DiagnosticComponent() {
 
     if (error) return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)' }}>
-            <Card style={{ maxWidth: 500, textAlign: 'center', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--danger)', marginBottom: '12px' }}>Something went wrong</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '24px' }}>{error}</p>
+            <Card style={{ maxWidth: 500, textAlign: 'center', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <h2 style={{ fontWeight: 800, marginBottom: 12 }}>Something went wrong</h2>
+                <p style={{ marginBottom: 0, }}>{error}</p>
                 <Button variant="primary" onClick={() => window.location.reload()}>Try Again</Button>
             </Card>
         </div>
@@ -132,25 +133,25 @@ function DiagnosticComponent() {
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, borderBottom: '1px solid var(--border)', paddingBottom: 20 }}>
                     <div>
-                        <span style={{ color: 'var(--primary)', fontWeight: 700, letterSpacing: 1, fontSize: '0.85rem' }}>
+                        <span style={{ fontWeight: 700, letterSpacing: 1, }}>
                             {challengerScore ? 'CHALLENGE ACCEPTED' : 'QUICK DIAGNOSTIC'}                        </span>
-                        <h1 style={{ margin: 0, fontSize: '1.5rem', color: 'var(--text-primary)', marginTop: 4, fontWeight: 800 }}>
+                        <h1 style={{ margin: 0, marginTop: 4, fontWeight: 800 }}>
                             {challengerScore ? `Your friend scored ${challengerScore}% in ${challengerChap || 'Biology'}. Try to beat it.` : 'Find Your Weakest Chapter'}
                         </h1>
                     </div>
-                    <Badge variant="secondary" style={{ fontSize: '0.9rem', fontWeight: 600 }}>
-                        {currentIndex + 1} <span style={{ color: 'var(--text-muted)' }}>/ {questions.length}</span>
+                    <Badge variant="secondary" style={{ fontWeight: 600 }}>
+                        {currentIndex + 1} <span >/ {questions.length}</span>
                     </Badge>
                 </div>
 
-                <Card style={{ padding: '32px', marginBottom: '32px' }}>
+                <Card style={{ padding: 32, marginBottom: 0, }}>
                     {currentQ.is_ai_generated === 1 && (
-                        <Badge variant="accent" style={{ marginBottom: '16px' }}>
+                        <Badge variant="accent" style={{ marginBottom: 0, }}>
                             ✨ AI Generated Target
                         </Badge>
                     )}
                     
-                    <h2 style={{ fontSize: '1.3rem', lineHeight: 1.6, marginBottom: 32, fontWeight: 500, color: 'var(--text-primary)' }}>{currentQ.text}</h2>
+                    <h2 style={{ lineHeight: 1.6, marginBottom: 32, fontWeight: 500, }}>{currentQ.text}</h2>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                         {['A', 'B', 'C', 'D'].map((optKey) => {
@@ -166,16 +167,16 @@ function DiagnosticComponent() {
                                         display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px',
                                         background: isSelected ? 'var(--bg-glass-hover)' : 'var(--bg-card)',
                                         border: `1px solid ${isSelected ? 'var(--primary)' : 'var(--border)'}`,
-                                        borderRadius: 'var(--radius-md)', cursor: 'pointer', transition: 'all 0.2s ease',
-                                        color: 'var(--text-primary)', fontSize: '1.05rem', textAlign: 'left', outline: 'none',
+                                        cursor: 'pointer', transition: 'all 0.2s ease',
+                                        textAlign: 'left', outline: 'none',
                                         width: '100%'
                                     }}
                                 >
                                     <div style={{ 
                                         width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: isSelected ? 'var(--primary)' : 'var(--bg-glass)', 
-                                        color: isSelected ? '#fff' : 'var(--text-primary)',
-                                        borderRadius: '50%', fontSize: '0.9rem', fontWeight: 600, flexShrink: 0
+                                        
+                                        fontWeight: 600, flexShrink: 0
                                     }}>
                                         {optKey}
                                     </div>

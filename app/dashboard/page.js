@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
@@ -57,7 +58,7 @@ export default function Dashboard() {
 
     if (apiError) return (
         <div className="dash-error-container">
-            <div className="dash-error-icon">📊</div>
+            <div className="dash-error-icon"><Icon name="BarChart2" /></div>
             <h2 className="dash-error-title">Dashboard Loading Issue</h2>
             <p className="dash-error-body">We could not load your performance data. This usually resolves after your first test.</p>
             <a href="/test/configure" className="dash-error-cta">Take Your First Test →</a>
@@ -111,7 +112,7 @@ export default function Dashboard() {
                     <Star
                         size={24}
                         className="dash-kpi-icon"
-                        style={{ color: 'var(--text-accent)', filter: 'drop-shadow(0 0 8px rgba(56, 189, 248, 0.3))' }}
+                        style={{ filter: 'drop-shadow(0 0 8px rgba(56, 189, 248, 0.3))' }}
                     />
                     <div className="dash-kpi-value">{user?.xp || 0}</div>
                     <div className="dash-kpi-label">Total XP</div>
@@ -120,7 +121,7 @@ export default function Dashboard() {
                     <Trophy
                         size={24}
                         className="dash-kpi-icon"
-                        style={{ color: 'var(--accent-secondary)', filter: 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.3))' }}
+                        style={{ filter: 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.3))' }}
                     />
                     <div className="dash-kpi-value">
                         {rankPrediction.predictedRank ? `#${(rankPrediction.predictedRank/1000).toFixed(1)}k` : 'N/A'}
@@ -132,12 +133,12 @@ export default function Dashboard() {
             {/* Stat Cards Grid */}
             <div className="dash-stat-grid">
                 <div className="dash-stat-card">
-                    <Target size={20} style={{ color: 'var(--accent-primary)', marginBottom: 12 }} />
+                    <Target size={20} style={{ marginBottom: 12 }} />
                     <div className="dash-stat-value">{stats.total_tests || 0}</div>
                     <div className="dash-stat-label">Tests Taken</div>
                 </div>
                 <div className="dash-stat-card">
-                    <CheckCircle2 size={20} style={{ color: 'var(--success)', marginBottom: 12 }} />
+                    <CheckCircle2 size={20} style={{ marginBottom: 12 }} />
                     <div className="dash-stat-value">{stats.avg_accuracy || 0}%</div>
                     <div className="dash-stat-label">Avg Accuracy</div>
                 </div>
@@ -158,13 +159,13 @@ export default function Dashboard() {
             ) : (
                 <div className="dash-next-section">
                     <div className="dash-next-header">
-                        <Zap size={20} style={{ color: 'var(--accent-secondary)' }} />
+                        <Zap size={20}  />
                         <h2 className="dash-next-title">Next up for you</h2>
                     </div>
                     {weakAreas.length > 0 ? (
                         <>
                             <p className="dash-next-body">
-                                Your accuracy in <strong style={{color:'var(--text-primary)'}}>{weakAreas[0].topic_name}</strong> is currently {Math.round(weakAreas[0].accuracy)}%. Practice this weak area now.
+                                Your accuracy in <strong >{weakAreas[0].topic_name}</strong> is currently {Math.round(weakAreas[0].accuracy)}%. Practice this weak area now.
                             </p>
                             <a href={`/test/configure?type=custom&topic=${encodeURIComponent(weakAreas[0].topic_name)}`} className="dash-next-cta">
                                 Practice Weak Area →

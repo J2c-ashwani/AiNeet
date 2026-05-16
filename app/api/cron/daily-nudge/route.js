@@ -1,3 +1,4 @@
+import { Icon } from '@/components/ui/Icon';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getMessaging, isFirebaseConfigured } from '@/lib/firebase-admin';
@@ -92,7 +93,7 @@ export async function GET(request) {
 
                 if (daysSinceActive >= 1 && daysSinceActive <= 2 && streak > 1) {
                     notification = {
-                        title: `⚠️ ${firstName}, your ${streak}-day streak is at risk!`,
+                        title: `<Icon name="AlertCircle" /> ${firstName}, your ${streak}-day streak is at risk!`,
                         body: 'A quick 5-minute test will save it. Don\'t let it break.',
                         route: '/test/diagnostic',
                         entity_id: 'streak_recovery'
@@ -100,7 +101,7 @@ export async function GET(request) {
                     dedupeKeyBase = 'streak_risk';
                 } else if (!user.onboarding_completed && daysSinceActive > 0) {
                     notification = {
-                        title: `🎯 ${firstName}, ready to find your weak chapter?`,
+                        title: `<Icon name="Target" /> ${firstName}, ready to find your weak chapter?`,
                         body: 'Take a free 5-min diagnostic — know exactly where you stand.',
                         route: '/test/diagnostic',
                         entity_id: 'first_test'

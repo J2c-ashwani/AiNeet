@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
@@ -147,29 +148,29 @@ function TestConfigContent() {
 
             <div className="page" style={{ maxWidth: 900 }}>
                 <div className="page-header">
-                    <h1 className="page-title">🎯 Generate AI Test</h1>
+                    <h1 className="page-title"><Icon name="Target" /> Generate AI Test</h1>
                     <p className="page-subtitle">Configure your test and start practicing</p>
                 </div>
 
                 {error && (
-                    <Card style={{ padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--danger)', fontSize: '0.85rem', marginBottom: 20 }}>
+                    <Card style={{ padding: '12px 16px', border: '1px solid rgba(239,68,68,0.3)', marginBottom: 20 }}>
                         {error}
                     </Card>
                 )}
 
                 {/* Test Type */}
-                <Card style={{ marginBottom: '24px' }}>
-                    <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Test Type</h3>
-                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <Card style={{ marginBottom: 24 }}>
+                    <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Test Type</h3>
+                    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                         {[
-                            { value: 'custom', label: 'Custom Test', icon: '🎯', desc: 'Choose your own settings' },
-                            { value: 'adaptive', label: 'Adaptive Practice', icon: '🧠', desc: 'AI Adjusts Difficulty' },
-                            { value: 'ai_generated', label: 'AI Generated', icon: '⚡', desc: 'Unique AI questions' },
-                            { value: 'pyq', label: 'Past Papers (Topic)', icon: '📜', desc: 'Filter by chapter' },
-                            { value: 'yearly_pyq', label: 'Year-wise PYQ', icon: '📅', desc: 'Full papers by year' },
+                            { value: 'custom', label: 'Custom Test', icon: '<Icon name="Target" />', desc: 'Choose your own settings' },
+                            { value: 'adaptive', label: 'Adaptive Practice', icon: '<Icon name="Brain" />', desc: 'AI Adjusts Difficulty' },
+                            { value: 'ai_generated', label: 'AI Generated', icon: '<Icon name="Zap" />', desc: 'Unique AI questions' },
+                            { value: 'pyq', label: 'Past Papers (Topic)', icon: '<Icon name="FileText" />', desc: 'Filter by chapter' },
+                            { value: 'yearly_pyq', label: 'Year-wise PYQ', icon: '<Icon name="CalendarDays" />', desc: 'Full papers by year' },
                             { value: 'topic', label: 'Topic-wise', icon: '📌', desc: 'Focus on specific topics' },
                             { value: 'chapter', label: 'Chapter-wise', icon: '📖', desc: 'Complete chapter test' },
-                            { value: 'mock', label: 'Full Mock', icon: '⏱️', desc: '180 Qs • 720 marks' },
+                            { value: 'mock', label: 'Full Mock', icon: '<Icon name="Clock" />', desc: '180 Qs • 720 marks' },
                         ].map(t => (
                             <div key={t.value} className={`option-card ${testType === t.value ? 'selected' : ''}`}
                                 onClick={() => {
@@ -181,10 +182,10 @@ function TestConfigContent() {
                                         setDifficulty('all');
                                     }
                                 }} style={{ flex: '1 1 180px' }}>
-                                <span style={{ fontSize: '1.5rem' }}>{t.icon}</span>
+                                <span >{t.icon}</span>
                                 <div>
                                     <div style={{ fontWeight: 600 }}>{t.label}</div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t.desc}</div>
+                                    <div >{t.desc}</div>
                                 </div>
                             </div>
                         ))}
@@ -192,23 +193,23 @@ function TestConfigContent() {
                 </Card>
 
                 {testType === 'yearly_pyq' && (
-                    <Card style={{ marginBottom: '24px', border: '2px solid var(--primary)' }}>
-                        <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Select PYQ Year</h3>
+                    <Card style={{ marginBottom: 24, border: '2px solid var(--primary)' }}>
+                        <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Select PYQ Year</h3>
                         {availableYears.length > 0 ? (
-                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                                 {availableYears.map(year => (
                                     <div key={year} className={`option-card ${selectedYear === year ? 'selected' : ''}`}
                                         onClick={() => setSelectedYear(year)} style={{ flex: '1 1 120px', textAlign: 'center' }}>
-                                        <span style={{ fontWeight: 800, fontSize: '1.25rem' }}>{year}</span>
+                                        <span style={{ fontWeight: 800, }}>{year}</span>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <Card style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', background: 'var(--bg-glass)', border: '1px solid var(--border)' }}>
-                                📅 No full yearly papers available yet. They are coming soon!
+                            <Card style={{ padding: 24, textAlign: 'center', border: '1px solid var(--border)' }}>
+                                <Icon name="CalendarDays" /> No full yearly papers available yet. They are coming soon!
                             </Card>
                         )}
-                        <p style={{ marginTop: '16px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                        <p style={{ marginTop: 16, }}>
                             This will generate a full 180-question mock test containing all Botany, Zoology, Physics, and Chemistry questions exactly as they appeared in the {selectedYear} paper.
                         </p>
                     </Card>
@@ -217,21 +218,21 @@ function TestConfigContent() {
                 {testType !== 'mock' && testType !== 'yearly_pyq' && (
                     <>
                         {/* Subject Selection */}
-                        <Card style={{ marginBottom: '24px' }}>
-                            <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Subjects</h3>
-                            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        <Card style={{ marginBottom: 24 }}>
+                            <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Select Subjects</h3>
+                            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                                 {syllabus.map(s => (
                                     <div key={s.id}
                                         className={`option-card ${selectedSubjects.includes(s.id) ? 'selected' : ''}`}
                                         onClick={() => toggleSubject(s.id)}
                                         style={{ flex: '1 1 150px', borderColor: selectedSubjects.includes(s.id) ? s.color : undefined }}>
-                                        <span style={{ fontSize: '1.3rem' }}>{s.icon}</span>
+                                        <span >{s.icon}</span>
                                         <div style={{ fontWeight: 600 }}>{s.name}</div>
                                     </div>
                                 ))}
                             </div>
                             {selectedSubjects.length === 0 && (
-                                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '8px' }}>
+                                <p style={{ marginTop: 8 }}>
                                     {testType === 'adaptive' ? 'Please select a subject to start adaptive practice' : 'No selection = all subjects included'}
                                 </p>
                             )}
@@ -239,11 +240,11 @@ function TestConfigContent() {
 
                         {/* Chapter Selection */}
                         {testType !== 'adaptive' && testType !== 'ai_generated' && (
-                            <Card style={{ marginBottom: '24px' }}>
-                                <h3 style={{ marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Specific Chapters <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 400 }}>(Mix and match items across subjects)</span></h3>
-                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>If you pick specific chapters, your test will only include questions from those chapters.</p>
+                            <Card style={{ marginBottom: 24 }}>
+                                <h3 style={{ marginBottom: 8, fontWeight: 800 }}>Select Specific Chapters <span style={{ fontWeight: 400 }}>(Mix and match items across subjects)</span></h3>
+                                <p style={{ marginBottom: 24 }}>If you pick specific chapters, your test will only include questions from those chapters.</p>
 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                                     {activeSubjectsForChapters.map(subject => (
                                         <div key={subject.id}>
                                             <h4 style={{ color: subject.color, marginBottom: 12, borderBottom: `1px solid ${subject.color}33`, paddingBottom: 8 }}>
@@ -256,18 +257,18 @@ function TestConfigContent() {
                                                         <div key={c.id}
                                                             className={`chapter-item ${selectedChapters.includes(c.id) ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
                                                             onClick={() => { if (!isDisabled) toggleChapter(c.id); }}
-                                                            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)', cursor: isDisabled ? 'not-allowed' : 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border)', opacity: isDisabled ? 0.5 : 1 }}
+                                                            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', border: '1px solid var(--border)', cursor: isDisabled ? 'not-allowed' : 'pointer', transition: 'all 0.2s', background: selectedChapters.includes(c.id) ? `${subject.color}15` : 'transparent', borderColor: selectedChapters.includes(c.id) ? subject.color : 'var(--border)', opacity: isDisabled ? 0.5 : 1 }}
                                                         >
-                                                            <div style={{ width: 20, height: 20, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'var(--bg-glass)', color: 'var(--text-primary)', fontSize: '0.8rem', fontWeight: 700 }}>
+                                                            <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: selectedChapters.includes(c.id) ? subject.color : 'var(--bg-glass)', fontWeight: 700 }}>
                                                                 {selectedChapters.includes(c.id) && '✓'}
                                                                 {isDisabled && '🚫'}
                                                             </div>
                                                             <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                                <div style={{ fontSize: '0.85rem', fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                                                                <div style={{ fontWeight: selectedChapters.includes(c.id) ? 600 : 400, color: selectedChapters.includes(c.id) ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
                                                                     {c.name}
                                                                 </div>
                                                                 {testType === 'pyq' && (
-                                                                    <div style={{ fontSize: '0.75rem', color: isDisabled ? 'var(--danger)' : 'var(--text-muted)' }}>
+                                                                    <div style={{ color: isDisabled ? 'var(--danger)' : 'var(--text-muted)' }}>
                                                                         {c.pyq_count} PYQs
                                                                     </div>
                                                                 )}
@@ -284,27 +285,27 @@ function TestConfigContent() {
 
                         {/* Topic Selection for Topic-wise test */}
                         {testType === 'topic' && selectedChapters.length > 0 && (
-                            <Card style={{ marginBottom: '24px', marginTop: '16px' }}>
-                                <h3 style={{ marginBottom: '8px', color: 'var(--text-primary)', fontWeight: 800 }}>Select Specific Topics</h3>
-                                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>Choose the exact topics from your selected chapters.</p>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                            <Card style={{ marginBottom: 24, marginTop: 16 }}>
+                                <h3 style={{ marginBottom: 8, fontWeight: 800 }}>Select Specific Topics</h3>
+                                <p style={{ marginBottom: 24 }}>Choose the exact topics from your selected chapters.</p>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                                     {activeSubjectsForChapters.map(subject => {
                                         const activeChapters = subject.chapters.filter(c => selectedChapters.includes(c.id));
                                         if (activeChapters.length === 0) return null;
                                         return (
                                             <div key={`topics-${subject.id}`}>
                                                 {activeChapters.map(c => (
-                                                    <div key={c.id} style={{ marginBottom: '16px' }}>
-                                                        <h5 style={{ color: subject.color, marginBottom: 8, fontSize: '0.95rem' }}>{c.name}</h5>
-                                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                    <div key={c.id} style={{ marginBottom: 16 }}>
+                                                        <h5 style={{ color: subject.color, marginBottom: 8, }}>{c.name}</h5>
+                                                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                                             {c.topics && c.topics.map(t => (
                                                                 <div key={t.id}
                                                                     onClick={() => toggleTopic(t.id)}
                                                                     className={`pill ${selectedTopics.includes(t.id) ? 'active' : ''}`}
                                                                     style={{
-                                                                        padding: '6px 12px', fontSize: '0.8rem', borderRadius: 20, cursor: 'pointer',
+                                                                        padding: '6px 12px', cursor: 'pointer',
                                                                         background: selectedTopics.includes(t.id) ? subject.color : 'var(--bg-glass)',
-                                                                        color: selectedTopics.includes(t.id) ? '#fff' : 'var(--text-secondary)',
+                                                                        color: selectedTopics.includes(t.id) ? 'var(--text-primary)' : 'var(--text-secondary)',
                                                                         border: `1px solid ${selectedTopics.includes(t.id) ? subject.color : 'var(--border)'}`
                                                                     }}
                                                                 >
@@ -322,11 +323,11 @@ function TestConfigContent() {
                         )}
 
                         {/* Difficulty & Count */}
-                        <div className="grid grid-2" style={{ gap: '16px', marginBottom: '16px' }}>
+                        <div className="grid grid-2" style={{ gap: 16, marginBottom: 16 }}>
                             {(testType === 'custom' || testType === 'ai_generated') && (
                                 <Card>
-                                    <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Difficulty Level</h3>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Difficulty Level</h3>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                         {['all', 'easy', 'medium', 'hard', 'neet'].map(d => (
                                             <div key={d} className={`option-card ${difficulty === d ? 'selected' : ''}`}
                                                 onClick={() => setDifficulty(d)} style={{ padding: '12px 16px' }}>
@@ -339,13 +340,13 @@ function TestConfigContent() {
                                 </Card>
                             )}
                             <Card>
-                                <h3 style={{ marginBottom: '16px', color: 'var(--text-primary)', fontWeight: 800 }}>Number of Questions</h3>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Number of Questions</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     {[10, 20, 50, 90, 180].map(n => (
                                         <div key={n} className={`option-card ${questionCount === n ? 'selected' : ''}`}
                                             onClick={() => setQuestionCount(n)} style={{ padding: '12px 16px' }}>
                                             <span style={{ fontWeight: 600 }}>{n} Questions</span>
-                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({n * 4} marks • {Math.round(n * 1.5)} min)</span>
+                                            <span >({n * 4} marks • {Math.round(n * 1.5)} min)</span>
                                         </div>
                                     ))}
                                 </div>
@@ -360,33 +361,33 @@ function TestConfigContent() {
                     size="lg"
                     onClick={handleGenerate}
                     disabled={generating || (testType === 'yearly_pyq' && !selectedYear)}
-                    style={{ width: '100%', fontSize: '1.1rem', padding: '18px 32px' }}
+                    style={{ width: '100%', padding: '18px 32px' }}
                 >
                     {generating ? (
                         <><div className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }}></div> Generating Test...</>
                     ) : testType === 'yearly_pyq' && selectedYear ? (
-                        <>🚀 Generate {selectedYear} PYQ Paper</>
+                        <><Icon name="Zap" /> Generate {selectedYear} PYQ Paper</>
                     ) : (
-                        <>🚀 Generate & Start Test</>
+                        <><Icon name="Zap" /> Generate & Start Test</>
                     )}
                 </Button>
             </div>
 
             {/* Referral Lock Modal */}
             {showLockModal && (
-                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'var(--bg-overlay)', zIndex: 'var(--z-modal)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <Card className="modal-content" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '40px', maxWidth: '500px', width: '100%', textAlign: 'center', position: 'relative' }}>
-                        <Button variant="ghost" onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: '20px', right: '20px' }}>×</Button>
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+                    <Card className="modal-content" style={{ border: '1px solid var(--border)', padding: 40, maxWidth: 500, width: '100%', textAlign: 'center', position: 'relative' }}>
+                        <Button variant="ghost" onClick={() => setShowLockModal(false)} style={{ position: 'absolute', top: 20, right: 20 }}>×</Button>
 
-                        <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🔒</div>
-                        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '16px', color: 'var(--text-primary)' }}>Premium Feature Locked</h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '32px', lineHeight: 1.6 }}>
+                        <div style={{ marginBottom: 20 }}><Icon name="Lock" /></div>
+                        <h2 style={{ fontWeight: 800, marginBottom: 16, }}>Premium Feature Locked</h2>
+                        <p style={{ marginBottom: 32, lineHeight: 1.6 }}>
                             {lockMessage}
                         </p>
 
-                        <Card style={{ background: 'var(--bg-glass)', border: '1px dashed var(--primary)', padding: '20px', marginBottom: '32px' }}>
-                            <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>Your Unique Invite Link</div>
-                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', background: 'var(--bg-card)', padding: '10px', borderRadius: 'var(--radius-md)' }}>
+                        <Card style={{ border: '1px dashed var(--primary)', padding: 20, marginBottom: 32 }}>
+                            <div style={{ marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 }}>Your Unique Invite Link</div>
+                            <div style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 10, }}>
                                 <Input
                                     type="text"
                                     readOnly
@@ -405,12 +406,12 @@ function TestConfigContent() {
 
                         <Button
                             onClick={() => {
-                                const text = `Join AI NEET Coach with me and get free AI Mock Tests! 🚀\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                const text = `Join AI NEET Coach with me and get free AI Mock Tests! <Icon name="Zap" />\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                             }}
                             variant="success"
                             size="lg"
-                            style={{ width: '100%', fontSize: '1.2rem', padding: '16px' }}
+                            style={{ width: '100%', padding: 16 }}
                         >
                             📱 Share via WhatsApp
                         </Button>
@@ -423,7 +424,7 @@ function TestConfigContent() {
 
 export default function TestConfigPage() {
     return (
-        <Suspense fallback={<div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-muted)' }}>Loading...</div>}>
+        <Suspense fallback={<div style={{ textAlign: 'center', padding: 60, }}>Loading...</div>}>
             <TestConfigContent />
         </Suspense>
     );

@@ -52,9 +52,9 @@ export default function UpdatePasswordPage() {
     if (updateMutation.isSuccess) {
         return (
             <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
-                <Card style={{ maxWidth: '440px', width: '100%', padding: '32px', textAlign: 'center' }}>
+                <Card style={{ maxWidth: 440, width: '100%', padding: 32, textAlign: 'center' }}>
                     <Alert type="success">
-                        <strong style={{ display: 'block', fontSize: '1.125rem', marginBottom: '8px' }}>Password Secured</strong>
+                        <strong style={{ display: 'block', marginBottom: 8 }}>Password Secured</strong>
                         Redirecting you to the dashboard...
                     </Alert>
                 </Card>
@@ -64,12 +64,12 @@ export default function UpdatePasswordPage() {
 
     return (
         <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 64px)', padding: '32px 16px' }}>
-            <Card style={{ maxWidth: '440px', width: '100%', padding: '32px' }} className="animate-fade-in-up">
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '8px' }}>
+            <Card style={{ maxWidth: 440, width: '100%', padding: 32 }} className="animate-fade-in-up">
+                <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                    <h1 style={{ fontWeight: 800, marginBottom: 8 }}>
                         Secure New Password
                     </h1>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                    <p >
                         Almost there. Enter your new credentials.
                     </p>
                 </div>
@@ -78,7 +78,7 @@ export default function UpdatePasswordPage() {
                     <Alert type="error">{rootError}</Alert>
                 )}
 
-                <Form methods={methods} onSubmit={(d) => updateMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <Form methods={methods} onSubmit={(d) => updateMutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     <FormField name="password" label="New Password" description="8+ characters, letters & numbers">
                         <Input
                             {...methods.register('password')}
@@ -99,7 +99,7 @@ export default function UpdatePasswordPage() {
                     <Button
                         type="submit"
                         loading={updateMutation.isPending}
-                        style={{ marginTop: '8px', width: '100%' }}
+                        style={{ marginTop: 8, width: '100%' }}
                     >
                         Confirm &amp; Login →
                     </Button>

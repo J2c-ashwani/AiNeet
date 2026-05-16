@@ -1,0 +1,128 @@
+(node:36291) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/scripts/evaluate-rag-quality.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[dotenv@17.3.1] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+🧪 Running Academic Validation Suite for RAG System
+   Target Subject: biology
+   Sample Size: 100 questions
+
+Evaluating [1/100]: ID 12849 ... ⚠️ WARN (Moderate Confidence, sim: 0.694, drift: 0, comp: 100)
+Evaluating [2/100]: ID 13752 ... ⚠️ WARN (Needs Verification, sim: 0.590, drift: null, comp: null)
+Evaluating [3/100]: ID 13185 ... ⚠️ WARN (Moderate Confidence, sim: 0.684, drift: 0, comp: 100)
+Evaluating [4/100]: ID 12550 ... ⚠️ WARN (Needs Verification, sim: 0.639, drift: null, comp: null)
+Evaluating [5/100]: ID 12061 ... ⚠️ WARN (Needs Verification, sim: 0.615, drift: null, comp: null)
+Evaluating [6/100]: ID 13444 ... ⚠️ WARN (Needs Verification, sim: 0.633, drift: null, comp: null)
+Evaluating [7/100]: ID 10836 ... ⚠️ WARN (Needs Verification, sim: 0.591, drift: null, comp: null)
+Evaluating [8/100]: ID 13682 ... ⚠️ WARN (Needs Verification, sim: 0.644, drift: null, comp: null)
+Evaluating [9/100]: ID 13613 ... ⚠️ WARN (Moderate Confidence, sim: 0.726, drift: 0, comp: 100)
+Evaluating [10/100]: ID 12655 ... ⚠️ WARN (Moderate Confidence, sim: 0.689, drift: 0, comp: 100)
+Evaluating [11/100]: ID 13319 ... ⚠️ WARN (Moderate Confidence, sim: 0.740, drift: 0, comp: 100)
+Evaluating [12/100]: ID 10949 ... ⚠️ WARN (Needs Verification, sim: 0.607, drift: null, comp: null)
+Evaluating [13/100]: ID 11847 ... ⚠️ WARN (Needs Verification, sim: 0.615, drift: null, comp: null)
+Evaluating [14/100]: ID 14005 ... ⚠️ WARN (Needs Verification, sim: 0.588, drift: null, comp: null)
+Evaluating [15/100]: ID 13654 ... ⚠️ WARN (Needs Verification, sim: 0.637, drift: null, comp: null)
+Evaluating [16/100]: ID 10934 ... ⚠️ WARN (Needs Verification, sim: 0.650, drift: null, comp: null)
+Evaluating [17/100]: ID 10876 ... ⚠️ WARN (Needs Verification, sim: 0.642, drift: null, comp: null)
+Evaluating [18/100]: ID 11865 ... ⚠️ WARN (Moderate Confidence, sim: 0.710, drift: 0, comp: 100)
+Evaluating [19/100]: ID 11773 ... ⚠️ WARN (Needs Verification, sim: 0.644, drift: null, comp: null)
+Evaluating [20/100]: ID 13605 ... ⚠️ WARN (Moderate Confidence, sim: 0.651, drift: 0, comp: 100)
+Evaluating [21/100]: ID 12297 ... ⚠️ WARN (Moderate Confidence, sim: 0.708, drift: 0, comp: 100)
+Evaluating [22/100]: ID 11196 ... ⚠️ WARN (Moderate Confidence, sim: 0.665, drift: 0, comp: 100)
+Evaluating [23/100]: ID 13678 ... ⚠️ WARN (Needs Verification, sim: 0.626, drift: null, comp: null)
+Evaluating [24/100]: ID 13084 ... ⚠️ WARN (Needs Verification, sim: 0.635, drift: null, comp: null)
+Evaluating [25/100]: ID 13217 ... ⚠️ WARN (Moderate Confidence, sim: 0.656, drift: 0, comp: 100)
+Evaluating [26/100]: ID 11260 ... ⚠️ WARN (Needs Verification, sim: 0.603, drift: null, comp: null)
+Evaluating [27/100]: ID 13764 ... ⚠️ WARN (Moderate Confidence, sim: 0.680, drift: 0, comp: 100)
+Evaluating [28/100]: ID 11209 ... ⚠️ WARN (Needs Verification, sim: 0.585, drift: null, comp: null)
+Evaluating [29/100]: ID 13166 ... ⚠️ WARN (Moderate Confidence, sim: 0.689, drift: 0, comp: 100)
+Evaluating [30/100]: ID 11845 ... ⚠️ WARN (Needs Verification, sim: 0.626, drift: null, comp: null)
+Evaluating [31/100]: ID 10675 ... ⚠️ WARN (Needs Verification, sim: 0.500, drift: null, comp: null)
+Evaluating [32/100]: ID 11354 ... ⚠️ WARN (Needs Verification, sim: 0.626, drift: null, comp: null)
+Evaluating [33/100]: ID 11208 ... ⚠️ WARN (Needs Verification, sim: 0.584, drift: null, comp: null)
+Evaluating [34/100]: ID 11902 ... ⚠️ WARN (Needs Verification, sim: 0.588, drift: null, comp: null)
+Evaluating [35/100]: ID 12229 ... ⚠️ WARN (Needs Verification, sim: 0.609, drift: null, comp: null)
+Evaluating [36/100]: ID 13215 ... ⚠️ WARN (Moderate Confidence, sim: 0.700, drift: 0, comp: 100)
+Evaluating [37/100]: ID 10805 ... ⚠️ WARN (Needs Verification, sim: 0.639, drift: null, comp: null)
+Evaluating [38/100]: ID 10906 ... ⚠️ WARN (Needs Verification, sim: 0.637, drift: null, comp: null)
+Evaluating [39/100]: ID 12854 ... ⚠️ WARN (Moderate Confidence, sim: 0.668, drift: 0, comp: 100)
+Evaluating [40/100]: ID 13873 ... ⚠️ WARN (Needs Verification, sim: 0.618, drift: null, comp: null)
+Evaluating [41/100]: ID 11305 ... ⚠️ WARN (Needs Verification, sim: 0.584, drift: null, comp: null)
+Evaluating [42/100]: ID 11236 ... ⚠️ WARN (Needs Verification, sim: 0.598, drift: null, comp: null)
+Evaluating [43/100]: ID 11067 ... ⚠️ WARN (Needs Verification, sim: 0.591, drift: null, comp: null)
+Evaluating [44/100]: ID 13130 ... ⚠️ WARN (Needs Verification, sim: 0.603, drift: null, comp: null)
+Evaluating [45/100]: ID 12972 ... ⚠️ WARN (Needs Verification, sim: 0.640, drift: null, comp: null)
+Evaluating [46/100]: ID 12641 ... ⚠️ WARN (Moderate Confidence, sim: 0.719, drift: 0, comp: 100)
+Evaluating [47/100]: ID 11770 ... ⚠️ WARN (Needs Verification, sim: 0.627, drift: null, comp: null)
+Evaluating [48/100]: ID 11175 ... ⚠️ WARN (Needs Verification, sim: 0.543, drift: null, comp: null)
+Evaluating [49/100]: ID 10161 ... ❌ ERROR
+Evaluating [50/100]: ID 13679 ... ⚠️ WARN (Needs Verification, sim: 0.638, drift: null, comp: null)
+Evaluating [51/100]: ID 11844 ... ⚠️ WARN (Needs Verification, sim: 0.601, drift: null, comp: null)
+Evaluating [52/100]: ID 10694 ... ⚠️ WARN (Needs Verification, sim: 0.601, drift: null, comp: null)
+Evaluating [53/100]: ID 10686 ... ⚠️ WARN (Needs Verification, sim: 0.610, drift: null, comp: null)
+Evaluating [54/100]: ID 11407 ... ❌ ERROR
+Evaluating [55/100]: ID 13079 ... ❌ ERROR
+Evaluating [56/100]: ID 11039 ... ⚠️ WARN (Needs Verification, sim: 0.624, drift: null, comp: null)
+Evaluating [57/100]: ID 10844 ... ⚠️ WARN (Needs Verification, sim: 0.586, drift: null, comp: null)
+Evaluating [58/100]: ID 10657 ... ⚠️ WARN (Needs Verification, sim: 0.500, drift: null, comp: null)
+Evaluating [59/100]: ID 10971 ... ⚠️ WARN (Needs Verification, sim: 0.627, drift: null, comp: null)
+Evaluating [60/100]: ID 10859 ... ⚠️ WARN (Needs Verification, sim: 0.595, drift: null, comp: null)
+Evaluating [61/100]: ID 13210 ... ⚠️ WARN (Needs Verification, sim: 0.629, drift: null, comp: null)
+Evaluating [62/100]: ID 12742 ... ❌ ERROR
+Evaluating [63/100]: ID 12106 ... ❌ ERROR
+Evaluating [64/100]: ID 12949 ... ❌ ERROR
+Evaluating [65/100]: ID 12790 ... ❌ ERROR
+Evaluating [66/100]: ID 13768 ... ⚠️ WARN (Needs Verification, sim: 0.637, drift: null, comp: null)
+Evaluating [67/100]: ID 11242 ... ⚠️ WARN (Needs Verification, sim: 0.647, drift: null, comp: null)
+Evaluating [68/100]: ID 13903 ... ❌ ERROR
+Evaluating [69/100]: ID 13193 ... ⚠️ WARN (Needs Verification, sim: 0.567, drift: null, comp: null)
+Evaluating [70/100]: ID 13606 ... ❌ ERROR
+Evaluating [71/100]: ID 11894 ... ❌ ERROR
+Evaluating [72/100]: ID 11211 ... ❌ ERROR
+Evaluating [73/100]: ID 13186 ... ⚠️ WARN (Needs Verification, sim: 0.646, drift: null, comp: null)
+Evaluating [74/100]: ID 13872 ... ⚠️ WARN (Needs Verification, sim: 0.595, drift: null, comp: null)
+Evaluating [75/100]: ID 10975 ... ⚠️ WARN (Needs Verification, sim: 0.583, drift: null, comp: null)
+Evaluating [76/100]: ID 10866 ... ⚠️ WARN (Needs Verification, sim: 0.572, drift: null, comp: null)
+Evaluating [77/100]: ID 10597 ... ⚠️ WARN (Needs Verification, sim: 0.638, drift: null, comp: null)
+Evaluating [78/100]: ID 12595 ... ❌ ERROR
+Evaluating [79/100]: ID 13493 ... ❌ ERROR
+Evaluating [80/100]: ID 13190 ... ❌ ERROR
+Evaluating [81/100]: ID 12552 ... ⚠️ WARN (Needs Verification, sim: 0.637, drift: null, comp: null)
+Evaluating [82/100]: ID 14011 ... ⚠️ WARN (Needs Verification, sim: 0.616, drift: null, comp: null)
+Evaluating [83/100]: ID 11169 ... ⚠️ WARN (Needs Verification, sim: 0.561, drift: null, comp: null)
+Evaluating [84/100]: ID 10803 ... ⚠️ WARN (Needs Verification, sim: 0.598, drift: null, comp: null)
+Evaluating [85/100]: ID 12291 ... ❌ ERROR
+Evaluating [86/100]: ID 11341 ... ⚠️ WARN (Needs Verification, sim: 0.647, drift: null, comp: null)
+Evaluating [87/100]: ID 10599 ... ⚠️ WARN (Needs Verification, sim: 0.631, drift: null, comp: null)
+Evaluating [88/100]: ID 10783 ... ⚠️ WARN (Needs Verification, sim: 0.589, drift: null, comp: null)
+Evaluating [89/100]: ID 13237 ... ⚠️ WARN (Needs Verification, sim: 0.603, drift: null, comp: null)
+Evaluating [90/100]: ID 11227 ... ⚠️ WARN (Needs Verification, sim: 0.606, drift: null, comp: null)
+Evaluating [91/100]: ID 11896 ... ⚠️ WARN (Needs Verification, sim: 0.633, drift: null, comp: null)
+Evaluating [92/100]: ID 11180 ... ❌ ERROR
+Evaluating [93/100]: ID 10623 ... ⚠️ WARN (Needs Verification, sim: 0.642, drift: null, comp: null)
+Evaluating [94/100]: ID 10996 ... ⚠️ WARN (Needs Verification, sim: 0.500, drift: null, comp: null)
+Evaluating [95/100]: ID 10644 ... ⚠️ WARN (Needs Verification, sim: 0.589, drift: null, comp: null)
+Evaluating [96/100]: ID 10977 ... ⚠️ WARN (Needs Verification, sim: 0.619, drift: null, comp: null)
+Evaluating [97/100]: ID 10904 ... ⚠️ WARN (Needs Verification, sim: 0.615, drift: null, comp: null)
+Evaluating [98/100]: ID 11360 ... ⚠️ WARN (Needs Verification, sim: 0.600, drift: null, comp: null)
+Evaluating [99/100]: ID 11841 ... ⚠️ WARN (Needs Verification, sim: 0.633, drift: null, comp: null)
+Evaluating [100/100]: ID 11570 ... ⚠️ WARN (Needs Verification, sim: 0.646, drift: null, comp: null)
+
+=========================================
+📊 ACADEMIC VALIDATION REPORT
+=========================================
+Total Tested:           100
+Average Similarity:     0.5240
+Average Drift Score:    0.00 (Lower is better)
+Average Comprehension:  15.00 (Higher is better)
+
+--- Confidence Distribution ---
+High Confidence (>0.85):     0  (0.0%)
+NCERT Grounded (>0.75):      0  (0.0%)
+Moderate Confidence (>0.65): 15  (15.0%)
+Needs Verification (<0.65):  69  (69.0%)
+
+Insufficient Fallbacks:      84  (Expected when retrieval fails or is weak)
+System Errors:               16
+
+📝 Detailed report saved to: /Users/ashwanikumar/.gemini/antigravity/scratch/neet-coach/rag_validation_report_biology.json

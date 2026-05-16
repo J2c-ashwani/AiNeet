@@ -1,4 +1,6 @@
 'use client';
+import { Icon } from '@/components/ui/Icon';
+import { Button } from '@/components/ui/Button';
 import { useState, useEffect, useRef } from 'react';
 
 // ─── UI Governance Health Widget ─────────────────────────────
@@ -70,16 +72,16 @@ function UIGovernanceHealth() {
         <div className="card" style={{ padding: 24, marginTop: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <div>
-                    <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: '50%', background: warnStatus.color }} />
+                    <h3 style={{ fontWeight: 800, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ display: 'inline-block', width: 10, height: 10, background: warnStatus.color }} />
                         UI Governance Health
                     </h3>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                    <p >
                         Design debt burndown · ESLint UI Gate tracking · Snapshot regression status
                     </p>
                 </div>
                 {report?.timestamp && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    <span >
                         Last scan: {new Date(report.timestamp).toLocaleString()}
                     </span>
                 )}
@@ -89,44 +91,41 @@ function UIGovernanceHealth() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 24 }}>
                 {metrics.map(m => (
                     <div key={m.label} style={{
-                        background: 'var(--bg-elevated)',
                         border: `1px solid ${m.color}33`,
                         borderLeft: `3px solid ${m.color}`,
-                        borderRadius: 'var(--radius-md)',
                         padding: '16px 20px',
                     }}>
-                        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>{m.label}</div>
-                        <div style={{ fontSize: '1.6rem', fontWeight: 900, color: m.color }}>
-                            {m.value}<span style={{ fontSize: '0.8rem', fontWeight: 500, marginLeft: 3, color: 'var(--text-muted)' }}>{m.unit}</span>
+                        <div style={{ textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>{m.label}</div>
+                        <div style={{ fontWeight: 900, color: m.color }}>
+                            {m.value}<span style={{ fontWeight: 500, marginLeft: 3, }}>{m.unit}</span>
                         </div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>{m.sub}</div>
+                        <div style={{ marginTop: 4 }}>{m.sub}</div>
                     </div>
                 ))}
             </div>
 
             {/* Debt Burndown Progress */}
             <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 16 }}>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', marginBottom: 12, color: 'var(--text-secondary)' }}>Design Debt Burndown Plan</div>
+                <div style={{ fontWeight: 700, marginBottom: 12, }}>Design Debt Burndown Plan</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {weeklyTargets.map(wt => {
                         const achieved = currentWarnings <= wt.target;
                         const progressPct = Math.min(100, Math.max(0, ((3021 - currentWarnings) / (3021 - wt.target)) * 100));
                         return (
                             <div key={wt.week} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <div style={{ width: 60, fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>{wt.week}</div>
-                                <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
+                                <div style={{ width: 60, fontWeight: 600 }}>{wt.week}</div>
+                                <div style={{ flex: 1, height: 6, overflow: 'hidden' }}>
                                     <div style={{
                                         height: '100%',
                                         width: `${progressPct}%`,
                                         background: achieved ? 'var(--success)' : 'var(--accent-primary)',
-                                        borderRadius: 'var(--radius-full)',
                                         transition: 'width 0.6s ease',
                                     }} />
                                 </div>
-                                <div style={{ width: 80, fontSize: '0.75rem', color: achieved ? 'var(--success)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 600 }}>
+                                <div style={{ width: 80, color: achieved ? 'var(--success)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 600 }}>
                                     {wt.label}
                                 </div>
-                                <div style={{ width: 20 }}>{achieved ? '✅' : '⏳'}</div>
+                                <div style={{ width: 20 }}>{achieved ? '<Icon name="CheckCircle" />' : '<Icon name="Clock" />'}</div>
                             </div>
                         );
                     })}
@@ -140,12 +139,12 @@ function UIGovernanceHealth() {
 function MetricCard({ label, value, unit = '', status = 'ok', sub = null }) {
     const colors = { ok: '#10b981', warn: '#f59e0b', critical: '#ef4444', neutral: '#6366f1' };
     return (
-        <div style={{ background: 'var(--bg-elevated)', border: `1px solid ${colors[status]}33`, borderLeft: `3px solid ${colors[status]}`, borderRadius: 14, padding: '20px 24px' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 8 }}>{label}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 900, color: colors[status] }}>
-                {value}<span style={{ fontSize: '0.9rem', fontWeight: 500, marginLeft: 4, color: 'var(--text-muted)' }}>{unit}</span>
+        <div style={{ border: `1px solid ${colors[status]}33`, borderLeft: `3px solid ${colors[status]}`, padding: '20px 24px' }}>
+            <div style={{ textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 8 }}>{label}</div>
+            <div style={{ fontWeight: 900, color: colors[status] }}>
+                {value}<span style={{ fontWeight: 500, marginLeft: 4, }}>{unit}</span>
             </div>
-            {sub && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 6 }}>{sub}</div>}
+            {sub && <div style={{ marginTop: 6 }}>{sub}</div>}
         </div>
     );
 }
@@ -157,14 +156,14 @@ function SloRow({ name, target, current, unit = '%' }) {
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0', borderBottom: '1px solid var(--border-color)' }}>
             <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{name}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Target: {target}{unit}</div>
+                <div style={{ fontWeight: 600, }}>{name}</div>
+                <div >Target: {target}{unit}</div>
             </div>
-            <div style={{ width: 120, height: 6, background: 'rgba(255,255,255,0.08)', borderRadius: 4, overflow: 'hidden' }}>
-                <div style={{ height: '100%', width: `${pct}%`, background: met ? '#10b981' : '#ef4444', borderRadius: 4, transition: 'width 0.5s' }} />
+            <div style={{ width: 120, height: 6, overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: `${pct}%`, background: met ? 'var(--text-primary)' : 'var(--text-primary)', transition: 'width 0.5s' }} />
             </div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: met ? '#10b981' : '#ef4444', minWidth: 70, textAlign: 'right' }}>
-                {current}{unit} {met ? '✅' : '🔴'}
+            <div style={{ fontWeight: 800, color: met ? 'var(--text-primary)' : 'var(--text-primary)', minWidth: 70, textAlign: 'right' }}>
+                {current}{unit} {met ? '<Icon name="CheckCircle" />' : '🔴'}
             </div>
         </div>
     );
@@ -175,24 +174,24 @@ function EventFeed({ events }) {
     const typeColors = {
         bridge_timeout: '#ef4444', memory_pressure: '#f59e0b', long_task: '#f97316',
         circuit_breaker_open: '#ef4444', recovery_success: '#10b981', recovery_corrupted: '#ef4444',
-        lifecycle_background: '#6366f1', boot_step_failure: '#ef4444',
+        lifecycle_boot_step_failure: '#ef4444',
         unhandled_rejection: '#f59e0b', schema_violation: '#ef4444',
         circuit_breaker_close: '#10b981', hydration_error: '#f97316',
     };
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
             {events.length === 0 && (
-                <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>No events in last 24h ✅</div>
+                <div style={{ padding: 32, textAlign: 'center', }}>No events in last 24h <Icon name="CheckCircle" /></div>
             )}
             {events.map((e, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 12px', background: 'rgba(255,255,255,0.03)', borderRadius: 8, borderLeft: `3px solid ${typeColors[e.event_type] || '#6b7280'}` }}>
+                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '10px 12px', borderLeft: `3px solid ${typeColors[e.event_type] || 'var(--text-primary)'}` }}>
                     <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                            <span style={{ fontWeight: 700, fontSize: '0.82rem', color: typeColors[e.event_type] || '#94a3b8' }}>{e.event_type}</span>
-                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{new Date(e.created_at).toLocaleTimeString()}</span>
+                            <span style={{ fontWeight: 700, color: typeColors[e.event_type] || 'var(--text-primary)' }}>{e.event_type}</span>
+                            <span >{new Date(e.created_at).toLocaleTimeString()}</span>
                         </div>
-                        {e.failure_reason && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{e.failure_reason}</div>}
-                        {e.route && <div style={{ fontSize: '0.72rem', color: '#6366f1', marginTop: 2 }}>{e.route}</div>}
+                        {e.failure_reason && <div style={{ fontFamily: 'monospace' }}>{e.failure_reason}</div>}
+                        {e.route && <div style={{ marginTop: 2 }}>{e.route}</div>}
                     </div>
                 </div>
             ))}
@@ -244,27 +243,27 @@ export default function RuntimeDashboard() {
             {/* Header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
                 <div>
-                    <h1 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <span style={{ width: 12, height: 12, borderRadius: '50%', background: overallHealthy ? '#10b981' : '#ef4444', display: 'inline-block', boxShadow: `0 0 8px ${overallHealthy ? '#10b981' : '#ef4444'}`, animation: 'pulse 2s infinite' }} />
+                    <h1 style={{ fontWeight: 900, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ width: 12, height: 12, background: overallHealthy ? 'var(--text-primary)' : 'var(--text-primary)', display: 'inline-block', boxShadow: `0 0 8px ${overallHealthy ? 'var(--text-primary)' : 'var(--text-primary)'}`, animation: 'pulse 2s infinite' }} />
                         Runtime Dashboard
                     </h1>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                    <p >
                         Platform nerve center — real-time production health · Last 24h
                     </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    {lastRefresh && <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Refreshed {lastRefresh.toLocaleTimeString()}</span>}
-                    <button onClick={load} className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '6px 16px' }}>↻ Refresh</button>
+                    {lastRefresh && <span >Refreshed {lastRefresh.toLocaleTimeString()}</span>}
+                    <Button onClick={load} className="btn btn-secondary" style={{ padding: '6px 16px' }}>↻ Refresh</Button>
                 </div>
             </div>
 
             {/* Stability Covenant Banner */}
             {!overallHealthy && (
-                <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', borderRadius: 12, padding: '14px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ fontSize: '1.5rem' }}>🔴</span>
+                <div style={{ border: '1px solid rgba(239,68,68,0.4)', padding: '14px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span ><Icon name="Star" size={16} /></span>
                     <div>
-                        <strong style={{ color: '#ef4444' }}>Stability Covenant Breach</strong>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: 2 }}>Feature development is frozen. All engineering effort must redirect to stability. See docs/stability-covenant.md.</p>
+                        <strong >Stability Covenant Breach</strong>
+                        <p style={{ marginTop: 2 }}>Feature development is frozen. All engineering effort must redirect to stability. See docs/stability-covenant.md.</p>
                     </div>
                 </div>
             )}
@@ -284,7 +283,7 @@ export default function RuntimeDashboard() {
             {/* SLO Tracking */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
                 <div className="card" style={{ padding: 24 }}>
-                    <h3 style={{ fontWeight: 800, marginBottom: 16, fontSize: '1rem' }}>⚖️ SLO Tracker</h3>
+                    <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Star" size={16} />️ SLO Tracker</h3>
                     <SloRow name="Crash-free Sessions"    target={99.7} current={m.crash_free_rate ?? 99.9} />
                     <SloRow name="Test Recovery Success"  target={99.0} current={m.recovery_success_rate ?? 100} />
                     <SloRow name="Submission Integrity"   target={100}  current={m.submission_integrity_rate ?? 100} />
@@ -293,15 +292,15 @@ export default function RuntimeDashboard() {
 
                 {/* Boot Health */}
                 <div className="card" style={{ padding: 24 }}>
-                    <h3 style={{ fontWeight: 800, marginBottom: 16, fontSize: '1rem' }}>🚀 Boot Health (24h)</h3>
+                    <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Zap" /> Boot Health (24h)</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         {['auth_restore', 'bridge_init', 'capability_negotiate', 'lifecycle_init', 'recovery_check', 'telemetry_flush'].map(step => {
                             const failures = m.boot_failures?.[step] ?? 0;
                             return (
                                 <div key={step} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <span style={{ fontSize: '0.85rem', fontFamily: 'monospace', color: 'var(--text-muted)' }}>{step}</span>
-                                    <span style={{ fontWeight: 700, fontSize: '0.85rem', color: failures === 0 ? '#10b981' : '#ef4444' }}>
-                                        {failures === 0 ? '✅ Healthy' : `🔴 ${failures} failures`}
+                                    <span style={{ fontFamily: 'monospace', }}>{step}</span>
+                                    <span style={{ fontWeight: 700, color: failures === 0 ? 'var(--text-primary)' : 'var(--text-primary)' }}>
+                                        {failures === 0 ? '<Icon name="CheckCircle" /> Healthy' : `🔴 ${failures} failures`}
                                     </span>
                                 </div>
                             );
@@ -313,24 +312,24 @@ export default function RuntimeDashboard() {
             {/* Event Feed */}
             <div className="card" style={{ padding: 24, marginBottom: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                    <h3 style={{ fontWeight: 800, fontSize: '1rem' }}>📡 Live Event Feed (Last 24h)</h3>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{m.recent_events?.length ?? 0} events</span>
+                    <h3 style={{ fontWeight: 800, }}><Icon name="Star" size={16} /> Live Event Feed (Last 24h)</h3>
+                    <span >{m.recent_events?.length ?? 0} events</span>
                 </div>
                 <EventFeed events={m.recent_events ?? []} />
             </div>
 
             {/* Feature Flag Status */}
             <div className="card" style={{ padding: 24 }}>
-                <h3 style={{ fontWeight: 800, marginBottom: 16, fontSize: '1rem' }}>🚩 Feature Flag Status</h3>
+                <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Star" size={16} /> Feature Flag Status</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
                     {(m.feature_flags ?? []).map(ff => (
-                        <div key={ff.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: 8, border: `1px solid ${ff.enabled ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
-                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: ff.enabled ? '#10b981' : '#ef4444', flexShrink: 0 }} />
-                            <span style={{ fontSize: '0.8rem', fontFamily: 'monospace', color: ff.enabled ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                        <div key={ff.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', border: `1px solid ${ff.enabled ? 'var(--bg-glass)' : 'var(--bg-glass)'}` }}>
+                            <span style={{ width: 8, height: 8, background: ff.enabled ? 'var(--text-primary)' : 'var(--text-primary)', flexShrink: 0 }} />
+                            <span style={{ fontFamily: 'monospace', color: ff.enabled ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                                 {ff.key.replace('ff_', '')}
                             </span>
                             {ff.rollout_pct < 100 && ff.enabled && (
-                                <span style={{ fontSize: '0.7rem', color: '#f59e0b', marginLeft: 'auto' }}>{ff.rollout_pct}%</span>
+                                <span style={{ marginLeft: 'auto' }}>{ff.rollout_pct}%</span>
                             )}
                         </div>
                     ))}

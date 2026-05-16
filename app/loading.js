@@ -7,8 +7,7 @@ export default function Loading() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            background: '#080c18', // Hardcoded background for instant cold-start render
-            zIndex: 'var(--z-critical)',
+            // Hardcoded background for instant cold-start render
             fontFamily: "'Inter', sans-serif"
         }}>
             <div style={{
@@ -16,25 +15,22 @@ export default function Loading() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '100px',
-                height: '100px'
+                width: 100,
+                height: 100
             }}>
                 {/* Outer spinning glow ring */}
                 <div style={{
                     position: 'absolute',
                     inset: 0,
-                    borderRadius: '50%',
                     border: '3px solid transparent',
-                    borderTopColor: '#6366f1',
-                    borderRightColor: '#a855f7',
+                    borderTopColor: 'var(--text-primary)',
+                    borderRightColor: 'var(--text-primary)',
                     animation: 'splashSpin 1s linear infinite'
                 }}></div>
                 
                 {/* Inner Logo */}
                 <div style={{
-                    fontSize: '2rem',
                     fontWeight: 800,
-                    background: 'linear-gradient(135deg, #818cf8, #c084fc)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     animation: 'splashPulse 2s ease-in-out infinite'
@@ -44,19 +40,15 @@ export default function Loading() {
             </div>
             
             <h2 style={{
-                marginTop: '24px',
-                fontSize: '1.2rem',
+                marginTop: 24,
                 fontWeight: 700,
-                color: '#f8fafc',
-                letterSpacing: '2px',
+                letterSpacing: 2,
                 textTransform: 'uppercase'
             }}>
                 NEET Coach
             </h2>
             <p style={{
-                marginTop: '8px',
-                fontSize: '0.85rem',
-                color: '#64748b',
+                marginTop: 8,
                 animation: 'splashPulse 2s ease-in-out infinite'
             }}>
                 Warming up AI engine...
