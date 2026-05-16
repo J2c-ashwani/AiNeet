@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/Button';
 import React, { useState, useEffect } from 'react';
 
 const SUBJECT_CONFIG = {
-    physics: { icon: '<Icon name="Zap" />', color: '#6366f1', label: 'Physics', total: 45 },
-    chemistry: { icon: '🧪', color: '#06b6d4', label: 'Chemistry', total: 45 },
-    biology: { icon: '<Icon name="Dna" />', color: '#22c55e', label: 'Biology', total: 90 },
+    physics: { icon: <Icon name="Zap" size={18} />, color: '#6366f1', label: 'Physics', total: 45 },
+    chemistry: { icon: <Icon name="Atom" size={18} />, color: '#06b6d4', label: 'Chemistry', total: 45 },
+    biology: { icon: <Icon name="Dna" size={18} />, color: '#22c55e', label: 'Biology', total: 90 },
 };
 
 function HeatCell({ value, maxValue }) {
