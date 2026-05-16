@@ -33,8 +33,8 @@ export default function AdminUsersPage() {
 
     const getTierStyle = (tier) => {
         switch (tier) {
-            case 'pro': return { bg: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: 'rgba(59,130,246,0.3)', label: '<Icon name="Zap" /> PRO' };
-            case 'premium': return { bg: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: 'rgba(245,158,11,0.3)', label: '<Icon name="Crown" /> PREMIUM' };
+            case 'pro': return { bg: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: 'rgba(59,130,246,0.3)', label: <><Icon name="Zap" size={14} /> PRO</> };
+            case 'premium': return { bg: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: 'rgba(245,158,11,0.3)', label: <><Icon name="Crown" size={14} /> PREMIUM</> };
             default: return { bg: 'rgba(100,116,139,0.15)', color: '#94a3b8', border: 'rgba(100,116,139,0.3)', label: 'FREE' };
         }
     };

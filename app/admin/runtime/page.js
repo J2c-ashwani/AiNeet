@@ -125,7 +125,7 @@ function UIGovernanceHealth() {
                                 <div style={{ width: 80, color: achieved ? 'var(--success)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 600 }}>
                                     {wt.label}
                                 </div>
-                                <div style={{ width: 20 }}>{achieved ? '<Icon name="CheckCircle" />' : '<Icon name="Clock" />'}</div>
+                                <div style={{ width: 20 }}>{achieved ? <Icon name="CheckCircle" size={16} /> : <Icon name="Clock" size={16} />}</div>
                             </div>
                         );
                     })}
@@ -163,7 +163,7 @@ function SloRow({ name, target, current, unit = '%' }) {
                 <div style={{ height: '100%', width: `${pct}%`, background: met ? 'var(--text-primary)' : 'var(--text-primary)', transition: 'width 0.5s' }} />
             </div>
             <div style={{ fontWeight: 800, color: met ? 'var(--text-primary)' : 'var(--text-primary)', minWidth: 70, textAlign: 'right' }}>
-                {current}{unit} {met ? '<Icon name="CheckCircle" />' : '🔴'}
+                {current}{unit} {met ? <Icon name="CheckCircle" size={14} /> : '🔴'}
             </div>
         </div>
     );
@@ -300,7 +300,7 @@ export default function RuntimeDashboard() {
                                 <div key={step} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                     <span style={{ fontFamily: 'monospace', }}>{step}</span>
                                     <span style={{ fontWeight: 700, color: failures === 0 ? 'var(--text-primary)' : 'var(--text-primary)' }}>
-                                        {failures === 0 ? '<Icon name="CheckCircle" /> Healthy' : `🔴 ${failures} failures`}
+                                        {failures === 0 ? <><Icon name="CheckCircle" size={14} /> Healthy</> : `🔴 ${failures} failures`}
                                     </span>
                                 </div>
                             );

@@ -38,7 +38,7 @@ export default function AdminRevenuePage() {
         { title: 'Monthly Revenue', value: `₹${totalMRR.toLocaleString()}`, subtitle: 'Estimated MRR', icon: '💰', },
         { title: 'Paid Users', value: (subs.pro + subs.premium), subtitle: `${conversionRate}% conversion`, icon: '💎', },
         { title: 'Free Users', value: subs.free, subtitle: 'Potential upsell', icon: '🆓', },
-        { title: 'AI API Calls', value: stats?.questions || 0, subtitle: 'Questions generated', icon: '<Icon name="Cpu" />', },
+        { title: 'AI API Calls', value: stats?.questions || 0, subtitle: 'Questions generated', icon: <Icon name="Cpu" size={24} />, },
     ];
 
     const planRevData = [

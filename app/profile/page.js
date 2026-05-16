@@ -10,10 +10,10 @@ import useSWR from 'swr';
 import { fetcher } from '@/lib/swr';
 
 const ACHIEVEMENT_ICONS = {
-    'first_test': '<Icon name="Target" />', 'test_veteran': '<Icon name="Trophy" />', 'perfect_score': '💯',
-    'streak_7': '<Icon name="Flame" />', 'streak_30': '🌋', 'xp_1000': '<Icon name="Star" />',
-    'xp_5000': '💎', 'physics_master': '<Icon name="Atom" />', 'chemistry_master': '🧪',
-    'biology_master': '<Icon name="Dna" />', 'speed_demon': '<Icon name="Zap" />', 'consistent': '<Icon name="CalendarDays" />'
+    'first_test': <Icon name="Target" size={20} />, 'test_veteran': <Icon name="Trophy" size={20} />, 'perfect_score': '💯',
+    'streak_7': <Icon name="Flame" size={20} />, 'streak_30': '🌋', 'xp_1000': <Icon name="Star" size={20} />,
+    'xp_5000': '💎', 'physics_master': <Icon name="Atom" size={20} />, 'chemistry_master': '🧪',
+    'biology_master': <Icon name="Dna" size={20} />, 'speed_demon': <Icon name="Zap" size={20} />, 'consistent': <Icon name="CalendarDays" size={20} />
 };
 
 export default function ProfilePage() {
@@ -216,7 +216,7 @@ export default function ProfilePage() {
                         <div className="profile-achievements-grid">
                             {badges.map((b, i) => (
                                 <div key={i} className="profile-achievement-card">
-                                    <div className="profile-achievement-icon">{ACHIEVEMENT_ICONS[b.achievement_id] || '<Icon name="Trophy" />'}</div>
+                                    <div className="profile-achievement-icon">{ACHIEVEMENT_ICONS[b.achievement_id] || <Icon name="Trophy" size={20} />}</div>
                                     <div className="profile-achievement-label">{b.name || b.achievement_id}</div>
                                 </div>
                             ))}
@@ -234,11 +234,11 @@ export default function ProfilePage() {
                     <h3 className="profile-section-title"><Icon name="Zap" /> Quick Links</h3>
                     <div className="profile-links-container">
                         {[
-                            { href: '/test/configure', icon: '<Icon name="FileText" />', label: 'Take a Test' },
-                            { href: '/analytics', icon: '<Icon name="TrendingUp" />', label: 'View Analytics' },
-                            { href: '/study-plan', icon: '<Icon name="CalendarDays" />', label: 'Study Plan' },
+                            { href: '/test/configure', icon: <Icon name="FileText" size={16} />, label: 'Take a Test' },
+                            { href: '/analytics', icon: <Icon name="TrendingUp" size={16} />, label: 'View Analytics' },
+                            { href: '/study-plan', icon: <Icon name="CalendarDays" size={16} />, label: 'Study Plan' },
                             { href: '/mistakes', icon: '📓', label: 'Mistake Notebook' },
-                            { href: '/leaderboard', icon: '<Icon name="Trophy" />', label: 'Leaderboard' },
+                            { href: '/leaderboard', icon: <Icon name="Trophy" size={16} />, label: 'Leaderboard' },
                         ].map(link => (
                             <Link key={link.href} href={link.href} className="profile-link-card">
                                 <span className="profile-link-icon">{link.icon}</span>{link.label}

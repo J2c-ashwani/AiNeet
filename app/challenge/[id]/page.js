@@ -26,7 +26,7 @@ export async function generateMetadata({ params }) {
 
     if (!challenge) return { title: 'Challenge Not Found' };
 
-    const title = `<Icon name="Flame" /> ${challenge.creator_name} (Level ${challenge.creator_level}) challenged you to a NEET duel! ⚔️`;
+    const title = `🔥 ${challenge.creator_name} (Level ${challenge.creator_level}) challenged you to a NEET duel! ⚔️`;
     const description = `${challenge.creator_name} (Level ${challenge.creator_level} • ${challenge.creator_xp} XP) just generated a high-difficulty 10-question AI Mock Test. Do you have what it takes to beat them?`;
 
     return {

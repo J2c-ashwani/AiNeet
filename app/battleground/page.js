@@ -214,7 +214,7 @@ export default function BattlegroundPage() {
                         <h2 className="bg-home-card-title">Create a Battle</h2>
                         <p className="text-muted text-sm bg-home-card-desc">Generate 20 questions and share the invite code with your friends</p>
                         <Button variant="primary" onClick={handleCreate} disabled={creating} className="bg-home-btn">
-                            {creating ? '<Icon name="Clock" /> Creating...' : '<Icon name="Zap" /> Create Battleground'}
+                            {creating ? <><Icon name="Clock" size={16} /> Creating...</> : <><Icon name="Zap" size={16} /> Create Battleground</>}
                         </Button>
                     </Card>
 
@@ -229,7 +229,7 @@ export default function BattlegroundPage() {
                             className="bg-home-input"
                         />
                         <Button variant="success" onClick={handleJoin} disabled={joining} className="bg-home-btn">
-                            {joining ? '<Icon name="Clock" /> Joining...' : '🎮 Join Battle'}
+                            {joining ? <><Icon name="Clock" size={16} /> Joining...</> : '🎮 Join Battle'}
                         </Button>
                     </Card>
                 </div>
@@ -348,7 +348,7 @@ export default function BattlegroundPage() {
                             <Button variant="primary" onClick={() => setCurrentQ(currentQ + 1)} className="bg-test-next-btn">Next →</Button>
                         ) : (
                             <Button variant="success" onClick={handleSubmit} disabled={submitting} className="bg-test-submit-btn">
-                                {submitting ? '<Icon name="Clock" /> Submitting...' : '<Icon name="CheckCircle" /> Submit & See Results'}
+                                {submitting ? <><Icon name="Clock" size={16} /> Submitting...</> : <><Icon name="CheckCircle" size={16} /> Submit & See Results</>}
                             </Button>
                         )}
                     </div>

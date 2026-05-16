@@ -134,7 +134,7 @@ export default function OpsControlRoom() {
                         <div className="ops-ue-label" style={{ color: ue.margin < 30 ? 'var(--danger)' : 'var(--success)' }}>Gross Margin</div>
                         <div className="ops-ue-value">{ue.margin || 100}%</div>
                         <div className="ops-ue-meta" style={{ color: ue.margin < 30 ? 'var(--danger)' : 'var(--text-muted)' }}>
-                            {ue.margin < 30 ? '<Icon name="AlertCircle" /> EMERGENCY DOWNGRADE ACTIVE' : 'Healthy operating margin'}
+                            {ue.margin < 30 ? <><Icon name="AlertCircle" size={16} /> EMERGENCY DOWNGRADE ACTIVE</> : 'Healthy operating margin'}
                         </div>
                     </div>
                     <div className="ops-ue-card" style={{ border: '1px solid rgba(99,102,241,0.1)' }}>

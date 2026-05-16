@@ -61,13 +61,13 @@ export default function AdminLayout({ children }) {
     }
 
     const navItems = [
-        { name: 'Overview', path: '/admin', icon: '<Icon name="BarChart2" />' },
+        { name: 'Overview', path: '/admin', icon: <Icon name="BarChart2" size={20} /> },
         { name: 'Runtime Dashboard', path: '/admin/runtime', icon: '🖥️' },
-        { name: 'Content Quality', path: '/admin/content-quality', icon: '<Icon name="GraduationCap" />', badge: 'MD Mandate' },
+        { name: 'Content Quality', path: '/admin/content-quality', icon: <Icon name="GraduationCap" size={20} />, badge: 'MD Mandate' },
         { name: 'Integrity', path: '/admin/integrity', icon: '🛡️' },
         { name: 'Ops Control Room', path: '/admin/ops', icon: '🧯' },
-        { name: 'Question Bank', path: '/admin/questions', icon: '<Icon name="FileText" />' },
-        { name: 'NCERT Library', path: '/admin/ncert', icon: '<Icon name="BookOpen" />' },
+        { name: 'Question Bank', path: '/admin/questions', icon: <Icon name="FileText" size={20} /> },
+        { name: 'NCERT Library', path: '/admin/ncert', icon: <Icon name="BookOpen" size={20} /> },
         { name: 'User Management', path: '/admin/users', icon: '👥' },
         { name: 'Revenue', path: '/admin/revenue', icon: '💰' },
     ];

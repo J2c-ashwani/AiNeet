@@ -305,7 +305,7 @@ export default function BattlePage() {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
                 <div className="card" style={{ maxWidth: 500, width: '100%', textAlign: 'center', padding: '48px 32px', border: `2px solid ${isWin ? 'var(--text-primary)' : isDraw ? 'var(--text-primary)' : 'var(--text-primary)'}30` }}>
                     <div style={{ marginBottom: 16 }}>
-                        {isWin ? '<Icon name="Trophy" />' : isDraw ? '🤝' : '💀'}
+                        {isWin ? <Icon name="Trophy" size={48} /> : isDraw ? '🤝' : '💀'}
                     </div>
                     <h1 style={{ fontWeight: 900, marginBottom: 8, color: isWin ? 'var(--text-primary)' : isDraw ? 'var(--text-primary)' : 'var(--text-primary)' }}>
                         {isWin ? 'VICTORY!' : isDraw ? 'DRAW!' : 'DEFEAT'}

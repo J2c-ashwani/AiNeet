@@ -32,9 +32,9 @@ export default function AdminDashboard() {
 
     const statCards = [
         { title: 'Total Users', value: stats?.users || 0, icon: '👥', bgColor: 'rgba(59,130,246,0.12)' },
-        { title: 'Question Bank', value: stats?.questions || 0, subtitle: `${stats?.pyqs || 0} PYQs`, icon: '<Icon name="BookOpen" />', bgColor: 'rgba(139,92,246,0.12)' },
+        { title: 'Question Bank', value: stats?.questions || 0, subtitle: `${stats?.pyqs || 0} PYQs`, icon: <Icon name="BookOpen" size={28} />, bgColor: 'rgba(139,92,246,0.12)' },
         { title: 'Pending Reports', value: stats?.reports || 0, icon: '🚩', bgColor: 'rgba(239,68,68,0.12)' },
-        { title: 'System Status', value: stats?.killSwitchesActive === false ? 'Degraded' : 'Healthy', icon: stats?.killSwitchesActive === false ? '<Icon name="AlertCircle" />' : '<Icon name="CheckCircle" />', color: stats?.killSwitchesActive === false ? '#f59e0b' : '#10b981', bgColor: stats?.killSwitchesActive === false ? 'rgba(245,158,11,0.12)' : 'rgba(16,185,129,0.12)' },
+        { title: 'System Status', value: stats?.killSwitchesActive === false ? 'Degraded' : 'Healthy', icon: stats?.killSwitchesActive === false ? <Icon name="AlertCircle" size={28} /> : <Icon name="CheckCircle" size={28} />, color: stats?.killSwitchesActive === false ? '#f59e0b' : '#10b981', bgColor: stats?.killSwitchesActive === false ? 'rgba(245,158,11,0.12)' : 'rgba(16,185,129,0.12)' },
     ];
 
     const chartData = stats?.dailyActivity?.length > 0 ? stats.dailyActivity.map(d => ({

@@ -63,7 +63,7 @@ const PLANS = [
         gradient: 'var(--bg-glass-hover)',
         borderColor: 'var(--accent-primary)',
         accentColor: 'var(--accent-primary)',
-        badge: '<Icon name="Star" /> MOST POPULAR',
+        badge: <><Icon name="Star" size={16} /> MOST POPULAR</>,
         features: [
             { text: '100 Custom AI Tests / month', included: true },
             { text: 'Unlimited AI Doubts', included: true },
@@ -125,7 +125,7 @@ export default function PricingPage() {
                 });
                 const verifyData = await verifyRes.json();
                 if (verifyRes.ok) {
-                    alert(`<Icon name="CheckCircle" /> Upgraded to ${planId.toUpperCase()} successfully!`);
+                    alert(`✅ Upgraded to ${planId.toUpperCase()} successfully!`);
                     window.location.href = '/profile';
                 } else {
                     throw new Error(verifyData.error || 'Verification Failed');
@@ -272,11 +272,11 @@ export default function PricingPage() {
                     <Card style={{ padding: '0', overflow: 'hidden' }}>
                         {[
                             { feature: 'Monthly Cost', traditional: '₹15,000 - ₹30,000', ai: '₹199 - ₹399' },
-                            { feature: 'Available 24/7', traditional: '<Icon name="XCircle" /> Fixed hours', ai: '<Icon name="CheckCircle" /> Anytime' },
-                            { feature: 'Personalized Tests', traditional: '<Icon name="XCircle" /> Same for all', ai: '<Icon name="CheckCircle" /> AI adapts to you' },
-                            { feature: 'Instant Doubt Solving', traditional: '<Icon name="XCircle" /> Wait for class', ai: '<Icon name="CheckCircle" /> < 10 seconds' },
-                            { feature: 'Performance Tracking', traditional: '<Icon name="XCircle" /> Manual', ai: '<Icon name="CheckCircle" /> Real-time AI analytics' },
-                            { feature: 'Revision Alerts', traditional: '<Icon name="XCircle" /> None', ai: '<Icon name="CheckCircle" /> Spaced repetition' },
+                            { feature: 'Available 24/7', traditional: <><Icon name="XCircle" size={16} /> Fixed hours</>, ai: <><Icon name="CheckCircle" size={16} /> Anytime</> },
+                            { feature: 'Personalized Tests', traditional: <><Icon name="XCircle" size={16} /> Same for all</>, ai: <><Icon name="CheckCircle" size={16} /> AI adapts to you</> },
+                            { feature: 'Instant Doubt Solving', traditional: <><Icon name="XCircle" size={16} /> Wait for class</>, ai: <><Icon name="CheckCircle" size={16} /> &lt; 10 seconds</> },
+                            { feature: 'Performance Tracking', traditional: <><Icon name="XCircle" size={16} /> Manual</>, ai: <><Icon name="CheckCircle" size={16} /> Real-time AI analytics</> },
+                            { feature: 'Revision Alerts', traditional: <><Icon name="XCircle" size={16} /> None</>, ai: <><Icon name="CheckCircle" size={16} /> Spaced repetition</> },
                         ].map((row, i) => (
                             <div key={i} style={{
                                 display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',

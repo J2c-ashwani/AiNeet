@@ -163,14 +163,14 @@ function TestConfigContent() {
                     <h3 style={{ marginBottom: 16, fontWeight: 800 }}>Test Type</h3>
                     <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                         {[
-                            { value: 'custom', label: 'Custom Test', icon: '<Icon name="Target" />', desc: 'Choose your own settings' },
-                            { value: 'adaptive', label: 'Adaptive Practice', icon: '<Icon name="Brain" />', desc: 'AI Adjusts Difficulty' },
-                            { value: 'ai_generated', label: 'AI Generated', icon: '<Icon name="Zap" />', desc: 'Unique AI questions' },
-                            { value: 'pyq', label: 'Past Papers (Topic)', icon: '<Icon name="FileText" />', desc: 'Filter by chapter' },
-                            { value: 'yearly_pyq', label: 'Year-wise PYQ', icon: '<Icon name="CalendarDays" />', desc: 'Full papers by year' },
+                            { value: 'custom', label: 'Custom Test', icon: <Icon name="Target" size={24} />, desc: 'Choose your own settings' },
+                            { value: 'adaptive', label: 'Adaptive Practice', icon: <Icon name="Brain" size={24} />, desc: 'AI Adjusts Difficulty' },
+                            { value: 'ai_generated', label: 'AI Generated', icon: <Icon name="Zap" size={24} />, desc: 'Unique AI questions' },
+                            { value: 'pyq', label: 'Past Papers (Topic)', icon: <Icon name="FileText" size={24} />, desc: 'Filter by chapter' },
+                            { value: 'yearly_pyq', label: 'Year-wise PYQ', icon: <Icon name="CalendarDays" size={24} />, desc: 'Full papers by year' },
                             { value: 'topic', label: 'Topic-wise', icon: '📌', desc: 'Focus on specific topics' },
                             { value: 'chapter', label: 'Chapter-wise', icon: '📖', desc: 'Complete chapter test' },
-                            { value: 'mock', label: 'Full Mock', icon: '<Icon name="Clock" />', desc: '180 Qs • 720 marks' },
+                            { value: 'mock', label: 'Full Mock', icon: <Icon name="Clock" size={24} />, desc: '180 Qs • 720 marks' },
                         ].map(t => (
                             <div key={t.value} className={`option-card ${testType === t.value ? 'selected' : ''}`}
                                 onClick={() => {
@@ -406,7 +406,7 @@ function TestConfigContent() {
 
                         <Button
                             onClick={() => {
-                                const text = `Join AI NEET Coach with me and get free AI Mock Tests! <Icon name="Zap" />\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                const text = `Join AI NEET Coach with me and get free AI Mock Tests! ⚡\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                             }}
                             variant="success"

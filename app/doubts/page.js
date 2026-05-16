@@ -68,8 +68,8 @@ export default function DoubtSolver() {
             setMessages(prev => [...prev, {
                 role: 'assistant',
                 content: isTimeout
-                    ? '<Icon name="Clock" /> Our AI is a bit busy right now. Please try again in a moment.'
-                    : '<Icon name="AlertCircle" /> Something went wrong. Please try again.',
+                    ? <><Icon name="Clock" size={14} /> Our AI is a bit busy right now. Please try again in a moment.</>
+                    : <><Icon name="AlertCircle" size={14} /> Something went wrong. Please try again.</>,
                 isError: true,
                 retryMsg: variables.message
             }]);
@@ -142,7 +142,7 @@ export default function DoubtSolver() {
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`chat-message ${msg.role}`}>
                                 <div className="chat-avatar">
-                                    {msg.role === 'user' ? '👤' : '<Icon name="Cpu" />'}
+                                    {msg.role === 'user' ? '👤' : <Icon name="Cpu" size={16} />}
                                 </div>
                                 <div className="chat-bubble">
                                     {msg.role === 'assistant' ? (

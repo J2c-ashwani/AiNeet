@@ -117,7 +117,7 @@ export default function AdminQuestionsPage() {
                             {/* ID & Icon */}
                             <div className="relative z-10 flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-black/40 border border-white/10 shrink-0">
                                 <span className="text-[10px] text-gray-500 font-mono">#{q.id}</span>
-                                <span className="text-xl">{q.is_pyq ? '🏛️' : '<Icon name="FileText" />'}</span>
+                                <span className="text-xl">{q.is_pyq ? '🏛️' : <Icon name="FileText" size={24} />}</span>
                             </div>
 
                             {/* Content */}

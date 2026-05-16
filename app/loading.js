@@ -51,7 +51,7 @@ export default function Loading() {
                 marginTop: 8,
                 animation: 'splashPulse 2s ease-in-out infinite'
             }}>
-                Warming up AI engine...
+                Getting things ready for you...
             </p>
 
             <style dangerouslySetInnerHTML={{__html: `

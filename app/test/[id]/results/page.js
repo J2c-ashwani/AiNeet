@@ -141,7 +141,7 @@ export default function ResultsPage({ params }) {
                 {results.trustHint && (
                     <Card className="animate-fade-in results-trust-card" style={trustCardStyle(results.trustHint.severity)}>
                         <p className="results-trust-msg" style={{ color: trustMsgColor(results.trustHint.severity) }}>
-                            {results.trustHint.severity === 'success' ? '🌟' : results.trustHint.severity === 'warning' ? '<Icon name="AlertCircle" />' : '<Icon name="Lock" />'} {results.trustHint.message}
+                            {results.trustHint.severity === 'success' ? '🌟' : results.trustHint.severity === 'warning' ? <Icon name="AlertCircle" size={16} /> : <Icon name="Lock" size={16} />} {results.trustHint.message}
                         </p>
                     </Card>
                 )}

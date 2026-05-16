@@ -142,7 +142,7 @@ export default function GrowthCopilotPage() {
                             disabled={isGenerating}
                             className="btn btn-primary"
                         >
-                            {isGenerating ? 'Firing Vision Engine...' : '<Icon name="Zap" /> Generate Variants'}
+                            {isGenerating ? 'Firing Vision Engine...' : <><Icon name="Zap" size={16} /> Generate Variants</>}
                         </Button>
                     </div>
                 </div>

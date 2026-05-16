@@ -3,7 +3,7 @@ import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { Card, Button } from '@/components/ui';
 
-const SUBJECT_ICONS = { physics: '<Icon name="Zap" />', chemistry: '🧪', biology: '<Icon name="Dna" />' };
+const SUBJECT_ICONS = { physics: <Icon name="Zap" size={18} />, chemistry: <Icon name="Atom" size={18} />, biology: <Icon name="Dna" size={18} /> };
 const SUBJECT_COLORS = { physics: '#6366f1', chemistry: '#06b6d4', biology: '#22c55e' };
 
 export default function NCERTLibrary() {
@@ -160,7 +160,7 @@ export default function NCERTLibrary() {
                                                                     disabled={generating === ch.title || noPyqChapter === ch.title}
                                                                     variant="ghost"
                                                                     style={{ flex: 1, padding: 10, background: noPyqChapter === ch.title ? 'var(--danger-light, rgba(239, 68, 68, 0.1))' : 'var(--accent-light, rgba(245, 158, 11, 0.1))', color: noPyqChapter === ch.title ? 'var(--danger)' : 'var(--accent)', fontWeight: 700, border: noPyqChapter === ch.title ? '1px solid var(--danger)' : '1px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all 0.3s' }}>
-                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? '<Icon name="XCircle" /> No PYQs Available' : `<Icon name="Target" /> Solve PYQs (${ch.pyqCount})`}
+                                                                    {generating === ch.title ? <span className="spinner" style={{ width: 14, height: 14, borderWidth: 2, borderTopColor: 'transparent' }}></span> : noPyqChapter === ch.title ? <><Icon name="XCircle" size={14} /> No PYQs Available</> : <><Icon name="Target" size={14} /> Solve PYQs ({ch.pyqCount})</>}
                                                                 </Button>
                                                             )}
                                                         </div>

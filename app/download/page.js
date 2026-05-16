@@ -14,12 +14,12 @@ export const metadata = {
 
 export default function DownloadPage() {
     const features = [
-        { icon: '<Icon name="Brain" />', title: 'AI Mock Tests', desc: 'Personalized tests that adapt to your weak areas' },
-        { icon: '<Icon name="MessageCircle" />', title: 'Instant Doubt Solving', desc: 'Snap a photo, get AI explanations in seconds' },
-        { icon: '<Icon name="BarChart2" />', title: 'Rank Prediction', desc: 'Know exactly where you stand among lakhs of aspirants' },
-        { icon: '<Icon name="CalendarDays" />', title: 'Smart Study Plans', desc: 'AI-crafted daily plans based on your goal date' },
+        { icon: <Icon name="Brain" size={28} color="#a855f7" />, title: 'AI Mock Tests', desc: 'Personalized tests that adapt to your weak areas' },
+        { icon: <Icon name="MessageCircle" size={28} color="#10b981" />, title: 'Instant Doubt Solving', desc: 'Snap a photo, get AI explanations in seconds' },
+        { icon: <Icon name="BarChart2" size={28} color="#f43f5e" />, title: 'Rank Prediction', desc: 'Know exactly where you stand among lakhs of aspirants' },
+        { icon: <Icon name="CalendarDays" size={28} color="#6366f1" />, title: 'Smart Study Plans', desc: 'AI-crafted daily plans based on your goal date' },
         { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests instantly into your phone' },
-        { icon: '<Icon name="RefreshCw" />', title: 'Spaced Repetition', desc: 'Never forget what you\'ve learned with smart revision' },
+        { icon: <Icon name="RefreshCw" size={28} color="#eab308" />, title: 'Spaced Repetition', desc: 'Never forget what you\'ve learned with smart revision' },
         { icon: '⚔️', title: 'Battle Mode', desc: 'Compete with friends in real-time quiz battles' },
     ];
 

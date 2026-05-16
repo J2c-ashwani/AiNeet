@@ -12,11 +12,11 @@ import { logError } from '@/lib/error-logger';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 
 const ACHIEVEMENTS = [
-    { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '<Icon name="Target" />' },
-    { id: 'test_veteran', name: 'Test Veteran', description: 'Completed 10 tests', icon: '<Icon name="Trophy" />' },
+    { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
+    { id: 'test_veteran', name: 'Test Veteran', description: 'Completed 10 tests', icon: '🏆' },
     { id: 'perfect_score', name: 'Perfectionist', description: 'Scored 100% in a test', icon: '💯' },
-    { id: 'speed_demon', name: 'Speed Demon', description: 'Answered a question in under 10 seconds', icon: '<Icon name="Zap" />' },
-    { id: 'streak_7', name: 'Week Warrior', description: 'Maintained a 7-day streak', icon: '<Icon name="Flame" />' },
+    { id: 'speed_demon', name: 'Speed Demon', description: 'Answered a question in under 10 seconds', icon: '⚡' },
+    { id: 'streak_7', name: 'Week Warrior', description: 'Maintained a 7-day streak', icon: '🔥' },
 ];
 
 export async function POST(request) {

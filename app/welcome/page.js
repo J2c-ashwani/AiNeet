@@ -125,9 +125,9 @@ export default function WelcomePage() {
                         {/* Quick value cards */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 32 }}>
                             {[
-                                { icon: '<Icon name="Search" />', title: 'AI finds your weak areas', desc: 'Answer 15 quick questions across all subjects' },
-                                { icon: '<Icon name="FileText" />', title: 'Get a personalized plan', desc: 'Know exactly what to study first' },
-                                { icon: '<Icon name="TrendingUp" />', title: 'Track your improvement', desc: 'Watch your accuracy grow week by week' },
+                                { icon: <Icon name="Search" size={24} />, title: 'AI finds your weak areas', desc: 'Answer 15 quick questions across all subjects' },
+                                { icon: <Icon name="FileText" size={24} />, title: 'Get a personalized plan', desc: 'Know exactly what to study first' },
+                                { icon: <Icon name="TrendingUp" size={24} />, title: 'Track your improvement', desc: 'Watch your accuracy grow week by week' },
                             ].map((card, i) => (
                                 <Card key={i} style={{
                                     display: 'flex', alignItems: 'center', gap: 16, padding: 16,
@@ -183,9 +183,9 @@ export default function WelcomePage() {
                             display: 'flex', justifyContent: 'center', gap: 16, marginBottom: 32, flexWrap: 'wrap',
                         }}>
                             {[
-                                { icon: '<Icon name="Zap" />', label: '5 minutes' },
-                                { icon: '<Icon name="FileText" />', label: '15 questions' },
-                                { icon: '<Icon name="Target" />', label: 'All subjects' },
+                                { icon: <Icon name="Zap" size={16} />, label: '5 minutes' },
+                                { icon: <Icon name="FileText" size={16} />, label: '15 questions' },
+                                { icon: <Icon name="Target" size={16} />, label: 'All subjects' },
                             ].map((v, i) => (
                                 <div key={i} style={{
                                     display: 'flex', alignItems: 'center', gap: 6,

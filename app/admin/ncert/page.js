@@ -138,7 +138,7 @@ export default function AdminNCERTPage() {
                         </div>
 
                         <Button type="submit" disabled={uploading} className="btn btn-primary" style={{ width: '100%', padding: 14, }}>
-                            {uploading ? '<Icon name="Clock" /> Uploading...' : '<Icon name="Upload" /> Upload PDF'}
+                            {uploading ? <><Icon name="Clock" size={16} /> Uploading...</> : <><Icon name="Upload" size={16} /> Upload PDF</>}
                         </Button>
                     </form>
                 </div>
