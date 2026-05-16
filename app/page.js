@@ -174,10 +174,10 @@ function CoachingHome({ user, stats, statsLoading }) {
                 <h3 className="landing-section-title">Quick Tools</h3>
                 <div className="grid grid-2 landing-tools-grid">
                     {[
-                        { icon: '<Icon name="MessageCircle" />', label: 'Ask Doubt', desc: 'AI instant help', path: '/doubts', variant: 'success' },
+                        { icon: <Icon name="MessageCircle" />, label: 'Ask Doubt', desc: 'AI instant help', path: '/doubts', variant: 'success' },
                         { icon: '📸', label: 'OMR Scan', desc: 'Scan answer sheet', path: '/omr', variant: 'info' },
                         { icon: '📓', label: 'Mistakes', desc: 'Review wrong Qs', path: '/mistakes', variant: 'warning' },
-                        { icon: '<Icon name="BookOpen" />', label: 'NCERT', desc: 'Chapter reading', path: '/ncert', variant: 'neet' },
+                        { icon: <Icon name="BookOpen" />, label: 'NCERT', desc: 'Chapter reading', path: '/ncert', variant: 'neet' },
                     ].map(action => (
                         <Link key={action.path} href={action.path} style={{ textDecoration: 'none' }}>
                             <Card interactive className="landing-tool-card">
@@ -201,9 +201,6 @@ function GuestLanding() {
         <div className="page guest-wrapper">
             {/* Hero Section */}
             <div className="guest-hero">
-                <Badge variant="danger" className="guest-hero-badge">
-                    NEW: AI DIAGNOSTIC ENGINE
-                </Badge>
                 <h1 className="guest-hero-title">
                     Are you scoring below 600 in mock tests?
                 </h1>
@@ -223,9 +220,9 @@ function GuestLanding() {
             {/* Social Proof */}
             <div className="grid grid-3 guest-proof-grid">
                 {[
-                    { value: '12,400+', label: 'Tests Generated', icon: '<Icon name="FileText" />' },
-                    { value: 'Gemini AI', label: 'Powered By Google', icon: '<Icon name="Brain" />' },
-                    { value: '4.6 ★', label: 'Play Store Rating', icon: '<Icon name="Star" />' },
+                    { value: '12,400+', label: 'Tests Generated', icon: <Icon name="FileText" /> },
+                    { value: 'Gemini AI', label: 'Powered By Google', icon: <Icon name="Brain" /> },
+                    { value: '4.6 ★', label: 'Play Store Rating', icon: <Icon name="Star" /> },
                 ].map((item, i) => (
                     <Card key={i} className="guest-proof-card">
                         <div className="guest-proof-icon">{item.icon}</div>
@@ -242,9 +239,9 @@ function GuestLanding() {
                 </h2>
                 <div className="guest-features-list">
                     {[
-                        { icon: '<Icon name="FileText" />', title: 'Infinite AI Mock Tests', desc: 'Custom, adaptive, PYQ — all test types generated instantly.' },
-                        { icon: '<Icon name="MessageCircle" />', title: '24/7 AI Doubt Solver', desc: 'Step-by-step NEET explanations tailored to your level.' },
-                        { icon: '<Icon name="BarChart2" />', title: 'Performance Analytics', desc: 'Weak topics, accuracy trends, and rank prediction models.' },
+                        { icon: <Icon name="FileText" />, title: 'Infinite AI Mock Tests', desc: 'Custom, adaptive, PYQ — all test types generated instantly.' },
+                        { icon: <Icon name="MessageCircle" />, title: '24/7 AI Doubt Solver', desc: 'Step-by-step NEET explanations tailored to your level.' },
+                        { icon: <Icon name="BarChart2" />, title: 'Performance Analytics', desc: 'Weak topics, accuracy trends, and rank prediction models.' },
                         { icon: '📸', title: 'OMR Scanner', desc: 'Scan physical mock tests with your mobile camera instantly.' },
                     ].map((f, i) => (
                         <Card key={i} className="guest-feature-card">
