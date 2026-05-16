@@ -1,5 +1,6 @@
 import './globals.css';
 import ClientLayout from '@/components/ClientLayout';
+import SplashHide from '@/components/SplashHide';
 
 const APP_NAME = 'AI NEET Coach';
 const APP_DESCRIPTION = 'India\'s #1 AI-powered NEET preparation platform. Get personalized mock tests, instant AI doubt solving, adaptive study plans, rank prediction, spaced repetition, and detailed performance analytics — all powered by Gemini AI. Free forever plan available.';
@@ -224,23 +225,15 @@ export default function RootLayout({ children }) {
                 `}} />
             </head>
             <body suppressHydrationWarning style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', }}>
-                {/* Splash creation script — MUST be in body so document.body exists.
-                    React tracks this <script> tag but NOT the div it creates,
-                    so remove() is safe and won't crash React's reconciler. */}
-                <script dangerouslySetInnerHTML={{__html: `
-                    (function(){
-                        var s = document.createElement('div');
-                        s.id = 'app-splash';
-                        s.innerHTML = '<div style="position:relative;display:flex;align-items:center;justify-content:center"><div class="splash-ring"></div><span class="splash-logo">AI</span></div><div class="splash-title">NEET Coach</div><div class="splash-sub">Loading...</div>';
-                        document.body.prepend(s);
-                        function dismiss() {
-                            s.classList.add('hide');
-                            setTimeout(function(){ s.remove(); }, 500);
-                        }
-                        if (document.readyState === 'complete') dismiss();
-                        else window.addEventListener('load', function(){ setTimeout(dismiss, 300); });
-                    })();
-                `}} />
+                <div id="app-splash">
+                    <div style={{position:"relative",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        <div className="splash-ring"></div>
+                        <span className="splash-logo">AI</span>
+                    </div>
+                    <div className="splash-title">NEET Coach</div>
+                    <div className="splash-sub">Loading...</div>
+                </div>
+                <SplashHide />
                 <ClientLayout>
                     {children}
                 </ClientLayout>
