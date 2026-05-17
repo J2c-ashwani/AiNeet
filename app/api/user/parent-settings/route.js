@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeUpdate } from '@/lib/core/db-safe';
 import { validateEmail, sanitizeString, sanitizePhone } from '@/lib/validate';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 
@@ -70,12 +71,10 @@ export async function POST(request) {
             parent_consent_version: consent_given ? 'v1_early_access_beta' : null
         };
 
-        const { error: updateError } = await supabase
-            .from('users')
-            .update(updates)
-            .eq('id', decoded.id);
-
-        if (updateError) throw updateError;
+        await safeUpdate('users', { id: decoded.id }, updates, {
+            route: '/api/user/parent-settings',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true });
 

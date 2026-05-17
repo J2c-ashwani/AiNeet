@@ -30,9 +30,9 @@ const STEPS = [
       chunk_word_count INT,
       source_url       TEXT NOT NULL,
       page_number      INT,
-      embedding        vector(768),
+      embedding        vector(3072),
       fts_document     tsvector,
-      embedding_model  TEXT DEFAULT 'text-embedding-004',
+      embedding_model  TEXT DEFAULT 'gemini-embedding-001',
       chunking_version TEXT DEFAULT 'v1.0',
       pipeline_version TEXT DEFAULT 'v1.0',
       created_at       TIMESTAMPTZ DEFAULT NOW(),
@@ -54,7 +54,9 @@ const STEPS = [
       prompt_version         TEXT DEFAULT 'v1.0',
       retrieval_version      TEXT DEFAULT 'v1.0',
       generation_model       TEXT DEFAULT 'gemini-1.5-flash',
-      embedding_model        TEXT DEFAULT 'text-embedding-004',
+      embedding_model        TEXT DEFAULT 'gemini-embedding-001',
+      drift_score            FLOAT,
+      comprehension_score    FLOAT,
       sampled_for_review     BOOLEAN DEFAULT FALSE,
       review_status          TEXT DEFAULT 'pending' CHECK (review_status IN ('pending','approved','rejected','skipped')),
       reviewed_by            TEXT,
@@ -63,6 +65,8 @@ const STEPS = [
       created_at             TIMESTAMPTZ DEFAULT NOW(),
       UNIQUE (question_id)
     )`],
+  ['Column: rag drift score', `ALTER TABLE rag_explanations ADD COLUMN IF NOT EXISTS drift_score FLOAT`],
+  ['Column: rag comprehension score', `ALTER TABLE rag_explanations ADD COLUMN IF NOT EXISTS comprehension_score FLOAT`],
   ['Create rag_teacher_review_queue', `
     CREATE TABLE IF NOT EXISTS rag_teacher_review_queue (
       id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -82,11 +86,11 @@ const STEPS = [
   ['Index: concept_tags GIN',`CREATE INDEX IF NOT EXISTS idx_ncert_tags ON ncert_embeddings USING GIN (concept_tags)`],
   ['Index: FTS GIN',         `CREATE INDEX IF NOT EXISTS idx_ncert_fts  ON ncert_embeddings USING GIN (fts_document)`],
   ['Index: IVFFlat vector',  `CREATE INDEX IF NOT EXISTS idx_ncert_vec  ON ncert_embeddings USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)`],
-  ['Index: rag question',    `CREATE INDEX IF NOT EXISTS idx_rag_question ON rag_explanations (question_id)`],
+  ['Index: rag question',    `CREATE UNIQUE INDEX IF NOT EXISTS idx_rag_question_unique ON rag_explanations (question_id)`],
   ['Index: rag review queue',`CREATE INDEX IF NOT EXISTS idx_rag_review   ON rag_explanations (sampled_for_review, review_status) WHERE sampled_for_review = TRUE`],
   ['Function: hybrid_ncert_search', `
     CREATE OR REPLACE FUNCTION hybrid_ncert_search(
-      query_embedding vector(768), query_text TEXT,
+      query_embedding vector(3072), query_text TEXT,
       filter_subject TEXT DEFAULT NULL, filter_chapter INT DEFAULT NULL,
       filter_class INT DEFAULT NULL, top_k INT DEFAULT 5,
       vector_weight FLOAT DEFAULT 0.7, bm25_weight FLOAT DEFAULT 0.3

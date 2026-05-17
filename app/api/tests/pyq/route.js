@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { safeInsert } from '@/lib/core/db-safe';
+import { randomUUID } from 'crypto';
 import { validateArray, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
@@ -63,11 +64,11 @@ export async function POST(request) {
 
         const questions = rawQuestions.sort(() => 0.5 - Math.random()).slice(0, questionCount || 20);
 
-        const testId = uuidv4();
+        const testId = randomUUID();
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, type: 'pyq', questionCount: questions.length });
 
-        await supabase.from('tests').insert({
+        await safeInsert('tests', {
             id: testId,
             user_id: decoded.id,
             type: 'pyq',
@@ -75,6 +76,9 @@ export async function POST(request) {
             total_questions: questions.length,
             total_marks: totalMarks,
             started_at: new Date().toISOString()
+        }, {
+            route: '/api/tests/pyq',
+            userId: decoded.id,
         });
 
         const clientQuestions = questions.map((q, idx) => ({

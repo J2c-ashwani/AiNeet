@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { isInsideNativeApp, isMobileLikeBrowser } from '@/lib/platform';
 
 // You can change the 'mode' prop to determine aggressiveness
 // 'soft' -> Sticky banner at bottom (User can still use web app)
@@ -12,19 +13,7 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
     const DOWNLOAD_URL = '/download';
 
     useEffect(() => {
-        // Simple mobile detection on mount
-        const userAgent = typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
-        const mobile = Boolean(userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-        
-        // ✅ Critical: Never show install prompts inside the native app itself
-        const isInsideNativeApp = Boolean(
-            window.ReactNativeWebView ||
-            window.nativeApp ||
-            userAgent.includes('NEETCoachApp') ||
-            document.cookie.includes('native_app=true')
-        );
-        
-        setIsMobile(mobile && !isInsideNativeApp);
+        setIsMobile(isMobileLikeBrowser() && !isInsideNativeApp());
 
         // Check if previously dismissed (only respect dismiss for 'soft' mode)
         if (mode === 'soft') {

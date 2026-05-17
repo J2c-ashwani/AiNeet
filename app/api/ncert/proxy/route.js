@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkedFetch } from '@/lib/http';
 
 export async function GET(request) {
     try {
@@ -10,18 +11,15 @@ export async function GET(request) {
         }
 
         // Fetch the PDF from NCERT servers
-        const response = await fetch(url, {
+        const response = await checkedFetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (compatible; NEETCoach/1.0)',
                 'Accept': 'application/pdf',
                 'Referer': 'https://ncert.nic.in/'
             }
+        }, {
+            errorMessage: 'Failed to fetch PDF from NCERT',
         });
-
-        if (!response.ok) {
-            console.error(`Failed to fetch from NCERT: ${response.status} ${response.statusText}`);
-            return NextResponse.json({ error: 'Failed to fetch PDF from NCERT. Please try again in a moment.' }, { status: response.status });
-        }
 
         // Return the PDF buffer with appropriate content type and CORS headers
         const pdfBuffer = await response.arrayBuffer();

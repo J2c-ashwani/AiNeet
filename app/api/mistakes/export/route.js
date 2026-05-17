@@ -1,12 +1,108 @@
-import { Icon } from '@/components/ui/Icon';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { checkFeatureAccess } from '@/lib/plan_gate';
-import chromium from '@sparticuz/chromium';
-import puppeteer from 'puppeteer-core';
 
-export const runtime = 'nodejs'; // Puppeteer requires nodejs
+export const runtime = 'nodejs';
+
+function sanitizePdfText(value) {
+    return String(value ?? '')
+        .normalize('NFKD')
+        .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, '')
+        .replace(/[\\()]/g, '\\$&');
+}
+
+function wrapText(value, maxChars = 92) {
+    const words = String(value ?? '').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+    const lines = [];
+    let line = '';
+
+    for (const word of words) {
+        if ((line + ' ' + word).trim().length > maxChars) {
+            if (line) lines.push(line);
+            line = word;
+        } else {
+            line = (line + ' ' + word).trim();
+        }
+    }
+
+    if (line) lines.push(line);
+    return lines.length ? lines : [''];
+}
+
+function buildMistakeNotebookPdf(userName, mistakes) {
+    const pages = [[]];
+    let y = 800;
+
+    function addLine(text, size = 10, gap = 14) {
+        if (y < 54) {
+            pages.push([]);
+            y = 800;
+        }
+        pages[pages.length - 1].push({ text, size, y });
+        y -= gap;
+    }
+
+    addLine('AI NEET Coach - Mistake Notebook', 18, 24);
+    addLine(`Generated for ${userName || 'Student'} | ${mistakes.length} concepts to revise`, 10, 22);
+
+    mistakes.forEach((mistake, index) => {
+        addLine(`Question ${index + 1}`, 13, 18);
+        const tags = [mistake.subject_name, mistake.year_asked ? `PYQ ${mistake.year_asked}` : null].filter(Boolean).join(' | ');
+        if (tags) addLine(tags, 9, 14);
+
+        wrapText(mistake.text, 88).forEach(line => addLine(line, 10, 13));
+        ['A', 'B', 'C', 'D'].forEach(option => {
+            const value = mistake[`option_${option.toLowerCase()}`];
+            if (value) wrapText(`${option}. ${value}`, 86).forEach(line => addLine(line, 9, 12));
+        });
+        addLine(`Correct Answer: ${mistake.correct_option || '-'}`, 10, 14);
+        if (mistake.explanation) {
+            addLine('Explanation:', 10, 13);
+            wrapText(mistake.explanation, 88).slice(0, 12).forEach(line => addLine(line, 9, 12));
+        }
+        addLine('', 8, 10);
+    });
+
+    const objects = [];
+    const addObject = (body) => {
+        objects.push(body);
+        return objects.length;
+    };
+
+    const catalogId = addObject('<< /Type /Catalog /Pages 2 0 R >>');
+    const pagesId = addObject('');
+    const fontId = addObject('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
+    const pageRefs = [];
+
+    for (const pageLines of pages) {
+        const content = pageLines.map(line =>
+            `BT /F1 ${line.size} Tf 42 ${line.y} Td (${sanitizePdfText(line.text)}) Tj ET`
+        ).join('\n');
+        const contentId = addObject(`<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}\nendstream`);
+        const pageId = addObject(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R >>`);
+        pageRefs.push(`${pageId} 0 R`);
+    }
+
+    objects[pagesId - 1] = `<< /Type /Pages /Kids [${pageRefs.join(' ')}] /Count ${pageRefs.length} >>`;
+    objects[catalogId - 1] = '<< /Type /Catalog /Pages 2 0 R >>';
+
+    let pdf = '%PDF-1.4\n';
+    const offsets = [0];
+    objects.forEach((body, index) => {
+        offsets.push(Buffer.byteLength(pdf));
+        pdf += `${index + 1} 0 obj\n${body}\nendobj\n`;
+    });
+
+    const xrefOffset = Buffer.byteLength(pdf);
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    offsets.slice(1).forEach(offset => {
+        pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
+    });
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+    return Buffer.from(pdf);
+}
 
 export async function GET(request) {
     try {
@@ -46,75 +142,7 @@ export async function GET(request) {
             return NextResponse.json({ error: 'No mistakes found. Take a test first!' }, { status: 400 });
         }
 
-        // HTML Template for the PDF
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>${user.name}'s Mistake Notebook</title>
-                <style>
-                    body { font-family: 'Helvetica', 'Arial', sans-serif; padding: 40px; color: #1e293b; }
-                    .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #6366f1; }
-                    .header h1 { color: #0f172a; margin: 0; font-size: 32px; }
-                    .header p { color: #64748b; font-size: 14px; margin-top: 8px; }
-                    .watermark { position: fixed; bottom: 20px; right: 20px; color: #cbd5e1; font-size: 12px; font-weight: bold; }
-                    .question-card { margin-bottom: 30px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; page-break-inside: avoid; }
-                    .q-number { font-weight: bold; color: #6366f1; margin-bottom: 10px; font-size: 18px; }
-                    .q-text { font-size: 16px; margin-bottom: 15px; line-height: 1.5; }
-                    .options { margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-                    .option { padding: 8px 12px; background: #f8fafc; border-radius: 6px; font-size: 14px; border: 1px solid #f1f5f9; }
-                    .ans { color: #10b981; font-weight: bold; margin-bottom: 10px; }
-                    .exp { background: #f0fdf4; padding: 15px; border-radius: 8px; font-size: 14px; color: #166534; line-height: 1.5; border-left: 4px solid #10b981; }
-                    .tag { display: inline-block; padding: 4px 8px; background: #e0e7ff; color: #4338ca; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
-                </style>
-            </head>
-            <body>
-                <div class="watermark">AI NEET Coach (aineetcoach.com)</div>
-                <div class="header">
-                    <h1><Icon name="Brain" /> AI Mistake Notebook</h1>
-                    <p>Generated for ${user.name} • ${mistakes.length} Concepts to Revise Before NEET</p>
-                </div>
-                
-                ${mistakes.map((m, i) => `
-                    <div class="question-card">
-                        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                            ${m.subject_name ? `<div class="tag">${m.subject_name}</div>` : ''}
-                            ${m.year_asked ? `<div class="tag" style="background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe;">✓ Verified PYQ (${m.year_asked})</div>` : ''}
-                        </div>
-                        <div class="q-number">Question ${i + 1}</div>
-                        <div class="q-text">${m.text?.replace(/\n/g, '<br/>')}</div>
-                        <div class="options">
-                            <div class="option">A. ${m.option_a}</div>
-                            <div class="option">B. ${m.option_b}</div>
-                            <div class="option">C. ${m.option_c}</div>
-                            <div class="option">D. ${m.option_d}</div>
-                        </div>
-                        <div class="ans">Correct Answer: ${m.correct_option}</div>
-                        ${m.explanation ? `<div class="exp"><strong>Explanation:</strong> ${m.explanation}</div>` : ''}
-                    </div>
-                `).join('')}
-            </body>
-            </html>
-        `;
-
-        const executablePath = await chromium.executablePath();
-        const browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: executablePath || undefined,
-            headless: chromium.headless,
-        });
-
-        const page = await browser.newPage();
-        await page.setContent(html, { waitUntil: 'networkidle0' });
-
-        const pdf = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: { top: '10mm', bottom: '10mm', left: '10mm', right: '10mm' }
-        });
-
-        await browser.close();
+        const pdf = buildMistakeNotebookPdf(user.name, mistakes);
 
         return new NextResponse(pdf, {
             headers: {

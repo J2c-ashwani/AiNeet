@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { safeInsert } from '@/lib/core/db-safe';
+import { randomUUID } from 'crypto';
 import { checkUsageLimit } from '@/lib/plan_gate';
 
 export async function POST(request) {
@@ -47,13 +48,16 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Not enough questions available to generate a challenge' }, { status: 500 });
         }
 
-        const challengeId = uuidv4();
+        const challengeId = randomUUID();
 
-        await supabase.from('battles').insert({
+        await safeInsert('battles', {
             id: challengeId,
             user_id: decoded.id,
             questions: JSON.stringify(questions),
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/challenge/create',
+            userId: decoded.id,
         });
 
         return NextResponse.json({

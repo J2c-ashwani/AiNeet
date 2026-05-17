@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { safeRpc, safeSelect, safeInsert } from '@/lib/core/db-safe';
@@ -32,14 +31,12 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
         }
 
-        const payload = JSON.parse(rawBody);
-
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-        const supabase = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            serviceKey,
-            { auth: { persistSession: false } }
-        );
+        let payload;
+        try {
+            payload = JSON.parse(rawBody);
+        } catch {
+            return NextResponse.json({ error: 'Invalid webhook payload' }, { status: 400 });
+        }
 
         // Process successful payments
         if (payload.type === 'PAYMENT_SUCCESS_WEBHOOK') {

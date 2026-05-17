@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
-import { STORAGE_KEYS } from '@/lib/storage-resilient';
 import { useMutation } from '@tanstack/react-query';
 import { Card, Button, Badge, Select, Textarea } from '@/components/ui';
 import { AutosaveIndicator, TrustBadge } from '@/components/trust/TrustBadge';
@@ -201,13 +200,7 @@ export default function TestPage({ params }) {
         };
         const handleUnload = () => {
             // Synchronous signal for localStorage (IDB may not complete)
-            try {
-                localStorage.setItem(STORAGE_KEYS.ACTIVE_TEST, JSON.stringify({
-                    activeTestId: testId,
-                    lastUpdatedAt: Date.now(),
-                    resumeAvailable: true
-                }));
-            } catch (e) { /* non-fatal */ }
+            TestSessionStore.saveActiveSignal(testId);
         };
 
         document.addEventListener('visibilitychange', handleVisibility);

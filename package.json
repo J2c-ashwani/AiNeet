@@ -7,20 +7,21 @@
     "typecheck": "tsc --noEmit",
     "build": "npm run lint:design && npm run lint:primary-routes && next build",
     "start": "next start",
-    "lint": "npx eslint . || true && node scripts/lint-report.js",
+    "lint": "npx eslint app components lib utils providers proxy.js next.config.mjs",
+    "lint:report": "node scripts/lint-report.js",
     "test:visual": "npx playwright test",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
     "lint:design": "node scripts/check-design-system.js && node scripts/validate-routes.js && node scripts/validate-css-classes.js",
     "lint:routes": "node scripts/validate-routes.js",
     "lint:primary-routes": "node scripts/assert-primary-routes.js",
     "test:a11y": "npx playwright test tests/a11y/",
+    "test:contracts": "npx playwright test -c playwright.contracts.config.js",
     "prepare": "husky"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.2",
     "@sentry/nextjs": "^10.52.0",
-    "@sparticuz/chromium": "^143.0.4",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.97.0",
     "@tanstack/react-query": "^5.100.10",
@@ -32,16 +33,13 @@
     "chart.js": "^4.5.1",
     "dotenv": "^17.3.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "firebase-admin": "^13.9.0",
     "jsonwebtoken": "^9.0.3",
     "katex": "^0.16.45",
     "lucide-react": "^1.14.0",
-    "next": "16.1.6",
-    "next-pwa": "^5.6.0",
+    "next": "16.2.6",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^5.4.624",
     "pg": "^8.18.0",
-    "puppeteer-core": "^24.37.5",
     "react": "19.2.3",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.3",
@@ -58,7 +56,6 @@
     "resend": "^6.9.2",
     "swr": "^2.4.1",
     "tesseract.js": "^7.0.0",
-    "uuid": "^13.0.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -68,7 +65,11 @@
     "@types/react": "19.2.14",
     "eslint": "^10.3.0",
     "husky": "^9.1.7",
-    "puppeteer": "^24.40.0",
     "typescript": "^6.0.2"
+  },
+  "overrides": {
+    "picomatch": "4.0.4",
+    "postcss": "8.5.10",
+    "rollup": "4.59.1"
   }
 }

@@ -4,7 +4,6 @@ require('dotenv').config({ path: path.join(__dirname, '../.env.local') });
 // Setup a minimal DB connection that works like lib/db.js
 const { Pool } = require('pg');
 const Database = require('better-sqlite3');
-const { v4: uuidv4 } = require('uuid');
 
 const isPostgres = !!process.env.DATABASE_URL;
 

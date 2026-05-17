@@ -43,8 +43,8 @@ export async function GET(request) {
                 pyqByChapter[key] = parseInt(row.pyq_count, 10);
             });
         } catch (dbErr) {
-            // DB unavailable — degrade gracefully, show 0 counts but don't crash
             console.error('[NCERT library] PYQ count query failed:', dbErr.message);
+            // DB unavailable: degrade gracefully, show 0 counts but keep library available.
         }
 
         const getPyqCount = (title) => {

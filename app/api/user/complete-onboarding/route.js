@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeUpdate } from '@/lib/core/db-safe';
 
 /**
  * Mark onboarding as completed for the authenticated user.
@@ -8,14 +8,13 @@ import { getUserFromRequest } from '@/lib/core/auth';
  */
 export async function POST(request) {
     try {
-        const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        await supabase
-            .from('users')
-            .update({ onboarding_completed: true })
-            .eq('id', decoded.id);
+        await safeUpdate('users', { id: decoded.id }, { onboarding_completed: true }, {
+            route: '/api/user/complete-onboarding',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {

@@ -1,8 +1,8 @@
-import { Icon } from '@/components/ui/Icon';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
-import { safeRpc, safeUpdate, safeInsert } from '@/lib/core/db-safe';
+import { safeDelete, safeRpc, safeUpdate, safeInsert } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { allOrThrow } from '@/lib/async';
 import { calculateNEETScore, calculateXP, getLevelFromXP } from '@/lib/scoring';
 import { updateUserMastery, updateQuestionDifficulty } from '@/lib/adaptive_engine';
 import { scheduleNewCard } from '@/lib/spaced_repetition';
@@ -145,7 +145,7 @@ export async function POST(request) {
             { data: existingMastery },
             { data: existingDifficulty },
             { data: existingMistakes }
-        ] = await Promise.all([
+        ] = await allOrThrow([
             topicIdArray.length
                 ? supabase.from('user_performance').select('*').eq('user_id', decoded.id).in('topic_id', topicIdArray)
                 : Promise.resolve({ data: [] }),
@@ -247,18 +247,22 @@ export async function POST(request) {
                 p_performances: performanceUpserts.length > 0 ? performanceUpserts : null
             }, { route: '/api/tests/submit', userId: decoded.id, testId });
         } catch (rpcErr) {
-            // Retry safety: Release the lock if the actual commit failed so they can try again
             if (lockAcquired) {
-                await supabase.from('academic_events')
-                    .delete()
-                    .eq('test_id', testId)
-                    .eq('event_type', 'test_submitted');
+                // Retry safety: release the lock if the actual commit failed so they can try again.
+                await safeDelete('academic_events', {
+                    test_id: testId,
+                    event_type: 'test_submitted',
+                }, {
+                    route: '/api/tests/submit/lock-release',
+                    userId: decoded.id,
+                    testId,
+                });
             }
             throw rpcErr;
         }
 
         // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
-        await Promise.all([
+        await allOrThrow([
             ...adaptiveUpdates.map(u => updateQuestionDifficulty(u.questionId, u.isCorrect, u.currentMastery).catch(() => {})),
             ...adaptiveUpdates.map(u => updateUserMastery(decoded.id, u.topicId, u.isCorrect, u.qDiff).catch(() => {})),
             ...wrongAnswerQuestionIds.map(qId => scheduleNewCard(decoded.id, qId).catch(() => {})),
@@ -383,13 +387,19 @@ export async function POST(request) {
                     const premiumTime = new Date(Date.now() + 86400000).toISOString();
                     
                     // Reward New User (Self)
-                    await supabase.from('users').update({ 
+                    await safeUpdate('users', { id: decoded.id }, {
                         premium_until: premiumTime,
                         trust_score: Math.min(100, (user.trust_score || 100) + 20)
-                    }).eq('id', decoded.id);
+                    }, {
+                        route: '/api/tests/submit/referral-self',
+                        userId: decoded.id,
+                    });
                     
                     // Reward Referrer
-                    await supabase.from('users').update({ premium_until: premiumTime }).eq('id', user.referred_by);
+                    await safeUpdate('users', { id: user.referred_by }, { premium_until: premiumTime }, {
+                        route: '/api/tests/submit/referral-referrer',
+                        userId: decoded.id,
+                    });
                     
                     referralRewardUnlocked = true;
                 } else {

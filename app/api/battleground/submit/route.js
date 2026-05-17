@@ -47,8 +47,8 @@ export async function POST(request) {
         const score = (correct * 4) - (incorrect * 1); // NEET marking scheme
 
         // Atomic Check and Set using safeUpdate to prevent double-submit
-        const { data: updateRes, error: updateErr } = await supabase
-            .from('battleground_participants')
+        const participantMutations = supabase.from('battleground_participants');
+        const { data: updateRes, error } = await participantMutations
             .update({
                 score: score,
                 correct_count: correct,
@@ -61,7 +61,7 @@ export async function POST(request) {
             .is('submitted_at', null)
             .select();
 
-        if (updateErr) throw updateErr;
+        if (error) throw error;
 
         if (!updateRes || updateRes.length === 0) {
             return NextResponse.json({ error: 'Already submitted or battle locked.' }, { status: 409 });

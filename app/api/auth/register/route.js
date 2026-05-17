@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/core/db';
+import { safeDelete, safeInsert } from '@/lib/core/db-safe';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
@@ -74,7 +75,9 @@ export async function POST(request) {
                 // Zombie: account created but OTP never completed — clean up and allow fresh re-registration
                 console.log(`Cleaning up zombie unconfirmed account for ${email}`);
                 await supabase.auth.admin.deleteUser(existing.id);
-                await supabase.from('users').delete().eq('id', existing.id);
+                await safeDelete('users', { id: existing.id }, {
+                    route: '/api/auth/register',
+                });
             }
         }
 
@@ -145,25 +148,24 @@ export async function POST(request) {
 
         const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
 
-        const { error: insertError } = await supabase
-            .from('users')
-            .insert({
-                id,
-                name: cleanName,
-                email: email.toLowerCase().trim(),
-                password_hash: passwordHash,
-                target_year: parseInt(targetYear) || 2026,
-                referral_code: myReferralCode,
-                referred_by: referredBy,
-                utm_source: tracking?.utmSource || null,
-                utm_medium: tracking?.utmMedium || null,
-                utm_campaign: tracking?.utmCampaign || null,
-                acquired_via: tracking?.acquiredVia || (referredBy ? 'referral' : 'organic'),
-                device_hash: deviceHash,
-                fraud_risk_score: fraudRiskScore
-            });
-
-        if (insertError) throw insertError;
+        await safeInsert('users', {
+            id,
+            name: cleanName,
+            email: email.toLowerCase().trim(),
+            password_hash: passwordHash,
+            target_year: parseInt(targetYear) || 2026,
+            referral_code: myReferralCode,
+            referred_by: referredBy,
+            utm_source: tracking?.utmSource || null,
+            utm_medium: tracking?.utmMedium || null,
+            utm_campaign: tracking?.utmCampaign || null,
+            acquired_via: tracking?.acquiredVia || (referredBy ? 'referral' : 'organic'),
+            device_hash: deviceHash,
+            fraud_risk_score: fraudRiskScore
+        }, {
+            route: '/api/auth/register',
+            userId: id,
+        });
 
         const { data: user } = await supabase
             .from('users')
@@ -178,6 +180,6 @@ export async function POST(request) {
         return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
     } catch (error) {
         console.error('Register error:', error);
-        return NextResponse.json({ error: error.message || 'Something went wrong during signup.', details: JSON.stringify(error) }, { status: 500 });
+        return NextResponse.json({ error: 'Something went wrong during signup.' }, { status: 500 });
     }
 }

@@ -3,7 +3,7 @@ import { getDb } from '@/lib/core/db';
 import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
 import crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 export async function POST(request) {
     try {
@@ -34,8 +34,8 @@ export async function POST(request) {
         console.log(`[DIAGNOSTIC CLAIM] Signature matches. Claiming diagnostic data for fresh user ${decoded.id}`);
 
         // 2. Generate Real DB Artifacts
-        const testId = uuidv4();
-        const attemptId = uuidv4();
+        const testId = randomUUID();
+        const attemptId = randomUUID();
 
         // Check if they already claimed one recently to prevent double-claiming spam (idempotency)
         const { data: existingClaims } = await safeSelect('tests', q => q

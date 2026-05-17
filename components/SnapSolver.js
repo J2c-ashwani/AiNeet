@@ -1,12 +1,14 @@
 
 "use client";
 import { useState, useRef } from 'react';
+import { isInsideNativeApp } from '@/lib/platform';
 
 export default function SnapSolver({ onSolutionReceived, userTier }) {
     const fileInputRef = useRef(null);
     const [preview, setPreview] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState('');
+    const captureMode = isInsideNativeApp() ? undefined : 'environment';
 
     const isPremium = userTier === 'premium';
 
@@ -76,7 +78,7 @@ export default function SnapSolver({ onSolutionReceived, userTier }) {
                         ref={fileInputRef}
                         className="hidden"
                         accept="image/*"
-                        capture="environment"
+                        capture={captureMode}
                         onChange={handleFileChange}
                     />
                 </div>

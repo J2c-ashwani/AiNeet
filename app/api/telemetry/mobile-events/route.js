@@ -1,37 +1,43 @@
-import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
+import { z } from 'zod';
+import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
+import { safeInsert } from '@/lib/core/db-safe';
 
-export async function POST(request) {
-    try {
-        let body;
-        try { body = await request.json(); } catch {
-            return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
-        }
+const mobileEventSchema = z.object({
+    user_id: z.string().uuid().nullable().optional(),
+    event_type: z.string().trim().min(1).max(100),
+    device_info: z.unknown().nullable().optional(),
+    android_version: z.string().max(80).nullable().optional(),
+    webview_version: z.string().max(120).nullable().optional(),
+    route: z.string().max(200).nullable().optional(),
+    failure_reason: z.string().max(500).nullable().optional(),
+});
 
-        const { events } = body;
-        if (!Array.isArray(events) || events.length === 0) {
-            return NextResponse.json({ ok: true, inserted: 0 });
-        }
+const mobileEventsBodySchema = z.object({
+    events: z.array(mobileEventSchema).max(200).default([]),
+});
 
-        const supabase = await getDb();
-
-        // Sanitize and batch insert
-        const rows = events.slice(0, 200).map(e => ({
-            user_id:        e.user_id        || null,
-            event_type:     String(e.event_type || 'unknown').substring(0, 100),
-            device_info:    e.device_info    || null,
-            android_version:e.android_version|| null,
-            webview_version:e.webview_version|| null,
-            route:          e.route          ? String(e.route).substring(0, 200) : null,
-            failure_reason: e.failure_reason ? String(e.failure_reason).substring(0, 500) : null,
-        }));
-
-        const { error } = await supabase.from('mobile_runtime_events').insert(rows);
-        if (error) throw error;
-
-        return NextResponse.json({ ok: true, inserted: rows.length });
-    } catch (e) {
-        console.error('[Mobile Telemetry] Ingest error:', e);
-        return NextResponse.json({ error: 'Server Error' }, { status: 500 });
+export const POST = withApiRoute(async (_request, { body }) => {
+    if (body.events.length === 0) {
+        return { ok: true, inserted: 0 };
     }
-}
+
+    const rows = body.events.map(e => ({
+        user_id: e.user_id || null,
+        event_type: e.event_type,
+        device_info: e.device_info || null,
+        android_version: e.android_version || null,
+        webview_version: e.webview_version || null,
+        route: e.route || null,
+        failure_reason: e.failure_reason || null,
+    }));
+
+    await safeInsert('mobile_runtime_events', rows, {
+        route: '/api/telemetry/mobile-events',
+    });
+
+    return { ok: true, inserted: rows.length };
+}, {
+    bodySchema: mobileEventsBodySchema,
+    maxBodySize: 256_000,
+    rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'soft', key: 'mobile-telemetry' },
+});

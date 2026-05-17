@@ -1,58 +1,50 @@
-import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
+import { checkedFetch } from '@/lib/http';
 
-export async function POST(request) {
-    try {
-        if (!process.env.UPSTASH_REDIS_REST_URL) {
-            // Failsafe exit if analytics cluster offline
-            return NextResponse.json({ success: true, bypassed: true });
-        }
+const funnelEventSchema = z.object({
+    event_name: z.string().trim().min(1).max(120),
+    user_id: z.string().max(128).optional().nullable(),
+    device_session_id: z.string().trim().min(1).max(160),
+    metadata: z.record(z.string(), z.unknown()).optional().default({}),
+    timestamp: z.number().int().positive().optional(),
+});
 
-        let _body;
-
-        try { _body = await request.json(); } catch (parseErr) {
-
-            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-
-        }
-
-        const body = _body;
-        const { event_name, user_id, device_session_id, metadata, timestamp } = payload;
-
-        if (!event_name || !device_session_id) {
-            return NextResponse.json({ error: 'Missing telemetry bindings' }, { status: 400 });
-        }
-
-        const safeSessionId = String(device_session_id).replace(/[^a-zA-Z0-9_-]/g, '');
-        const unixTime = timestamp || Date.now();
-        const telemetryNode = JSON.stringify({
-            u: user_id || 'anonymous',
-            e: event_name,
-            m: metadata || {},
-            t: unixTime
-        });
-
-        // Push event into continuous timeline set for this specific browser session.
-        // Format: ZADD funnel:{session_id} {timestamp} {event_node}
-        const redisPayload = JSON.stringify([
-            'ZADD',
-            `funnel:${safeSessionId}`,
-            unixTime,
-            telemetryNode
-        ]);
-
-        // Fire and forget via Upstash REST (non-blocking for fast client offload)
-        fetch(`${process.env.UPSTASH_REDIS_REST_URL}/`, {
-            method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`, 
-                'Content-Type': 'application/json' 
-            },
-            body: redisPayload
-        }).catch(() => {});
-
-        return NextResponse.json({ success: true });
-    } catch (error) {
-        console.error('Funnel Telemetry parsing exception', error);
-        return NextResponse.json({ error: 'Malformed payload' }, { status: 400 });
+export const POST = withApiRoute(async (_request, { body }) => {
+    if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+        return { success: true, bypassed: true };
     }
-}
+
+    const safeSessionId = body.device_session_id.replace(/[^a-zA-Z0-9_-]/g, '');
+    const unixTime = body.timestamp || Date.now();
+    const telemetryNode = JSON.stringify({
+        u: body.user_id || 'anonymous',
+        e: body.event_name,
+        m: body.metadata || {},
+        t: unixTime,
+    });
+
+    const redisPayload = JSON.stringify([
+        'ZADD',
+        `funnel:${safeSessionId}`,
+        unixTime,
+        telemetryNode,
+    ]);
+
+    await checkedFetch(`${process.env.UPSTASH_REDIS_REST_URL}/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: redisPayload,
+    }, {
+        errorMessage: 'Failed to write funnel analytics',
+    });
+
+    return { success: true };
+}, {
+    bodySchema: funnelEventSchema,
+    maxBodySize: 64_000,
+    rateLimit: { ...RATE_LIMITS.PUBLIC, failBehavior: 'soft', key: 'funnel-analytics' },
+});

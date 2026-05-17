@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeUpdate } from '@/lib/core/db-safe';
 
 export async function POST(request) {
     try {
@@ -22,7 +23,13 @@ export async function POST(request) {
         if (!battle) return NextResponse.json({ error: 'Battleground not found or you are not the creator' }, { status: 404 });
         if (battle.status !== 'waiting') return NextResponse.json({ error: 'Battleground already started' }, { status: 400 });
 
-        await supabase.from('battlegrounds').update({ status: 'active', started_at: new Date().toISOString() }).eq('id', battleId);
+        await safeUpdate('battlegrounds', { id: battleId }, {
+            status: 'active',
+            started_at: new Date().toISOString(),
+        }, {
+            route: '/api/battleground/start',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true, message: 'Battleground started!' });
 

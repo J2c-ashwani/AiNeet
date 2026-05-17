@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeUpdate } from '@/lib/core/db-safe';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,7 +46,13 @@ export async function GET(request) {
 
         // Auto-end if all participants submitted
         if (battle.status === 'active' && participants.length > 0 && participants.every(p => p.submitted_at)) {
-            await supabase.from('battlegrounds').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', battleId);
+            await safeUpdate('battlegrounds', { id: battleId }, {
+                status: 'ended',
+                ended_at: new Date().toISOString(),
+            }, {
+                route: '/api/battleground/state',
+                userId: decoded.id,
+            });
             battle.status = 'ended';
         }
 

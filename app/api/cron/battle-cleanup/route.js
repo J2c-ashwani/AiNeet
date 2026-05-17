@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeUpdate } from '@/lib/core/db-safe';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 
 export const maxDuration = 300;
@@ -28,10 +29,10 @@ export async function GET(request) {
         if (abandonedBattles && abandonedBattles.length > 0) {
             for (const battle of abandonedBattles) {
                 // Force end them
-                await supabase
-                    .from('battlegrounds')
-                    .update({ status: 'completed' })
-                    .eq('id', battle.id);
+                await safeUpdate('battlegrounds', { id: battle.id }, { status: 'completed' }, {
+                    route: '/api/cron/battle-cleanup',
+                    userId: 'system',
+                });
                 
                 await logAcademicEvent({
                     eventType: 'battle_abandoned',

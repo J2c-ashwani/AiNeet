@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeUpdate } from '@/lib/core/db-safe';
 import { getLevelFromXP } from '@/lib/scoring';
 
 export async function GET(request) {
@@ -21,7 +22,7 @@ export async function GET(request) {
         return NextResponse.json({ user: { ...user, levelInfo } });
     } catch (error) {
         console.error('Auth me error:', error);
-        return NextResponse.json({ user: null });
+        return NextResponse.json({ error: 'Failed to load session profile' }, { status: 500 });
     }
 }
 
@@ -54,12 +55,10 @@ export async function PUT(request) {
 
         if (Object.keys(updates).length === 0) return NextResponse.json({ success: true });
 
-        const { error } = await supabase
-            .from('users')
-            .update(updates)
-            .eq('id', decoded.id);
-
-        if (error) throw error;
+        await safeUpdate('users', { id: decoded.id }, updates, {
+            route: '/api/auth/me',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {

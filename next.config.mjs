@@ -1,68 +1,12 @@
 import { withSentryConfig } from "@sentry/nextjs";
-import withPWAInit from "next-pwa";
-
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-  customWorkerDir: "worker",
-  runtimeCaching: [
-    {
-      urlPattern: /^https:\/\/.*\.(js|css|woff2?)$/i,
-      handler: "CacheFirst",
-      options: {
-        cacheName: "static-assets",
-        expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
-      },
-    },
-    {
-      urlPattern: /^https:\/\/.*\.(png|jpg|jpeg|svg|gif|webp|ico)$/i,
-      handler: "CacheFirst",
-      options: {
-        cacheName: "image-cache",
-        expiration: { maxEntries: 60, maxAgeSeconds: 7 * 24 * 60 * 60 },
-      },
-    },
-    {
-      urlPattern: /\/api\/(study-plan|syllabus|blueprint|ncert\/library|home\/stats|auth\/me|omr\/tests)/,
-      handler: "StaleWhileRevalidate",
-      options: {
-        cacheName: "api-data-cache",
-        expiration: { maxEntries: 30, maxAgeSeconds: 2 * 60 * 60 },
-      },
-    },
-    {
-      urlPattern: /\/api\/tests\/submit/,
-      handler: "NetworkFirst",
-      method: "POST",
-      options: {
-        cacheName: "test-submit-cache",
-        backgroundSync: {
-          name: "test-submit-queue",
-          options: { maxRetentionTime: 24 * 60 },
-        },
-      },
-    },
-    {
-      urlPattern: /\/api\/omr\/grade/,
-      handler: "NetworkFirst",
-      method: "POST",
-      options: {
-        cacheName: "omr-grade-cache",
-        backgroundSync: {
-          name: "omr-grade-queue",
-          options: { maxRetentionTime: 24 * 60 },
-        },
-      },
-    },
-  ],
-});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ['better-sqlite3'],
   poweredByHeader: false,
+  turbopack: {
+    root: process.cwd(),
+  },
 
   async headers() {
     return [
@@ -86,7 +30,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(withPWA(nextConfig), {
+export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
@@ -111,12 +55,4 @@ export default withSentryConfig(withPWA(nextConfig), {
   // Hides source maps from generated client bundles
   hideSourceMaps: true,
 
-  // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
-
-  // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers)
-  // See the following for more information:
-  // https://docs.sentry.io/product/crons/
-  // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
 });

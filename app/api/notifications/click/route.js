@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeUpdate } from '@/lib/core/db-safe';
 
 export async function POST(request) {
     try {
@@ -29,13 +30,14 @@ export async function POST(request) {
             updates.device_info = device_info;
         }
 
-        const { error } = await supabase
-            .from('notifications_log')
-            .update(updates)
-            .eq('id', notification_id)
-            .eq('user_id', user ? user.id : undefined); // Add user_id check if authenticated
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
 
-        if (error) throw error;
+        await safeUpdate('notifications_log', { id: notification_id, user_id: user.id }, updates, {
+            route: '/api/notifications/click',
+            userId: user.id,
+        });
 
         return NextResponse.json({ success: true, redirect_route: route });
 

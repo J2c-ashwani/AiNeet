@@ -123,7 +123,7 @@ export default function AdminNCERTPage() {
                                 background: dragOver ? 'var(--bg-glass)' : 'transparent',
                                 transition: 'all 0.2s'
                             }}>
-                            <Input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} style={{ display: 'none' }} id="ncert-upload" />
+                            <Input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }} id="ncert-upload" />
                             <label htmlFor="ncert-upload" style={{ cursor: 'pointer', display: 'block' }}>
                                 <div style={{ marginBottom: 8 }}><Icon name="Star" size={16} /></div>
                                 {file ? (

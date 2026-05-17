@@ -35,14 +35,14 @@ CREATE TABLE IF NOT EXISTS ncert_embeddings (
     source_url          TEXT NOT NULL,
     page_number         INT,
 
-    -- Vector — Google text-embedding-004 (768 dims)
-    embedding           vector(768),
+    -- Vector — Google gemini-embedding-001 (3072 dims)
+    embedding           vector(3072),
 
     -- BM25 full-text search (MD Mod 9: Hybrid retrieval)
     fts_document        tsvector,
 
     -- Versioning (MD Mod 8)
-    embedding_model     TEXT DEFAULT 'text-embedding-004',
+    embedding_model     TEXT DEFAULT 'gemini-embedding-001',
     chunking_version    TEXT DEFAULT 'v1.0',
     pipeline_version    TEXT DEFAULT 'v1.0',
 
@@ -90,7 +90,9 @@ CREATE TABLE IF NOT EXISTS rag_explanations (
     prompt_version          TEXT DEFAULT 'v1.0',
     retrieval_version       TEXT DEFAULT 'v1.0',
     generation_model        TEXT DEFAULT 'gemini-1.5-flash',
-    embedding_model         TEXT DEFAULT 'text-embedding-004',
+    embedding_model         TEXT DEFAULT 'gemini-embedding-001',
+    drift_score             FLOAT,
+    comprehension_score     FLOAT,
 
     -- Teacher Review Sampling (MD Mod 5)
     sampled_for_review      BOOLEAN DEFAULT FALSE,
@@ -100,10 +102,12 @@ CREATE TABLE IF NOT EXISTS rag_explanations (
     reviewed_at             TIMESTAMPTZ,
     reviewer_notes          TEXT,
 
-    created_at              TIMESTAMPTZ DEFAULT NOW()
+    created_at              TIMESTAMPTZ DEFAULT NOW(),
+
+    UNIQUE (question_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_rag_question     ON rag_explanations (question_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rag_question_unique ON rag_explanations (question_id);
 CREATE INDEX IF NOT EXISTS idx_rag_review_queue ON rag_explanations (sampled_for_review, review_status)
     WHERE sampled_for_review = TRUE;
 CREATE INDEX IF NOT EXISTS idx_rag_confidence   ON rag_explanations (confidence_score);
@@ -130,7 +134,7 @@ CREATE TABLE IF NOT EXISTS rag_teacher_review_queue (
 -- BM25 + Vector combined ranking (MD Mod 9)
 -- ─────────────────────────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION hybrid_ncert_search(
-    query_embedding  vector(768),
+    query_embedding  vector(3072),
     query_text       TEXT,
     filter_subject   TEXT    DEFAULT NULL,
     filter_chapter   INT     DEFAULT NULL,

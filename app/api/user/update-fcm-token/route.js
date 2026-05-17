@@ -1,4 +1,5 @@
 import { getDb } from '@/lib/core/db';
+import { safeUpdate } from '@/lib/core/db-safe';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
@@ -29,16 +30,14 @@ export async function POST(request) {
         const validTimezone = timezone && typeof timezone === 'string' ? timezone : 'Asia/Kolkata';
 
         // Update FCM token in users table
-        const { error } = await supabase
-            .from('users')
-            .update({
-                fcm_token: token,
-                fcm_token_updated_at: new Date().toISOString(),
-                timezone: validTimezone
-            })
-            .eq('id', user.id);
-
-        if (error) throw error;
+        await safeUpdate('users', { id: user.id }, {
+            fcm_token: token,
+            fcm_token_updated_at: new Date().toISOString(),
+            timezone: validTimezone
+        }, {
+            route: '/api/user/update-fcm-token',
+            userId: user.id,
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {

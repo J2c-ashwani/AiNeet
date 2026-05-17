@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkedFetch } from '@/lib/http';
 
 export async function POST(request) {
     try {
@@ -10,8 +11,10 @@ export async function POST(request) {
         
         if (upstashUrl && upstashToken) {
             // First check if they've already been defeated recently (MD's Cooldown Logic)
-            const checkRes = await fetch(`${upstashUrl}/get/defeat:${ghost_id}`, {
+            const checkRes = await checkedFetch(`${upstashUrl}/get/defeat:${ghost_id}`, {
                 headers: { Authorization: `Bearer ${upstashToken}` }
+            }, {
+                errorMessage: 'Failed to check defeat cooldown',
             });
             const checkData = await checkRes.json();
             
@@ -22,13 +25,17 @@ export async function POST(request) {
 
             // Write Defeat State with 48h (172800 seconds) Ephemeral TTL to prevent DB bloat
             const payload = JSON.stringify({ defeated: true, new_score, original_score, subject: subject || 'Biology' });
-            await fetch(`${upstashUrl}/set/defeat:${ghost_id}/${encodeURIComponent(payload)}/EX/172800`, {
+            await checkedFetch(`${upstashUrl}/set/defeat:${ghost_id}/${encodeURIComponent(payload)}/EX/172800`, {
                 headers: { Authorization: `Bearer ${upstashToken}` }
+            }, {
+                errorMessage: 'Failed to persist defeat state',
             });
 
             // Active Re-Engagement Push Protocol
-            const contactRes = await fetch(`${upstashUrl}/get/ghost_contact:${ghost_id}`, {
+            const contactRes = await checkedFetch(`${upstashUrl}/get/ghost_contact:${ghost_id}`, {
                 headers: { Authorization: `Bearer ${upstashToken}` }
+            }, {
+                errorMessage: 'Failed to load defeat contact',
             });
             const contactData = await contactRes.json();
             

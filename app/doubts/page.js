@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { useAuth } from '@/context/AuthContext';
 import { useMutation } from '@tanstack/react-query';
 import { TrustBadge } from '@/components/trust/TrustBadge';
+import { resilientStorage } from '@/lib/storage-resilient';
 
 export default function DoubtSolver() {
     const router = useRouter();
@@ -20,15 +21,17 @@ export default function DoubtSolver() {
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
-        const draft = localStorage.getItem('doubt_draft');
-        if (draft) setInput(draft);
+        let active = true;
+        resilientStorage.get('doubt_draft').then(draft => {
+            if (active && draft) setInput(draft);
+        });
+        return () => { active = false; };
     }, []);
 
     useEffect(() => {
         if (!input.trim()) return;
         const t = setTimeout(() => {
-            localStorage.setItem('doubt_draft', input);
-            setLastSaved(Date.now());
+            resilientStorage.set('doubt_draft', input).then(() => setLastSaved(Date.now()));
         }, 1000);
         return () => clearTimeout(t);
     }, [input]);
@@ -85,7 +88,7 @@ export default function DoubtSolver() {
         if (!userMsg || doubtMutation.isPending) return;
         if (!retryMsg) {
             setInput('');
-            localStorage.removeItem('doubt_draft');
+            await resilientStorage.remove('doubt_draft');
             setLastSaved(null);
         }
         if (!retryMsg) setMessages(prev => [...prev, { role: 'user', content: userMsg }]);

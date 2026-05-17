@@ -1,6 +1,6 @@
-import { Icon } from '@/components/ui/Icon';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { getMessaging, isFirebaseConfigured } from '@/lib/firebase-admin';
 
 function getLocalTimeData(tz) {
@@ -22,7 +22,7 @@ function getLocalTimeData(tz) {
         const minute = parseInt(parts.find(p => p.type === 'minute').value, 10);
         return { dateStr: `${y}-${m}-${d}`, hour, minute };
     } catch(e) {
-        // Fallback to Asia/Kolkata if invalid timezone
+        console.warn('[DAILY_NUDGE_TIMEZONE_FALLBACK]', e.message);
         return getLocalTimeData('Asia/Kolkata');
     }
 }
@@ -131,7 +131,9 @@ export async function GET(request) {
                 const dedupeKey = `${dedupeKeyBase}_${localDateStr}`;
 
                 // Idempotency: Insert FIRST
-                const { data: logEntry, error: insertError } = await supabase.from('notifications_log').insert({
+                let logEntry;
+                try {
+                    [logEntry] = await safeInsert('notifications_log', {
                     user_id: user.id,
                     notification_type: dedupeKeyBase,
                     dedupe_key: dedupeKey,
@@ -139,10 +141,14 @@ export async function GET(request) {
                     entity_id: notification.entity_id,
                     scheduled_for: now.toISOString(),
                     delivery_status: 'pending'
-                }).select().single();
-
-                if (insertError) {
-                    // 23505 is unique violation in postgres
+                    }, {
+                        route: '/api/cron/daily-nudge',
+                        userId: user.id,
+                    });
+                } catch (insertError) {
+                    if (insertError?.originalError?.code !== '23505') {
+                        throw insertError;
+                    }
                     results.duplicate++;
                     continue;
                 }
@@ -177,21 +183,27 @@ export async function GET(request) {
                     if (sendErr.code === 'messaging/registration-token-not-registered' ||
                         sendErr.code === 'messaging/invalid-registration-token') {
                         // Token Decay Management
-                        await supabase.from('users').update({
+                        await safeUpdate('users', { id: user.id }, {
                             fcm_token: null,
                             fcm_token_invalidated_at: now.toISOString(),
                             notification_failure_count: (user.notification_failure_count || 0) + 1
-                        }).eq('id', user.id);
+                        }, {
+                            route: '/api/cron/daily-nudge',
+                            userId: user.id,
+                        });
                     }
                 }
 
                 // Update Delivery Status
-                await supabase.from('notifications_log').update({
+                await safeUpdate('notifications_log', { id: logEntry.id }, {
                     delivery_status: sendSuccess ? 'sent' : 'failed',
                     sent_at: now.toISOString(),
                     provider_response: sendResponse ? { messageId: sendResponse } : null,
                     failure_reason: failureReason
-                }).eq('id', logEntry.id);
+                }, {
+                    route: '/api/cron/daily-nudge',
+                    userId: user.id,
+                });
 
                 if (sendSuccess) results.sent++;
                 else results.failed++;

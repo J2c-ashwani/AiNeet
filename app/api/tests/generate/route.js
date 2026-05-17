@@ -3,7 +3,7 @@ import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import { validateArray, validateEnum, validatePositiveInt } from '@/lib/validate';
 
@@ -169,12 +169,15 @@ export async function POST(request) {
                     if (isVerified) {
                         // Save passed AI questions to DB
                         try {
-                            await supabase.from('questions').insert({
+                            await safeInsert('questions', {
                                 id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
                                 correct_option: finalAnswer, difficulty: q.difficulty, explanation: q.explanation,
                                 subject_id: q.subject_id, chapter_id: q.chapter_id, topic_id: q.topic_id,
                                 is_ai_generated: 1, source_context: q.source_context,
                                 confidence_score: confScore, verification_status: vStatus, verified_answer: finalAnswer
+                            }, {
+                                route: '/api/tests/generate/question',
+                                userId: decoded.id,
                             });
 
                             q.correct_option = finalAnswer;
@@ -198,7 +201,7 @@ export async function POST(request) {
             }
         }
 
-        const testId = uuidv4();
+        const testId = randomUUID();
         const totalMarks = questions.length * 4;
         const config = JSON.stringify({ subjects, chapters, topics, difficulty, questionCount: questions.length, type });
 

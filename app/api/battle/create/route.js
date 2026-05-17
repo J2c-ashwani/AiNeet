@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { getOpponentForElo } from '@/lib/game_engine';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString } from '@/lib/validate';
@@ -58,7 +58,7 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Not enough questions available for a battle. Try adding more questions first.' }, { status: 404 });
         }
 
-        const battleId = uuidv4();
+        const battleId = randomUUID();
 
         const clientQuestions = questions.map((q, idx) => ({
             id: q.id,

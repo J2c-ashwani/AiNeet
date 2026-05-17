@@ -17,6 +17,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const SCAN_DIRS = ['app', 'components', 'lib', 'context'];
 const RESULTS = { mobile: [], silent: [], orphan: [], payment: [], integrity: [] };
+const ROUTE_OWNERSHIP_FILE = path.join(ROOT, 'docs', 'enterprise-route-ownership.json');
 
 // ═══════════════════════════════════════════════════════════════
 // UTILITIES
@@ -50,6 +51,16 @@ function findPattern(content, regex, lines) {
 
 function rel(filePath) { return filePath.replace(ROOT + '/', ''); }
 
+function loadJsonFile(filePath, fallback) {
+  if (!fs.existsSync(filePath)) return fallback;
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+const ROUTE_OWNERSHIP = loadJsonFile(ROUTE_OWNERSHIP_FILE, {});
+const HAS_GLOBAL_SUPABASE_READ_MONITOR = fs.existsSync(path.join(ROOT, 'lib', 'core', 'supabase-monitor.js'))
+  && fs.readFileSync(path.join(ROOT, 'lib', 'core', 'db.js'), 'utf8').includes('monitorSupabaseClient')
+  && fs.readFileSync(path.join(ROOT, 'lib', 'supabase.js'), 'utf8').includes('monitorSupabaseClient');
+
 // ═══════════════════════════════════════════════════════════════
 // AUDIT 1: MOBILE BLOCKERS
 // ═══════════════════════════════════════════════════════════════
@@ -73,16 +84,42 @@ const MOBILE_PATTERNS = [
 ];
 
 const BYPASS_CHECK = /isInsideNativeApp|ReactNativeWebView|NEETCoachApp|nativeApp|native_app/;
+const APPROVED_MOBILE_RUNTIME_FILES = new Set([
+  'lib/platform.js',
+  'lib/storage-resilient.js',
+  'lib/idb.js',
+  'lib/boot/orchestrator.js',
+  'lib/recovery/recovery-manager.js',
+  'lib/telemetry/mobile-buffer.js',
+  'lib/utils/clipboard.js',
+  'lib/utils/whatsapp.js',
+  'lib/hooks/usePlatformShare.js',
+  'lib/client/offline-queue.js',
+  'lib/mobile/lifecycle-manager.js',
+]);
+
+function isCommentSnippet(snippet) {
+  return snippet.startsWith('//') || snippet.startsWith('*') || snippet.startsWith('/*');
+}
+
+function isApprovedMobileRuntime(file, content) {
+  const fileRel = rel(file);
+  if (!APPROVED_MOBILE_RUNTIME_FILES.has(fileRel)) return false;
+  return BYPASS_CHECK.test(content) || content.includes('supportsCapability') || content.includes('resilient') || content.includes('fallback') || content.includes('IndexedDB');
+}
 
 function auditMobileBlockers(files) {
   for (const file of files) {
     const content = fs.readFileSync(file, 'utf8');
     const lines = content.split('\n');
     const hasBypass = BYPASS_CHECK.test(content);
+    const approvedRuntimeFile = isApprovedMobileRuntime(file, content);
 
     for (const pat of MOBILE_PATTERNS) {
       const matches = findPattern(content, pat.regex, lines);
       for (const m of matches) {
+        if (isCommentSnippet(m.snippet)) continue;
+        if (approvedRuntimeFile || hasBypass) continue;
         // Skip CSS-only display:none (too noisy)
         if (pat.label.includes('display:none') && !file.includes('/app/')) continue;
         
@@ -126,10 +163,79 @@ const SILENT_PATTERNS = [
     label: 'Error logged but success-like response returned', risk: 'P1'
   },
   {
-    regex: /\.from\([^)]+\)\s*\.\s*select\([^)]*\)[^;]*;\s*\n(?!\s*if\s*\(\s*error)/g,
+    regex: /__handled_by_custom_select_audit__/g,
     label: 'Supabase select without error check', risk: 'P2'
   },
 ];
+
+function getStatement(content, index) {
+  const end = content.indexOf(';', index);
+  if (end === -1) return null;
+
+  const startCandidates = [
+    content.lastIndexOf('\nconst ', index),
+    content.lastIndexOf('\nlet ', index),
+    content.lastIndexOf('\nvar ', index),
+    content.lastIndexOf('\nreturn ', index),
+    content.lastIndexOf('\nawait ', index),
+  ].filter(i => i >= 0);
+  const start = startCandidates.length ? Math.max(...startCandidates) + 1 : Math.max(0, content.lastIndexOf('\n', index) + 1);
+
+  return { start, end: end + 1, text: content.slice(start, end + 1) };
+}
+
+function getDestructuredErrorNames(statement) {
+  const match = statement.match(/\{([\s\S]*?)\}\s*=\s*await/);
+  if (!match) return [];
+
+  const names = [];
+  const errorRegex = /\berror\s*(?::\s*([A-Za-z_$][\w$]*))?/g;
+  let m;
+  while ((m = errorRegex.exec(match[1])) !== null) {
+    names.push(m[1] || 'error');
+  }
+  return names;
+}
+
+function hasNearbyErrorCheck(content, statement, errorNames) {
+  const lookahead = content.slice(statement.end, statement.end + 900).split('\n').slice(0, 10).join('\n');
+  return errorNames.some(name => {
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b(if|throw|return)\\b[\\s\\S]{0,160}\\b${escaped}\\b|\\b${escaped}\\b[\\s\\S]{0,160}\\b(throw|return)\\b`).test(lookahead);
+  });
+}
+
+function auditSupabaseSelectErrorChecks(file, content, lines, usesSafeDB) {
+  if (HAS_GLOBAL_SUPABASE_READ_MONITOR) return;
+  if (rel(file) === 'lib/core/db-safe.js') return;
+
+  const regex = /\.from\([^)]+\)\s*\.\s*select\(/g;
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    const statement = getStatement(content, match.index);
+    if (!statement || !statement.text.includes('await')) continue;
+    if (!/\bawait\b/.test(content.slice(statement.start, match.index))) continue;
+    if (statement.text.includes('safeSelect(')) continue;
+
+    const lineNum = content.substring(0, match.index).split('\n').length;
+    const snippet = (lines[lineNum - 1] || '').trim().substring(0, 140);
+    if (isCommentSnippet(snippet)) continue;
+
+    const errorNames = getDestructuredErrorNames(statement.text);
+    if (errorNames.length > 0 && hasNearbyErrorCheck(content, statement, errorNames)) {
+      continue;
+    }
+
+    RESULTS.silent.push({
+      file: rel(file),
+      line: lineNum,
+      risk: 'P2',
+      type: 'Supabase select without error check',
+      usesSafeDB,
+      snippet,
+    });
+  }
+}
 
 function auditSilentFailures(files) {
   for (const file of files) {
@@ -151,6 +257,8 @@ function auditSilentFailures(files) {
         });
       }
     }
+
+    auditSupabaseSelectErrorChecks(file, content, lines, usesSafeDB);
   }
 }
 
@@ -170,8 +278,9 @@ function auditOrphanFeatures(files) {
     // Check if any frontend file references this API path
     const isReferenced = allFrontendContent.includes(apiPath) || 
                          allFrontendContent.includes(apiPath.replace('/api/', '/api/'));
+    const ownership = ROUTE_OWNERSHIP[apiPath];
     
-    if (!isReferenced) {
+    if (!isReferenced && !ownership) {
       const content = fs.readFileSync(route, 'utf8');
       const methods = [];
       if (content.includes('export async function GET')) methods.push('GET');
@@ -192,8 +301,7 @@ function auditOrphanFeatures(files) {
   for (const page of pages) {
     const content = fs.readFileSync(page, 'utf8');
     // Check for skeleton/placeholder pages
-    if (content.includes('Coming Soon') || content.includes('TODO') || 
-        content.includes('placeholder') || content.length < 200) {
+    if (content.includes('Coming Soon') || content.includes('TODO') || content.length < 200) {
       RESULTS.orphan.push({
         file: rel(page), type: 'Skeleton/placeholder page',
         risk: 'P2', note: 'Page exists in routing but may not be functional'

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
+import { randomUUID } from 'crypto';
 import { validateInviteCode } from '@/lib/validate';
 
 export async function POST(request) {
@@ -51,14 +52,20 @@ export async function POST(request) {
             return NextResponse.json({ success: true, battleId: battle.id, message: 'Already joined' });
         }
 
-        await supabase.from('battleground_participants').insert({
-            id: uuidv4(),
+        await safeInsert('battleground_participants', {
+            id: randomUUID(),
             battleground_id: battle.id,
             user_id: decoded.id
+        }, {
+            route: '/api/battleground/join',
+            userId: decoded.id,
         });
 
         const newJoins = (user?.battleground_joins_used || 0) + 1;
-        await supabase.from('users').update({ battleground_joins_used: newJoins }).eq('id', decoded.id);
+        await safeUpdate('users', { id: decoded.id }, { battleground_joins_used: newJoins }, {
+            route: '/api/battleground/join',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true, battleId: battle.id });
 

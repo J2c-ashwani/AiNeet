@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
-import { v4 as uuidv4 } from 'uuid';
+import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
+import { randomUUID } from 'crypto';
 import { validatePositiveInt } from '@/lib/validate';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 
@@ -38,10 +39,10 @@ export async function POST(request) {
 
         let questions = qPool.sort(() => 0.5 - Math.random()).slice(0, Math.min(rawQC, 50));
 
-        const battleId = uuidv4();
+        const battleId = randomUUID();
         const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-        await supabase.from('battlegrounds').insert({
+        await safeInsert('battlegrounds', {
             id: battleId,
             creator_id: decoded.id,
             invite_code: inviteCode,
@@ -50,19 +51,28 @@ export async function POST(request) {
             time_limit_seconds: rawTL * 60,
             max_participants: 200,
             status: 'waiting'
+        }, {
+            route: '/api/battleground/create',
+            userId: decoded.id,
         });
 
         // Auto-join the creator as participant
-        await supabase.from('battleground_participants').insert({
-            id: uuidv4(),
+        await safeInsert('battleground_participants', {
+            id: randomUUID(),
             battleground_id: battleId,
             user_id: decoded.id
+        }, {
+            route: '/api/battleground/create',
+            userId: decoded.id,
         });
 
         // Increment creates used
         const { data: user } = await supabase.from('users').select('battleground_creates_used').eq('id', decoded.id).single();
         const newCount = (user?.battleground_creates_used || 0) + 1;
-        await supabase.from('users').update({ battleground_creates_used: newCount }).eq('id', decoded.id);
+        await safeUpdate('users', { id: decoded.id }, { battleground_creates_used: newCount }, {
+            route: '/api/battleground/create',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({
             success: true,

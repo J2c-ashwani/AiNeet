@@ -5,6 +5,8 @@
  * Only shown when similarity >= 0.72 and citations are attached.
  */
 import { Icon } from '@/components/ui/Icon';
+import { openExternalUrl } from '@/lib/platform';
+import { Button } from './Button';
 
 const TIER_STYLES = {
     gold:   { color: 'var(--warning)',  bg: 'rgba(245, 158, 11, 0.12)',  border: 'rgba(245, 158, 11, 0.3)',  icon: 'Shield' },
@@ -84,14 +86,15 @@ export function NCERTSourcePanel({ sourceChunks = [], chapterTitle, ncertBadge }
                                     {Math.round((chunk.similarity || 0) * 100)}% match
                                 </span>
                                 {chunk.sourceUrl && (
-                                    <a
-                                        href={chunk.sourceUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{ color: 'var(--accent-primary)', fontSize: '0.7rem' }}
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => openExternalUrl(chunk.sourceUrl)}
+                                        style={{ color: 'var(--accent-primary)', fontSize: '0.7rem', padding: 0, minHeight: 0 }}
                                     >
                                         <Icon name="ArrowRight" size={12} /> ncert.nic.in
-                                    </a>
+                                    </Button>
                                 )}
                             </div>
                         </div>

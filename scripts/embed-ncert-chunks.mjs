@@ -11,7 +11,7 @@
  *  2. Downloads official PDF from ncert.nic.in (with retry)
  *  3. Parses & chunks at 220-350 words with 15% overlap
  *  4. Tags each chunk with concept_tags + ncert_keywords via Gemini
- *  5. Embeds with Google text-embedding-004 (768 dims, free tier)
+ *  5. Embeds with Google gemini-embedding-001 (3072 dims)
  *  6. Upserts into Supabase ncert_embeddings + updates fts_document
  *
  * Usage:
@@ -45,32 +45,45 @@ const FILTER_CHAPTER = getArg('--chapter') ? parseInt(getArg('--chapter')) : nul
 const CHUNK_TARGET_WORDS = 280;    // MD Mod 2: 220-350 word target
 const CHUNK_OVERLAP_WORDS = 42;    // ~15% overlap
 const CONFIDENCE_THRESHOLD = 0.72; // MD Mod 6
-const EMBED_MODEL  = 'gemini-embedding-2';
+const EMBED_MODEL  = 'gemini-embedding-001';
 const EMBED_DIMS   = 3072;
-const RATE_LIMIT_MS = 700;         // ~85 req/min, safe under 100 RPM free tier
+const RATE_LIMIT_MS = 2000;        // 30 req/min — conservative for single active key
+const KEY_COOLDOWN_MS = 65000;     // 65s cooldown when quota window resets
 const MAX_RETRIES   = 3;
-const PIPELINE_VERSION = 'v1.0';
+const PIPELINE_VERSION = 'v1.1';
 const CHUNKING_VERSION = 'v1.0';
 
 // ─── Supabase via raw pg ──────────────────────────────────────────
 const dbUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.replace(':5432/', ':6543/') + '?pgbouncer=true' : '';
-const db = new Pool({ connectionString: dbUrl, ssl: { rejectUnauthorized: false }, family: 4 });
+const db = new Pool({
+    connectionString: dbUrl,
+    ssl: { rejectUnauthorized: false },
+    family: 4,
+    max: 1, // Single connection to avoid socket exhaustion
+    idleTimeoutMillis: 10000,
+});
+db.on('error', (err) => {
+    console.error('\n⚠️  DB pool error:', err.message);
+});
 
 // Support dynamic key rotation
 let availableKeys = [];
+let exhaustedKeys = new Set();
 let currentKeyIndex = 0;
 let embedderInstance = null;
 let taggerInstance = null;
 
-function getAI() {
-    if (availableKeys.length === 0) {
-        availableKeys = Object.keys(process.env)
-            .filter(k => k.startsWith('GEMINI_API_KEY'))
-            .map(k => process.env[k])
-            .filter(Boolean);
-        if (availableKeys.length === 0) availableKeys.push('');
-    }
+function initKeys() {
+    availableKeys = Object.keys(process.env)
+        .filter(k => k.startsWith('GEMINI_API_KEY'))
+        .sort()
+        .map(k => process.env[k])
+        .filter(Boolean);
+    if (availableKeys.length === 0) availableKeys.push('');
+}
 
+function getAI() {
+    if (availableKeys.length === 0) initKeys();
     if (!embedderInstance) {
         const activeKey = availableKeys[currentKeyIndex];
         const genAI = new GoogleGenerativeAI(activeKey);
@@ -81,14 +94,25 @@ function getAI() {
 }
 
 function rotateKey() {
-    if (availableKeys.length > 1) {
-        currentKeyIndex = (currentKeyIndex + 1) % availableKeys.length;
-        console.log(`\n🔄 [API Limits] Rotating to Gemini API Key #${currentKeyIndex + 1}...\n`);
-        embedderInstance = null; // force re-init
-        taggerInstance = null;
-        return true;
+    exhaustedKeys.add(currentKeyIndex);
+    // Find next non-exhausted key
+    for (let i = 1; i <= availableKeys.length; i++) {
+        const next = (currentKeyIndex + i) % availableKeys.length;
+        if (!exhaustedKeys.has(next)) {
+            currentKeyIndex = next;
+            console.log(`\n🔄 [API Limits] Rotating to Gemini API Key #${currentKeyIndex + 1}...\n`);
+            embedderInstance = null;
+            taggerInstance = null;
+            return true;
+        }
     }
-    return false;
+    return false; // All keys exhausted
+}
+
+function resetExhaustedKeys() {
+    exhaustedKeys.clear();
+    embedderInstance = null;
+    taggerInstance = null;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -100,10 +124,19 @@ async function withRetry(fn, retries = MAX_RETRIES) {
             return await fn();
         } catch (err) {
             const msg = err.message || '';
-            const shouldRotate = msg.includes('429') || msg.includes('403') || msg.includes('Quota');
-            
-            if (shouldRotate && rotateKey()) {
-                // If we hit quota/forbidden and successfully rotated to another key, retry immediately!
+            const isQuota = msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('Quota');
+            const isDenied = msg.includes('403') || msg.includes('denied') || msg.includes('PERMISSION_DENIED');
+
+            if ((isQuota || isDenied) && rotateKey()) {
+                // Rotated successfully — retry with new key immediately
+                continue;
+            }
+
+            if (isQuota && !rotateKey()) {
+                // All keys exhausted — wait for quota window to reset, then retry
+                console.log(`\n⏳ All keys exhausted. Cooling down ${KEY_COOLDOWN_MS/1000}s before retry...\n`);
+                resetExhaustedKeys();
+                await sleep(KEY_COOLDOWN_MS);
                 continue;
             }
 
@@ -209,7 +242,11 @@ async function embedChunk(text) {
             content: { parts: [{ text }], role: 'user' },
             taskType: 'RETRIEVAL_DOCUMENT',
         });
-        return result.embedding.values; // float[] length 3072
+        const values = result.embedding.values;
+        if (!Array.isArray(values) || values.length !== EMBED_DIMS) {
+            throw new Error(`Unexpected embedding dimension: expected ${EMBED_DIMS}, got ${values?.length || 0}`);
+        }
+        return values;
     });
 }
 
@@ -325,7 +362,25 @@ async function main() {
             const chunks = chunkText(pdfText);
             console.log(`     Chunks: ${chunks.length} (avg ~${Math.round(chunks.reduce((s,c)=>s+c.split(' ').length,0)/chunks.length)} words)`);
 
+            let existingIndices = new Set();
+            if (!DRY_RUN) {
+                try {
+                    const res = await db.query(`SELECT chunk_index FROM ncert_embeddings WHERE book_code = $1 AND chapter_number = $2`, [book.code, chapter.ch]);
+                    res.rows.forEach(r => existingIndices.add(r.chunk_index));
+                    if (existingIndices.size > 0) {
+                        console.log(`     [SKIP] Found ${existingIndices.size} already embedded chunks.`);
+                    }
+                } catch(e) {
+                    console.warn(`     ⚠️ Could not fetch existing chunks: ${e.message}`);
+                }
+            }
+
             for (let i = 0; i < chunks.length; i++) {
+                if (existingIndices.has(i) && !DRY_RUN) {
+                    // process.stdout.write(`     [${i + 1}/${chunks.length}] Skipped (Already embedded)\n`);
+                    continue;
+                }
+
                 const chunk = chunks[i];
                 const wordCount = chunk.split(' ').length;
                 totalChunks++;

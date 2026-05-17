@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { sanitizeString, validateId } from '@/lib/validate';
 
 export async function POST(request) {
@@ -35,19 +36,25 @@ export async function POST(request) {
         }
 
         // Insert report
-        await supabase.from('question_reports').insert({
+        await safeInsert('question_reports', {
             question_id: questionId,
             user_id: decoded.id,
             issue_type: reason,
             description: comment || '',
             status: 'open',
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/questions/report',
+            userId: decoded.id,
         });
 
         // Auto-flag the question if reported
         const { data: q } = await supabase.from('questions').select('flag_count').eq('id', questionId).single();
         const flags = (q?.flag_count || 0) + 1;
-        await supabase.from('questions').update({ flag_count: flags }).eq('id', questionId);
+        await safeUpdate('questions', { id: questionId }, { flag_count: flags }, {
+            route: '/api/questions/report',
+            userId: decoded.id,
+        });
 
         return NextResponse.json({ success: true, message: 'Report submitted successfully' });
 

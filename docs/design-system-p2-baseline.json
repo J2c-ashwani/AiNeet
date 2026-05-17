@@ -1,0 +1,5 @@
+{
+  "maxWarnings": 498,
+  "policy": "Existing non-critical design debt is tracked as a shrinking baseline. New P2 violations must be fixed instead of increasing this value.",
+  "lastReviewed": "2026-05-17"
+}

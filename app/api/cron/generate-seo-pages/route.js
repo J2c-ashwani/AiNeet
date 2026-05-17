@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 import { callAIWithFallback } from '@/lib/ai-engine';
 
 export async function GET(request) {
@@ -89,13 +90,16 @@ export async function GET(request) {
                 };
 
                 // 4. Insert into `seo_pages`
-                await supabase.from('seo_pages').insert({
+                await safeInsert('seo_pages', {
                     slug: finalSlug,
                     title: seoData.title,
                     meta_description: seoData.meta_description,
                     content_markdown: seoData.content_markdown,
                     json_ld: JSON.stringify(jsonLd),
                     source_question_id: String(candidate.question_id)
+                }, {
+                    route: '/api/cron/generate-seo-pages',
+                    userId: 'system',
                 });
                 
                 generatedCount++;

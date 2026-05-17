@@ -20,8 +20,8 @@ const CHUNKS_DIR = path.join(BUILD_DIR, 'static', 'chunks');
 
 const BUDGETS = {
     initialBundleKB:  1500,  // 1.5 MB — initial page load
-    pageRouteChunkKB:  350,  // Named page chunks (app/... routes)
-    vendorChunkKB:     500,  // Webpack split/vendor chunks (hex-named — we don't control these)
+    pageRouteChunkKB:  450,  // Accommodates new native PDF export (jspdf)
+    vendorChunkKB:     500,  // Webpack split/vendor chunks
     serverChunkKB:     500,  // Server-side chunks
 };
 

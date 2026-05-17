@@ -1,42 +1,30 @@
-import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
+import { z } from 'zod';
+import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
+import { safeInsert } from '@/lib/core/db-safe';
 
-export async function POST(request) {
-    try {
-        const supabase = await getDb();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+const growthLogSchema = z.object({
+    platform: z.string().trim().min(1).max(64).optional().default('facebook'),
+    topicDetected: z.string().trim().max(160).optional().default('Unknown'),
+    originalDoubtText: z.string().max(5000).optional().default(''),
+    selectedVariantText: z.string().max(5000).optional().default(''),
+});
 
-        if (authError || !user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+export const POST = withApiRoute(async (_request, { user, body }) => {
+    await safeInsert('social_growth_logs', {
+        admin_id: user.id,
+        platform: body.platform,
+        topic_detected: body.topicDetected,
+        original_doubt_text: body.originalDoubtText,
+        selected_variant: body.selectedVariantText,
+    }, {
+        route: '/api/admin/growth/log',
+        userId: user.id,
+    });
 
-        let _body;
-
-        try { _body = await request.json(); } catch (parseErr) {
-
-            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
-
-        }
-
-        const { platform, topicDetected, originalDoubtText, selectedVariantText } = _body;
-
-        // 1. Silent Tracking into Postgres
-        const { error: insertError } = await supabase.from('social_growth_logs').insert({
-            admin_id: user.id,
-            platform: platform || 'facebook',
-            topic_detected: topicDetected || 'Unknown',
-            original_doubt_text: originalDoubtText || '',
-            selected_variant: selectedVariantText || ''
-        });
-
-        if (insertError) {
-            console.error('Tracking Insert Error:', insertError);
-            return NextResponse.json({ error: 'Failed to record tracking. Please try again in a moment.' }, { status: 500 });
-        }
-
-        return NextResponse.json({ success: true });
-        
-    } catch (error) {
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-    }
-}
+    return { success: true };
+}, {
+    auth: 'admin',
+    bodySchema: growthLogSchema,
+    maxBodySize: 64_000,
+    rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:growth-log' },
+});

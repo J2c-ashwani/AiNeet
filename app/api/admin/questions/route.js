@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeDelete, safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { sanitizeString, validateEnum, validatePositiveInt, validateId } from '@/lib/validate';
 
 // Helper for RBAC
@@ -93,7 +94,6 @@ export async function POST(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const supabase = await getDb();
         let _body;
         try { _body = await request.json(); } catch (parseErr) {
             return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
@@ -123,7 +123,7 @@ export async function POST(request) {
         const explanation = sanitizeString(body.explanation || '', 5000);
         const tags = sanitizeString(body.tags || '', 500);
 
-        const { data: result, error } = await supabase.from('questions').insert({
+        const [result] = await safeInsert('questions', {
             subject_id: body.subject_id,
             chapter_id: body.chapter_id,
             topic_id: body.topic_id,
@@ -139,17 +139,21 @@ export async function POST(request) {
             flag_count: 0,
             quality_score: 1.0,
             verification_status: 'teacher_verified'
-        }).select('*').single();
-
-        if (error) throw error;
+        }, {
+            route: '/api/admin/questions',
+            userId: admin.id,
+        });
 
         // Wave 5: Create immutable question snapshot
-        await supabase.from('question_versions').insert({
+        await safeInsert('question_versions', {
             question_id: result.id,
             version_number: 1,
             snapshot: result,
             created_by: admin.id,
             change_reason: 'Initial Creation'
+        }, {
+            route: '/api/admin/questions',
+            userId: admin.id,
         });
 
         return NextResponse.json({ success: true, id: result.id });
@@ -180,16 +184,21 @@ export async function PUT(request) {
         
         const nextVersion = maxVer ? maxVer.version_number + 1 : 1;
 
-        const { data: updatedQuestion, error } = await supabase.from('questions').update(updates).eq('id', id).select('*').single();
-        if (error) throw error;
+        const [updatedQuestion] = await safeUpdate('questions', { id }, updates, {
+            route: '/api/admin/questions',
+            userId: admin.id,
+        });
 
         // Wave 5: Create immutable question snapshot on edit
-        await supabase.from('question_versions').insert({
+        await safeInsert('question_versions', {
             question_id: updatedQuestion.id,
             version_number: nextVersion,
             snapshot: updatedQuestion,
             created_by: admin.id,
             change_reason: change_reason || 'Admin Edit'
+        }, {
+            route: '/api/admin/questions',
+            userId: admin.id,
         });
 
         return NextResponse.json({ success: true, question: updatedQuestion });
@@ -204,13 +213,15 @@ export async function DELETE(request) {
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
     try {
-        const supabase = await getDb();
         const { searchParams } = new URL(request.url);
         const id = searchParams.get('id');
 
         if (!id || !validateId(id)) return NextResponse.json({ error: 'Missing or invalid ID' }, { status: 400 });
 
-        await supabase.from('questions').delete().eq('id', id);
+        await safeDelete('questions', { id }, {
+            route: '/api/admin/questions',
+            userId: admin.id,
+        });
         return NextResponse.json({ success: true });
 
     } catch (error) {

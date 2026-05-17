@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { AI_OPPONENTS } from '@/lib/game_engine';
 import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
 
@@ -52,10 +53,13 @@ export async function POST(request) {
         const newElo = Math.round(currentElo + K_FACTOR * (actualScore - expectedScore));
 
         // Update user's ELO
-        await supabase.from('users').update({ battle_elo: newElo }).eq('id', decoded.id);
+        await safeUpdate('users', { id: decoded.id }, { battle_elo: newElo }, {
+            route: '/api/battle/submit',
+            userId: decoded.id,
+        });
 
         // Log battle to history
-        await supabase.from('battles').insert({
+        await safeInsert('battles', {
             id: battleId,
             user_id: decoded.id,
             opponent_id: opponentId,
@@ -64,6 +68,9 @@ export async function POST(request) {
             opponent_score: opponentScore || 0,
             outcome: outcome,
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/battle/submit',
+            userId: decoded.id,
         });
 
         return NextResponse.json({

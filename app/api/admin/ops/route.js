@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
+import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
 import { getDb } from '@/lib/core/db';
-import { getUserFromRequest } from '@/lib/core/auth';
 import { Redis } from '@upstash/redis';
 
-export async function GET(request) {
-    const user = await getUserFromRequest(request);
-    if (!user || user.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
+export const GET = withApiRoute(async () => {
     const supabase = await getDb();
     const today = new Date().toISOString().split('T')[0];
 
@@ -72,7 +67,9 @@ export async function GET(request) {
                 else trustDistribution.banned++;
             });
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error('Trust distribution calculation failed:', e);
+    }
 
     // ─── 5. Error Rate (Last 24h from test submissions) ───
     let errorMetrics = { totalTests: 0, failedSubmissions: 0 };
@@ -91,7 +88,9 @@ export async function GET(request) {
         
         errorMetrics.totalTests = totalTests || 0;
         errorMetrics.failedSubmissions = (totalTests || 0) - (completedTests || 0);
-    } catch (e) {}
+    } catch (e) {
+        console.error('Error metrics calculation failed:', e);
+    }
 
     // ─── 6. Revenue Intelligence & Unit Economics ───
     let unitEconomics = { projectedMRR: 0, dailyCost: 0, margin: 100, costPerRequest: 0, costPerSession: 0, activeRequests: 0 };
@@ -105,12 +104,14 @@ export async function GET(request) {
         });
         
         const mrr = (proCount * 299) + (premiumCount * 599);
-        const dailyRevenueTarget = (mrr / 30) || Number(process.env.FALLBACK_DAILY_MRR || 50); // ₹50 fallback for brand new startups
+        const dailyRevenueTarget = mrr > 0 ? mrr / 30 : 0;
         
         // Estimate Cost (Assuming blended $0.15 per 1M tokens across Gemini/Groq, roughly ₹12)
         const dailyCostINR = (tokenStats.totalDaily / 1000000) * 12;
         
-        const safeMargin = ((dailyRevenueTarget - dailyCostINR) / dailyRevenueTarget) * 100;
+        const safeMargin = dailyRevenueTarget > 0
+            ? ((dailyRevenueTarget - dailyCostINR) / dailyRevenueTarget) * 100
+            : null;
         
         // Cost / Request & Cost / Session 
         // Estimate hits from tests (say 15 API hits per test on average + doubts)
@@ -120,7 +121,7 @@ export async function GET(request) {
         unitEconomics = {
             projectedMRR: mrr,
             dailyCost: dailyCostINR,
-            margin: Number(safeMargin.toFixed(1)),
+            margin: safeMargin === null ? null : Number(safeMargin.toFixed(1)),
             costPerRequest: estimatedRequests > 0 ? Number((dailyCostINR / estimatedRequests).toFixed(4)) : 0,
             costPerSession: Number((dailyCostINR / activeUsers).toFixed(2)),
             activeRequests: estimatedRequests
@@ -152,4 +153,7 @@ export async function GET(request) {
     }, {
         headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=60' }
     });
-}
+}, {
+    auth: 'admin',
+    rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ops' },
+});

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkedFetch } from '@/lib/http';
 
 export async function POST(request) {
     try {
@@ -11,8 +12,10 @@ export async function POST(request) {
         const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
         
         if (upstashUrl && upstashToken) {
-            await fetch(`${upstashUrl}/set/ghost_contact:${ghost_id}/${encodeURIComponent(contact)}`, {
+            await checkedFetch(`${upstashUrl}/set/ghost_contact:${ghost_id}/${encodeURIComponent(contact)}`, {
                 headers: { Authorization: `Bearer ${upstashToken}` }
+            }, {
+                errorMessage: 'Failed to persist challenge contact',
             });
         } else {
             console.warn('[KV STORE] Fake contact cache for local dev:', ghost_id, contact);

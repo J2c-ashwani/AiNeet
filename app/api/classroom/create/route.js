@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 
 export async function POST(request) {
     try {
@@ -30,16 +31,14 @@ export async function POST(request) {
             joinCode += charset.charAt(Math.floor(Math.random() * charset.length));
         }
 
-        const { error: insertError } = await supabase.from('classrooms').insert({
+        await safeInsert('classrooms', {
             teacher_id: user.id,
             name: name.trim(),
             join_code: joinCode
+        }, {
+            route: '/api/classroom/create',
+            userId: user.id,
         });
-
-        if (insertError) {
-            console.error('Class creation error:', insertError);
-            return new NextResponse('Internal Error', { status: 500 });
-        }
 
         // Redirect back to educator dashboard
         return NextResponse.redirect(new URL('/educator', request.url));

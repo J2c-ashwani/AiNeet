@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, Button, Input, Select } from '@/components/ui';
 import { TrustBadge } from '@/components/trust/TrustBadge';
 import { useMutation } from '@tanstack/react-query';
+import { isInsideNativeApp } from '@/lib/platform';
 
 // ── Image Validation Helpers ──
 function validateImage(file) {
@@ -58,6 +59,7 @@ export default function OMRScannerPage() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileInfo, setFileInfo] = useState(null); // { sizeLabel, isPdf, warning }
     const [scanError, setScanError] = useState(null);
+    const cameraCaptureMode = isInsideNativeApp() ? undefined : 'environment';
 
     // Verification Grid State
     const [needsVerification, setNeedsVerification] = useState(false);
@@ -465,7 +467,7 @@ export default function OMRScannerPage() {
                             ref={cameraInputRef}
                             type="file"
                             accept="image/*"
-                            capture="environment"
+                            capture={cameraCaptureMode}
                             onChange={handleFileSelect}
                             style={{ display: 'none' }}
                         />

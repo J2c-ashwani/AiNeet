@@ -28,6 +28,12 @@ jobs:
       
     - name: Assert Primary Routes
       run: npm run lint:primary-routes
+
+    - name: Run API Contract Tests
+      run: npm run test:contracts
+
+    - name: Dependency Vulnerability Gate
+      run: npm audit --audit-level=critical
       
     - name: Build Next.js App
       run: npm run build

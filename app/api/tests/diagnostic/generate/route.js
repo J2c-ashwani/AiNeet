@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
@@ -50,12 +51,13 @@ export async function POST(request) {
                 if (verification.verification_status !== 'rejected') {
                     q.correct_option = verification.verified_answer || q.correct_option;
                     
-                    // Fire-and-forget async insert into DB to build our global cache
-                    supabase.from('questions').insert({
+                    await safeInsert('questions', {
                         id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, 
                         option_c: q.option_c, option_d: q.option_d, correct_option: q.correct_option, 
                         difficulty: 'medium', subject_id: 3, is_ai_generated: 1
-                    }).then(() => {}).catch(() => {});
+                    }, {
+                        route: '/api/tests/diagnostic/generate',
+                    });
 
                     questions.push(q);
                 }

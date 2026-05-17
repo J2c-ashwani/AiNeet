@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeUpdate } from '@/lib/core/db-safe';
 
 // Category B Analytics & Intelligence Tables
 const TABLES_TO_ANONYMIZE = [
@@ -45,19 +46,22 @@ export async function GET(request) {
                 // A. Anonymize identity (convert email to unreadable hash)
                 const hashedEmail = `deleted-${Math.random().toString(36).substring(7)}@ghost.neetcoach.in`;
                 
-                await supabase.from('users').update({ 
+                await safeUpdate('users', { id: user.id }, {
                     email: hashedEmail,
                     parent_email: null,
                     parent_phone: null,
                     scrubbed_identity: 1
-                }).eq('id', user.id);
+                }, {
+                    route: '/api/cron/data-scrub',
+                    userId: user.id,
+                });
 
                 // B. Reassign Category B Analytics to the Centralized Ghost User
                 for (const table of TABLES_TO_ANONYMIZE) {
-                    await supabase
-                        .from(table)
-                        .update({ user_id: GHOST_USER_ID })
-                        .eq('user_id', user.id);
+                    await safeUpdate(table, { user_id: user.id }, { user_id: GHOST_USER_ID }, {
+                        route: '/api/cron/data-scrub',
+                        userId: user.id,
+                    });
                 }
                 
                 // C. Force Supabase Auth wipe (The ultimate disconnect)

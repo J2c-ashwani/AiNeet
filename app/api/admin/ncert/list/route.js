@@ -1,25 +1,19 @@
-import { NextResponse } from 'next/server';
+import { ApiError, RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
 import { getDb } from '@/lib/core/db';
-import { getUserFromRequest } from '@/lib/core/auth';
 
-export async function GET(request) {
-    const user = await getUserFromRequest(request);
-    if (!user || user.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+export const GET = withApiRoute(async () => {
+    const supabase = await getDb();
+    const { data: books, error } = await supabase
+        .from('ncert_books')
+        .select('id, subject_id, chapter_id, title, created_at')
+        .order('id', { ascending: false });
+
+    if (error) {
+        throw new ApiError('Failed to load NCERT books', 500, 'NCERT_LIST_FAILED');
     }
 
-    try {
-        const supabase = await getDb();
-
-        // Note: original SQLite query used 'ncert_content' but upload uses 'ncert_books'
-        const { data: books } = await supabase
-            .from('ncert_books')
-            .select('id, subject_id, chapter_id, title, created_at')
-            .order('id', { ascending: false });
-
-        return NextResponse.json({ books: books || [] });
-    } catch (error) {
-        // Table might not exist yet
-        return NextResponse.json({ books: [] });
-    }
-}
+    return { books: books || [] };
+}, {
+    auth: 'admin',
+    rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ncert-list' },
+});

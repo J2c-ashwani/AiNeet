@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { allOrThrow } from '@/lib/async';
 
 /**
  * Lightweight Home Screen Stats API
@@ -18,8 +19,7 @@ export async function GET(request) {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
-        // Run all 3 queries in parallel for maximum speed
-        const [testsResult, weakResult, recentResult] = await Promise.all([
+        const [testsResult, weakResult, recentResult] = await allOrThrow([
             // 1. Aggregate stats from tests table (single query)
             supabase
                 .from('tests')

@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeInsert } from '@/lib/core/db-safe';
 import { generateDoubtResponse } from '@/lib/ai-engine';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import Tesseract from 'tesseract.js';
 
 export async function POST(request) {
     try {
-        const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -55,16 +54,27 @@ export async function POST(request) {
 
         let convId = conversationId;
         if (!convId || convId === 'null') {
-            convId = uuidv4();
+            convId = randomUUID();
             const title = 'Image Doubt: ' + (extractedText.length > 30 ? extractedText.substring(0, 30) + '...' : extractedText);
-            await supabase.from('doubt_conversations').insert({ id: convId, user_id: decoded.id, title, created_at: new Date().toISOString() });
+            await safeInsert('doubt_conversations', {
+                id: convId,
+                user_id: decoded.id,
+                title,
+                created_at: new Date().toISOString(),
+            }, {
+                route: '/api/doubt/image',
+                userId: decoded.id,
+            });
         }
 
-        await supabase.from('doubt_messages').insert({
+        await safeInsert('doubt_messages', {
             conversation_id: convId,
             role: 'user',
             content: `Uploaded Image: (OCR Text Extracted)`,
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/doubt/image',
+            userId: decoded.id,
         });
 
         // 2. Generate AI Response using the extracted text rather than the heavy image payload
@@ -72,11 +82,14 @@ export async function POST(request) {
         const aiResponse = await generateDoubtResponse(cleanMessage, context, decoded);
 
         // Save AI message
-        await supabase.from('doubt_messages').insert({
+        await safeInsert('doubt_messages', {
             conversation_id: convId,
             role: 'assistant',
             content: aiResponse,
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/doubt/image',
+            userId: decoded.id,
         });
 
         return NextResponse.json({

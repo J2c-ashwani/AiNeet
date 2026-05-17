@@ -1,13 +1,12 @@
 
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeInsert } from '@/lib/core/db-safe';
 import { getAdaptiveQuestion } from '@/lib/adaptive_engine';
 import { sanitizeString, validatePositiveInt } from '@/lib/validate';
 
 export async function POST(request) {
     try {
-        const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
@@ -50,7 +49,7 @@ export async function POST(request) {
         }
 
         // Create Test Record
-        const { data: result, error } = await supabase.from('tests').insert({
+        const [result] = await safeInsert('tests', {
             user_id: decoded.id,
             type: 'adaptive',
             subject_id: subjectId || null,
@@ -58,9 +57,10 @@ export async function POST(request) {
             total_questions: selectedQuestions.length,
             status: 'in_progress',
             created_at: new Date().toISOString()
-        }).select('id').single();
-
-        if (error) throw error;
+        }, {
+            route: '/api/tests/adaptive',
+            userId: decoded.id,
+        });
         const testId = result.id;
 
         // Return questions (hide correct option)

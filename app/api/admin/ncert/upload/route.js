@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { safeInsert } from '@/lib/core/db-safe';
 import { uploadFile } from '@/lib/supabase';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { sanitizeString } from '@/lib/validate';
 
 // Helper for RBAC
@@ -41,25 +41,24 @@ export async function POST(request) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        const fileName = `${uuidv4()}_${file.name.replace(/[^a-z0-9.]/gi, '_')}`;
+        const fileName = `${randomUUID()}_${file.name.replace(/[^a-z0-9.]/gi, '_')}`;
 
         // Upload to Supabase Storage
         const { url, path: storagePath } = await uploadFile(buffer, fileName, file.type || 'application/pdf');
 
-        // Save to DB
-        const supabase = await getDb();
-        const id = uuidv4();
+        const id = randomUUID();
 
-        const { error: dbError } = await supabase.from('ncert_books').insert({
+        await safeInsert('ncert_books', {
             id,
             subject_id: subjectId,
             chapter_id: chapterId,
             title,
             file_path: url,
             created_at: new Date().toISOString()
+        }, {
+            route: '/api/admin/ncert/upload',
+            userId: admin.id,
         });
-
-        if (dbError) throw dbError;
 
         return NextResponse.json({ success: true, message: 'Book uploaded to cloud storage', bookId: id, url });
 

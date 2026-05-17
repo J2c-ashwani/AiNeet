@@ -5,6 +5,7 @@ import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { NCERT_BOOKS, getChapterPdfUrl } from '@/lib/ncert-data';
 import { Button } from '@/components/ui';
+import { openExternalUrl } from '@/lib/platform';
 
 // react-pdf uses DOM APIs (like DOMMatrix) which crash during SSR. Force client-side rendering.
 const PDFViewerClient = dynamic(() => import('@/components/PDFViewerClient'), {
@@ -106,10 +107,10 @@ function NCERTReaderContent() {
                 {/* Fallback: always give user a direct escape hatch */}
                 <div style={{ textAlign: 'center', padding: 12, borderTop: '1px solid var(--border)' }}>
                     <span >PDF not loading? </span>
-                    <a href={bookData.directUrl} target="_blank" rel="noopener noreferrer"
-                        style={{ fontWeight: 600, textDecoration: 'none' }}>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => openExternalUrl(bookData.directUrl)}
+                        style={{ fontWeight: 600, textDecoration: 'none', color: 'var(--primary)' }}>
                         Open in New Tab ↗
-                    </a>
+                    </Button>
                 </div>
             </div>
         </div>

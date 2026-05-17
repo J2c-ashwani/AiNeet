@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request) {
@@ -73,18 +74,14 @@ export async function POST(request) {
         }
 
         // 5. Establish Relational Link
-        const { error: joinError } = await supabase
-            .from('classroom_students')
-            .insert({
-                classroom_id: classroom.id,
-                student_id: user.id,
-                joined_via_code: joinCode
-            });
-
-        if (joinError) {
-            console.error('Join Insertion Error', joinError);
-            return NextResponse.json({ error: 'Failed to join classroom.. Please try again in a moment.', code: 'SYSTEM_ERROR' }, { status: 500 });
-        }
+        await safeInsert('classroom_students', {
+            classroom_id: classroom.id,
+            student_id: user.id,
+            joined_via_code: joinCode
+        }, {
+            route: '/api/classroom/join',
+            userId: user.id,
+        });
 
         return NextResponse.json({ 
             success: true, 

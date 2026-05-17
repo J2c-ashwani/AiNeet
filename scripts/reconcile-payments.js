@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: '.env.local' });
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -72,7 +72,7 @@ async function reconcile() {
                         $1, $2, $3, 'web', 'cashfree', 'active',
                         $4, $5::TIMESTAMPTZ, $5::TIMESTAMPTZ + INTERVAL '30 days'
                     ) ON CONFLICT DO NOTHING
-                `, [uuidv4(), row.user_id, planTier, row.provider_order_id, row.created_at]);
+                `, [randomUUID(), row.user_id, planTier, row.provider_order_id, row.created_at]);
                 console.log(`   ✅ Auto-repaired subscription for user: ${row.user_id}`);
             }
         } else {

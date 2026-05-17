@@ -46,7 +46,10 @@ export default function DiagnosticResultsLock() {
         };
         fetchStored();
 
-        fetch('/api/stats/traffic').then(r => r.json()).then(d => d && setAspirantCount(d.activeAspirants)).catch(() => setAspirantCount(462));
+        fetch('/api/stats/traffic')
+            .then(r => r.ok ? r.json() : null)
+            .then(d => setAspirantCount(d?.activeAspirants || 0))
+            .catch(() => setAspirantCount(0));
     }, [router, user]);
 
     const handleViralShare = async () => {

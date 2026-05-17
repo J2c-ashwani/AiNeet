@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { safeInsert } from '@/lib/core/db-safe';
 
 /**
  * OMR Grading API — v2
@@ -122,35 +123,31 @@ export async function POST(request) {
         else estimatedRank = "5,00,000+";
 
         // Create canonical test record first
-        const { error: testInsertErr } = await supabase.from('tests').insert({
+        await safeInsert('tests', {
             id: testId,
             user_id: user.id,
             type: 'omr_scan',
             score: finalScore,
             correct_count: correctCount,
             incorrect_count: wrongCount,
-            unanswered_count: skippedCount,
+            unanswered_count: skipped,
             completed_at: new Date().toISOString()
+        }, {
+            route: '/api/omr/grade',
+            userId: user.id,
         });
 
-        if (testInsertErr) {
-            console.error('OMR canonical test insert failed:', testInsertErr);
-            throw testInsertErr;
-        }
-
         // Log the scan
-        const { error: omrInsertErr } = await supabase.from('omr_scans').insert({
+        await safeInsert('omr_scans', {
             user_id: user.id,
             test_id: testId,
             accuracy_percentage: accuracy,
             raw_extracted_answers: verifiedAnswers,
             verified_answers: verifiedAnswers,
+        }, {
+            route: '/api/omr/grade',
+            userId: user.id,
         });
-
-        if (omrInsertErr) {
-            console.error('OMR scan log failed:', omrInsertErr);
-            throw omrInsertErr;
-        }
 
         const yearLabel = testYear || 'this test';
 

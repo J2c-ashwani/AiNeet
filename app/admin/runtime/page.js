@@ -151,6 +151,20 @@ function MetricCard({ label, value, unit = '', status = 'ok', sub = null }) {
 
 // ─── SLO Row ─────────────────────────────────────────────────
 function SloRow({ name, target, current, unit = '%' }) {
+    if (current === null || current === undefined) {
+        return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0', borderBottom: '1px solid var(--border-color)' }}>
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, }}>{name}</div>
+                    <div >Target: {target}{unit}</div>
+                </div>
+                <div style={{ fontWeight: 800, color: 'var(--text-muted)', minWidth: 120, textAlign: 'right' }}>
+                    Not connected
+                </div>
+            </div>
+        );
+    }
+
     const met = current >= target;
     const pct = Math.min(100, (current / target) * 100);
     return (
@@ -284,10 +298,10 @@ export default function RuntimeDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
                 <div className="card" style={{ padding: 24 }}>
                     <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Star" size={16} />️ SLO Tracker</h3>
-                    <SloRow name="Crash-free Sessions"    target={99.7} current={m.crash_free_rate ?? 99.9} />
+                    <SloRow name="Crash-free Sessions"    target={99.7} current={m.crash_free_rate} />
                     <SloRow name="Test Recovery Success"  target={99.0} current={m.recovery_success_rate ?? 100} />
-                    <SloRow name="Submission Integrity"   target={100}  current={m.submission_integrity_rate ?? 100} />
-                    <SloRow name="API Uptime"             target={99.9} current={m.api_uptime ?? 99.95} />
+                    <SloRow name="Submission Integrity"   target={100}  current={m.submission_integrity_rate} />
+                    <SloRow name="API Uptime"             target={99.9} current={m.api_uptime} />
                 </div>
 
                 {/* Boot Health */}

@@ -1,0 +1,132 @@
+{
+  "/api/admin/retention": {
+    "owner": "admin-growth",
+    "type": "admin-console",
+    "status": "owned"
+  },
+  "/api/analytics/funnel": {
+    "owner": "growth-analytics",
+    "type": "mobile-telemetry",
+    "status": "owned"
+  },
+  "/api/auth/callback": {
+    "owner": "identity",
+    "type": "oauth-callback",
+    "status": "owned"
+  },
+  "/api/auth/delete-account": {
+    "owner": "identity",
+    "type": "account-lifecycle",
+    "status": "owned"
+  },
+  "/api/challenge/create": {
+    "owner": "social-learning",
+    "type": "external-share-entrypoint",
+    "status": "owned"
+  },
+  "/api/challenge/defeat": {
+    "owner": "social-learning",
+    "type": "external-share-entrypoint",
+    "status": "owned"
+  },
+  "/api/classroom/join": {
+    "owner": "educator",
+    "type": "external-invite-entrypoint",
+    "status": "owned"
+  },
+  "/api/cron/battle-cleanup": {
+    "owner": "platform-ops",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/daily-nudge": {
+    "owner": "engagement",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/data-scrub": {
+    "owner": "platform-ops",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/generate-seo-pages": {
+    "owner": "growth-content",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/keepalive": {
+    "owner": "platform-ops",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/omr-retry": {
+    "owner": "assessment",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/cron/weekly-report": {
+    "owner": "parent-reporting",
+    "type": "cron",
+    "status": "owned"
+  },
+  "/api/doubt/image": {
+    "owner": "doubt-solver",
+    "type": "mobile-upload",
+    "status": "owned"
+  },
+  "/api/health": {
+    "owner": "platform-ops",
+    "type": "healthcheck",
+    "status": "owned"
+  },
+  "/api/health/features": {
+    "owner": "platform-ops",
+    "type": "healthcheck",
+    "status": "owned"
+  },
+  "/api/ncert/proxy": {
+    "owner": "content-platform",
+    "type": "server-proxy",
+    "status": "owned"
+  },
+  "/api/notifications/click": {
+    "owner": "engagement",
+    "type": "notification-callback",
+    "status": "owned"
+  },
+  "/api/social/daily-mistake": {
+    "owner": "social-learning",
+    "type": "share-card",
+    "status": "owned"
+  },
+  "/api/subscription/play/verify": {
+    "owner": "payments",
+    "type": "mobile-payment",
+    "status": "owned"
+  },
+  "/api/tests/log-event": {
+    "owner": "assessment",
+    "type": "test-telemetry",
+    "status": "owned"
+  },
+  "/api/tests/save": {
+    "owner": "assessment",
+    "type": "autosave",
+    "status": "owned"
+  },
+  "/api/user/update-fcm-token": {
+    "owner": "engagement",
+    "type": "mobile-device-registration",
+    "status": "owned"
+  },
+  "/api/webhooks/cashfree": {
+    "owner": "payments",
+    "type": "webhook",
+    "status": "owned"
+  },
+  "/api/webhooks/play": {
+    "owner": "payments",
+    "type": "webhook",
+    "status": "owned"
+  }
+}

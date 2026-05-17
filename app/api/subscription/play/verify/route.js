@@ -1,88 +1,97 @@
-import { NextResponse } from 'next/server';
-import { getUserFromRequest } from '@/lib/core/auth';
+import crypto from 'crypto';
+import { ApiError, RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
+import { playVerifyBodySchema } from '@/lib/contracts/api';
 import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
+import { verifyGooglePlaySubscription } from '@/lib/payments/google-play';
 
-export async function POST(request) {
-    const ROUTE = '/api/subscription/play/verify';
-    try {
-        const user = await getUserFromRequest(request);
-        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+const ROUTE = '/api/subscription/play/verify';
 
-        const body = await request.json();
-        const { purchaseToken, productId } = body;
+function planTierFromProduct(productId) {
+    return productId.toLowerCase().includes('premium') ? 'premium' : 'pro';
+}
 
-        if (!purchaseToken || !productId) {
-            return NextResponse.json({ error: 'Missing purchase details' }, { status: 400 });
-        }
+function eventIdForPurchase(purchaseToken) {
+    return `play_verify_${crypto.createHash('sha256').update(purchaseToken).digest('hex').slice(0, 32)}`;
+}
 
-        const { getDb } = await import('@/lib/core/db');
-        const supabase = await getDb();
+export const POST = withApiRoute(async (_request, { user, body }) => {
+    const { purchaseToken, productId } = body;
 
-        // Idempotency check — block replay attacks
-        const { data: existingSub } = await supabase
-            .from('subscriptions')
-            .select('id')
-            .eq('external_subscription_id', purchaseToken)
-            .maybeSingle();
+    const existingSub = await safeSelect(
+        'subscriptions',
+        q => q.select('id, plan_tier').eq('external_subscription_id', purchaseToken).maybeSingle(),
+        { route: ROUTE, userId: user.id }
+    );
 
-        if (existingSub) {
-            return NextResponse.json({ success: true, message: 'Already processed', plan: 'pro' });
-        }
+    if (existingSub) {
+        return { success: true, message: 'Already processed', plan: existingSub.plan_tier };
+    }
 
-        // ==========================================
-        // Verify with Google Play Developer API
-        // ==========================================
-        // TODO: Replace mock with real googleapis verification
-        // const auth = new google.auth.GoogleAuth({ credentials: JSON.parse(process.env.GOOGLE_PLAY_SERVICE_ACCOUNT) });
-        // const res = await androidpublisher.purchases.subscriptions.get({ ... });
-        console.log(`[Google Play] Verifying token for user: ${user.id}, product: ${productId}`);
-        const isValid = true; // MOCKED — replace with real API call
-        const expiryTimeMillis = Date.now() + 30 * 24 * 60 * 60 * 1000;
-        const eventId = `play_verify_${purchaseToken.slice(0, 32)}`;
-        const planTier = productId.includes('premium') ? 'premium' : 'pro';
-
-        if (!isValid) {
-            await logPaymentTimeline({
-                userId: user.id,
-                provider: 'google_play',
-                requestId: purchaseToken,
-                sourceRoute: ROUTE,
-                status: 'failed',
-                metadata: { error: 'Invalid Google Play receipt', productId }
-            });
-            return NextResponse.json({ error: 'Invalid Google Play receipt' }, { status: 400 });
-        }
-
-        // Atomic activation: insert subscription + upgrade user in one transaction
-        await safeRpc('play_subscription_activate_transaction', {
-            p_user_id: user.id,
-            p_plan_tier: planTier,
-            p_purchase_token: purchaseToken,
-            p_product_id: productId,
-            p_event_id: eventId,
-            p_event_type: 'PURCHASE_VERIFICATION',
-            p_payload: { purchaseToken, productId, source: 'app_verification' },
-            p_started_at: new Date().toISOString(),
-            p_expires_at: new Date(expiryTimeMillis).toISOString()
-        }, { route: ROUTE, userId: user.id });
-
+    const verification = await verifyGooglePlaySubscription({ purchaseToken, productId });
+    if (!verification.isValid) {
         await logPaymentTimeline({
             userId: user.id,
             provider: 'google_play',
             requestId: purchaseToken,
             sourceRoute: ROUTE,
-            status: 'verified',
-            metadata: { planTier, productId }
+            status: 'failed',
+            metadata: {
+                error: verification.reason || 'Invalid Google Play receipt',
+                productId,
+                source: verification.source,
+            },
         });
 
-        return NextResponse.json({ success: true, plan: planTier });
-
-    } catch (error) {
-        if (error.code === '23505') {
-            return NextResponse.json({ success: true, message: 'Duplicate safely ignored' });
-        }
-        console.error('Play Verify Error:', error);
-        return NextResponse.json({ error: 'Failed to verify purchase' }, { status: 500 });
+        throw new ApiError('Invalid Google Play receipt', 400, 'INVALID_PLAY_RECEIPT');
     }
-}
+
+    const planTier = planTierFromProduct(verification.productId || productId);
+    const expiryTimeMillis = verification.expiryTimeMillis;
+    if (!expiryTimeMillis || expiryTimeMillis <= Date.now()) {
+        throw new ApiError('Google Play subscription is not active', 400, 'PLAY_SUBSCRIPTION_INACTIVE');
+    }
+
+    try {
+        await safeRpc('play_subscription_activate_transaction', {
+            p_user_id: user.id,
+            p_plan_tier: planTier,
+            p_purchase_token: purchaseToken,
+            p_product_id: verification.productId || productId,
+            p_event_id: eventIdForPurchase(purchaseToken),
+            p_event_type: 'PURCHASE_VERIFICATION',
+            p_payload: {
+                productId,
+                verifiedProductId: verification.productId,
+                subscriptionState: verification.subscriptionState,
+                source: verification.source,
+            },
+            p_started_at: new Date().toISOString(),
+            p_expires_at: new Date(expiryTimeMillis).toISOString(),
+        }, { route: ROUTE, userId: user.id });
+    } catch (error) {
+        if (error.originalError?.code === '23505') {
+            return { success: true, message: 'Duplicate safely ignored', plan: planTier };
+        }
+        throw error;
+    }
+
+    await logPaymentTimeline({
+        userId: user.id,
+        provider: 'google_play',
+        requestId: purchaseToken,
+        sourceRoute: ROUTE,
+        status: 'verified',
+        metadata: {
+            planTier,
+            productId: verification.productId || productId,
+            source: verification.source,
+        },
+    });
+
+    return { success: true, plan: planTier };
+}, {
+    auth: 'user',
+    bodySchema: playVerifyBodySchema,
+    rateLimit: { ...RATE_LIMITS.PAYMENT, failBehavior: 'closed', key: 'play-verify' },
+});

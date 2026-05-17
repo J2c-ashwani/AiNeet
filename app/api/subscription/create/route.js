@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import { safeInsert } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
@@ -53,7 +53,7 @@ export async function POST(request) {
         );
 
         // 5. Log payment intent in DB
-        const paymentId = uuidv4();
+        const paymentId = randomUUID();
         await safeInsert('payments', {
             id: paymentId,
             user_id: decoded.id,
@@ -87,10 +87,8 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Subscription Create Error:', error);
-        return NextResponse.json({ 
-            error: 'Failed to create payment order. Please try again in a moment.',
-            devError: error.message,
-            devStack: error.stack
+        return NextResponse.json({
+            error: 'Failed to create payment order. Please try again in a moment.'
         }, { status: 500 });
     }
 }

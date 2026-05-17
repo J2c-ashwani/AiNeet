@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AppInstallPrompt from '@/components/AppInstallPrompt';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Input } from '@/components/ui';
+import { isInsideNativeApp, isMobileLikeBrowser } from '@/lib/platform';
+import { copyToClipboard } from '@/lib/utils/clipboard';
+import { openWhatsAppShare } from '@/lib/utils/whatsapp';
 
 function TestConfigContent() {
     const router = useRouter();
@@ -66,20 +69,9 @@ function TestConfigContent() {
             window.location.href = '/login?redirect=/test/configure';
             return;
         }
-        // App Install Gate for Mobile Web ONLY
-        // Do NOT block users already inside the native app (ReactNativeWebView or custom UA header)
-        if (typeof window !== 'undefined') {
-            const isMobileBrowser = Boolean(navigator.userAgent.match(/Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i));
-            const isInsideNativeApp = Boolean(
-                window.ReactNativeWebView ||                          // React Native WebView bridge
-                window.nativeApp ||                                    // Custom bridge if set
-                navigator.userAgent.includes('NEETCoachApp') ||       // Custom UA we can set in the app
-                document.cookie.includes('native_app=true')           // Cookie set by native app on boot
-            );
-            if (isMobileBrowser && !isInsideNativeApp) {
-                setShowAppPromo(true);
-                return;
-            }
+        if (isMobileLikeBrowser() && !isInsideNativeApp()) {
+            setShowAppPromo(true);
+            return;
         }
 
         setGenerating(true);
@@ -395,7 +387,7 @@ function TestConfigContent() {
                                     style={{ flex: 1, margin: 0 }}
                                 />
                                 <Button
-                                    onClick={() => navigator.clipboard.writeText(`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`)}
+                                    onClick={() => copyToClipboard(`https://aineetcoach.com/register?ref=${user?.referral_code || ''}`)}
                                     variant="secondary"
                                     size="sm"
                                 >
@@ -407,7 +399,7 @@ function TestConfigContent() {
                         <Button
                             onClick={() => {
                                 const text = `Join AI NEET Coach with me and get free AI Mock Tests! ⚡\n\nSign up here: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
-                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                openWhatsAppShare(text);
                             }}
                             variant="success"
                             size="lg"

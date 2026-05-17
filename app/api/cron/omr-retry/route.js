@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
-import { safeUpdate } from '@/lib/core/db-safe';
+import { safeDelete, safeUpdate } from '@/lib/core/db-safe';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export const maxDuration = 300; // 5 mins max for Vercel cron
@@ -79,7 +79,9 @@ export async function GET(request) {
                 // If success, mark as exhausted (or "completed" if we add it, but requirement says exhausted or manually_reviewed)
                 // We can mark it exhausted with success msg in last_error or delete it.
                 // Or maybe we need a 'completed' state. We will just delete it to keep queue clean.
-                await supabase.from('omr_retry_queue').delete().eq('id', item.id);
+                await safeDelete('omr_retry_queue', { id: item.id }, {
+                    route: 'cron-omr-retry',
+                });
                 processed++;
 
                 // Note: The frontend must poll for the result or we send a push notification.

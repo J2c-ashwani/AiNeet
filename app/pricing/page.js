@@ -114,8 +114,7 @@ export default function PricingPage() {
             });
             const data = await res.json();
             if (!res.ok) {
-                const errorMsg = data.devError ? `${data.error} (Dev: ${data.devError})` : (data.error || 'Failed to initiate payment.');
-                throw new Error(errorMsg);
+                throw new Error(data.error || 'Failed to initiate payment.');
             } 
             if (data.isMock) {
                 const verifyRes = await fetch('/api/subscription/verify', {

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const ROOT = path.join(__dirname, '..');
 
 // Directories to scan
 const SCAN_DIRS = ['app', 'components'];
@@ -62,6 +63,10 @@ const BLOCKED_PATTERNS = [
 
 let hasStrictErrors = false;
 let warningCount = 0;
+const p2BaselinePath = path.join(ROOT, 'docs', 'design-system-p2-baseline.json');
+const p2Baseline = fs.existsSync(p2BaselinePath)
+    ? JSON.parse(fs.readFileSync(p2BaselinePath, 'utf8'))
+    : { maxWarnings: 0 };
 
 function isStrict(filePath) {
     return STRICT_DIRS.some(strictPath => filePath.includes(strictPath));
@@ -111,8 +116,14 @@ SCAN_DIRS.forEach(dir => {
     if (fs.existsSync(dir)) scanDirectory(dir);
 });
 
-if (warningCount > 0) {
-    console.warn(`\n⚠️  WARNING: Found ${warningCount} legacy design violations in non-critical (P2) directories. These will not break the build.`);
+const p2Regressions = Math.max(0, warningCount - (p2Baseline.maxWarnings || 0));
+
+if (p2Regressions > 0) {
+    console.error(`\n❌ P2 DESIGN REGRESSION: Found ${warningCount} non-critical violations, baseline allows ${p2Baseline.maxWarnings}.`);
+    console.error('   Update the UI to remove the new violations instead of raising the baseline.');
+    hasStrictErrors = true;
+} else if (warningCount > 0) {
+    console.log(`\n✅ P2 legacy design baseline tracked: ${warningCount}/${p2Baseline.maxWarnings} violations. New P2 regressions are blocked.`);
 }
 
 if (hasStrictErrors) {

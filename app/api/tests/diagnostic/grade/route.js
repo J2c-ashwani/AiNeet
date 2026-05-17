@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { checkedFetch } from '@/lib/http';
 import crypto from 'crypto';
 
 export async function POST(request) {
@@ -121,16 +122,18 @@ export async function POST(request) {
 
         // ==== VIRAL FLYWHEEL: SILENT DEFEAT TRIGGER ====
         if (c_ghost && c_score && accuracyRate > Number(c_score)) {
-            // The challenger beat the ghost. Log the defeat to Upstash Ephemerally!
             try {
+                // The challenger beat the ghost. Log the defeat to Upstash ephemerally.
                 const originUrl = request.nextUrl ? request.nextUrl.origin : (request.headers.get('origin') || 'http://localhost:3000');
-                fetch(`${originUrl}/api/challenge/defeat`, {
+                await checkedFetch(`${originUrl}/api/challenge/defeat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ghost_id: c_ghost, new_score: Math.round(accuracyRate), original_score: Number(c_score), subject: c_chap || 'Biology' })
-                }).catch(()=>{});
+                }, {
+                    errorMessage: 'Failed to log challenge defeat',
+                });
             } catch (err) {
-                // Fail silently, don't crash the grader
+                console.error('[DIAGNOSTIC_DEFEAT_LOG_FAILED]', err);
             }
         }
 

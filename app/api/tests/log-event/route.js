@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
+import { allOrThrow } from '@/lib/async';
 
 export async function POST(request) {
     try {
@@ -20,8 +21,7 @@ export async function POST(request) {
         // Limit to 50 events per batch to prevent abuse
         const batch = events.slice(0, 50);
 
-        // Process in parallel, but catch errors to prevent whole batch failure
-        await Promise.all(batch.map(async (event) => {
+        await allOrThrow(batch.map(async (event) => {
             if (!event.eventType) return;
             
             await logAcademicEvent({
