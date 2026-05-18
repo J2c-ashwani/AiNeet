@@ -36,7 +36,7 @@ function timeAgo(dateStr) {
 }
 
 function testTypeLabel(type) {
-    const labels = { custom: 'Custom', adaptive: 'Adaptive', ai_generated: 'AI Gen', mock: 'Full Mock', pyq: 'PYQ', yearly_pyq: 'PYQ' };
+    const labels = { custom: 'Custom', adaptive: 'Adaptive', ai_generated: 'AI Generated', mock: 'Full Mock', pyq: 'PYQ', yearly_pyq: 'PYQ' };
     return labels[type] || type;
 }
 

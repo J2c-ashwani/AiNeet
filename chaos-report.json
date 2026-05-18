@@ -1,104 +1,104 @@
 {
-  "run_at": "2026-05-12T15:43:41.015Z",
+  "run_at": "2026-05-17T20:40:28.570Z",
   "base_url": "https://ai-neet.vercel.app",
   "scenarios": [
     {
       "name": "Platform reachable",
-      "status": "pass",
-      "duration_ms": 1072,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 464,
+      "error": "fetch failed"
     },
     {
       "name": "Recovery telemetry table accessible",
-      "status": "pass",
-      "duration_ms": 1542,
-      "detail": "1 events"
+      "status": "fail",
+      "duration_ms": 9,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Feature flags reachable",
-      "status": "pass",
-      "duration_ms": 169,
-      "detail": "7 flags"
+      "status": "fail",
+      "duration_ms": 16,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Idempotent test submission (duplicate blocked)",
-      "status": "pass",
-      "duration_ms": 675,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 7,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Offline tamper detection infrastructure present",
-      "status": "pass",
-      "duration_ms": 185,
-      "detail": "0 historical tamper events"
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Circuit breaker event telemetry writeable",
-      "status": "pass",
-      "duration_ms": 629,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Recovery tracking columns present",
-      "status": "pass",
-      "duration_ms": 181,
-      "detail": "3/3 columns present"
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Fraud signal detection write path",
-      "status": "pass",
-      "duration_ms": 392,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "No orphan test_answers (data integrity)",
-      "status": "pass",
-      "duration_ms": 253,
-      "detail": "0 orphans"
+      "status": "fail",
+      "duration_ms": 1,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Telemetry ingest endpoint responsive",
-      "status": "pass",
-      "duration_ms": 2275,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 15,
+      "error": "fetch failed"
     },
     {
       "name": "Auth endpoint healthy",
-      "status": "pass",
-      "duration_ms": 660,
-      "detail": "Status 200"
+      "status": "fail",
+      "duration_ms": 11,
+      "error": "fetch failed"
     },
     {
       "name": "Feature flag kill-switch works",
-      "status": "pass",
-      "duration_ms": 1424,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 5,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Job queue write path",
-      "status": "pass",
-      "duration_ms": 672,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Leaderboard snapshot infrastructure",
-      "status": "pass",
-      "duration_ms": 473,
-      "detail": null
+      "status": "fail",
+      "duration_ms": 3,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     },
     {
       "name": "Critical tables all present",
-      "status": "pass",
-      "duration_ms": 209,
-      "detail": "8/8 tables present"
+      "status": "fail",
+      "duration_ms": 2,
+      "error": "getaddrinfo ENOTFOUND db.lfwnrehqjiwpfoylhmby.supabase.co"
     }
   ],
   "summary": {
     "total": 15,
-    "passed": 15,
-    "failed": 0
+    "passed": 0,
+    "failed": 15
   },
-  "recovery_success_rate": "100.0%",
+  "recovery_success_rate": "0.0%",
   "memory_peak_mb": null,
   "queue_recovery_latency_ms": null
 }

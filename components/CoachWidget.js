@@ -85,7 +85,7 @@ export default function CoachWidget() {
     // ─── State: Loading (max 3 seconds) ───
     if (state === 'loading') {
         return (
-            <div className="card animate-pulse h-32 mb-6" aria-label="Loading daily guidance">
+            <div className="card animate-pulse h-32 space_mb_6" aria-label="Loading daily guidance">
                 <div style={{ padding: 24 }}>
                     <div style={{ height: 16, width: '40%', background: 'rgba(255,255,255,0.05)', borderRadius: 8, marginBottom: 12 }}></div>
                     <div style={{ height: 12, width: '80%', background: 'rgba(255,255,255,0.03)', borderRadius: 6 }}></div>
@@ -98,22 +98,22 @@ export default function CoachWidget() {
     if (state === 'ready' && guidance) {
         const { greeting, message, actionItem, tip, sentiment } = guidance;
         return (
-            <div className="card bg-gray-900 border border-gray-800 shadow-md p-6 mb-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-5 text-6xl">🤖</div>
+            <div className="card surface_gray_900 border line_gray_800 shadow-md space_pa_6 space_mb_6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 space_pa_4 opacity-5 text-6xl">🤖</div>
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 space_mb_2">
                         <span className="text-2xl">👋</span>
-                        <h2 className="text-lg font-bold text-white">{greeting}</h2>
+                        <h2 className="text-lg font-bold tone_white">{greeting}</h2>
                     </div>
-                    <p className="text-gray-300 mb-4 max-w-2xl leading-relaxed">{message}</p>
+                    <p className="tone_gray_300 space_mb_4 max-w-2xl leading-relaxed">{message}</p>
                     {actionItem && (
-                        <div className="flex items-center gap-4 mb-4">
+                        <div className="flex items-center gap-4 space_mb_4">
                             <a href={actionItem.link} className={`btn btn-${actionItem.type || 'primary'} btn-sm shadow-sm`}>
                                 {actionItem.text} →
                             </a>
                         </div>
                     )}
-                    <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
+                    <div className="surface_blue_900_20 border line_blue_500_20 space_pa_3 radius_md text-sm tone_blue_200 flex items-start gap-2 max-w-xl">
                         <span>💡</span>
                         <span className="italic">{tip}</span>
                     </div>
@@ -125,22 +125,22 @@ export default function CoachWidget() {
     // ─── State: Empty (new user, no coach data yet) ───
     if (state === 'empty') {
         return (
-            <div className="card bg-gray-900 border border-gray-800 shadow-md p-6 mb-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-5 text-6xl">🧠</div>
+            <div className="card surface_gray_900 border line_gray_800 shadow-md space_pa_6 space_mb_6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 space_pa_4 opacity-5 text-6xl">🧠</div>
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 space_mb_2">
                         <span className="text-2xl">👋</span>
-                        <h2 className="text-lg font-bold text-white">Welcome to AI NEET Coach!</h2>
+                        <h2 className="text-lg font-bold tone_white">Welcome to AI NEET Coach!</h2>
                     </div>
-                    <p className="text-gray-300 mb-4 max-w-2xl leading-relaxed">
+                    <p className="tone_gray_300 space_mb_4 max-w-2xl leading-relaxed">
                         Take your first diagnostic test to unlock your personalized AI study plan, rank prediction, and daily coaching.
                     </p>
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-4 space_mb_4">
                         <a href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
                             Take Diagnostic Test →
                         </a>
                     </div>
-                    <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
+                    <div className="surface_blue_900_20 border line_blue_500_20 space_pa_3 radius_md text-sm tone_blue_200 flex items-start gap-2 max-w-xl">
                         <span>💡</span>
                         <span className="italic">{randomTip}</span>
                     </div>
@@ -151,17 +151,17 @@ export default function CoachWidget() {
 
     // ─── State: Error (API failed / timed out) ───
     return (
-        <div className="card bg-gray-900 border border-gray-800 shadow-md p-6 mb-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5 text-6xl">🧠</div>
+        <div className="card surface_gray_900 border line_gray_800 shadow-md space_pa_6 space_mb_6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 space_pa_4 opacity-5 text-6xl">🧠</div>
             <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 space_mb_2">
                     <span className="text-2xl">👋</span>
-                    <h2 className="text-lg font-bold text-white">Ready to study?</h2>
+                    <h2 className="text-lg font-bold tone_white">Ready to study?</h2>
                 </div>
-                <p className="text-gray-300 mb-4 max-w-2xl leading-relaxed">
+                <p className="tone_gray_300 space_mb_4 max-w-2xl leading-relaxed">
                     Your personalized guidance is taking a moment to load. Meanwhile, jump right into practice!
                 </p>
-                <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-4 space_mb_4">
                     <a href="/test/configure" className="btn btn-primary btn-sm shadow-sm">
                         Start Practice Test →
                     </a>
@@ -169,7 +169,7 @@ export default function CoachWidget() {
                         Ask AI Doubt →
                     </a>
                 </div>
-                <div className="bg-blue-900/20 border border-blue-500/20 p-3 rounded-md text-sm text-blue-200 flex items-start gap-2 max-w-xl">
+                <div className="surface_blue_900_20 border line_blue_500_20 space_pa_3 radius_md text-sm tone_blue_200 flex items-start gap-2 max-w-xl">
                     <span>💡</span>
                     <span className="italic">{randomTip}</span>
                 </div>

@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { callAIWithFallback } from '@/lib/ai-engine';
+import { requireBearerSecret } from '@/lib/server-secrets';
 
 // This route feeds your external n8n automation pipeline
 export async function GET(request) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.N8N_WEBHOOK_SECRET}`) {
-        return new NextResponse('Unauthorized: Invalid N8N API Key', { status: 401 });
-    }
+    const authError = requireBearerSecret(request, 'N8N_WEBHOOK_SECRET');
+    if (authError) return authError;
 
     try {
         const supabase = await getDb();

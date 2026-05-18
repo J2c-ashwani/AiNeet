@@ -69,15 +69,15 @@ export default function MistakesPage() {
                     <div className="flex flex-col gap-4 stagger">
                         {mistakes.map((m, i) => (
                             <div key={i} className="card" style={{ borderLeft: `3px solid ${m.accuracy < 30 ? 'var(--danger)' : 'var(--warning)'}` }}>
-                                <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center justify-between space_mb_2">
                                     <h3 className="text-sm">{m.topic_name}</h3>
                                     <span className={`font-bold ${m.accuracy < 30 ? 'text-danger' : 'text-warning'}`}>{Math.round(m.accuracy)}% accuracy</span>
                                 </div>
-                                <p className="text-muted text-xs mb-3">{m.chapter_name} • {m.subject_name}</p>
+                                <p className="text-muted text-xs space_mb_3">{m.chapter_name} • {m.subject_name}</p>
                                 <div className="progress-bar" style={{ height: 6 }}>
                                     <div className={`progress-fill ${m.accuracy < 30 ? 'danger' : 'warning'}`} style={{ width: `${m.accuracy}%` }}></div>
                                 </div>
-                                <div className="flex items-center justify-between mt-3">
+                                <div className="flex items-center justify-between space_mt_3">
                                     <span className="text-xs text-muted">{m.total_attempted} attempted • {m.total_correct} correct</span>
                                     <a href="/test/configure" className="btn btn-sm btn-secondary">Practice →</a>
                                 </div>

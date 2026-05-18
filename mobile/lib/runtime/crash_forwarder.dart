@@ -7,28 +7,33 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/foundation.dart';
 
 class CrashForwarder {
-  static WebViewController? _controller;
-
-  static void attachController(WebViewController controller) {
-    _controller = controller;
-  }
+  static void attachController(WebViewController controller) {}
 
   /// Called directly from main.dart's JS channel callback
   static Future<void> handleJsCrashMessage(String rawMessage) async {
     try {
       final Map<String, dynamic> event = jsonDecode(rawMessage);
-      final String type    = event['type']    as String? ?? 'non_fatal';
+      final String type = event['type'] as String? ?? 'non_fatal';
       final String message = event['message'] as String? ?? 'Unknown JS error';
-      final String stack   = event['stack']   as String? ?? '';
+      final String stack = event['stack'] as String? ?? '';
 
       final exception = Exception('JS[$type]: $message');
-      final trace     = StackTrace.fromString(
-          stack.isNotEmpty ? stack : '#0 JavaScript (WebView)');
+      final trace = StackTrace.fromString(
+        stack.isNotEmpty ? stack : '#0 JavaScript (WebView)',
+      );
 
       if (type == 'fatal') {
-        await FirebaseCrashlytics.instance.recordError(exception, trace, fatal: true);
+        await FirebaseCrashlytics.instance.recordError(
+          exception,
+          trace,
+          fatal: true,
+        );
       } else {
-        await FirebaseCrashlytics.instance.recordError(exception, trace, fatal: false);
+        await FirebaseCrashlytics.instance.recordError(
+          exception,
+          trace,
+          fatal: false,
+        );
       }
 
       if (kDebugMode) {

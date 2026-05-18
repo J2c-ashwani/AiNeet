@@ -117,7 +117,7 @@ export default function DoubtSolver() {
 
             <div className="page" style={{ maxWidth: 800, margin: '0 auto', minHeight: 'calc(100dvh - 60px)', display: 'flex', flexDirection: 'column' }}>
 
-                <h1 className="text-2xl font-bold mb-4">AI Doubt Solver <Icon name="Cpu" /></h1>
+                <h1 className="text-2xl font-bold space_mb_4">AI Doubt Solver <Icon name="Cpu" /></h1>
 
                 {/* Vision Camera Feature */}
                 <SnapSolver
@@ -131,7 +131,7 @@ export default function DoubtSolver() {
                             <div className="text-center animate-fade-in" style={{ padding: '40px 0' }}>
                                 <div style={{ marginBottom: 16 }}><Icon name="Cpu" /></div>
                                 <h2>AI Doubt Solver</h2>
-                                <p className="text-secondary text-sm mt-2 mb-6">Ask me anything about Physics, Chemistry, or Biology. I'll explain in NEET-focused, easy-to-understand language.</p>
+                                <p className="text-secondary text-sm space_mt_2 space_mb_6">Ask me anything about Physics, Chemistry, or Biology. I'll explain in NEET-focused, easy-to-understand language.</p>
                                 <div className="flex flex-wrap gap-2 justify-center">
                                     {quickPrompts.map((p, i) => (
                                         <Button key={i} className="chip" onClick={() => { setInput(p); }}>
@@ -149,9 +149,9 @@ export default function DoubtSolver() {
                                 </div>
                                 <div className="chat-bubble">
                                     {msg.role === 'assistant' ? (
-                                        <div className="prose prose-invert max-w-none text-gray-200">
+                                        <div className="prose prose-invert max-w-none tone_gray_200">
                                             {!msg.isError && (
-                                                <div className="mb-3">
+                                                <div className="space_mb_3">
                                                     <TrustBadge type="ai-confidence" meta={{ score: 0.95 }} />
                                                 </div>
                                             )}

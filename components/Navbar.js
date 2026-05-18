@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Button } from '@/components/ui';
 import { BottomNav } from '@/components/ui/BottomNav';
+import { triggerHaptic } from '@/lib/platform';
 import {
     BookOpen, Camera, Swords, Lightbulb, NotebookPen,
     RotateCcw, BookMarked, CalendarDays, BarChart2,
@@ -16,9 +18,7 @@ export default function Navbar() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const handleHaptic = () => {
-        if (typeof navigator !== 'undefined' && navigator.vibrate) {
-            navigator.vibrate(30);
-        }
+        triggerHaptic('medium');
     };
 
     const loggedInItems = [
@@ -76,9 +76,9 @@ export default function Navbar() {
                             </span>
                             {user.full_name?.split(' ')[0] || 'Account'}
                         </a>
-                        <button onClick={logout} className="navbar-logout-btn">
+                        <Button variant="ghost" size="sm" onClick={logout} className="navbar-logout-btn">
                             Logout
-                        </button>
+                        </Button>
                     </>
                 ) : (
                     <>
@@ -97,9 +97,9 @@ export default function Navbar() {
                 <div className="navbar-drawer-overlay">
                     <div className="navbar-drawer-header">
                         <h2 className="navbar-drawer-title">Study Tools</h2>
-                        <button onClick={() => setIsDrawerOpen(false)} aria-label="Close tools drawer" className="navbar-drawer-close">
+                        <Button variant="ghost" size="sm" onClick={() => setIsDrawerOpen(false)} aria-label="Close tools drawer" className="navbar-drawer-close space_pa_2">
                             <X size={18} aria-hidden="true" />
-                        </button>
+                        </Button>
                     </div>
                     <div className="navbar-drawer-body">
 

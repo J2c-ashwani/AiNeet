@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
+import { getUserFromRequest } from '@/lib/core/auth';
 
 /**
  * OMR Grading API — v2
@@ -14,9 +15,9 @@ import { safeInsert } from '@/lib/core/db-safe';
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const user = await getUserFromRequest(request);
 
-        if (authError || !user) {
+        if (!user) {
             return NextResponse.json({ error: 'Not logged in. Please sign in to grade your OMR.' }, { status: 401 });
         }
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, Button, Input, Select } from '@/components/ui';
 import { TrustBadge } from '@/components/trust/TrustBadge';
 import { useMutation } from '@tanstack/react-query';
-import { isInsideNativeApp } from '@/lib/platform';
+import { isInsideNativeApp, requestNativeImageCapture, supportsCapability } from '@/lib/platform';
 
 // ── Image Validation Helpers ──
 function validateImage(file) {
@@ -93,9 +93,33 @@ export default function OMRScannerPage() {
     // Grading State
     const [finalResult, setFinalResult] = useState(null);
 
-    // Refs for hidden file inputs
+    // Refs for hidden file inputs (web fallback only)
     const cameraInputRef = useRef(null);
     const galleryInputRef = useRef(null);
+
+    // Native bridge capture — used when inside Flutter shell
+    const handleNativeCapture = async (source = 'camera') => {
+        setScanError(null);
+        setFinalResult(null);
+        try {
+            const result = await requestNativeImageCapture({
+                source,
+                allowedMimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'application/pdf'],
+                maxBytes: 15728640,
+            });
+            // Flutter ACK returns { imageBase64, mimeType, fileName, sizeBytes }
+            if (!result?.imageBase64) throw new Error('No image data returned from camera.');
+            const sizeMB = (result.sizeBytes || 0) / (1024 * 1024);
+            setFileInfo({ sizeLabel: `${sizeMB.toFixed(1)}MB`, isPdf: result.mimeType === 'application/pdf', warning: null });
+            // Synthesise a minimal File-like so processFile validators pass
+            setSelectedFile({ type: result.mimeType, _nativeCaptureBase64: result.imageBase64 });
+            setImagePreview(`data:${result.mimeType};base64,${result.imageBase64}`);
+        } catch (err) {
+            if (!String(err.message).includes('CAMERA_CAPTURE_UNAVAILABLE')) {
+                setScanError(err.message || 'Camera capture failed. Please try the upload option.');
+            }
+        }
+    };
 
     useEffect(() => {
         async function fetchTests() {
@@ -159,12 +183,13 @@ export default function OMRScannerPage() {
     };
 
     const scanMutation = useMutation({
-        mutationFn: async ({ pureBase64, selectedTestId }) => {
+        mutationFn: async ({ pureBase64, selectedTestId, mimeType }) => {
             const res = await fetch('/api/omr/scan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     imageBase64: pureBase64,
+                    mimeType,
                     testId: selectedTestId
                 })
             });
@@ -190,16 +215,26 @@ export default function OMRScannerPage() {
         setScanError(null);
 
         try {
-            // Generate base64 only right before sending to keep memory free
-            const base64String = await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(selectedFile);
-            });
-            const pureBase64 = base64String.split(',')[1];
+            let pureBase64;
+            let mimeType;
 
-            scanMutation.mutate({ pureBase64, selectedTestId });
+            if (selectedFile._nativeCaptureBase64) {
+                // Native bridge capture — base64 and mimeType already available from ACK payload
+                pureBase64 = selectedFile._nativeCaptureBase64;
+                mimeType = selectedFile.type || 'image/jpeg';
+            } else {
+                // Web / gallery file input path
+                const base64String = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(selectedFile);
+                });
+                pureBase64 = base64String.split(',')[1];
+                mimeType = selectedFile.type || 'image/jpeg';
+            }
+
+            scanMutation.mutate({ pureBase64, selectedTestId, mimeType });
 
         } catch (e) {
             setScanError("Couldn't read the file. Please try again.");
@@ -456,7 +491,7 @@ export default function OMRScannerPage() {
                                 className="omr-capture-btn omr-capture-btn--gallery"
                                 variant="ghost"
                             >
-                                <span className="omr-capture-icon"><Icon name="Star" size={16} />️</span>
+                                <span className="omr-capture-icon"><Icon name="Star" size={16} /></span>
                                 <span className="omr-capture-title">Upload from Gallery</span>
                                 <span className="omr-capture-subtitle">Photo or PDF</span>
                             </Button>

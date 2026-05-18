@@ -1,13 +1,20 @@
 
 "use client";
 import { useState } from 'react';
+import { Button } from '@/components/ui';
+import { Icon } from '@/components/ui/Icon';
+import { openCashfreeCheckout } from '@/lib/client/cashfree-checkout';
 
 export default function PricingModal({ isOpen, onClose, userPlan }) {
+    const [submittingPlan, setSubmittingPlan] = useState(null);
+    const [error, setError] = useState('');
+
     if (!isOpen) return null;
 
     const handleSubscribe = async (planId) => {
+        setSubmittingPlan(planId);
+        setError('');
         try {
-            // 1. Create Order
             const res = await fetch('/api/subscription/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -15,103 +22,104 @@ export default function PricingModal({ isOpen, onClose, userPlan }) {
             });
             const data = await res.json();
 
-            if (data.error) throw new Error(data.error);
-
-            // 2. Initialize Razorpay (Mock for now)
-            alert(`Integration Ready! \nOrder ID: ${data.orderId}\nAmount: ₹${data.amount}\n\nIn production, this opens Razorpay.`);
-
-            // 3. Verify Payment (Simulation)
-            const verifyRes = await fetch('/api/subscription/verify', {
-                method: 'POST',
-                body: JSON.stringify({
-                    orderId: data.orderId,
-                    paymentId: 'pay_mock_' + Date.now(),
-                    signature: 'mock_sig',
-                    planId
-                })
-            });
-
-            if (verifyRes.ok) {
-                alert("Upgrade Successful! Welcome to Pro.");
-                window.location.reload();
+            if (!res.ok || data.error) {
+                throw new Error(data.error || 'Payment could not be started.');
             }
 
+            await openCashfreeCheckout({
+                paymentSessionId: data.paymentSessionId,
+                environment: data.environment,
+            });
         } catch (err) {
-            alert(err.message);
+            setError(err.message || 'Payment could not be started.');
+        } finally {
+            setSubmittingPlan(null);
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl w-full max-w-4xl overflow-hidden relative">
-                <button onClick={onClose} aria-label="Close" className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-gray-400 hover:text-white text-xl">✕</button>
+        <div className="fixed inset-0 surface_black_80 backdrop-blur-sm z-50 flex items-center justify-center space_pa_4">
+            <div className="surface_gray_900 border line_gray_800 radius_2xl w-full max-w-4xl overflow-hidden relative">
+                <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close" className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center tone_gray_400 hover_tone_white space_pa_2">
+                    <Icon name="X" size={20} />
+                </Button>
 
                 <div className="grid md:grid-cols-2">
                     {/* Pro Plan */}
-                    <div className="p-8 border-r border-gray-800 flex flex-col">
-                        <div className="mb-4">
-                            <span className="bg-blue-500/10 text-blue-500 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Most Popular</span>
+                    <div className="space_pa_8 border-r line_gray_800 flex flex-col">
+                        <div className="space_mb_4">
+                            <span className="surface_blue_500_10 tone_blue_500 space_px_3 space_py_1 radius_full text-xs font-bold uppercase tracking-wider">Most Popular</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">Pro Plan</h3>
-                        <div className="text-4xl font-bold text-white mb-6">₹199<span className="text-lg text-gray-500 font-normal">/mo</span></div>
+                        <h3 className="text-2xl font-bold tone_white space_mb_2">Pro Plan</h3>
+                        <div className="text-4xl font-bold tone_white space_mb_6">₹199<span className="text-lg tone_gray_500 font-normal">/mo</span></div>
 
-                        <ul className="space-y-4 mb-8 flex-1">
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-green-500 mr-2">✓</span> 50 AI Doubts / month
+                        <ul className="space-y-4 space_mb_8 flex-1">
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Check" size={18} className="tone_green_500 space_mr_2" /> 50 AI Doubts / month
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-green-500 mr-2">✓</span> 20 AI Tests / month
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Check" size={18} className="tone_green_500 space_mr_2" /> 20 AI Tests / month
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-green-500 mr-2">✓</span> No Ads
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Check" size={18} className="tone_green_500 space_mr_2" /> No Ads
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-green-500 mr-2">✓</span> Detailed Analytics
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Check" size={18} className="tone_green_500 space_mr_2" /> Detailed Analytics
                             </li>
                         </ul>
 
-                        <button
+                        <Button
                             onClick={() => handleSubscribe('pro')}
-                            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all"
+                            disabled={submittingPlan !== null || userPlan === 'pro'}
+                            loading={submittingPlan === 'pro'}
+                            className="w-full surface_blue_600 hover_surface_blue_500 tone_white font-bold space_py_3 radius_xl transition-all"
                         >
-                            Upgrade to Pro
-                        </button>
+                            {userPlan === 'pro' ? 'Current Plan' : 'Upgrade to Pro'}
+                        </Button>
                     </div>
 
                     {/* Premium Plan */}
-                    <div className="p-8 bg-gradient-to-br from-[#1a1a1a] to-purple-900/20 flex flex-col">
-                        <div className="mb-4">
-                            <span className="bg-purple-500/10 text-purple-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Best Value</span>
+                    <div className="space_pa_8 surface_gray_900 flex flex-col">
+                        <div className="space_mb_4">
+                            <span className="surface_purple_500_10 tone_purple_400 space_px_3 space_py_1 radius_full text-xs font-bold uppercase tracking-wider">Best Value</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">Premium</h3>
-                        <div className="text-4xl font-bold text-white mb-6">₹399<span className="text-lg text-gray-500 font-normal">/mo</span></div>
+                        <h3 className="text-2xl font-bold tone_white space_mb_2">Premium</h3>
+                        <div className="text-4xl font-bold tone_white space_mb_6">₹399<span className="text-lg tone_gray_500 font-normal">/mo</span></div>
 
-                        <ul className="space-y-4 mb-8 flex-1">
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-purple-400 mr-2">✦</span> 200 AI Doubts / month
+                        <ul className="space-y-4 space_mb_8 flex-1">
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Sparkles" size={18} className="tone_purple_400 space_mr_2" /> 200 AI Doubts / month
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-purple-400 mr-2">✦</span> 100 AI Tests / month
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Sparkles" size={18} className="tone_purple_400 space_mr_2" /> 100 AI Tests / month
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-purple-400 mr-2">✦</span> Priority Support
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Sparkles" size={18} className="tone_purple_400 space_mr_2" /> Priority Support
                             </li>
-                            <li className="flex items-center text-gray-300">
-                                <span className="text-purple-400 mr-2">✦</span> Parent Weekly Reports
+                            <li className="flex items-center tone_gray_300">
+                                <Icon name="Sparkles" size={18} className="tone_purple_400 space_mr_2" /> Parent Weekly Reports
                             </li>
                         </ul>
 
-                        <button
+                        <Button
                             onClick={() => handleSubscribe('premium')}
-                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-purple-900/30"
+                            disabled={submittingPlan !== null || userPlan === 'premium'}
+                            loading={submittingPlan === 'premium'}
+                            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 tone_white font-bold space_py_3 radius_xl transition-all shadow-lg shadow-purple-900/30"
                         >
-                            Get Premium
-                        </button>
+                            {userPlan === 'premium' ? 'Current Plan' : 'Get Premium'}
+                        </Button>
                     </div>
                 </div>
 
-                <div className="bg-gray-900/50 p-4 text-center text-gray-500 text-xs">
-                    Secure payment via Razorpay. Cancel anytime.
+                {error && (
+                    <div className="surface_red_500_10 tone_red_400 text-sm text-center space_px_4 space_py_3">
+                        {error}
+                    </div>
+                )}
+
+                <div className="surface_gray_900_50 space_pa_4 text-center tone_gray_500 text-xs">
+                    Secure payment via Cashfree. Cancel anytime.
                 </div>
             </div>
         </div>

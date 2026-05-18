@@ -2,19 +2,18 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeDelete, safeUpdate } from '@/lib/core/db-safe';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { requireBearerSecret } from '@/lib/server-secrets';
+import { loadOmrScanObject } from '@/lib/mobile/omr-scan-storage';
 
 export const maxDuration = 300; // 5 mins max for Vercel cron
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
     try {
+        const authError = requireBearerSecret(request, 'CRON_SECRET');
+        if (authError) return authError;
+
         const supabase = await getDb();
-        
-        // Authorization check for cron if needed (Vercel provides a specific header, or we use a secret)
-        const authHeader = request.headers.get('authorization');
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
 
         // Fetch up to 5 pending or retrying tasks
         const { data: queueItems } = await supabase
@@ -42,18 +41,7 @@ export async function GET(request) {
                     retry_count: item.retry_count + 1 
                 }, { route: 'cron-omr-retry' });
 
-                // Parse the data URI
-                const urlObj = item.scan_url;
-                let mimeType = 'image/jpeg';
-                let base64 = '';
-
-                if (urlObj.startsWith('data:')) {
-                    const parts = urlObj.split(';');
-                    mimeType = parts[0].replace('data:', '');
-                    base64 = parts[1].replace('base64,', '');
-                } else {
-                    throw new Error('Invalid data URI format');
-                }
+                const queuedScan = await loadOmrScanObject(supabase, item.scan_url);
 
                 const prompt = `
                     You are an expert Optical Mark Recognition (OMR) scanner system. 
@@ -65,7 +53,7 @@ export async function GET(request) {
                     }
                 `;
 
-                const imagePart = { inlineData: { data: base64, mimeType } };
+                const imagePart = { inlineData: { data: queuedScan.imageBase64, mimeType: queuedScan.mimeType } };
                 const result = await model.generateContent([prompt, imagePart]);
                 const rawOutput = await result.response.text();
                 

@@ -63,7 +63,7 @@ export default async function QuestionPage({ params }) {
         .single();
 
     if (!question) {
-        return <div className="page text-center pb-20 pt-20"><h1>Not Found</h1></div>;
+        return <div className="page text-center space_pb_20 space_pt_20"><h1>Not Found</h1></div>;
     }
 
     // Parse Options
@@ -164,8 +164,8 @@ export default async function QuestionPage({ params }) {
 
             <div className="page" style={{ maxWidth: 800 }}>
                 {/* SEO Breadcrumbs */}
-                <nav className="text-sm text-secondary mb-6 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
-                    <a href="/" className="hover:text-white">Home</a>
+                <nav className="text-sm text-secondary space_mb_6 flex items-center gap-2 overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <a href="/" className="hover_tone_white">Home</a>
                     <span>›</span>
                     <span className="text-muted">{question.subjects?.name || 'Subject'}</span>
                     <span>›</span>
@@ -174,9 +174,9 @@ export default async function QuestionPage({ params }) {
                     <span className="font-medium text-primary">{question.topics?.name || 'Topic'}</span>
                 </nav>
 
-                <main className="card !p-8 relative overflow-hidden mb-8 border-t-4" style={{borderTopColor: 'var(--accent-primary)'}}>
+                <main className="card space_pa_8 relative overflow-hidden space_mb_8 border-t-4" style={{borderTopColor: 'var(--accent-primary)'}}>
                     {/* Stat Badges for CTR / Engagement */}
-                    <div className="flex gap-3 mb-6 flex-wrap">
+                    <div className="flex gap-3 space_mb_6 flex-wrap">
                         <span className={`difficulty-badge ${question.difficulty || 'medium'}`}>
                             Difficulty: {(question.difficulty || 'medium').toUpperCase()}
                         </span>
@@ -194,12 +194,12 @@ export default async function QuestionPage({ params }) {
                     </div>
 
                     {/* Question */}
-                    <h1 className="text-xl sm:text-2xl font-bold leading-relaxed mb-8 text-white">
+                    <h1 className="text-xl sm:text-2xl font-bold leading-relaxed space_mb_8 tone_white">
                         <MathRenderer>{question.text}</MathRenderer>
                     </h1>
 
                     {/* Options List ("Answer First" UI - Correct Answer Highlighted Immediately) */}
-                    <div className="flex flex-col gap-3 mb-8">
+                    <div className="flex flex-col gap-3 space_mb_8">
                         {options.map((opt, idx) => {
                             const isCorrect = (idx + 1) === question.correct_option;
                             return (
@@ -210,15 +210,15 @@ export default async function QuestionPage({ params }) {
                                 <div className={`pt-1 ${isCorrect ? 'text-green-50 font-medium' : 'text-gray-300'}`}>
                                     <MathRenderer>{opt}</MathRenderer>
                                 </div>
-                                {isCorrect && <div className="ml-auto text-green-400 text-xs sm:text-sm font-bold bg-green-900/40 border border-green-500/30 px-3 py-1 rounded-full whitespace-nowrap"><Icon name="Star" size={16} /> Correct Answer</div>}
+                                {isCorrect && <div className="ml-auto tone_green_400 text-xs sm:text-sm font-bold surface_green_900_40 border line_green_500_30 space_px_3 space_py_1 radius_full whitespace-nowrap"><Icon name="Star" size={16} /> Correct Answer</div>}
                             </div>
                         )})}
                     </div>
 
                     {/* Answer First & Explanation (Helpful Content exposed to Googlebot) */}
-                    <div className="mt-8 pt-8 border-t border-gray-800 relative">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2 m-0">
+                    <div className="space_mt_8 space_pt_8 border-t line_gray_800 relative">
+                        <div className="flex items-center justify-between space_mb_4">
+                            <h3 className="text-xl font-bold tone_white flex items-center gap-2 space_ma_0">
                                 <span className="text-2xl"><Icon name="Star" size={16} /></span> Step-by-Step Explanation
                             </h3>
                             {(question.is_ai_generated === 1 || question.ai_confidence) && (
@@ -227,21 +227,21 @@ export default async function QuestionPage({ params }) {
                         </div>
                         
                         {question.explanation ? (
-                            <div className="prose prose-invert max-w-none text-gray-300 leading-relaxed">
+                            <div className="prose prose-invert max-w-none tone_gray_300 leading-relaxed">
                                 <MathRenderer>{question.explanation}</MathRenderer>
                                 
                                 {/* Monetization / Engagement Hook below free SEO content */}
-                                <div className="mt-10 p-6 rounded-xl bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/20 text-center">
-                                    <h4 className="text-white font-bold mb-2">Mastered this concept?</h4>
-                                    <p className="text-indigo-200 text-sm mb-4">Generate a dynamic mock test focusing strictly on your weak areas to boost your NEET score.</p>
-                                    <a href="/test/configure" className="btn btn-primary text-sm px-6 py-2 inline-block">
+                                <div className="space_mt_10 space_pa_6 radius_xl bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border line_indigo_500_20 text-center">
+                                    <h4 className="tone_white font-bold space_mb_2">Mastered this concept?</h4>
+                                    <p className="tone_indigo_200 text-sm space_mb_4">Generate a dynamic mock test focusing strictly on your weak areas to boost your NEET score.</p>
+                                    <a href="/test/configure" className="btn btn-primary text-sm space_px_6 space_py_2 inline-block">
                                         Start Custom Mock Test
                                     </a>
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-gray-800/50 p-6 rounded-xl text-center border border-gray-700 border-dashed">
-                                <p className="text-gray-400 mb-4">The AI is currently processing the detailed explanation for this specific question.</p>
+                            <div className="surface_gray_800_50 space_pa_6 radius_xl text-center border line_gray_700 border-dashed">
+                                <p className="tone_gray_400 space_mb_4">The AI is currently processing the detailed explanation for this specific question.</p>
                                 <a href={`/login?redirect=/q/${params.id}`} className="btn btn-secondary text-sm inline-block">
                                     Login to Request Instant AI Sync
                                 </a>
@@ -252,18 +252,18 @@ export default async function QuestionPage({ params }) {
 
                 {/* Strategic Internal Linking Clusters (Semantic Progression) */}
                 {relatedLinks.length > 0 && (
-                    <div className="mb-20">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <span className="text-indigo-400"><Icon name="Zap" /></span> Next Steps: Master this Concept
+                    <div className="space_mb_20">
+                        <h3 className="text-lg font-bold tone_white space_mb_4 flex items-center gap-2">
+                            <span className="tone_indigo_400"><Icon name="Zap" /></span> Next Steps: Master this Concept
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {relatedLinks.map((link, idx) => (
-                                <a href={`/q/${link.q.id}`} key={idx} className="block p-5 rounded-xl bg-[#111827] border border-gray-800 hover:border-indigo-500/50 hover:bg-gray-800/50 transition-all group">
-                                    <div className="text-xs font-bold text-indigo-400 mb-2 tracking-wider uppercase flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                                <a href={`/q/${link.q.id}`} key={idx} className="block space_pa_5 radius_xl bg-[#111827] border line_gray_800 hover_line_indigo_500_50 hover_surface_gray_800_50 transition-all group">
+                                    <div className="text-xs font-bold tone_indigo_400 space_mb_2 tracking-wider uppercase flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 radius_full surface_indigo_500"></div>
                                         {link.label}
                                     </div>
-                                    <h4 className="text-gray-300 text-sm line-clamp-2 leading-relaxed group-hover:text-white transition-colors">
+                                    <h4 className="tone_gray_300 text-sm line-clamp-2 leading-relaxed group-hover_tone_white transition-colors">
                                         {cleanQuestionText(link.q.text)}
                                     </h4>
                                 </a>

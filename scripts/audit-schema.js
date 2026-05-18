@@ -3,6 +3,7 @@ const { Client } = require('pg');
 
 const EXPECTED_SCHEMA = {
   users: ['id', 'fcm_token', 'fcm_token_updated_at', 'xp', 'streak', 'trust_score'],
+  user_devices: ['id', 'user_id', 'device_id', 'fcm_token', 'push_permission', 'last_seen_at', 'is_active'],
   tests: ['id', 'user_id', 'type', 'score', 'completed_at'],
   test_answers: ['id', 'test_id', 'user_id', 'question_id', 'selected_option', 'is_correct'],
   mistake_log: ['id', 'user_id', 'question_id', 'test_id', 'mistake_count'],

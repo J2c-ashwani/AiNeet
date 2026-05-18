@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { Card, Button, Badge } from '@/components/ui';
+import { openCashfreeCheckout } from '@/lib/client/cashfree-checkout';
 
 const PLANS = [
     {
@@ -115,23 +116,12 @@ export default function PricingPage() {
             const data = await res.json();
             if (!res.ok) {
                 throw new Error(data.error || 'Failed to initiate payment.');
-            } 
-            if (data.isMock) {
-                const verifyRes = await fetch('/api/subscription/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ orderId: data.orderId, planId: data.planId })
-                });
-                const verifyData = await verifyRes.json();
-                if (verifyRes.ok) {
-                    alert(`✅ Upgraded to ${planId.toUpperCase()} successfully!`);
-                    window.location.href = '/profile';
-                } else {
-                    throw new Error(verifyData.error || 'Verification Failed');
-                }
-            } else {
-                alert('Redirecting to Cashfree payment gateway...');
             }
+
+            await openCashfreeCheckout({
+                paymentSessionId: data.paymentSessionId,
+                environment: data.environment,
+            });
         } catch (err) {
             setError(err.message);
         } finally {

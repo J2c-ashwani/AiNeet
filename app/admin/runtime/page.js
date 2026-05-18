@@ -297,7 +297,7 @@ export default function RuntimeDashboard() {
             {/* SLO Tracking */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
                 <div className="card" style={{ padding: 24 }}>
-                    <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Star" size={16} />️ SLO Tracker</h3>
+                    <h3 style={{ fontWeight: 800, marginBottom: 16, }}><Icon name="Star" size={16} /> SLO Tracker</h3>
                     <SloRow name="Crash-free Sessions"    target={99.7} current={m.crash_free_rate} />
                     <SloRow name="Test Recovery Success"  target={99.0} current={m.recovery_success_rate ?? 100} />
                     <SloRow name="Submission Integrity"   target={100}  current={m.submission_integrity_rate} />

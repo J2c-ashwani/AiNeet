@@ -69,7 +69,7 @@ export default function DiagnosticResultsLock() {
 
         const shareUrl = `${rootUrl}/test/diagnostic?c_score=${Math.round(result.accuracy)}&c_chap=${encodeURIComponent(result.weakestChapter)}&c_ghost=${ghostId}`;
         const pct = 100 - result.percentile; // Inverse logic to show Top %
-        const shareText = `Top ${pct}% in NEET ${result.weakestChapter} <Icon name="Flame" />\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
+        const shareText = `Top ${pct}% in NEET ${result.weakestChapter} 🔥\n\nI just scored ${Math.round(result.accuracy)}% accuracy. Can you reach this level?\n\nTry -> ${shareUrl}`;
 
         const { share } = usePlatformShare();
         await share({ title: 'NEET AI Assessment', text: shareText, url: shareUrl });

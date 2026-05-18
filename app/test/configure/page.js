@@ -198,7 +198,7 @@ function TestConfigContent() {
                             </div>
                         ) : (
                             <Card style={{ padding: 24, textAlign: 'center', border: '1px solid var(--border)' }}>
-                                <Icon name="CalendarDays" /> No full yearly papers available yet. They are coming soon!
+                                <Icon name="CalendarDays" /> No full yearly papers available yet.
                             </Card>
                         )}
                         <p style={{ marginTop: 16, }}>

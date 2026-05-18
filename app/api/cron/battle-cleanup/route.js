@@ -2,18 +2,17 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeUpdate } from '@/lib/core/db-safe';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
+import { requireBearerSecret } from '@/lib/server-secrets';
 
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
     try {
+        const authError = requireBearerSecret(request, 'CRON_SECRET');
+        if (authError) return authError;
+
         const supabase = await getDb();
-        
-        const authHeader = request.headers.get('authorization');
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
 
         // Find active battles older than 1 hour (abandoned)
         const oneHourAgo = new Date(Date.now() - 3600 * 1000).toISOString();

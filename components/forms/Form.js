@@ -38,14 +38,14 @@ export function FormField({ name, label, description, children }) {
       {children}
 
       {description && !error && (
-        <p className="text-xs text-[var(--text-muted)] mt-1">{description}</p>
+        <p className="text-xs text-[var(--text-muted)] space_mt_1">{description}</p>
       )}
 
       {error && (
         <p 
           role="alert" 
           aria-live="polite" 
-          className="text-xs font-medium text-red-500 mt-1"
+          className="text-xs font-medium tone_red_500 space_mt_1"
         >
           {error.message}
         </p>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import { TrustBadge } from '@/components/trust/TrustBadge';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
+import { showNativeInterstitial } from '@/lib/platform';
 
 export default function ResultsPage({ params }) {
     const { id: testId } = use(params);
@@ -17,9 +18,7 @@ export default function ResultsPage({ params }) {
         const stored = sessionStorage.getItem('testResults');
         if (stored) {
             setResults(JSON.parse(stored));
-            if (typeof window.showInterstitialAd === 'function') {
-                setTimeout(() => window.showInterstitialAd(), 1500);
-            }
+            setTimeout(() => showNativeInterstitial('test_results'), 1500);
             return;
         }
         window.location.href = '/dashboard';
@@ -115,7 +114,7 @@ export default function ResultsPage({ params }) {
                         <div className="results-xp-label">Experience Earned</div>
                     </Card>
                     <Card className="results-xp-card">
-                        <div className="results-xp-icon"><Icon name="Star" size={16} />️</div>
+                        <div className="results-xp-icon"><Icon name="Star" size={16} /></div>
                         <div className="results-xp-value">Level {level.level}</div>
                         <div className="results-xp-label">{level.name}</div>
                     </Card>
@@ -155,7 +154,7 @@ export default function ResultsPage({ params }) {
                         variant="success"
                         className="results-share-btn"
                         onClick={() => {
-                            const text = `I just scored ${score.scaledScore}/720 on my AI NEET Mock Test! <Icon name="Zap" />\n\nCheck out my scorecard and rank prediction here:\nhttps://aineetcoach.com/test/${testId}/share`;
+                            const text = `I just scored ${score.scaledScore}/720 on my AI NEET Mock Test! ⚡\n\nCheck out my scorecard and rank prediction here:\nhttps://aineetcoach.com/test/${testId}/share`;
                             openWhatsAppShare(text);
                         }}
                     >

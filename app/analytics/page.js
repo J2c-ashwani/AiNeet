@@ -187,7 +187,7 @@ export default function AnalyticsPage() {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    const text = `Prepare for NEET 2026 with AI! <Icon name="Brain" />\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                    const text = `Prepare for NEET 2026 with AI! 🧠\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                     openWhatsAppShare(text);
                                 }}
                             >

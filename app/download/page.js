@@ -108,7 +108,7 @@ export default function DownloadPage() {
             {/* Trust Banner */}
             <section style={styles.trustSection}>
                 <div style={styles.trustCard}>
-                    <h3 style={styles.trustTitle}><Icon name="Star" size={16} />️ Is this APK safe?</h3>
+                    <h3 style={styles.trustTitle}><Icon name="Star" size={16} /> Is this APK safe?</h3>
                     <p style={styles.trustText}>
                         Absolutely! This is the official AI NEET Coach app built by the same team that runs{' '}
                         <a href="https://aineetcoach.com" style={styles.link}>aineetcoach.com</a>.

@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 import { checkedFetch } from '@/lib/http';
+import { requireRequestSecret } from '@/lib/server-secrets';
 
 export async function POST(request) {
     try {
+        const authError = requireRequestSecret(request, {
+            envName: 'INTERNAL_EVENT_SECRET',
+            headers: ['x-internal-event-secret'],
+        });
+        if (authError) return authError;
+
         const { ghost_id, new_score, original_score, subject } = await request.json();
         if (!ghost_id || !new_score) return NextResponse.json({ error: 'Missing challenge payload' }, { status: 400 });
 
@@ -48,7 +55,7 @@ export async function POST(request) {
             return NextResponse.json({ success: true, status: 'Defeat logged ephemerally' });
         }
 
-        return NextResponse.json({ success: true, warning: 'Upstash unconfigured, mocked success' });
+        return NextResponse.json({ error: 'Challenge logging unavailable' }, { status: 503 });
     } catch (e) {
         console.error('Challenge Defeat API Error:', e);
         return NextResponse.json({ error: 'Failed logging defeat' }, { status: 500 });

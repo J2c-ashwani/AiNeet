@@ -96,6 +96,7 @@ function checkFile(filePath) {
 
     lines.forEach((line, index) => {
         BLOCKED_PATTERNS.forEach(pattern => {
+            pattern.regex.lastIndex = 0;
             if (pattern.regex.test(line)) {
                 if (isStrictFile) {
                     console.error(`\n❌ ERROR in ${filePath}:${index + 1}`);

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
 import MathRenderer from '@/components/MathRenderer';
 import { OfflineStorage, TestSessionStore } from '@/lib/idb';
+import { OfflineQueue } from '@/lib/client/offline-queue';
 import { useMutation } from '@tanstack/react-query';
 import { Card, Button, Badge, Select, Textarea } from '@/components/ui';
 import { AutosaveIndicator, TrustBadge } from '@/components/trust/TrustBadge';
@@ -217,6 +218,20 @@ export default function TestPage({ params }) {
         OfflineStorage.setItem(`draft_${testId}`, { answers, pendingSubmit: offlineSyncPending });
     }, [answers, testData, testId, offlineSyncPending]);
 
+    useEffect(() => {
+        const handleOfflineSync = async (event) => {
+            if (event.detail?.testId !== testId) return;
+            setOfflineSyncPending(false);
+            await TestSessionStore.clearSession(testId);
+            await OfflineStorage.removeItem(`draft_${testId}`);
+            sessionStorage.removeItem('currentTest');
+            window.location.href = `/test/${testId}/results`;
+        };
+
+        window.addEventListener('neet:offline_queue_synced', handleOfflineSync);
+        return () => window.removeEventListener('neet:offline_queue_synced', handleOfflineSync);
+    }, [testId]);
+
     // ─── Timer ───
     useEffect(() => {
         if (!testData || timeLeft <= 0 || offlineSyncPending || recoveryState !== 'none') return;
@@ -326,10 +341,11 @@ export default function TestPage({ params }) {
         onError: async (err, variables) => {
             console.error('Submission Failed:', err);
             setOfflineSyncPending(true);
-            await OfflineStorage.setItem(`draft_${testId}`, { 
-                answers: variables.rawAnswers, 
-                pendingSubmit: true, 
-                payload: variables 
+            const queued = await OfflineQueue.enqueue(testId, variables);
+            await OfflineStorage.setItem(`draft_${testId}`, {
+                answers: variables.rawAnswers,
+                pendingSubmit: true,
+                queued,
             });
         }
     });

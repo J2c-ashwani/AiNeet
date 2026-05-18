@@ -23,10 +23,10 @@ export default async function EducatorDashboard({ searchParams }) {
     
     if (!classroom) {
         return (
-            <div className="page text-center py-20 flex flex-col items-center">
-                <span className="text-4xl mb-4"><Icon name="Star" size={16} /></span>
-                <h1 className="text-3xl font-bold mb-4">Welcome, Educator.</h1>
-                <p className="text-muted mb-8 max-w-lg">Before tracking your students' performance heatmaps, you need to establish a secure classroom environment.</p>
+            <div className="page text-center space_py_20 flex flex-col items-center">
+                <span className="text-4xl space_mb_4"><Icon name="Star" size={16} /></span>
+                <h1 className="text-3xl font-bold space_mb_4">Welcome, Educator.</h1>
+                <p className="text-muted space_mb_8 max-w-lg">Before tracking your students' performance heatmaps, you need to establish a secure classroom environment.</p>
                 <form action="/api/classroom/create" method="POST" className="flex flex-col gap-4 w-full max-w-md">
                     <Input type="text" name="name" placeholder="E.g. Physics 101 - Aakash Batch" className="input" required />
                     <Button type="submit" className="btn btn-primary w-full">Create Classroom</Button>
@@ -55,7 +55,7 @@ export default async function EducatorDashboard({ searchParams }) {
     return (
         <div className="page" style={{ maxWidth: 1000, margin: '0 auto', minHeight: '100vh', padding: '40px 20px' }}>
             {/* Header & Viral CTA Loop (MD Mandate) */}
-            <div className="flex justify-between items-start mb-10 flex-wrap gap-4">
+            <div className="flex justify-between items-start space_mb_10 flex-wrap gap-4">
                 <div>
                     <h1 style={{ fontWeight: 800, margin: 0 }}>{classroom.name}</h1>
                     <p style={{ marginTop: 8 }}>
@@ -72,40 +72,40 @@ export default async function EducatorDashboard({ searchParams }) {
             </div>
 
             {/* Time Filter Toggle */}
-            <div className="flex gap-2 mb-8 border-b border-gray-800 pb-4">
+            <div className="flex gap-2 space_mb_8 border-b line_gray_800 space_pb_4">
                 <a href="/educator?days=7" className={`block px-4 py-2 rounded-md ${daysLimit === 7 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
                     Last 7 Days
                 </a>
                 <a href="/educator?days=30" className={`block px-4 py-2 rounded-md ${daysLimit === 30 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
                     Last 30 Days
                 </a>
-                <Button onClick={() => alert('PDF Report Generator compiling...')} className="ml-auto px-4 py-2 rounded-md bg-white text-black font-bold text-sm flex items-center gap-2">
+                <Button onClick={() => alert('PDF Report Generator compiling...')} className="ml-auto space_px_4 space_py_2 radius_md surface_white tone_black font-bold text-sm flex items-center gap-2">
                     📄 Export Weekly PDF
                 </Button>
             </div>
 
             {/* Metric 1: Macro Accuracy */}
-            <div className="grid grid-2 gap-6 mb-10">
+            <div className="grid grid-2 gap-6 space_mb_10">
                 <div style={{ padding: 32, }}>
-                    <div className="text-muted text-sm uppercase tracking-wider font-bold mb-2">Class Accuracy Average</div>
-                    <div className="text-5xl font-black text-white">{macro.avg_accuracy}%</div>
-                    <div className="text-sm text-gray-400 mt-2">Based on {macro.total_tests} mock tests taken.</div>
+                    <div className="text-muted text-sm uppercase tracking-wider font-bold space_mb_2">Class Accuracy Average</div>
+                    <div className="text-5xl font-black tone_white">{macro.avg_accuracy}%</div>
+                    <div className="text-sm tone_gray_400 space_mt_2">Based on {macro.total_tests} mock tests taken.</div>
                 </div>
             </div>
 
             {/* Metric 2: MD Action Hints on Weak Topics */}
-            <div className="mb-10">
-                <h3 className="text-xl font-bold mb-4 text-white">Top 3 Weak Topics</h3>
+            <div className="space_mb_10">
+                <h3 className="text-xl font-bold space_mb_4 tone_white">Top 3 Weak Topics</h3>
                 <div className="grid grid-3 gap-6">
                     {weakTopics.length > 0 ? weakTopics.map((wt, i) => (
                         <div key={i} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', padding: 24, }}>
-                            <div className="text-2xl mb-2"><Icon name="AlertCircle" /></div>
-                            <h4 className="font-bold text-lg mb-1">{wt.topic_name}</h4>
-                            <div className="text-danger font-black text-2xl mb-3">{wt.avg_accuracy}% Accuracy</div>
+                            <div className="text-2xl space_mb_2"><Icon name="AlertCircle" /></div>
+                            <h4 className="font-bold text-lg space_mb_1">{wt.topic_name}</h4>
+                            <div className="text-danger font-black text-2xl space_mb_3">{wt.avg_accuracy}% Accuracy</div>
 
                             <div style={{ padding: 12, }}>
-                                <span className="font-bold text-gray-200 block text-sm mb-1">Action Hint:</span>
-                                <span className="text-gray-400 text-sm">
+                                <span className="font-bold tone_gray_200 block text-sm space_mb_1">Action Hint:</span>
+                                <span className="tone_gray_400 text-sm">
                                     → Revise <strong>{wt.topic_name}</strong> immediately. High error rate across {wt.total_attempts} attempts.
                                 </span>
                             </div>
@@ -118,7 +118,7 @@ export default async function EducatorDashboard({ searchParams }) {
 
             {/* Metric 3: The Ranking Leaderboard */}
             <div>
-                <h3 className="text-xl font-bold mb-4 text-white">Student Roster & Ranking</h3>
+                <h3 className="text-xl font-bold space_mb_4 tone_white">Student Roster & Ranking</h3>
                 <div style={{ overflow: 'hidden' }}>
                     <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
                         <thead >

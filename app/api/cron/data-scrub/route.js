@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeUpdate } from '@/lib/core/db-safe';
+import { requireBearerSecret } from '@/lib/server-secrets';
+import { createClient } from '@supabase/supabase-js';
 
 // Category B Analytics & Intelligence Tables
 const TABLES_TO_ANONYMIZE = [
@@ -17,11 +19,8 @@ const GHOST_USER_ID = '00000000-0000-0000-0000-000000000000';
 
 export async function GET(request) {
     try {
-        // Enforce secure Vercel Cron Secret (prevents public triggers)
-        const authHeader = request.headers.get('authorization');
-        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            return new Response('Unauthorized', { status: 401 });
-        }
+        const authError = requireBearerSecret(request, 'CRON_SECRET');
+        if (authError) return authError;
 
         const supabase = await getDb();
 
@@ -66,10 +65,10 @@ export async function GET(request) {
                 
                 // C. Force Supabase Auth wipe (The ultimate disconnect)
                 // Need Service Role Key for Admin privileges
-                if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
-                    const adminClient = require('@supabase/supabase-js').createClient(
-                         process.env.NEXT_PUBLIC_SUPABASE_URL,
-                         process.env.SUPABASE_SERVICE_ROLE_KEY
+                if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+                    const adminClient = createClient(
+                        process.env.NEXT_PUBLIC_SUPABASE_URL,
+                        process.env.SUPABASE_SERVICE_ROLE_KEY
                     );
                     await adminClient.auth.admin.deleteUser(user.id).catch(e => console.warn('Auth admin wipe skipped/failed:', e.message));
                 }

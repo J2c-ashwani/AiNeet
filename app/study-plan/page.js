@@ -29,7 +29,7 @@ export default function StudyPlanPage() {
                 </div>
 
                 {/* Study Hours */}
-                <div className="card mb-6">
+                <div className="card space_mb_6">
                     <div className="flex items-center justify-between">
                         <div>
                             <h3>Total Study Hours</h3>
@@ -46,7 +46,7 @@ export default function StudyPlanPage() {
                             <div className="plan-time">{item.time}</div>
                             <div style={{ flex: 1 }}>
                                 <div className="plan-activity">{item.activity}</div>
-                                <div className="flex items-center gap-2 mt-2">
+                                <div className="flex items-center gap-2 space_mt_2">
                                     <span className={`plan-type ${item.type}`}>{item.type}</span>
                                     <span className="text-xs text-muted">{item.duration} min</span>
                                     <span className={`subject-badge ${item.subject?.toLowerCase()}`}>{item.subject}</span>
@@ -58,8 +58,8 @@ export default function StudyPlanPage() {
 
                 {/* Recommendations */}
                 {plan?.recommendations && (
-                    <div className="card mt-6">
-                        <h3 className="mb-4"><Icon name="Star" size={16} /> AI Recommendations</h3>
+                    <div className="card space_mt_6">
+                        <h3 className="space_mb_4"><Icon name="Star" size={16} /> AI Recommendations</h3>
                         <div className="flex flex-col gap-2">
                             {plan.recommendations.map((rec, i) => (
                                 <div key={i} style={{ padding: '10px 14px', }}>
@@ -70,7 +70,7 @@ export default function StudyPlanPage() {
                     </div>
                 )}
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 space_mt_6">
                     <a href="/test/configure" className="btn btn-primary"><Icon name="FileText" /> Start Practice Test</a>
                     <a href="/doubts" className="btn btn-secondary"><Icon name="Cpu" /> Ask a Doubt</a>
                 </div>

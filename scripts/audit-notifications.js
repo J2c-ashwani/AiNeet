@@ -75,8 +75,10 @@ async function auditNotifications() {
         console.log('\n-> Checking for token conflict (shared FCM tokens across users)...');
         const tokenConflicts = await client.query(`
             SELECT fcm_token, COUNT(id)
-            FROM users
+            FROM user_devices
             WHERE fcm_token IS NOT NULL
+              AND is_active = TRUE
+              AND fcm_token_invalidated_at IS NULL
             GROUP BY fcm_token
             HAVING COUNT(id) > 1
         `);

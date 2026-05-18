@@ -2,6 +2,7 @@
 "use client";
 import { useState, useRef } from 'react';
 import { isInsideNativeApp } from '@/lib/platform';
+import { Button, FileInput } from '@/components/ui';
 
 export default function SnapSolver({ onSolutionReceived, userTier }) {
     const fileInputRef = useRef(null);
@@ -55,26 +56,25 @@ export default function SnapSolver({ onSolutionReceived, userTier }) {
     };
 
     return (
-        <div className="bg-[#1a1a1a] border border-gray-800 rounded-xl p-4 mb-6">
-            <div className="flex items-center justify-between mb-4">
+        <div className="bg-[#1a1a1a] border line_gray_800 radius_xl space_pa_4 space_mb_6">
+            <div className="flex items-center justify-between space_mb_4">
                 <div className="flex items-center gap-2">
                     <span className="text-xl">📸</span>
-                    <h3 className="font-bold text-white">Snap & Solve</h3>
-                    {!isPremium && <span className="text-[10px] bg-purple-600 text-white px-2 py-0.5 rounded-full">PREMIUM</span>}
+                    <h3 className="font-bold tone_white">Snap & Solve</h3>
+                    {!isPremium && <span className="text-[10px] surface_purple_600 tone_white space_px_2 space_py_0_5 radius_full">PREMIUM</span>}
                 </div>
             </div>
 
-            {error && <div className="text-red-400 text-sm mb-3 bg-red-900/20 p-2 rounded">{error}</div>}
+            {error && <div className="tone_red_400 text-sm space_mb_3 surface_red_900_20 space_pa_2 rounded">{error}</div>}
 
             {!preview ? (
                 <div
                     onClick={() => isPremium ? fileInputRef.current?.click() : setError("🔒 Upgrade to Premium to use this feature.")}
                     className={`border-2 border-dashed border-gray-700 rounded-xl h-32 flex flex-col items-center justify-center cursor-pointer transition-colors ${isPremium ? 'hover:border-blue-500 hover:bg-gray-800' : 'opacity-50'}`}
                 >
-                    <span className="text-3xl mb-2">📷</span>
-                    <p className="text-gray-400 text-sm">Tap to take a photo of your doubt</p>
-                    <input
-                        type="file"
+                    <span className="text-3xl space_mb_2">📷</span>
+                    <p className="tone_gray_400 text-sm">Tap to take a photo of your doubt</p>
+                    <FileInput
                         ref={fileInputRef}
                         className="hidden"
                         accept="image/*"
@@ -84,27 +84,28 @@ export default function SnapSolver({ onSolutionReceived, userTier }) {
                 </div>
             ) : (
                 <div className="relative">
-                    <img src={preview.url} alt="Preview" className="w-full h-48 object-contain bg-black rounded-lg mb-4" />
+                    <img src={preview.url} alt="Preview" className="w-full h-48 object-contain surface_black radius_lg space_mb_4" />
 
                     <div className="flex gap-2">
-                        <button
+                        <Button
+                            variant="secondary"
                             onClick={() => setPreview(null)}
-                            className="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg"
+                            className="flex-1 surface_gray_700 hover_surface_gray_600 tone_white space_py_2 radius_lg"
                         >
                             Retake
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleUpload}
                             disabled={uploading}
-                            className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-bold flex items-center justify-center gap-2"
+                            className="flex-1 surface_blue_600 hover_surface_blue_500 tone_white space_py_2 radius_lg font-bold flex items-center justify-center gap-2"
                         >
                             {uploading ? (
                                 <>
-                                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                                    <div className="animate-spin h-4 w-4 border-2 line_white border-t-transparent radius_full"></div>
                                     Analyzing...
                                 </>
                             ) : 'Solve Question'}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

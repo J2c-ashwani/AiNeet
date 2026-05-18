@@ -843,6 +843,7 @@ html {
 .profile-level-bar-fill { height: 100%; background: var(--accent-primary); border-radius: 4px; }
 
 .profile-sub-card { margin-bottom: 24px; }
+.profile-payment-status { margin-bottom: 16px; padding: 12px 14px; border: 1px solid rgba(59, 130, 246, 0.25); background: rgba(59, 130, 246, 0.08); color: var(--text-primary); border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 600; }
 .profile-sub-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
 .profile-sub-title { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; margin-top: 0; }
 .profile-sub-desc { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
@@ -1197,6 +1198,14 @@ select.input {
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 36px;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* ---- Checkbox / Radio (Styled) ---- */
@@ -2827,3 +2836,150 @@ select.input {
   transition: none !important;
   caret-color: transparent !important;
 }
+
+/* --- Enterprise P2 Utility Aliases --- */
+.group-hover_tone_white { color: var(--text-primary); }
+.hover_line_indigo_500_50:hover { border-color: rgba(99, 102, 241, 0.5); }
+.hover_surface_blue_500:hover { background: rgba(59, 130, 246, 0.16); }
+.hover_surface_gray_100:hover { background: rgba(148, 163, 184, 0.16); }
+.hover_surface_gray_600:hover { background: rgba(148, 163, 184, 0.16); }
+.hover_surface_gray_700:hover { background: var(--bg-card-hover); }
+.hover_surface_gray_700_30:hover { background: rgba(148, 163, 184, 0.3); }
+.hover_surface_gray_800_50:hover { background: rgba(148, 163, 184, 0.5); }
+.hover_surface_indigo_50:hover { background: rgba(99, 102, 241, 0.16); }
+.hover_surface_indigo_500:hover { background: rgba(99, 102, 241, 0.16); }
+.hover_surface_indigo_600:hover { background: rgba(99, 102, 241, 0.16); }
+.hover_surface_red_500:hover { background: rgba(239, 68, 68, 0.16); }
+.hover_surface_white_10:hover { background: rgba(255, 255, 255, 0.1); }
+.hover_surface_white_20:hover { background: rgba(255, 255, 255, 0.2); }
+.hover_surface_white_5:hover { background: rgba(255, 255, 255, 0.05); }
+.hover_tone_blue_400:hover { color: var(--info); }
+.hover_tone_indigo_400:hover { color: var(--accent-primary); }
+.hover_tone_white:hover { color: var(--text-primary); }
+.line_blue_400 { border-color: rgba(59, 130, 246, 0.35); }
+.line_blue_500 { border-color: rgba(59, 130, 246, 0.35); }
+.line_blue_500_20 { border-color: rgba(59, 130, 246, 0.2); }
+.line_gray_600 { border-color: var(--border-color); }
+.line_gray_700 { border-color: var(--border-color); }
+.line_gray_800 { border-color: var(--border-color); }
+.line_green_500_30 { border-color: rgba(16, 185, 129, 0.3); }
+.line_indigo_500_20 { border-color: rgba(99, 102, 241, 0.2); }
+.line_indigo_500_30 { border-color: rgba(99, 102, 241, 0.3); }
+.line_purple_500_20 { border-color: rgba(168, 85, 247, 0.2); }
+.line_red_500_20 { border-color: rgba(239, 68, 68, 0.2); }
+.line_white { border-color: rgba(255, 255, 255, 0.18); }
+.line_white_10 { border-color: rgba(255, 255, 255, 0.1); }
+.line_white_5 { border-color: rgba(255, 255, 255, 0.05); }
+.radius_2xl { border-radius: var(--radius-lg); }
+.radius_3xl { border-radius: var(--radius-xl); }
+.radius_full { border-radius: var(--radius-full); }
+.radius_lg { border-radius: var(--radius-md); }
+.radius_md { border-radius: var(--radius-sm); }
+.radius_none { border-radius: 0; }
+.radius_xl { border-radius: var(--radius-lg); }
+.space_ma_0 { margin: 0; }
+.space_ma_4 { margin: 16px; }
+.space_mb_1 { margin-bottom: 4px; }
+.space_mb_1_5 { margin-bottom: 6px; }
+.space_mb_10 { margin-bottom: 40px; }
+.space_mb_12 { margin-bottom: 48px; }
+.space_mb_2 { margin-bottom: 8px; }
+.space_mb_20 { margin-bottom: 80px; }
+.space_mb_3 { margin-bottom: 12px; }
+.space_mb_4 { margin-bottom: 16px; }
+.space_mb_6 { margin-bottom: 24px; }
+.space_mb_8 { margin-bottom: 32px; }
+.space_mr_2 { margin-right: 8px; }
+.space_mt_1 { margin-top: 4px; }
+.space_mt_10 { margin-top: 40px; }
+.space_mt_2 { margin-top: 8px; }
+.space_mt_3 { margin-top: 12px; }
+.space_mt_4 { margin-top: 16px; }
+.space_mt_6 { margin-top: 24px; }
+.space_mt_8 { margin-top: 32px; }
+.space_mx_2 { margin-left: 8px; margin-right: 8px; }
+.space_my_6 { margin-top: 24px; margin-bottom: 24px; }
+.space_pa_12 { padding: 48px; }
+.space_pa_2 { padding: 8px; }
+.space_pa_2_5 { padding: 10px; }
+.space_pa_20 { padding: 80px; }
+.space_pa_3 { padding: 12px; }
+.space_pa_4 { padding: 16px; }
+.space_pa_5 { padding: 20px; }
+.space_pa_6 { padding: 24px; }
+.space_pa_8 { padding: 32px; }
+.space_pb_1 { padding-bottom: 4px; }
+.space_pb_2 { padding-bottom: 8px; }
+.space_pb_20 { padding-bottom: 80px; }
+.space_pb_4 { padding-bottom: 16px; }
+.space_pl_8 { padding-left: 32px; }
+.space_pr_3 { padding-right: 12px; }
+.space_pt_20 { padding-top: 80px; }
+.space_pt_24 { padding-top: 96px; }
+.space_pt_8 { padding-top: 32px; }
+.space_px_2 { padding-left: 8px; padding-right: 8px; }
+.space_px_3 { padding-left: 12px; padding-right: 12px; }
+.space_px_4 { padding-left: 16px; padding-right: 16px; }
+.space_px_6 { padding-left: 24px; padding-right: 24px; }
+.space_px_8 { padding-left: 32px; padding-right: 32px; }
+.space_py_0_5 { padding-top: 2px; padding-bottom: 2px; }
+.space_py_1 { padding-top: 4px; padding-bottom: 4px; }
+.space_py_10 { padding-top: 40px; padding-bottom: 40px; }
+.space_py_2 { padding-top: 8px; padding-bottom: 8px; }
+.space_py_20 { padding-top: 80px; padding-bottom: 80px; }
+.space_py_3 { padding-top: 12px; padding-bottom: 12px; }
+.space_py_4 { padding-top: 16px; padding-bottom: 16px; }
+.surface_black { background: var(--bg-primary); }
+.surface_black_20 { background: rgba(0, 0, 0, 0.2); }
+.surface_black_40 { background: rgba(0, 0, 0, 0.4); }
+.surface_black_50 { background: rgba(0, 0, 0, 0.5); }
+.surface_black_80 { background: rgba(0, 0, 0, 0.8); }
+.surface_black_90 { background: rgba(0, 0, 0, 0.9); }
+.surface_blue_500 { background: rgba(59, 130, 246, 0.16); }
+.surface_blue_500_10 { background: rgba(59, 130, 246, 0.1); }
+.surface_blue_600 { background: rgba(59, 130, 246, 0.16); }
+.surface_blue_900 { background: rgba(59, 130, 246, 0.16); }
+.surface_blue_900_20 { background: rgba(59, 130, 246, 0.2); }
+.surface_gray_700 { background: var(--bg-card-hover); }
+.surface_gray_700_50 { background: rgba(148, 163, 184, 0.5); }
+.surface_gray_800 { background: var(--bg-card); }
+.surface_gray_800_50 { background: rgba(148, 163, 184, 0.5); }
+.surface_gray_900 { background: var(--bg-primary); }
+.surface_gray_900_50 { background: rgba(148, 163, 184, 0.5); }
+.surface_gray_900_90 { background: rgba(148, 163, 184, 0.9); }
+.surface_gray_950 { background: var(--bg-primary); }
+.surface_green_900 { background: rgba(16, 185, 129, 0.16); }
+.surface_green_900_40 { background: rgba(16, 185, 129, 0.4); }
+.surface_indigo_500 { background: rgba(99, 102, 241, 0.16); }
+.surface_indigo_600 { background: rgba(99, 102, 241, 0.16); }
+.surface_indigo_900_95 { background: rgba(99, 102, 241, 0.95); }
+.surface_purple_500_10 { background: rgba(168, 85, 247, 0.1); }
+.surface_purple_600 { background: rgba(168, 85, 247, 0.16); }
+.surface_red_500_10 { background: rgba(239, 68, 68, 0.1); }
+.surface_red_900_20 { background: rgba(239, 68, 68, 0.2); }
+.surface_white { background: var(--text-primary); }
+.surface_white_10 { background: rgba(255, 255, 255, 0.1); }
+.surface_white_5 { background: rgba(255, 255, 255, 0.05); }
+.tone_black { color: #020617; }
+.tone_blue_200 { color: var(--info); }
+.tone_blue_400 { color: var(--info); }
+.tone_blue_500 { color: var(--info); }
+.tone_gray_100 { color: var(--text-primary); }
+.tone_gray_200 { color: var(--text-primary); }
+.tone_gray_300 { color: var(--text-secondary); }
+.tone_gray_400 { color: var(--text-secondary); }
+.tone_gray_500 { color: var(--text-muted); }
+.tone_gray_600 { color: var(--text-muted); }
+.tone_green_400 { color: var(--success); }
+.tone_green_500 { color: var(--success); }
+.tone_indigo_200 { color: var(--accent-primary); }
+.tone_indigo_300 { color: var(--accent-primary); }
+.tone_indigo_400 { color: var(--accent-primary); }
+.tone_indigo_600 { color: var(--accent-primary); }
+.tone_indigo_900 { color: var(--accent-primary); }
+.tone_purple_400 { color: var(--accent-primary); }
+.tone_red_300 { color: var(--danger); }
+.tone_red_400 { color: var(--danger); }
+.tone_red_500 { color: var(--danger); }
+.tone_white { color: var(--text-primary); }
+/* --- End Enterprise P2 Utility Aliases --- */

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { getMessaging, isFirebaseConfigured } from '@/lib/firebase-admin';
+import { requireRequestSecret } from '@/lib/server-secrets';
 
 function getLocalTimeData(tz) {
     try {
@@ -27,14 +28,51 @@ function getLocalTimeData(tz) {
     }
 }
 
+function latestDevicePerUser(devices) {
+    const latest = new Map();
+
+    for (const device of devices || []) {
+        const existing = latest.get(device.user_id);
+        const currentSeen = new Date(device.last_seen_at || 0).getTime();
+        const existingSeen = new Date(existing?.last_seen_at || 0).getTime();
+
+        if (!existing || currentSeen >= existingSeen) {
+            latest.set(device.user_id, device);
+        }
+    }
+
+    return [...latest.values()];
+}
+
+function toNudgeRecipient(device) {
+    const profile = Array.isArray(device.users) ? device.users[0] : device.users || {};
+
+    return {
+        id: device.user_id,
+        name: profile.name,
+        streak: profile.streak,
+        last_active_at: profile.last_active_at,
+        onboarding_completed: profile.onboarding_completed,
+        timezone: device.timezone || profile.timezone || 'Asia/Kolkata',
+        fcmToken: device.fcm_token,
+        legacyFcmToken: profile.fcm_token,
+        deviceId: device.id,
+        devicePublicId: device.device_id,
+        devicePlatform: device.platform,
+        deviceAppVersion: device.app_version,
+        deviceFailureCount: device.notification_failure_count || 0,
+    };
+}
+
 export async function GET(request) {
     try {
-        const cronSecret = request.headers.get('x-cron-secret') || 
-                          new URL(request.url).searchParams.get('secret');
-        
-        if (cronSecret !== process.env.CRON_SECRET) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        const authError = requireRequestSecret(request, {
+            envName: 'CRON_SECRET',
+            bearer: true,
+            headers: ['x-cron-secret'],
+            query: ['secret'],
+        });
+        if (authError) return authError;
 
         if (!isFirebaseConfigured()) {
             return NextResponse.json({ status: 'skipped', reason: 'Firebase not configured' });
@@ -47,15 +85,31 @@ export async function GET(request) {
 
         const supabase = await getDb();
 
-        const { data: users, error } = await supabase
-            .from('users')
-            .select('id, name, fcm_token, streak, last_active_at, onboarding_completed, timezone, notification_failure_count')
-            .not('fcm_token', 'is', null);
+        const { data: devices, error } = await supabase
+            .from('user_devices')
+            .select(`
+                id,
+                user_id,
+                device_id,
+                platform,
+                app_version,
+                fcm_token,
+                timezone,
+                notification_failure_count,
+                last_seen_at,
+                users(id, name, fcm_token, streak, last_active_at, onboarding_completed, timezone)
+            `)
+            .eq('is_active', true)
+            .eq('push_permission', 'granted')
+            .is('fcm_token_invalidated_at', null)
+            .not('fcm_token', 'is', null)
+            .order('last_seen_at', { ascending: false });
 
-        if (error || !users) return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
+        if (error || !devices) return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
 
         const now = new Date();
         const results = { sent: 0, failed: 0, skipped: 0, duplicate: 0 };
+        const users = latestDevicePerUser(devices).map(toNudgeRecipient);
 
         for (const user of users) {
             try {
@@ -134,13 +188,18 @@ export async function GET(request) {
                 let logEntry;
                 try {
                     [logEntry] = await safeInsert('notifications_log', {
-                    user_id: user.id,
-                    notification_type: dedupeKeyBase,
-                    dedupe_key: dedupeKey,
-                    route: notification.route,
-                    entity_id: notification.entity_id,
-                    scheduled_for: now.toISOString(),
-                    delivery_status: 'pending'
+                        user_id: user.id,
+                        notification_type: dedupeKeyBase,
+                        dedupe_key: dedupeKey,
+                        route: notification.route,
+                        entity_id: notification.entity_id,
+                        scheduled_for: now.toISOString(),
+                        delivery_status: 'pending',
+                        device_info: {
+                            device_id: user.devicePublicId,
+                            platform: user.devicePlatform,
+                            app_version: user.deviceAppVersion,
+                        },
                     }, {
                         route: '/api/cron/daily-nudge',
                         userId: user.id,
@@ -160,7 +219,7 @@ export async function GET(request) {
 
                 try {
                     sendResponse = await messaging.send({
-                        token: user.fcm_token,
+                        token: user.fcmToken,
                         notification: {
                             title: notification.title,
                             body: notification.body,
@@ -183,14 +242,26 @@ export async function GET(request) {
                     if (sendErr.code === 'messaging/registration-token-not-registered' ||
                         sendErr.code === 'messaging/invalid-registration-token') {
                         // Token Decay Management
-                        await safeUpdate('users', { id: user.id }, {
-                            fcm_token: null,
+                        await safeUpdate('user_devices', { id: user.deviceId }, {
+                            is_active: false,
                             fcm_token_invalidated_at: now.toISOString(),
-                            notification_failure_count: (user.notification_failure_count || 0) + 1
+                            notification_failure_count: user.deviceFailureCount + 1,
+                            updated_at: now.toISOString(),
                         }, {
                             route: '/api/cron/daily-nudge',
                             userId: user.id,
                         });
+
+                        if (user.legacyFcmToken === user.fcmToken) {
+                            await safeUpdate('users', { id: user.id }, {
+                                fcm_token: null,
+                                fcm_token_invalidated_at: now.toISOString(),
+                                notification_failure_count: user.deviceFailureCount + 1
+                            }, {
+                                route: '/api/cron/daily-nudge',
+                                userId: user.id,
+                            });
+                        }
                     }
                 }
 
@@ -222,6 +293,6 @@ export async function GET(request) {
 
     } catch (err) {
         console.error('Daily nudge cron error:', err);
-        return NextResponse.json({ error: err.message }, { status: 500 });
+        return NextResponse.json({ error: 'Cron failed' }, { status: 500 });
     }
 }

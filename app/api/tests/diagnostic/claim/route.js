@@ -4,6 +4,7 @@ import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
 import crypto from 'crypto';
 import { randomUUID } from 'crypto';
+import { getRequiredServerSecret } from '@/lib/server-secrets';
 
 export async function POST(request) {
     try {
@@ -23,7 +24,8 @@ export async function POST(request) {
 
         // 1. Verify Cryptographic Signature
         // Ensures the user didn't modify localStorage to fake a 100% score before registering
-        const secret = process.env.CASHFREE_SECRET_KEY || 'FATAL_SECRET_MISSING';
+        const secret = getRequiredServerSecret('DIAGNOSTIC_SIGNING_SECRET');
+        if (!secret) return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         const expectedSignature = crypto.createHmac('sha256', secret).update(JSON.stringify(scoreData)).digest('hex');
 
         if (signature !== expectedSignature) {

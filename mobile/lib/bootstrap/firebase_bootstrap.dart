@@ -7,8 +7,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:neet_coach/runtime/crash_forwarder.dart';
-
 class FirebaseBootstrap {
   static bool _initialized = false;
 
@@ -40,12 +38,11 @@ class FirebaseBootstrap {
     // ── App Check ──────────────────────────────────────────
     await FirebaseAppCheck.instance.activate(
       // Play Integrity on Android (requires Play Store distribution)
-      androidProvider: AndroidProvider.playIntegrity,
+      providerAndroid: const AndroidPlayIntegrityProvider(),
       // DeviceCheck on iOS if/when iOS is added
-      appleProvider: AppleProvider.deviceCheck,
+      providerApple: const AppleDeviceCheckProvider(),
     );
 
-    // Install JS crash forwarder bridge
-    CrashForwarder.install();
+    // CrashForwarder attaches to the active WebView controller in main.dart.
   }
 }

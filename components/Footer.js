@@ -15,7 +15,7 @@ export default function Footer() {
             borderTop: '1px solid rgba(255,255,255,0.06)',
             padding: '40px 32px 32px',
             marginTop: 'auto',
-            background: '#080c18',
+            background: 'var(--bg-primary)',
         }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '32px', marginBottom: '40px' }}>
@@ -24,11 +24,11 @@ export default function Footer() {
                     <div style={{ maxWidth: '280px' }}>
                         <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                             <img src="/logo.png" alt="AI NEET Coach" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
-                            <span style={{ fontSize: '1.1rem', fontWeight: 800, background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                            <span style={{ fontSize: '1.1rem', fontWeight: 800, background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                 AI NEET Coach
                             </span>
                         </a>
-                        <p style={{ color: '#64748b', fontSize: '0.875rem', lineHeight: 1.6 }}>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
                             India's #1 AI-powered NEET preparation platform. Crack NEET 2026 with infinite mocks, live battles, and personalized analytics.
                         </p>
                     </div>
@@ -36,7 +36,7 @@ export default function Footer() {
                     {/* Links */}
                     <div style={{ display: 'flex', gap: '48px', flexWrap: 'wrap' }}>
                         <div>
-                            <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Platform</p>
+                            <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Platform</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {[
                                     { label: 'Practice Tests', href: '/test/configure' },
@@ -45,16 +45,16 @@ export default function Footer() {
                                     { label: 'AI Doubt Solver', href: '/doubts' },
                                     { label: 'Leaderboard', href: '/leaderboard' },
                                 ].map(l => (
-                                    <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                                        onMouseEnter={e => e.target.style.color = '#94a3b8'}
-                                        onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                    <a key={l.href} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                        onMouseEnter={e => e.target.style.color = 'var(--text-secondary)'}
+                                        onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
                                         {l.label}
                                     </a>
                                 ))}
                             </div>
                         </div>
                         <div>
-                            <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Account</p>
+                            <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Account</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {[
                                     { label: 'Sign In', href: '/login' },
@@ -64,15 +64,15 @@ export default function Footer() {
                                 ].map(l => (
                                     l.href === '/login' || l.href === '/register' ? (
                                         // Plain <a> for auth pages — prevents removeChild crash from browser extensions
-                                        <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                                            onMouseEnter={e => e.target.style.color = '#94a3b8'}
-                                            onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                        <a key={l.href} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                            onMouseEnter={e => e.target.style.color = 'var(--text-secondary)'}
+                                            onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
                                             {l.label}
                                         </a>
                                     ) : (
-                                        <a key={l.href} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                                            onMouseEnter={e => e.target.style.color = '#94a3b8'}
-                                            onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                        <a key={l.href} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                            onMouseEnter={e => e.target.style.color = 'var(--text-secondary)'}
+                                            onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
                                             {l.label}
                                         </a>
                                     )
@@ -80,16 +80,16 @@ export default function Footer() {
                             </div>
                         </div>
                         <div>
-                            <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Legal</p>
+                            <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Legal</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {[
                                     { label: 'Privacy Policy', href: '#' },
                                     { label: 'Terms of Service', href: '#' },
                                     { label: 'Refund Policy', href: '#' },
                                 ].map(l => (
-                                    <a key={l.label} href={l.href} style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
-                                        onMouseEnter={e => e.target.style.color = '#94a3b8'}
-                                        onMouseLeave={e => e.target.style.color = '#64748b'}>
+                                    <a key={l.label} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                        onMouseEnter={e => e.target.style.color = 'var(--text-secondary)'}
+                                        onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
                                         {l.label}
                                     </a>
                                 ))}
@@ -100,10 +100,10 @@ export default function Footer() {
 
                 {/* Bottom bar */}
                 <div style={{ paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                    <p style={{ color: '#475569', fontSize: '0.8rem' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                         &copy; {new Date().getFullYear()} AI NEET Coach. All rights reserved.
                     </p>
-                    <p style={{ color: '#475569', fontSize: '0.8rem' }}>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                         Powered by Google Gemini AI
                     </p>
                 </div>

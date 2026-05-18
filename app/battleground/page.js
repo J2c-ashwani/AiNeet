@@ -189,7 +189,7 @@ export default function BattlegroundPage() {
 
     if (!user) return (
         <div className="bg-guest-wrapper">
-            <div className="bg-guest-icon"><Icon name="Star" size={16} />️</div>
+            <div className="bg-guest-icon"><Icon name="Star" size={16} /></div>
             <h2 className="bg-guest-title">Join the Battleground</h2>
             <p className="bg-guest-desc">Sign in to create and join live NEET battles with other aspirants.</p>
             <a href="/login" className="bg-guest-cta">Sign In to Battle</a>
@@ -202,7 +202,7 @@ export default function BattlegroundPage() {
             
             <div className="page bg-home-wrapper">
                 <div className="page-header bg-home-header">
-                    <h1 className="page-title"><Icon name="Star" size={16} />️ NEET Battleground</h1>
+                    <h1 className="page-title"><Icon name="Star" size={16} /> NEET Battleground</h1>
                     <p className="page-subtitle">Challenge up to 200 students. Same questions. Same timer. Highest scorer wins.</p>
                 </div>
 
@@ -210,7 +210,7 @@ export default function BattlegroundPage() {
 
                 <div className="grid grid-2 gap-6">
                     <Card className="bg-home-card">
-                        <div className="bg-home-icon"><Icon name="Star" size={16} />️</div>
+                        <div className="bg-home-icon"><Icon name="Star" size={16} /></div>
                         <h2 className="bg-home-card-title">Create a Battle</h2>
                         <p className="text-muted text-sm bg-home-card-desc">Generate 20 questions and share the invite code with your friends</p>
                         <Button variant="primary" onClick={handleCreate} disabled={creating} className="bg-home-btn">
@@ -219,7 +219,7 @@ export default function BattlegroundPage() {
                     </Card>
 
                     <Card className="bg-home-card">
-                        <div className="bg-home-icon"><Icon name="Star" size={16} />️</div>
+                        <div className="bg-home-icon"><Icon name="Star" size={16} /></div>
                         <h2 className="bg-home-card-title">Join a Battle</h2>
                         <p className="text-muted text-sm bg-home-card-desc">Enter the 6-character invite code shared by a friend</p>
                         <Input
@@ -242,7 +242,7 @@ export default function BattlegroundPage() {
         <div>
             
             <div className="page bg-lobby-wrapper">
-                <div className="bg-lobby-icon"><Icon name="Star" size={16} />️</div>
+                <div className="bg-lobby-icon"><Icon name="Star" size={16} /></div>
                 <h1 className="bg-lobby-title">Battleground Lobby</h1>
                 <div className="bg-lobby-status-container">
                     <span className={`bg-lobby-status-dot ${connected ? 'bg-lobby-status-dot--connected' : 'bg-lobby-status-dot--disconnected'}`}></span>
@@ -268,7 +268,7 @@ export default function BattlegroundPage() {
 
                 {/* Participant List */}
                 <Card className="bg-participants-card">
-                    <h3 className="mb-4"><Icon name="Star" size={16} /> {participants.length} Participants Joined</h3>
+                    <h3 className="space_mb_4"><Icon name="Star" size={16} /> {participants.length} Participants Joined</h3>
                     <div className="flex flex-col gap-2">
                         {participants.map((p, i) => (
                             <div key={i} className="bg-participant-row">
@@ -303,7 +303,7 @@ export default function BattlegroundPage() {
             <div>
                 {/* Test Header */}
                 <div className="bg-test-header">
-                    <div className="font-bold"><Icon name="Star" size={16} />️ Battleground</div>
+                    <div className="font-bold"><Icon name="Star" size={16} /> Battleground</div>
                     <div className={`bg-test-timer ${timeLeft < 60 ? 'bg-test-timer--warning' : 'bg-test-timer--normal'}`}>
                         <Icon name="Clock" /> {formatTime(timeLeft)}
                     </div>
@@ -317,8 +317,8 @@ export default function BattlegroundPage() {
                     </div>
 
                     {/* Question */}
-                    <Card className="mb-4">
-                        <div className="flex items-center justify-between mb-3">
+                    <Card className="space_mb_4">
+                        <div className="flex items-center justify-between space_mb_3">
                             <span className="question-number">Question {currentQ + 1}</span>
                             {q.difficulty && <Badge variant="neutral" className={`difficulty-badge ${q.difficulty}`}>{q.difficulty}</Badge>}
                         </div>
@@ -326,7 +326,7 @@ export default function BattlegroundPage() {
                     </Card>
 
                     {/* Options */}
-                    <div className="flex flex-col gap-3 mb-6">
+                    <div className="flex flex-col gap-3 space_mb_6">
                         {[
                             { key: 'A', text: q.option_a }, { key: 'B', text: q.option_b },
                             { key: 'C', text: q.option_c }, { key: 'D', text: q.option_d }
@@ -370,7 +370,7 @@ export default function BattlegroundPage() {
 
                 {/* Leaderboard */}
                 <Card className="bg-leaderboard-card">
-                    <h3 className="mb-4"><Icon name="Star" size={16} /> Final Leaderboard</h3>
+                    <h3 className="space_mb_4"><Icon name="Star" size={16} /> Final Leaderboard</h3>
                     <div className="flex flex-col gap-3">
                         {participants.map((p, i) => {
                             const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`;
@@ -391,7 +391,7 @@ export default function BattlegroundPage() {
                 </Card>
 
                 <div className="bg-results-actions">
-                    <Button variant="primary" onClick={() => { setView('home'); setBattleId(null); setInviteCode(''); setAnswers({}); setCurrentQ(0); }}><Icon name="Star" size={16} />️ New Battleground</Button>
+                    <Button variant="primary" onClick={() => { setView('home'); setBattleId(null); setInviteCode(''); setAnswers({}); setCurrentQ(0); }}><Icon name="Star" size={16} /> New Battleground</Button>
                     <Link href="/dashboard"><Button variant="secondary"><Icon name="Star" size={16} /> Dashboard</Button></Link>
                 </div>
             </div>

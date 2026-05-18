@@ -1,16 +1,38 @@
-# neet_coach_mobile
+# NEET Coach Mobile
 
-A new Flutter project.
+Flutter WebView shell for the NEET Coach Android app.
 
-## Getting Started
+## Release Requirements
 
-This project is a starting point for a Flutter application.
+Release builds fail closed unless the Play upload keystore and production AdMob app ID are provided. Do not use debug signing or Google test AdMob IDs for Play Store builds.
 
-A few resources to get you started if this is your first Flutter project:
+Required environment variables:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+export NEET_UPLOAD_KEYSTORE="/absolute/path/upload-keystore.jks"
+export NEET_UPLOAD_KEYSTORE_PASSWORD="..."
+export NEET_UPLOAD_KEY_ALIAS="upload"
+export NEET_UPLOAD_KEY_PASSWORD="..."
+export ADMOB_ANDROID_APP_ID="ca-app-pub-...~..."
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Required Flutter dart-defines:
+
+```bash
+--dart-define=ADMOB_BANNER_ANDROID=ca-app-pub-.../...
+--dart-define=ADMOB_INTERSTITIAL_ANDROID=ca-app-pub-.../...
+--dart-define=ADMOB_REWARDED_ANDROID=ca-app-pub-.../...
+```
+
+## Build
+
+```bash
+flutter pub get
+dart analyze
+flutter build appbundle --release \
+  --dart-define=ADMOB_BANNER_ANDROID="$ADMOB_BANNER_ANDROID" \
+  --dart-define=ADMOB_INTERSTITIAL_ANDROID="$ADMOB_INTERSTITIAL_ANDROID" \
+  --dart-define=ADMOB_REWARDED_ANDROID="$ADMOB_REWARDED_ANDROID"
+```
+
+For local debug testing, no release keystore or production AdMob values are required.

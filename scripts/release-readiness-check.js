@@ -25,6 +25,7 @@ async function run() {
 
     // ── Static Checks (no DB needed) ───────────────────────
     await scriptCheck('Mobile blocker audit',    'node scripts/audit-mobile-blockers.js');
+    await scriptCheck('Mobile enterprise audit', 'node scripts/audit-mobile-enterprise.js');
     await scriptCheck('Performance budget audit', 'node scripts/audit-performance-budget.js');
 
     // ── DB-Dependent Checks ─────────────────────────────────

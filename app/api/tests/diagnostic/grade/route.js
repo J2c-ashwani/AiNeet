@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { checkedFetch } from '@/lib/http';
 import crypto from 'crypto';
+import { getRequiredServerSecret } from '@/lib/server-secrets';
 
 export async function POST(request) {
     try {
@@ -117,17 +118,24 @@ export async function POST(request) {
         };
 
         // Cryptographically sign the payload so the frontend cannot forge scores during the Signup Phase!
-        const secret = process.env.CASHFREE_SECRET_KEY || 'FATAL_SECRET_MISSING';
+        const secret = getRequiredServerSecret('DIAGNOSTIC_SIGNING_SECRET');
+        if (!secret) return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         const signature = crypto.createHmac('sha256', secret).update(JSON.stringify(finalGradeData)).digest('hex');
 
         // ==== VIRAL FLYWHEEL: SILENT DEFEAT TRIGGER ====
         if (c_ghost && c_score && accuracyRate > Number(c_score)) {
             try {
+                const internalEventSecret = getRequiredServerSecret('INTERNAL_EVENT_SECRET');
+                if (!internalEventSecret) throw new Error('INTERNAL_EVENT_SECRET_NOT_CONFIGURED');
+
                 // The challenger beat the ghost. Log the defeat to Upstash ephemerally.
                 const originUrl = request.nextUrl ? request.nextUrl.origin : (request.headers.get('origin') || 'http://localhost:3000');
                 await checkedFetch(`${originUrl}/api/challenge/defeat`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-internal-event-secret': internalEventSecret,
+                    },
                     body: JSON.stringify({ ghost_id: c_ghost, new_score: Math.round(accuracyRate), original_score: Number(c_score), subject: c_chap || 'Biology' })
                 }, {
                     errorMessage: 'Failed to log challenge defeat',

@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
+import { getUserFromRequest } from '@/lib/core/auth';
+import {
+    OmrScanStorageError,
+    normalizeOrInferOmrMimeType,
+    parseOmrDataUri,
+    persistOmrScanObject,
+    serializeOmrScanReference,
+} from '@/lib/mobile/omr-scan-storage';
 
 /**
  * OMR Scan API — v2
@@ -12,9 +20,9 @@ import { safeInsert } from '@/lib/core/db-safe';
 export async function POST(request) {
     try {
         const supabase = await getDb();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const user = await getUserFromRequest(request);
 
-        if (authError || !user) {
+        if (!user) {
             return NextResponse.json({ error: 'Please sign in to use OMR Scanner.' }, { status: 401 });
         }
 
@@ -27,6 +35,21 @@ export async function POST(request) {
 
         if (!imageBase64 || !testId) {
             return NextResponse.json({ error: 'Missing image or test selection' }, { status: 400 });
+        }
+
+        let scanBase64 = String(imageBase64);
+        let scanMimeType;
+        try {
+            if (scanBase64.startsWith('data:')) {
+                const parsed = parseOmrDataUri(scanBase64);
+                scanBase64 = parsed.imageBase64;
+                scanMimeType = parsed.mimeType;
+            } else {
+                scanMimeType = normalizeOrInferOmrMimeType(mimeType, scanBase64);
+            }
+        } catch (scanError) {
+            const status = scanError instanceof OmrScanStorageError ? scanError.status : 400;
+            return NextResponse.json({ error: scanError.message || 'Invalid OMR scan payload' }, { status });
         }
 
         // Determine expected question count
@@ -56,6 +79,23 @@ export async function POST(request) {
             expectedQuestions = testData.total_questions;
         }
 
+        let scanReference;
+        try {
+            scanReference = await persistOmrScanObject(supabase, {
+                userId: user.id,
+                testId,
+                imageBase64: scanBase64,
+                mimeType: scanMimeType,
+            });
+        } catch (scanStorageError) {
+            const status = scanStorageError instanceof OmrScanStorageError ? scanStorageError.status : 500;
+            return NextResponse.json({
+                error: status === 413 ? 'OMR image is too large' : 'OMR scan storage is not available. Please try again later.',
+            }, { status });
+        }
+
+        const scanReferenceJson = serializeOmrScanReference(scanReference);
+
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
@@ -83,7 +123,7 @@ export async function POST(request) {
             }
         `;
 
-        const imagePart = { inlineData: { data: imageBase64, mimeType: mimeType || 'image/jpeg' } };
+        const imagePart = { inlineData: { data: scanBase64, mimeType: scanMimeType } };
         
         let rawOutput;
         try {
@@ -93,7 +133,7 @@ export async function POST(request) {
             console.error("Gemini API Error:", genErr);
             await safeInsert('omr_retry_queue', {
                 user_id: user.id,
-                scan_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
+                scan_url: scanReferenceJson,
                 state: 'pending',
                 last_error: genErr.message
             }, { route: '/api/omr/scan', userId: user.id });
@@ -108,7 +148,7 @@ export async function POST(request) {
             console.error("OMR Extraction Parse Error:", rawOutput);
             await safeInsert('omr_retry_queue', {
                 user_id: user.id,
-                scan_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64}`,
+                scan_url: scanReferenceJson,
                 state: 'pending',
                 last_error: 'Parse error: ' + String(rawOutput).substring(0, 100)
             }, { route: '/api/omr/scan', userId: user.id });
@@ -118,6 +158,14 @@ export async function POST(request) {
         }
 
         if (parsedPayload.quality_check !== 'clear') {
+            await safeInsert('scan_audit_trail', {
+                user_id: user.id,
+                test_id: testId.startsWith('pyq_') ? null : testId,
+                raw_image_url: scanReferenceJson,
+                extracted_payload: parsedPayload,
+                confidence_scores: { overall: null, source: 'gemini_vision' }
+            }, { route: '/api/omr/scan', userId: user.id });
+
             return NextResponse.json({ 
                 error: 'Image quality too low', 
                 reason: parsedPayload.reason || 'Image is too blurry or dark. Please retake with better lighting.' 
@@ -128,9 +176,9 @@ export async function POST(request) {
         await safeInsert('scan_audit_trail', {
             user_id: user.id,
             test_id: testId.startsWith('pyq_') ? null : testId, // UUID strictness workaround for dynamic tests
-            raw_image_url: `data:${mimeType || 'image/jpeg'};base64,${imageBase64.substring(0, 100)}...`, // Truncated to avoid huge DB size if not needed
+            raw_image_url: scanReferenceJson,
             extracted_payload: parsedPayload,
-            confidence_scores: { "overall": 0.95 } // Mocked confidence for now
+            confidence_scores: { overall: null, source: 'gemini_vision' }
         }, { route: '/api/omr/scan', userId: user.id });
 
         return NextResponse.json({ answers: parsedPayload.answers });

@@ -41,10 +41,9 @@ export async function GET() {
         checks.db = {
             status: error ? 'degraded' : 'ok',
             latencyMs: Date.now() - dbStart,
-            error: error?.message || null,
         };
     } catch (e) {
-        checks.db = { status: 'down', latencyMs: null, error: e.message };
+        checks.db = { status: 'down', latencyMs: null };
     }
 
 
@@ -58,7 +57,7 @@ export async function GET() {
             latencyMs: Date.now() - redisStart,
         };
     } catch (e) {
-        checks.redis = { status: 'down', latencyMs: null, error: e.message };
+        checks.redis = { status: 'down', latencyMs: null };
     }
 
     // ── Circuit Breaker States (observability only, not part of health gate) ─

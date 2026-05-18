@@ -2,13 +2,11 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
 import { callAIWithFallback } from '@/lib/ai-engine';
+import { requireBearerSecret } from '@/lib/server-secrets';
 
 export async function GET(request) {
-    // Basic Cron Auth
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', { status: 401 });
-    }
+    const authError = requireBearerSecret(request, 'CRON_SECRET');
+    if (authError) return authError;
 
     try {
         const supabase = await getDb();

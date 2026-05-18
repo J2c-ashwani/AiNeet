@@ -82,7 +82,7 @@ export default async function ChallengePage({ params }) {
             <div style={{ maxWidth: 600, width: '100%', textAlign: 'center', padding: '50px 40px', border: '1px solid rgba(99, 102, 241, 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, }}></div>
 
-                <div style={{ marginBottom: 20 }}><Icon name="Star" size={16} />️</div>
+                <div style={{ marginBottom: 20 }}><Icon name="Star" size={16} /></div>
                 <h1 style={{ fontWeight: 900, marginBottom: 16, lineHeight: 1.1 }}>
                     You've been challenged!
                 </h1>

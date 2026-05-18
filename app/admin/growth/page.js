@@ -89,10 +89,10 @@ export default function GrowthCopilotPage() {
 
     return (
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 20px', minHeight: '100vh', }}>
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-3 space_mb_8">
                 <span className="text-4xl"><Icon name="Zap" /></span>
                 <div>
-                    <h1 className="text-3xl font-black mb-1">Growth Copilot</h1>
+                    <h1 className="text-3xl font-black space_mb_1">Growth Copilot</h1>
                     <p className="text-muted">Human-in-the-Loop Organic Customer Acquisition</p>
                 </div>
             </div>
@@ -101,8 +101,8 @@ export default function GrowthCopilotPage() {
                 
                 {/* INTERFACE LAYER */}
                 <div className="card" style={{ padding: 32 }}>
-                    <h3 className="text-xl font-bold mb-4">1. Ingest Doubt</h3>
-                    <p className="text-sm text-muted mb-6">Take a screenshot of a Facebook/Telegram doubt and press <strong className="text-white bg-slate-800 px-2 py-1 rounded">Cmd + V</strong> to paste it.</p>
+                    <h3 className="text-xl font-bold space_mb_4">1. Ingest Doubt</h3>
+                    <p className="text-sm text-muted space_mb_6">Take a screenshot of a Facebook/Telegram doubt and press <strong className="tone_white bg-slate-800 space_px_2 space_py_1 rounded">Cmd + V</strong> to paste it.</p>
 
                     <div 
                         style={{ border: '2px dashed var(--border-color)', minHeight: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, background: imagePreview ? 'transparent' : 'var(--bg-glass)', position: 'relative', overflow: 'hidden' }}
@@ -117,8 +117,8 @@ export default function GrowthCopilotPage() {
                         )}
                     </div>
 
-                    <div className="mb-6">
-                        <label className="block text-sm font-bold text-gray-400 mb-2">Or Paste Text</label>
+                    <div className="space_mb_6">
+                        <label className="block text-sm font-bold tone_gray_400 space_mb_2">Or Paste Text</label>
                         <Textarea 
                             value={doubtText}
                             onChange={(e) => setDoubtText(e.target.value)}
@@ -128,9 +128,9 @@ export default function GrowthCopilotPage() {
                         />
                     </div>
 
-                    <div className="flex justify-between items-center mt-6 py-4 border-t border-gray-800">
+                    <div className="flex justify-between items-center space_mt_6 space_py_4 border-t line_gray_800">
                         <div className="flex items-center gap-3">
-                            <span className="text-sm font-bold text-gray-400">Target</span>
+                            <span className="text-sm font-bold tone_gray_400">Target</span>
                             <Select className="input" value={platform} onChange={(e) => setPlatform(e.target.value)} style={{ padding: '6px 12px', height: 'auto' }}>
                                 <option value="facebook">Facebook</option>
                                 <option value="telegram">Telegram</option>
@@ -151,28 +151,28 @@ export default function GrowthCopilotPage() {
                 <div>
                     {!results && !isGenerating ? (
                         <div style={{ padding: 60, textAlign: 'center', border: '1px solid var(--border-color)', }}>
-                            <span className="text-5xl opacity-50 block mb-4"><Icon name="Brain" /></span>
-                            <h3 className="text-xl text-gray-400">Awaiting Target Data</h3>
+                            <span className="text-5xl opacity-50 block space_mb_4"><Icon name="Brain" /></span>
+                            <h3 className="text-xl tone_gray_400">Awaiting Target Data</h3>
                         </div>
                     ) : isGenerating ? (
                         <div style={{ padding: 60, textAlign: 'center', border: '1px solid var(--border-color)', }}>
-                            <div className="spinner mb-4 mx-auto" />
-                            <h3 className="text-xl text-gray-400 animate-pulse">Running AI Copilot...</h3>
+                            <div className="spinner space_mb_4 mx-auto" />
+                            <h3 className="text-xl tone_gray_400 animate-pulse">Running AI Copilot...</h3>
                         </div>
                     ) : (
                         <div className="animate-fade-in-up">
-                            <div className="mb-4">
-                                <span className="px-3 py-1 bg-green-900 text-green-400 rounded-full text-xs font-bold mr-2">Target Acquired</span>
-                                <span className="text-gray-400 text-sm">Detected Topic: </span>
-                                <strong className="text-white">{results.topic_detected}</strong>
+                            <div className="space_mb_4">
+                                <span className="space_px_3 space_py_1 surface_green_900 tone_green_400 radius_full text-xs font-bold space_mr_2">Target Acquired</span>
+                                <span className="tone_gray_400 text-sm">Detected Topic: </span>
+                                <strong className="tone_white">{results.topic_detected}</strong>
                             </div>
 
                             <div className="flex flex-col gap-4">
                                 {/* Variant 1 */}
                                 <div className="card" style={{ borderLeft: '4px solid #3b82f6' }}>
-                                    <div className="flex justify-between items-center mb-3">
-                                        <h4 className="font-bold text-blue-400">1. Concise Variant</h4>
-                                        <Button onClick={() => handleCopy('concise', results.concise)} className="text-xs bg-blue-900 text-white px-3 py-1 rounded">
+                                    <div className="flex justify-between items-center space_mb_3">
+                                        <h4 className="font-bold tone_blue_400">1. Concise Variant</h4>
+                                        <Button onClick={() => handleCopy('concise', results.concise)} className="text-xs surface_blue_900 tone_white space_px_3 space_py_1 rounded">
                                             {copiedIndex === 'concise' ? '✓ Copied' : 'Copy Text'}
                                         </Button>
                                     </div>
@@ -181,9 +181,9 @@ export default function GrowthCopilotPage() {
 
                                 {/* Variant 2 */}
                                 <div className="card" style={{ borderLeft: '4px solid #10b981' }}>
-                                    <div className="flex justify-between items-center mb-3">
+                                    <div className="flex justify-between items-center space_mb_3">
                                         <h4 className="font-bold text-emerald-400">2. Detailed Breakdown</h4>
-                                        <Button onClick={() => handleCopy('detailed', results.detailed)} className="text-xs bg-emerald-900 text-white px-3 py-1 rounded">
+                                        <Button onClick={() => handleCopy('detailed', results.detailed)} className="text-xs bg-emerald-900 tone_white space_px_3 space_py_1 rounded">
                                             {copiedIndex === 'detailed' ? '✓ Copied' : 'Copy Text'}
                                         </Button>
                                     </div>
@@ -192,9 +192,9 @@ export default function GrowthCopilotPage() {
 
                                 {/* Variant 3 */}
                                 <div className="card" style={{ borderLeft: '4px solid #f59e0b' }}>
-                                    <div className="flex justify-between items-center mb-3">
+                                    <div className="flex justify-between items-center space_mb_3">
                                         <h4 className="font-bold text-amber-400">3. Highly Conversational</h4>
-                                        <Button onClick={() => handleCopy('conversational', results.conversational)} className="text-xs bg-amber-900 text-white px-3 py-1 rounded">
+                                        <Button onClick={() => handleCopy('conversational', results.conversational)} className="text-xs bg-amber-900 tone_white space_px_3 space_py_1 rounded">
                                             {copiedIndex === 'conversational' ? '✓ Copied' : 'Copy Text'}
                                         </Button>
                                     </div>

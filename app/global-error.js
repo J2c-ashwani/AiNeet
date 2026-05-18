@@ -21,17 +21,16 @@ export default function GlobalError({ error, reset }) {
                     
                     {/* Show actual error for diagnosis */}
                     <div style={{ padding: 12, marginBottom: 20, textAlign: 'left', wordBreak: 'break-word', maxHeight: 150, overflow: 'auto' }}>
-                        <strong >Error:</strong> {error?.message || 'Unknown error'}
-                        {error?.digest && <div><strong >Digest:</strong> {error.digest}</div>}
+                        <strong >Error:</strong> Something unexpected happened on our end.
                     </div>
                     
                     <p style={{ marginBottom: 20 }}>
-                        Please screenshot this and share with the dev team, then tap refresh.
+                        Don't worry, your progress is safe. Please refresh the page to continue.
                     </p>
                     
                     <Button
                         onClick={() => reset()}
-                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3 px-4 rounded-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
+                        className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 tone_white font-medium space_py_3 space_px_4 radius_lg transition-transform active:scale-95 flex items-center justify-center gap-2"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

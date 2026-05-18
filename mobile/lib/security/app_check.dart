@@ -5,11 +5,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AppCheckBridge {
-  static WebViewController? _controller;
-
   static void attachController(WebViewController controller) {
-    _controller = controller;
-
     // Register channel for token requests from WebView JS
     controller.addJavaScriptChannel(
       'NEET_APP_CHECK',
@@ -18,7 +14,7 @@ class AppCheckBridge {
         final token = await _getToken();
         // Return token to JS callback
         await controller.runJavaScript(
-          'window.__NEET_APP_CHECK_CALLBACKS__["$callbackId"]("$token")'
+          'window.__NEET_APP_CHECK_CALLBACKS__["$callbackId"]("$token")',
         );
       },
     );

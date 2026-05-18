@@ -1,13 +1,15 @@
 'use client';
 import { Icon } from '@/components/ui/Icon';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ParentSettings from '@/components/ParentSettings';
 import { useAuth } from '@/context/AuthContext';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/swr';
+import { isInsideNativeApp, restoreNativePurchases } from '@/lib/platform';
+import { checkedFetch } from '@/lib/http';
 
 const ACHIEVEMENT_ICONS = {
     'first_test': <Icon name="Target" size={20} />, 'test_veteran': <Icon name="Trophy" size={20} />, 'perfect_score': '💯',
@@ -16,11 +18,13 @@ const ACHIEVEMENT_ICONS = {
     'biology_master': <Icon name="Dna" size={20} />, 'speed_demon': <Icon name="Zap" size={20} />, 'consistent': <Icon name="CalendarDays" size={20} />
 };
 
-export default function ProfilePage() {
+function ProfilePageContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { user, loading: authLoading, logout } = useAuth();
     const [isRestoring, setIsRestoring] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState('');
 
     useEffect(() => {
         setHasMounted(true);
@@ -32,6 +36,44 @@ export default function ProfilePage() {
     const { data: achv, isLoading: loadingAchv } = useSWR(!authLoading && user ? '/api/achievements' : null, fetcher);
     const { data: ent, mutate: mutateEnt, isLoading: loadingEnt } = useSWR(!authLoading && user ? '/api/subscription/status' : null, fetcher);
 
+    useEffect(() => {
+        if (authLoading || !user) return;
+
+        const payment = searchParams.get('payment');
+        const orderId = searchParams.get('order_id');
+        const planId = searchParams.get('plan_id');
+        if (payment !== 'success' || !orderId || !planId) return;
+
+        let cancelled = false;
+
+        async function verifyReturnedPayment() {
+            setPaymentStatus('Verifying your payment...');
+            try {
+                const res = await fetch('/api/subscription/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, planId }),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || 'Payment verification failed.');
+                }
+                if (!cancelled) {
+                    setPaymentStatus('Payment verified. Your plan is now active.');
+                    mutateEnt();
+                    router.replace('/profile', { scroll: false });
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setPaymentStatus(err.message || 'Payment verification failed.');
+                }
+            }
+        }
+
+        verifyReturnedPayment();
+        return () => { cancelled = true; };
+    }, [authLoading, user, searchParams, mutateEnt, router]);
+
     const stats = perf?.overallStats || {};
     const badges = achv?.badges || [];
     const entitlement = ent || { current_plan: 'free', active_status: 'free' };
@@ -42,24 +84,36 @@ export default function ProfilePage() {
     };
 
     const handleRestorePurchases = async () => {
-        if (typeof window !== 'undefined' && window.NeetCoachAds && window.NeetCoachAds.restorePurchases) {
-            setIsRestoring(true);
-            try {
-                // Tell flutter app to fetch purchases and post them to our backend
-                window.NeetCoachAds.restorePurchases();
-                alert('Restoring purchases... please wait.');
-                // Refresh state after 3 seconds
-                setTimeout(() => {
-                    mutateEnt();
-                    setIsRestoring(false);
-                }, 3000);
-            } catch (err) {
-                console.error(err);
-                alert('Failed to restore purchases. Please try again.');
-                setIsRestoring(false);
+        setIsRestoring(true);
+        try {
+            const restoreResult = await restoreNativePurchases();
+            const purchases = Array.isArray(restoreResult?.purchases) ? restoreResult.purchases : [];
+            let verifiedCount = 0;
+
+            for (const purchase of purchases) {
+                const purchaseToken = purchase.purchaseToken || purchase.token;
+                const productId = purchase.productId || purchase.productID;
+                if (!purchaseToken || !productId) continue;
+
+                const res = await checkedFetch('/api/subscription/play/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ purchaseToken, productId }),
+                }, {
+                    allowedStatuses: [400, 409],
+                    errorMessage: 'Restore purchase verification failed',
+                });
+
+                if (res.ok) verifiedCount++;
             }
-        } else {
+
+            await mutateEnt();
+            alert(verifiedCount > 0 ? 'Purchases restored successfully.' : 'No active purchases were found.');
+            setIsRestoring(false);
+        } catch (err) {
+            console.error(err);
             alert('Restore purchases is only available on the Android app.');
+            setIsRestoring(false);
         }
     };
 
@@ -121,6 +175,12 @@ export default function ProfilePage() {
 
                 {/* Subscription Management Card */}
                 <Card className="profile-sub-card">
+                    {paymentStatus && (
+                        <div className="profile-payment-status">
+                            {paymentStatus}
+                        </div>
+                    )}
+
                     <div className="profile-sub-header">
                         <div>
                             <h3 className="profile-sub-title">Subscription Details</h3>
@@ -164,7 +224,7 @@ export default function ProfilePage() {
                                         Upgrade to Pro / Premium
                                     </Button>
                                 </Link>
-                                {typeof window !== 'undefined' && window.showInterstitialAd && (
+                                {hasMounted && isInsideNativeApp() && (
                                     <Button variant="outline" onClick={handleRestorePurchases} disabled={isRestoring} className="profile-sub-btn">
                                         {isRestoring ? 'Restoring...' : 'Restore Purchases'}
                                     </Button>
@@ -259,5 +319,13 @@ export default function ProfilePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={null}>
+            <ProfilePageContent />
+        </Suspense>
     );
 }

@@ -21,7 +21,7 @@ export class ErrorBoundary extends React.Component {
         if (this.state.hasError) {
             if (this.props.fallback) return this.props.fallback;
             return (
-                <div style={{ padding: '20px', background: '#fee2e2', color: '#b91c1c', borderRadius: '8px', margin: '16px 0' }}>
+                <div style={{ padding: '20px', background: 'rgba(239, 68, 68, 0.12)', color: 'var(--danger)', borderRadius: 'var(--radius-sm)', margin: '16px 0' }}>
                     <h3 style={{ margin: '0 0 8px 0' }}>Something went wrong</h3>
                     <p style={{ margin: 0, fontSize: '14px' }}>We encountered an unexpected error. Please refresh the page.</p>
                 </div>

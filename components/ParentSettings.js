@@ -1,6 +1,7 @@
 
 "use client";
 import { useState, useEffect } from 'react';
+import { Button, Checkbox, Input } from '@/components/ui';
 
 export default function ParentSettings() {
     const [email, setEmail] = useState('');
@@ -66,7 +67,7 @@ export default function ParentSettings() {
                 <h3 style={{ fontSize: '1.4rem', margin: 0 }}>👨‍👩‍👧‍👦 Parent Connect</h3>
                 <span className="badge badge-warning" style={{ fontSize: '0.75rem', padding: '4px 8px' }}>Early Access Beta</span>
             </div>
-            <p className="text-muted text-sm mb-6" style={{ lineHeight: 1.6 }}>
+            <p className="text-muted text-sm space_mb_6" style={{ lineHeight: 1.6 }}>
                 Add your parent's details to send them <strong style={{ color: 'var(--text-primary)' }}>Weekly Progress Reports</strong>.
                 This helps keep them informed about your hard work and improvements.
             </p>
@@ -74,29 +75,26 @@ export default function ParentSettings() {
             <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Parent's Email</label>
-                    <input
+                    <Input
                         type="email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         placeholder="parent@example.com"
-                        className="input"
                     />
                 </div>
 
                 <div>
                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Parent's Phone (Optional)</label>
-                    <input
+                    <Input
                         type="tel"
                         value={phone}
                         onChange={e => setPhone(e.target.value)}
                         placeholder="+91 9876543210"
-                        className="input"
                     />
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginTop: '10px', padding: '12px', background: 'var(--bg-glass)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                    <input 
-                        type="checkbox" 
+                    <Checkbox
                         id="parentConsent" 
                         checked={consentGiven}
                         onChange={e => setConsentGiven(e.target.checked)}
@@ -111,14 +109,13 @@ export default function ParentSettings() {
                     <span style={{ fontSize: '0.9rem', fontWeight: 600, color: message.includes('❌') ? 'var(--danger)' : 'var(--success)' }}>
                         {message}
                     </span>
-                    <button
+                    <Button
                         type="submit"
                         disabled={saving}
-                        className="btn btn-primary"
                         style={{ minWidth: '160px' }}
                     >
                         {saving ? 'Saving...' : 'Save Settings'}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

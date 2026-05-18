@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
+import { getUserFromRequest } from '@/lib/core/auth';
 
 export async function POST(request) {
     try {
@@ -8,14 +9,13 @@ export async function POST(request) {
         const name = formData.get('name');
 
         const supabase = await getDb();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const user = await getUserFromRequest(request);
 
-        if (authError || !user) {
+        if (!user) {
             return NextResponse.redirect(new URL('/login', request.url));
         }
 
-        const { data: userProfile } = await supabase.from('users').select('role').eq('id', user.id).single();
-        if (!userProfile || userProfile.role !== 'teacher') {
+        if (user.role !== 'teacher') {
             return new NextResponse('Unauthorized: Teachers only', { status: 403 });
         }
 

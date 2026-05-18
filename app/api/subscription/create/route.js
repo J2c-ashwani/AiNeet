@@ -82,7 +82,6 @@ export async function POST(request) {
             currency: 'INR',
             planId: planId,
             environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
-            isMock: order.isMock || false,
         });
 
     } catch (error) {

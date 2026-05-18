@@ -76,9 +76,9 @@ export default function BattlePage() {
             setOppAnswered(true);
             if (aiWillBeCorrect) {
                 setOppScore(prev => prev + 100);
-                addLog(`${opponent.name} answered correctly! <Icon name="Target" />`);
+                addLog(`${opponent.name} answered correctly! 🎯`);
             } else {
-                addLog(`${opponent.name} got it wrong! <Icon name="XCircle" />`);
+                addLog(`${opponent.name} got it wrong! ❌`);
             }
         }, aiTime * 1000);
 
@@ -108,7 +108,7 @@ export default function BattlePage() {
         if (option === q.correct_option) {
             const points = 100 + (timeLeft * 2);
             setUserScore(prev => prev + points);
-            addLog(`You answered correctly! <Icon name="CheckCircle" /> (+${points})`);
+            addLog(`You answered correctly! ✅ (+${points})`);
         } else {
             addLog(`Wrong answer! The correct one was ${q.correct_option} 😬`);
         }
@@ -160,7 +160,7 @@ export default function BattlePage() {
             
             <div className="page" style={{ maxWidth: 700, textAlign: 'center' }}>
                 <div className="page-header">
-                    <h1 className="page-title"><Icon name="Star" size={16} />️ 1v1 AI Battle Arena</h1>
+                    <h1 className="page-title"><Icon name="Star" size={16} /> 1v1 AI Battle Arena</h1>
                     <p className="page-subtitle">Challenge AI opponents in a rapid-fire 5-question duel. Gain ELO to climb the ranks!</p>
                 </div>
 
@@ -176,7 +176,7 @@ export default function BattlePage() {
                 </div>
 
                 <div className="card" style={{ marginTop: 24, textAlign: 'left' }}>
-                    <h3 className="mb-3"><Icon name="BarChart2" /> How ELO Works</h3>
+                    <h3 className="space_mb_3"><Icon name="BarChart2" /> How ELO Works</h3>
                     <div className="text-sm text-muted" style={{ lineHeight: 1.8 }}>
                         <div><Icon name="Star" size={16} /> <strong>Win against stronger opponent</strong> → Big ELO gain</div>
                         <div><Icon name="Star" size={16} /> <strong>Win against weaker opponent</strong> → Small ELO gain</div>

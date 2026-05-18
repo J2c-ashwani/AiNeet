@@ -181,7 +181,7 @@ export default function OpsControlRoom() {
 
                 {/* Trust Score Distribution */}
                 <div className="ops-section" style={{ marginBottom: 0 }}>
-                    <h3 className="ops-section-title"><span><Icon name="Star" size={16} />️</span> Trust Score Distribution</h3>
+                    <h3 className="ops-section-title"><span><Icon name="Star" size={16} /></span> Trust Score Distribution</h3>
                     
                     {[
                         { label: 'Healthy (80-100)', count: tr.healthy, bgColor: 'rgba(34,197,94,0.1)' },

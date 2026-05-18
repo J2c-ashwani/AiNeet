@@ -75,19 +75,19 @@ export default function IntegrityDashboard() {
         fetchIntegrityMetrics();
     }, []);
 
-    if (data.loading) return <div className="p-8 text-white">Loading Integrity Metrics...</div>;
+    if (data.loading) return <div className="space_pa_8 tone_white">Loading Integrity Metrics...</div>;
 
     return (
-        <div className="p-8 bg-gray-900 min-h-screen text-gray-100">
-            <div className="mb-8">
+        <div className="space_pa_8 surface_gray_900 min-h-screen tone_gray_100">
+            <div className="space_mb_8">
                 <h1 className="text-3xl font-bold flex items-center gap-3">
-                    <ShieldAlert className="text-red-500" />
+                    <ShieldAlert className="tone_red_500" />
                     Data Integrity & Operations Monitor
                 </h1>
-                <p className="text-gray-400 mt-2">V1 Dashboard tracking silent failures, schema drift, and unhandled DB exceptions.</p>
+                <p className="tone_gray_400 space_mt_2">V1 Dashboard tracking silent failures, schema drift, and unhandled DB exceptions.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 space_mb_8">
                 <MetricCard 
                     title="Failed Transactions (24h)" 
                     value={data.errorLogs.filter(e => new Date(e.created_at) > new Date(Date.now() - 86400000)).length} 
@@ -114,30 +114,30 @@ export default function IntegrityDashboard() {
                 />
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                <h2 className="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">Recent Database Exceptions</h2>
+            <div className="surface_gray_800 radius_xl space_pa_6 border line_gray_700">
+                <h2 className="text-xl font-semibold space_mb_4 border-b line_gray_700 space_pb_2">Recent Database Exceptions</h2>
                 {data.errorLogs.length === 0 ? (
-                    <div className="flex items-center gap-2 text-green-400 py-4">
+                    <div className="flex items-center gap-2 tone_green_400 space_py_4">
                         <CheckCircle2 /> No recent exceptions found.
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="text-gray-400 bg-gray-700/50">
+                            <thead className="tone_gray_400 surface_gray_700_50">
                                 <tr>
-                                    <th className="p-3">Timestamp</th>
-                                    <th className="p-3">Route</th>
-                                    <th className="p-3">Error</th>
-                                    <th className="p-3">User ID</th>
+                                    <th className="space_pa_3">Timestamp</th>
+                                    <th className="space_pa_3">Route</th>
+                                    <th className="space_pa_3">Error</th>
+                                    <th className="space_pa_3">User ID</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-700">
                                 {data.errorLogs.map(log => (
-                                    <tr key={log.id} className="hover:bg-gray-700/30 transition-colors">
-                                        <td className="p-3 text-gray-300">{new Date(log.created_at).toLocaleString()}</td>
-                                        <td className="p-3 font-mono text-xs text-blue-400">{log.route}</td>
-                                        <td className="p-3 text-red-400 truncate max-w-xs" title={log.error_message}>{log.error_message}</td>
-                                        <td className="p-3 text-gray-400 text-xs truncate max-w-[100px]">{log.user_id || 'System'}</td>
+                                    <tr key={log.id} className="hover_surface_gray_700_30 transition-colors">
+                                        <td className="space_pa_3 tone_gray_300">{new Date(log.created_at).toLocaleString()}</td>
+                                        <td className="space_pa_3 font-mono text-xs tone_blue_400">{log.route}</td>
+                                        <td className="space_pa_3 tone_red_400 truncate max-w-xs" title={log.error_message}>{log.error_message}</td>
+                                        <td className="space_pa_3 tone_gray_400 text-xs truncate max-w-[100px]">{log.user_id || 'System'}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -157,7 +157,7 @@ function MetricCard({ title, value, icon, status }) {
     };
     return (
         <div className={`rounded-xl p-6 border flex items-center gap-4 ${colors[status]}`}>
-            <div className="p-3 rounded-lg bg-black/20">
+            <div className="space_pa_3 radius_lg surface_black_20">
                 {icon}
             </div>
             <div>
