@@ -67,7 +67,11 @@ assert(!offlineQueue.includes('simple base64') && !offlineQueue.includes('string
     assert(platform.includes(intent) && bridgeContract.includes(intent), `Native bridge intent covered: ${intent}`);
 });
 
-assert(omrPage.includes('mimeType: selectedFile.type'), 'OMR frontend forwards the selected file MIME type');
+const omrForwardsSelectedMimeType =
+    /mutationFn:\s*async\s*\(\{\s*pureBase64,\s*selectedTestId,\s*mimeType\s*\}\)/.test(omrPage) &&
+    /body:\s*JSON\.stringify\(\{[\s\S]*imageBase64:\s*pureBase64,[\s\S]*mimeType,[\s\S]*testId:\s*selectedTestId[\s\S]*\}\)/.test(omrPage) &&
+    /scanMutation\.mutate\(\{\s*pureBase64,\s*selectedTestId,\s*mimeType\s*\}\)/.test(omrPage);
+assert(omrForwardsSelectedMimeType, 'OMR frontend forwards the selected file MIME type');
 assert(omrScan.includes('persistOmrScanObject') && omrRetry.includes('loadOmrScanObject'), 'OMR retry queue uses storage-backed scan references');
 assert(!omrScan.includes('scan_url: `data:') && !omrScan.includes('imageBase64.substring'), 'OMR API does not store raw base64 scans in DB rows');
 
