@@ -13,9 +13,11 @@ const { execSync } = require('child_process');
 const { Pool }     = require('pg');
 const path         = require('path');
 const fs           = require('fs');
-require('dotenv').config({ path: '.env.local' });
 
 const ROOT = path.join(__dirname, '..');
+require('dotenv').config({ path: path.join(ROOT, '.env') });
+require('dotenv').config({ path: path.join(ROOT, '.env.local'), override: true });
+
 const checks = { passed: [], failed: [], warnings: [] };
 
 async function run() {
