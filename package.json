@@ -10,12 +10,17 @@
     "lint": "npx eslint app components lib utils providers proxy.js next.config.mjs",
     "lint:report": "node scripts/lint-report.js",
     "test:visual": "npx playwright test",
+    "test:e2e": "npx playwright test tests/e2e/",
+    "test:launch": "npx playwright test tests/e2e/ tests/a11y/ tests/visual/",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
     "lint:design": "node scripts/check-design-system.js && node scripts/validate-routes.js && node scripts/validate-css-classes.js",
     "lint:routes": "node scripts/validate-routes.js",
     "lint:primary-routes": "node scripts/assert-primary-routes.js",
     "test:a11y": "npx playwright test tests/a11y/",
     "test:contracts": "npx playwright test -c playwright.contracts.config.js",
+    "test:app-check": "node scripts/test-app-check-enforcement.mjs",
+    "test:payments": "node scripts/test-cashfree-webhook-security.mjs && node scripts/test-payment-flow.mjs",
+    "test:rag-governance": "node scripts/validate-rag-governance.mjs",
     "prepare": "husky"
   },
   "dependencies": {

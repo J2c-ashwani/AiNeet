@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import { safeInsert } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 export async function POST(request) {
     try {
@@ -17,6 +18,8 @@ export async function POST(request) {
         if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         // Rate limit: 5 payment attempts per 5 minutes (fraud prevention)
         const rl = await rateLimit(`user:${decoded.id}:payment`, 5, 300000, 'closed');
@@ -81,7 +84,7 @@ export async function POST(request) {
             amount: plan.amount,
             currency: 'INR',
             planId: planId,
-            environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
+            environment: PaymentService.getEnvironment(),
         });
 
     } catch (error) {

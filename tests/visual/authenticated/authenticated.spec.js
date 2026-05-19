@@ -1,30 +1,27 @@
 const { test, expect, waitForFonts } = require('../fixtures');
 
-// Seeded QA User Credentials
-const QA_EMAIL = 'qa-seed@aineetcoach.com';
-const QA_PASSWORD = 'password123';
+// QA credentials — set QA_USER_EMAIL and QA_USER_PASSWORD in .env.local
+// Never use a real student account for E2E tests
+const QA_EMAIL = process.env.QA_USER_EMAIL || 'qa@neetcoach.in';
+const QA_PASSWORD = process.env.QA_USER_PASSWORD || '';
+
+if (!QA_PASSWORD) {
+  throw new Error('QA_USER_PASSWORD must be set in .env.local before running authenticated E2E tests');
+}
 
 test.describe('Authenticated Pages UI', () => {
   // Authenticate before all tests
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to login
+    // Real Supabase login — do not use mock JWT for launch certification
     await page.goto('/login');
-    // If there is an actual UI for this, we would fill it out:
-    // await page.fill('input[type="email"]', QA_EMAIL);
-    // await page.fill('input[type="password"]', QA_PASSWORD);
-    // await page.click('button[type="submit"]');
-    // await page.waitForURL('/dashboard');
-    
-    // For now, if the UI is not fully bound in the local dev environment,
-    // we can inject a mock JWT or session cookie here.
-    // Replace with exact app logic:
-    await page.evaluate(() => {
-      document.cookie = `auth_token=mock_jwt_token; path=/`;
-      // Alternatively set localStorage if auth uses that
-      localStorage.setItem('auth', JSON.stringify({ token: 'mock', user: { id: 'qa-user' }}));
-    });
+    await page.waitForSelector('input[type="email"]', { timeout: 10000 });
+    await page.fill('input[type="email"]', QA_EMAIL);
+    await page.fill('input[type="password"]', QA_PASSWORD);
+    await page.click('button[type="submit"]');
+    // Wait for successful redirect — dashboard or home
+    await page.waitForURL(/\/(dashboard|home|$)/, { timeout: 15000 });
   });
 
   test('Dashboard', async ({ page }) => {

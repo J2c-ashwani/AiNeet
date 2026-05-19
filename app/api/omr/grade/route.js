@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 /**
  * OMR Grading API — v2
@@ -20,6 +21,8 @@ export async function POST(request) {
         if (!user) {
             return NextResponse.json({ error: 'Not logged in. Please sign in to grade your OMR.' }, { status: 401 });
         }
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
         try { _body = await request.json(); } catch {

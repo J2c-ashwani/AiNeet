@@ -19,7 +19,11 @@ class AppCheckBridge {
       },
     );
 
-    // Inject the JS interface for requesting App Check tokens
+    injectScript(controller);
+  }
+
+  static void injectScript(WebViewController controller) {
+    // Inject after every page load because WebView navigation resets page JS state.
     controller.runJavaScript('''
       window.__NEET_APP_CHECK_CALLBACKS__ = {};
       window.getNEETAppCheckToken = function() {

@@ -6,6 +6,8 @@
 
 # testing
 /coverage
+eslint-report*.json
+ui-governance-report*.json
 
 # next.js
 /.next/

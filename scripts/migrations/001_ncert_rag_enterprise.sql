@@ -27,6 +27,14 @@ CREATE TABLE IF NOT EXISTS ncert_embeddings (
     ncert_keywords      TEXT[] DEFAULT '{}',
     board_classification TEXT DEFAULT 'NEET',
     difficulty_hint     TEXT DEFAULT 'medium' CHECK (difficulty_hint IN ('easy', 'medium', 'hard')),
+    syllabus_version    TEXT NOT NULL DEFAULT 'neet-current',
+    ncert_edition       TEXT NOT NULL DEFAULT 'current',
+    ingestion_batch_id  UUID,
+    source_checksum     TEXT,
+    is_current_syllabus BOOLEAN NOT NULL DEFAULT TRUE,
+    deleted_from_current_syllabus BOOLEAN NOT NULL DEFAULT FALSE,
+    corpus_status       TEXT NOT NULL DEFAULT 'active'
+        CHECK (corpus_status IN ('active', 'staged', 'deprecated', 'quarantined')),
 
     -- Chunk Content (MD Mod 2: target 220-350 words)
     chunk_index         INT  NOT NULL,
@@ -63,6 +71,11 @@ CREATE INDEX IF NOT EXISTS idx_ncert_subject ON ncert_embeddings (subject);
 CREATE INDEX IF NOT EXISTS idx_ncert_chapter ON ncert_embeddings (subject, class_level, chapter_number);
 CREATE INDEX IF NOT EXISTS idx_ncert_topic   ON ncert_embeddings (topic_slug);
 CREATE INDEX IF NOT EXISTS idx_ncert_tags    ON ncert_embeddings USING GIN (concept_tags);
+CREATE INDEX IF NOT EXISTS idx_ncert_active_syllabus
+    ON ncert_embeddings (subject, class_level, chapter_number, syllabus_version)
+    WHERE is_current_syllabus = TRUE
+      AND deleted_from_current_syllabus = FALSE
+      AND corpus_status = 'active';
 
 -- ─────────────────────────────────────────────────────────────────
 -- TABLE: rag_explanations
@@ -167,6 +180,9 @@ LANGUAGE SQL STABLE AS $$
             (filter_subject IS NULL OR e.subject = filter_subject) AND
             (filter_chapter IS NULL OR e.chapter_number = filter_chapter) AND
             (filter_class   IS NULL OR e.class_level = filter_class) AND
+            e.is_current_syllabus = TRUE AND
+            e.deleted_from_current_syllabus = FALSE AND
+            e.corpus_status = 'active' AND
             e.embedding IS NOT NULL
         ORDER BY e.embedding <=> query_embedding
         LIMIT top_k * 3
@@ -178,6 +194,9 @@ LANGUAGE SQL STABLE AS $$
         FROM ncert_embeddings e
         WHERE
             (filter_subject IS NULL OR e.subject = filter_subject) AND
+            e.is_current_syllabus = TRUE AND
+            e.deleted_from_current_syllabus = FALSE AND
+            e.corpus_status = 'active' AND
             e.fts_document @@ plainto_tsquery('english', query_text)
         ORDER BY bscore DESC
         LIMIT top_k * 3

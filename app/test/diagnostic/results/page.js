@@ -98,20 +98,20 @@ export default function DiagnosticResultsLock() {
             
             {/* Real Telemetry Social Proof */}
             <Badge variant="warning" style={{ marginBottom: 24, padding: '8px 16px', }}>
-                <Icon name="Flame" /> {aspirantCount || '...'} students took this test today | Average: 61%
+                <Icon name="Flame" /> {aspirantCount || '...'} registered aspirants on AI NEET Coach
             </Badge>
 
             {/* The Hook: Immediate Reality Check */}
             <div style={{ textAlign: 'center', maxWidth: 640, marginBottom: 40, animation: 'fadeInDown 0.6s ease-out' }}>
                 <Badge variant="danger" style={{ marginBottom: 16, fontWeight: 800, letterSpacing: 0.5 }}>
-                    CRITICAL DIAGNOSIS COMPLETE
+                    DIAGNOSTIC COMPLETE
                 </Badge>
                 <h1 style={{ margin: 0, fontWeight: 900, lineHeight: 1.2, }}>
                     Your primary weakness is <br/>
                     <span >{result.weakestChapter}</span>
                 </h1>
                 <p style={{ marginTop: 16 }}>
-                    This single chapter is dragging down your entire NEET preparation trajectory.
+                    This chapter should be your next focused revision target.
                 </p>
             </div>
 
@@ -127,15 +127,15 @@ export default function DiagnosticResultsLock() {
                 {/* Peer Pressure Panel */}
                 <Card style={{ border: '1px solid var(--warning)', width: 280, padding: 24 }}>
                     <div style={{ marginBottom: 8 }}><Icon name="Star" size={16} /></div>
-                    <h3 style={{ margin: 0, fontWeight: 800 }}>Bottom {result.percentile}%</h3>
-                    <p style={{ margin: '8px 0 0', }}>Your accuracy places you behind {100 - result.percentile}% of active NEET aspirants this week.</p>
+                    <h3 style={{ margin: 0, fontWeight: 800 }}>{result.performanceBand || 'Attempt review'}</h3>
+                    <p style={{ margin: '8px 0 0', }}>This label is based on your answers in this diagnostic attempt.</p>
                 </Card>
 
                 {/* Hope Panel */}
                 <Card style={{ border: '1px solid var(--success)', width: 280, padding: 24 }}>
                     <div style={{ marginBottom: 8 }}><Icon name="Zap" /></div>
                     <h3 style={{ margin: 0, fontWeight: 800 }}>{result.peerImprovementText}</h3>
-                    <p style={{ margin: '8px 0 0', }}>Students who started with your exact profile improved their score significantly in 14 days.</p>
+                    <p style={{ margin: '8px 0 0', }}>Your next plan should prioritize this weakness before adding more mock tests.</p>
                 </Card>
             </div>
 

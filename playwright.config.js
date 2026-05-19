@@ -10,7 +10,7 @@ module.exports = defineConfig({
   
   // Use a local dev server
   webServer: {
-    command: 'npm run start',
+    command: 'npx next start -H 127.0.0.1',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,

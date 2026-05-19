@@ -15,14 +15,32 @@ export default function ResultsPage({ params }) {
     const [showExplanation, setShowExplanation] = useState({});
 
     useEffect(() => {
-        const stored = sessionStorage.getItem('testResults');
-        if (stored) {
-            setResults(JSON.parse(stored));
-            setTimeout(() => showNativeInterstitial('test_results'), 1500);
-            return;
-        }
-        window.location.href = '/dashboard';
-    }, [router]);
+        let cancelled = false;
+
+        const loadResults = async () => {
+            const stored = sessionStorage.getItem('testResults');
+            if (stored) {
+                setResults(JSON.parse(stored));
+                setTimeout(() => showNativeInterstitial('test_results'), 1500);
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/tests/result?testId=${encodeURIComponent(testId)}`);
+                if (!res.ok) throw new Error('RESULT_NOT_FOUND');
+                const data = await res.json();
+                if (cancelled) return;
+                setResults(data);
+                sessionStorage.setItem('testResults', JSON.stringify(data));
+                setTimeout(() => showNativeInterstitial('test_results'), 1500);
+            } catch {
+                if (!cancelled) window.location.href = '/dashboard';
+            }
+        };
+
+        loadResults();
+        return () => { cancelled = true; };
+    }, [router, testId]);
 
     if (!results) return (
         <div className="page results-wrapper" style={{ minHeight: 'calc(100vh - 64px)' }}>

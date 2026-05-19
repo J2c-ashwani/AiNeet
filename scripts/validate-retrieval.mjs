@@ -161,6 +161,9 @@ async function retrieveTopChunk(queryEmbedding, subject) {
                 (embedding <=> $1::vector) AS distance
          FROM ncert_embeddings
          WHERE subject = $2
+           AND is_current_syllabus = TRUE
+           AND deleted_from_current_syllabus = FALSE
+           AND corpus_status = 'active'
          ORDER BY embedding <=> $1::vector
          LIMIT 1`,
         [vector, subject]
@@ -175,11 +178,56 @@ async function getCorpusStats(subject) {
         `SELECT chapter_title, book_code, COUNT(*) as chunk_count
          FROM ncert_embeddings
          WHERE subject = $1
+           AND is_current_syllabus = TRUE
+           AND deleted_from_current_syllabus = FALSE
+           AND corpus_status = 'active'
          GROUP BY chapter_title, book_code
          ORDER BY book_code, chapter_title`,
         [subject]
     );
     return res.rows;
+}
+
+async function validateCorpusGovernance(subject) {
+    const requiredColumns = [
+        'syllabus_version',
+        'ncert_edition',
+        'is_current_syllabus',
+        'deleted_from_current_syllabus',
+        'corpus_status',
+        'source_checksum',
+    ];
+    const columnRes = await pool.query(`
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'ncert_embeddings'
+          AND column_name = ANY($1::text[])
+    `, [requiredColumns]);
+    const found = new Set(columnRes.rows.map(row => row.column_name));
+    const missing = requiredColumns.filter(col => !found.has(col));
+    if (missing.length > 0) {
+        throw new Error(`RAG governance columns missing: ${missing.join(', ')}`);
+    }
+
+    const staleRes = await pool.query(`
+        SELECT COUNT(*)::int AS count
+        FROM ncert_embeddings
+        WHERE subject = $1
+          AND (is_current_syllabus = FALSE OR deleted_from_current_syllabus = TRUE OR corpus_status <> 'active')
+    `, [subject]);
+
+    const dimRes = await pool.query(`
+        SELECT COUNT(*)::int AS count
+        FROM ncert_embeddings
+        WHERE subject = $1
+          AND embedding IS NOT NULL
+          AND vector_dims(embedding) <> $2
+    `, [subject, EMBED_DIMS]);
+
+    return {
+        staleRows: staleRes.rows[0].count,
+        wrongDimensionRows: dimRes.rows[0].count,
+    };
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -188,6 +236,15 @@ async function main() {
     console.log('\n' + '═'.repeat(64));
     console.log(`🔍 RAG RETRIEVAL INTEGRITY VALIDATOR — ${SUBJECT.toUpperCase()}`);
     console.log('═'.repeat(64));
+
+    console.log('\n🛡️  CORPUS GOVERNANCE\n');
+    const governance = await validateCorpusGovernance(SUBJECT);
+    console.log(`  Active filter excludes stale/deleted rows: ${governance.staleRows} non-active rows found for subject`);
+    console.log(`  Embedding dimension mismatches: ${governance.wrongDimensionRows}`);
+    if (governance.wrongDimensionRows > 0) {
+        console.log('\n  ❌ CORPUS INTEGRITY: CORRUPTED — EMBEDDING DIMENSION MISMATCH\n');
+        process.exit(1);
+    }
 
     // 1. Corpus Stats
     console.log('\n📊 CORPUS STATS\n');

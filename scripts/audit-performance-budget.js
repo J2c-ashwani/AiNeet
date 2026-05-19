@@ -17,6 +17,7 @@ const path = require('path');
 const ROOT       = path.join(__dirname, '..');
 const BUILD_DIR  = path.join(ROOT, '.next');
 const CHUNKS_DIR = path.join(BUILD_DIR, 'static', 'chunks');
+const BUILD_MANIFEST = path.join(BUILD_DIR, 'build-manifest.json');
 
 const BUDGETS = {
     initialBundleKB:  1500,  // 1.5 MB — initial page load
@@ -37,6 +38,21 @@ function isInitialChunk(filename) {
     return /\/(main|polyfills|framework|webpack)/.test(filename);
 }
 
+function getInitialChunkFiles() {
+    const files = new Set();
+    if (fs.existsSync(BUILD_MANIFEST)) {
+        try {
+            const manifest = JSON.parse(fs.readFileSync(BUILD_MANIFEST, 'utf8'));
+            for (const entry of manifest.rootMainFiles || []) files.add(path.join(BUILD_DIR, entry));
+            for (const entry of manifest.polyfillFiles || []) files.add(path.join(BUILD_DIR, entry));
+            for (const entry of manifest.pages?.['/_app'] || []) files.add(path.join(BUILD_DIR, entry));
+        } catch (error) {
+            fail(`Could not parse build manifest for initial bundle analysis: ${error.message}`);
+        }
+    }
+    return files;
+}
+
 function check() {
     if (!fs.existsSync(BUILD_DIR)) {
         // In CI, the build may not exist yet when release-readiness runs.
@@ -52,6 +68,7 @@ function check() {
 
     let totalInitialBytes = 0;
     const files = getAllFiles(CHUNKS_DIR, '.js');
+    const initialFiles = getInitialChunkFiles();
     const oversizedPage   = [];
     const oversizedVendor = [];
 
@@ -60,7 +77,7 @@ function check() {
         const relPath = path.relative(ROOT, file);
         const kb      = stats.size / 1024;
 
-        if (isInitialChunk(file)) {
+        if (initialFiles.has(file) || isInitialChunk(file)) {
             totalInitialBytes += stats.size;
             continue;
         }
@@ -80,7 +97,9 @@ function check() {
 
     // Initial bundle
     const totalKB = totalInitialBytes / 1024;
-    if (totalKB > BUDGETS.initialBundleKB) {
+    if (totalInitialBytes === 0) {
+        fail('Initial JS bundle could not be calculated from build manifest');
+    } else if (totalKB > BUDGETS.initialBundleKB) {
         fail(`Initial JS bundle ${totalKB.toFixed(1)}KB > ${BUDGETS.initialBundleKB}KB limit`);
     } else {
         pass(`Initial bundle ${totalKB.toFixed(1)}KB (limit: ${BUDGETS.initialBundleKB}KB)`);

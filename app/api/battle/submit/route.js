@@ -4,6 +4,7 @@ import { getUserFromRequest } from '@/lib/core/auth';
 import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { AI_OPPONENTS } from '@/lib/game_engine';
 import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 /**
  * 1v1 AI Battle — Submit Results
@@ -16,6 +17,8 @@ export async function POST(request) {
         const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
 

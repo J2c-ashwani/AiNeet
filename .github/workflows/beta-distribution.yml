@@ -50,10 +50,19 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/android/app/google-services.json
           echo "✅ google-services.json restored"
 
+      - name: Restore Play upload keystore
+        run: |
+          echo "${{ secrets.NEET_UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/neet-upload-keystore.jks"
+          test -s "$RUNNER_TEMP/neet-upload-keystore.jks"
+
       # ─── 5. Install Dependencies ─────────────────────────────────────────────
       - name: Install Flutter dependencies
         working-directory: mobile
         run: flutter pub get
+
+      - name: Analyze Flutter shell
+        working-directory: mobile
+        run: dart analyze
 
       # ─── 6. Build Release APK ───────────────────────────────────────────────
       - name: Build APK (Release)
@@ -61,9 +70,21 @@ jobs:
         run: |
           flutter build apk --release \
             --build-name="1.1.${{ github.run_number }}" \
-            --build-number="${{ github.run_number }}"
+            --build-number="${{ github.run_number }}" \
+            --dart-define=NEET_WEB_URL="${{ vars.NEET_WEB_URL || 'https://aineetcoach.com/login' }}" \
+            --dart-define=ADMOB_BANNER_ANDROID="${{ secrets.ADMOB_BANNER_ANDROID }}" \
+            --dart-define=ADMOB_INTERSTITIAL_ANDROID="${{ secrets.ADMOB_INTERSTITIAL_ANDROID }}" \
+            --dart-define=ADMOB_REWARDED_ANDROID="${{ secrets.ADMOB_REWARDED_ANDROID }}"
         env:
           FLUTTER_BUILD_MODE: release
+          NEET_UPLOAD_KEYSTORE: ${{ runner.temp }}/neet-upload-keystore.jks
+          NEET_UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.NEET_UPLOAD_KEYSTORE_PASSWORD }}
+          NEET_UPLOAD_KEY_ALIAS: ${{ secrets.NEET_UPLOAD_KEY_ALIAS }}
+          NEET_UPLOAD_KEY_PASSWORD: ${{ secrets.NEET_UPLOAD_KEY_PASSWORD }}
+          ADMOB_ANDROID_APP_ID: ${{ secrets.ADMOB_ANDROID_APP_ID }}
+          ADMOB_BANNER_ANDROID: ${{ secrets.ADMOB_BANNER_ANDROID }}
+          ADMOB_INTERSTITIAL_ANDROID: ${{ secrets.ADMOB_INTERSTITIAL_ANDROID }}
+          ADMOB_REWARDED_ANDROID: ${{ secrets.ADMOB_REWARDED_ANDROID }}
 
       # ─── 7. Upload APK as GitHub Artifact (for manual download too) ─────────
       - name: Upload APK artifact

@@ -37,11 +37,10 @@ export async function GET(request) {
         const score = test.score || 0;
         const totalMarks = (test.correct_count + test.incorrect_count + test.unanswered_count) * 4;
 
-        // Simple AIR prediction mock based on score (for viral bragging rights)
-        let rank = "Top 50%";
-        if (score > 650) rank = "Top 0.5% AIR";
-        else if (score > 550) rank = "Top 2% AIR";
-        else if (score > 400) rank = "Top 10% AIR";
+        let scoreBand = 'Practice score';
+        if (score > 650) scoreBand = 'Elite score band';
+        else if (score > 550) scoreBand = 'Strong score band';
+        else if (score > 400) scoreBand = 'Developing score band';
 
         return new ImageResponse(
             (
@@ -87,8 +86,8 @@ export async function GET(request) {
 
                         <div style={{ display: 'flex', gap: 30, marginTop: 30 }}>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <div style={{ textTransform: 'uppercase', letterSpacing: 2 }}>Predicted</div>
-                                <div style={{ fontWeight: 'bold', marginTop: 8 }}>{rank}</div>
+                                <div style={{ textTransform: 'uppercase', letterSpacing: 2 }}>Band</div>
+                                <div style={{ fontWeight: 'bold', marginTop: 8 }}>{scoreBand}</div>
                             </div>
                             <div style={{ width: 2, }}></div>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

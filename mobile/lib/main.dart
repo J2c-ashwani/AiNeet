@@ -21,7 +21,10 @@ import 'runtime/crash_forwarder.dart';
 import 'security/app_check.dart';
 
 const String kAppVersion = '1.1.0';
-const String kInitialWebUrl = 'https://ai-neet.vercel.app/login';
+const String kInitialWebUrl = String.fromEnvironment(
+  'NEET_WEB_URL',
+  defaultValue: 'https://aineetcoach.com/login',
+);
 const List<String> kOmrAllowedMimeTypes = [
   'image/jpeg',
   'image/png',
@@ -215,7 +218,9 @@ class _WebViewScreenState extends State<WebViewScreen>
     setState(() {
       _fcmToken = token;
     });
-    debugPrint('FCM Token: $token');
+    if (kDebugMode) {
+      debugPrint('FCM token acquired for this install.');
+    }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notification = message.notification;
@@ -235,8 +240,7 @@ class _WebViewScreenState extends State<WebViewScreen>
       debugPrint('Notification tapped: ${message.notification?.title}');
     });
 
-    await messaging.subscribeToTopic('daily_reminders');
-    await messaging.subscribeToTopic('all_users');
+    // Topic subscription is owned by the backend device registry after user consent.
   }
 
   void _initWebView() {
@@ -415,6 +419,9 @@ class _WebViewScreenState extends State<WebViewScreen>
         } catch(e) {}
       };
     ''');
+
+    // 6. App Check bridge must be re-injected after every WebView navigation.
+    AppCheckBridge.injectScript(controller);
   }
 
   /// Handle NEETCoachNativeBridge v3 messages from JS.
@@ -567,7 +574,7 @@ class _WebViewScreenState extends State<WebViewScreen>
 
     return {
       'token': token,
-      'deviceId': 'android-${token.hashCode.abs()}',
+      'deviceId': 'android-${_stableTokenDigest(token)}',
       'platform': 'android',
       'appVersion': kAppVersion,
       'androidVersion': Platform.operatingSystemVersion,
@@ -586,6 +593,15 @@ class _WebViewScreenState extends State<WebViewScreen>
       case AuthorizationStatus.notDetermined:
         return 'prompt';
     }
+  }
+
+  String _stableTokenDigest(String token) {
+    var hash = 2166136261;
+    for (final unit in token.codeUnits) {
+      hash ^= unit;
+      hash = (hash * 16777619) & 0xffffffff;
+    }
+    return hash.toRadixString(16).padLeft(8, '0');
   }
 
   Future<Map<String, dynamic>> _captureImage(

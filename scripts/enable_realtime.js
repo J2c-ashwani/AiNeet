@@ -1,8 +1,19 @@
 const { Client } = require('pg');
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function enableRealtime() {
-    const dbUrl = process.env.DATABASE_URL || 'postgresql://postgres:Ashwani%407903@db.lfwnrehqjiwpfoylhmby.supabase.co:5432/postgres';
-    const client = new Client({ connectionString: dbUrl });
+    const dbUrl = process.env.DATABASE_URL;
+    if (!dbUrl) {
+        console.error('DATABASE_URL is required. Refusing to enable realtime without an explicit connection string.');
+        process.exit(1);
+    }
+
+    const client = new Client({
+        connectionString: dbUrl,
+        ssl: { rejectUnauthorized: false },
+    });
 
     try {
         await client.connect();

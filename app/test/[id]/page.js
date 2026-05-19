@@ -316,7 +316,7 @@ export default function TestPage({ params }) {
             });
             const data = await res.json();
             
-            if (res.status === 400 && data.error === 'Test already submitted') {
+            if ((res.status === 400 || res.status === 409) && (data.code === 'TEST_ALREADY_SUBMITTED' || data.error === 'Test already submitted')) {
                 return { alreadySubmitted: true };
             }
             if (!res.ok) throw new Error(data.error || 'Network Drop');

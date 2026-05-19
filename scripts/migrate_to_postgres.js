@@ -6,11 +6,11 @@ const { Client } = require('pg');
 
 // Configuration
 const SQLITE_DB_PATH = path.join(__dirname, '../neet-coach.db');
-const POSTGRES_URL = process.env.DATABASE_URL; // e.g., postgres://user:pass@localhost:5432/neetcoach
+const POSTGRES_URL = process.env.DATABASE_URL;
 
 if (!POSTGRES_URL) {
     console.error('Error: DATABASE_URL environment variable is not set.');
-    console.log('Usage: DATABASE_URL=postgres://... node scripts/migrate_to_postgres.js');
+    console.log('Usage: DATABASE_URL=<postgres connection string> node scripts/migrate_to_postgres.js');
     process.exit(1);
 }
 

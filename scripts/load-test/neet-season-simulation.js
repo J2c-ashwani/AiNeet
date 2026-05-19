@@ -14,18 +14,24 @@
 const BASE_URL      = process.env.LOAD_TEST_BASE_URL || 'http://localhost:3000';
 const TEST_USER_JWT = process.env.LOAD_TEST_JWT || '';
 const CONCURRENCY   = parseInt(process.env.LOAD_TEST_CONCURRENCY || '50');
+const AI_CONCURRENCY = parseInt(process.env.LOAD_TEST_AI_CONCURRENCY || Math.max(2, Math.floor(CONCURRENCY / 5)).toString());
+const CRON_SECRET = process.env.CRON_SECRET || '';
 
 const results = { passed: [], failed: [], latencies: [] };
 
 // ─── HTTP Helper ─────────────────────────────────────────────
-async function req(method, path, body = null, timeoutMs = 10000) {
+async function req(method, path, body = null, timeoutMs = 10000, extraHeaders = {}) {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     const start = Date.now();
     try {
         const res = await fetch(`${BASE_URL}${path}`, {
             method,
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${TEST_USER_JWT}` },
+            headers: {
+                'Content-Type': 'application/json',
+                ...(TEST_USER_JWT ? { Authorization: `Bearer ${TEST_USER_JWT}` } : {}),
+                ...extraHeaders,
+            },
             body: body ? JSON.stringify(body) : undefined,
             signal: ctrl.signal
         });
@@ -61,19 +67,40 @@ async function concurrent(name, count, fn) {
 
 // ─── Scenarios ────────────────────────────────────────────────
 async function runAllScenarios() {
+    if (!TEST_USER_JWT) {
+        console.error('LOAD_TEST_JWT is required for authenticated enterprise load certification.');
+        process.exit(1);
+    }
+
+    if (/aineetcoach\.com|vercel\.app/i.test(BASE_URL) && process.env.LOAD_TEST_ALLOW_PRODUCTION !== 'true') {
+        console.error('Refusing to run load test against production-like URL without LOAD_TEST_ALLOW_PRODUCTION=true.');
+        process.exit(1);
+    }
+
     console.log('═══════════════════════════════════════════════════');
     console.log('    🏋️  NEET SEASON LOAD SIMULATION');
     console.log(`    Target: ${BASE_URL}`);
     console.log(`    Concurrency: ${CONCURRENCY}`);
     console.log('═══════════════════════════════════════════════════');
 
-    // Scenario 1: Concurrent leaderboard reads (result-day spike)
-    await concurrent('Leaderboard reads (result-day spike)', CONCURRENCY * 2, () =>
+    // Scenario 1: Concurrent performance reads (result-day spike)
+    await concurrent('Performance reads (result-day spike)', CONCURRENCY * 2, () =>
         req('GET', '/api/performance')
     );
 
-    // Scenario 2: Concurrent test submissions
-    await concurrent('Test submissions', Math.floor(CONCURRENCY / 2), () =>
+    // Scenario 2: Auth/session validation
+    await concurrent('Auth validation', CONCURRENCY, () =>
+        req('GET', '/api/auth/me')
+    );
+
+    // Scenario 3: Dashboard-state APIs
+    await concurrent('Dashboard-state APIs', CONCURRENCY, (_, i) => {
+        const paths = ['/api/coach/daily', '/api/revision/due', '/api/subscription/status'];
+        return req('GET', paths[i % paths.length]);
+    });
+
+    // Scenario 4: Concurrent test submissions
+    await concurrent('Test submissions', Math.max(2, Math.floor(CONCURRENCY / 4)), () =>
         req('POST', '/api/tests/submit', {
             testId: 'load-test-session',
             answers: [{ questionId: 1, selectedOption: 'A' }],
@@ -81,17 +108,37 @@ async function runAllScenarios() {
         })
     );
 
-    // Scenario 3: AI recommendation burst
-    await concurrent('AI recommendations burst', CONCURRENCY, () =>
-        req('GET', '/api/ai/recommend')
+    // Scenario 5: RAG explanation burst. Keep this smaller to avoid certifying quota burn as platform failure.
+    await concurrent('RAG explanation burst', AI_CONCURRENCY, () =>
+        req('POST', '/api/ncert/explain', {
+            bookId: 'load-test',
+            text: 'Explain oxidation and reduction using NCERT chemistry language.'
+        }, 20000)
     );
 
-    // Scenario 4: Auth endpoint concurrency
-    await concurrent('Auth validation', CONCURRENCY, () =>
-        req('GET', '/api/auth/me')
+    // Scenario 6: Test generation reads/questions pipeline
+    await concurrent('Test generation', Math.max(2, Math.floor(CONCURRENCY / 4)), () =>
+        req('POST', '/api/tests/generate', {
+            subjects: [],
+            chapters: [],
+            topics: [],
+            difficulty: 'all',
+            questionCount: 5,
+            type: 'custom'
+        }, 20000)
     );
 
-    // Scenario 5: Telemetry batch ingest storm
+    // Scenario 7: OMR catalog reads
+    await concurrent('OMR catalog reads', CONCURRENCY, () =>
+        req('GET', '/api/omr/tests')
+    );
+
+    // Scenario 8: Payment entitlement/status reads
+    await concurrent('Payment entitlement reads', CONCURRENCY, () =>
+        req('GET', '/api/subscription/status')
+    );
+
+    // Scenario 9: Telemetry batch ingest storm
     await concurrent('Telemetry batch ingest', CONCURRENCY, () =>
         req('POST', '/api/telemetry/mobile-events', {
             events: Array.from({ length: 10 }, (_, i) => ({
@@ -102,7 +149,14 @@ async function runAllScenarios() {
         })
     );
 
-    // Scenario 6: Reconnect storm (everyone comes back online simultaneously)
+    if (CRON_SECRET) {
+        // Scenario 10: Cron survivability check
+        await concurrent('Cron keepalive', Math.max(2, Math.floor(CONCURRENCY / 10)), () =>
+            req('GET', '/api/cron/keepalive', null, 10000, { Authorization: `Bearer ${CRON_SECRET}` })
+        );
+    }
+
+    // Scenario 11: Reconnect storm (everyone comes back online simultaneously)
     await concurrent('Reconnect storm (offline replay)', CONCURRENCY * 3, () =>
         req('GET', '/api/performance')
     );

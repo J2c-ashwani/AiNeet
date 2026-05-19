@@ -10,6 +10,7 @@ import {
     persistOmrScanObject,
     serializeOmrScanReference,
 } from '@/lib/mobile/omr-scan-storage';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 /**
  * OMR Scan API — v2
@@ -25,6 +26,8 @@ export async function POST(request) {
         if (!user) {
             return NextResponse.json({ error: 'Please sign in to use OMR Scanner.' }, { status: 401 });
         }
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
         try { _body = await request.json(); } catch {

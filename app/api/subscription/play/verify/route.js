@@ -92,6 +92,7 @@ export const POST = withApiRoute(async (_request, { user, body }) => {
     return { success: true, plan: planTier };
 }, {
     auth: 'user',
+    appCheck: 'native',
     bodySchema: playVerifyBodySchema,
     rateLimit: { ...RATE_LIMITS.PAYMENT, failBehavior: 'closed', key: 'play-verify' },
 });

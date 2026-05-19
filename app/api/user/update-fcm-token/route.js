@@ -1,6 +1,7 @@
 import { safeUpdate, safeUpsert } from '@/lib/core/db-safe';
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 const MAX_TOKEN_LENGTH = 4096;
 const MAX_META_LENGTH = 160;
@@ -14,6 +15,8 @@ export async function POST(request) {
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
 

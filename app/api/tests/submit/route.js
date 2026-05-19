@@ -10,6 +10,7 @@ import { applyTrustXpModifier, calculateTrustRecovery, getTrustHint } from '@/li
 import * as Sentry from '@sentry/nextjs';
 import { logError } from '@/lib/error-logger';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -25,6 +26,8 @@ export async function POST(request) {
         const supabase = await getDb();
         decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
 
@@ -60,8 +63,8 @@ export async function POST(request) {
             .eq('user_id', decoded.id)
             .single();
 
-        if (!test) return NextResponse.json({ error: 'Test not found' }, { status: 404 });
-        if (test.completed_at) return NextResponse.json({ error: 'Test already submitted' }, { status: 400 });
+        if (!test) return NextResponse.json({ error: 'Test not found', code: 'TEST_NOT_FOUND' }, { status: 404 });
+        if (test.completed_at) return NextResponse.json({ error: 'Test already submitted', code: 'TEST_ALREADY_SUBMITTED' }, { status: 409 });
 
         // Timer Authoritativeness Validation
         if (test.expires_at) {
@@ -261,167 +264,187 @@ export async function POST(request) {
             throw rpcErr;
         }
 
-        // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
-        await allOrThrow([
-            ...adaptiveUpdates.map(u => updateQuestionDifficulty(u.questionId, u.isCorrect, u.currentMastery).catch(() => {})),
-            ...adaptiveUpdates.map(u => updateUserMastery(decoded.id, u.topicId, u.isCorrect, u.qDiff).catch(() => {})),
-            ...wrongAnswerQuestionIds.map(qId => scheduleNewCard(decoded.id, qId).catch(() => {})),
-        ]);
-
-        const xpEarned = calculateXP(scoreData);
-
-        // Update XP, Level, and Risk Telemetry
-        const { data: user } = await supabase.from('users').select('xp, streak, last_active_date, referred_by, trust_score').eq('id', decoded.id).single();
-
-        // [GROWTH ENGINE] Diminishing Returns Math
-        const todayStr = new Date().toISOString().split('T')[0];
-        const { count: dailyTestCount } = await supabase.from('tests').select('*', { count: 'exact', head: true })
-             .eq('user_id', decoded.id).gte('completed_at', todayStr + 'T00:00:00.000Z');
-
-        let xpMultiplier = 1;
-        if (dailyTestCount >= 5 && dailyTestCount < 10) xpMultiplier = 0.5; // Soft Cap
-        if (dailyTestCount >= 10) xpMultiplier = 0; // Hard Cap for farming limits
-
-        // [GROWTH ENGINE] Adaptive Risk Profiler
-        const timePerQuestion = (timeTaken || 1) / (processedAnswers.length || 1);
-        let trustPenalty = 0;
-
-        if (processedAnswers.length >= 5 && timePerQuestion < 3) {
-             trustPenalty = 15;
-             xpMultiplier = 0; // Destroy ROI of speedrunning bots
-             console.warn(`[SECURITY] User ${decoded.id} submitted ${processedAnswers.length} Qs in ${timeTaken}s. Trust -15.`);
-        } else if (processedAnswers.length >= 5 && timePerQuestion < 6 && scoreData.accuracy > 90) {
-             trustPenalty = 5;
-             xpMultiplier = 0.5; // Suspiciously perfect and fast
-        }
-
-        const actualXpEarned = applyTrustXpModifier(
-            Math.floor(xpEarned * xpMultiplier), 
-            user?.trust_score
-        );
-
-        if (trustPenalty > 0) {
-             await safeRpc('decrement_trust_score', { target_user_id: decoded.id, penalty: trustPenalty }, { route: '/api/tests/submit/trust', userId: decoded.id });
-        }
-
-        // MD Trust Recovery: Reward positive actions to enable trust restoration
-        if (trustPenalty === 0 && processedAnswers.length >= 3) {
-            const recoveryPoints = calculateTrustRecovery('test_completed', user?.trust_score);
-            if (recoveryPoints > 0) {
-                await safeUpdate('users', { id: decoded.id }, {
-                    trust_score: Math.min(100, (user?.trust_score || 100) + recoveryPoints)
-                }, { route: '/api/tests/submit/trust_recovery', userId: decoded.id });
-            }
-        }
-
-        if (actualXpEarned > 0) {
-             await safeRpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: actualXpEarned }, { route: '/api/tests/submit/xp', userId: decoded.id });
-        }
-
-        // Calculate predicted new XP and Level for frontend without an expensive refetch
-        const predictedXp = (user?.xp || 0) + actualXpEarned;
-        const newLevel = getLevelFromXP(predictedXp);
-
-        // Streak Logic
-        const today = new Date().toISOString().split('T')[0];
-        const lastActive = user?.last_active_date ? user.last_active_date.split('T')[0] : null;
-        let newStreak = user?.streak || 0;
-
-        if (lastActive !== today) {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-            if (lastActive === yesterdayStr) {
-                newStreak++;
-            } else {
-                newStreak = 1;
-            }
-        }
-
-        // Update user state using atomic streak math instead of overwriting XP blindly
-        await safeUpdate('users', { id: decoded.id }, { streak: newStreak, last_active_date: new Date().toISOString() }, { route: '/api/tests/submit/streak', userId: decoded.id });
-
-        // MD Trust Recovery: Streak milestones give bonus trust recovery
-        if (newStreak >= 3 && trustPenalty === 0) {
-            const streakRecovery = calculateTrustRecovery('streak_maintained', user?.trust_score);
-            if (streakRecovery > 0) {
-                await safeUpdate('users', { id: decoded.id }, {
-                    trust_score: Math.min(100, (user?.trust_score || 100) + streakRecovery)
-                }, { route: '/api/tests/submit/streak_trust', userId: decoded.id });
-            }
-        }
-
-        // Achievements Logic
-        const newBadges = [];
-        const checkAndAward = async (id) => {
-            const { data: existing } = await supabase.from('user_achievements').select('id').eq('user_id', decoded.id).eq('badge_type', id).single();
-            if (!existing) {
-                const badge = ACHIEVEMENTS.find(b => b.id === id);
-                if (badge) {
-                    await safeInsert('user_achievements', {
-                        user_id: decoded.id, badge_type: id, badge_name: badge.name, description: badge.description
-                    }, { route: '/api/tests/submit/badge', userId: decoded.id });
-                    newBadges.push(badge);
-                }
-            }
-        };
-
-        const { count: testCount } = await supabase.from('tests').select('*', { count: 'exact', head: true }).eq('user_id', decoded.id).not('completed_at', 'is', null);
-
-        // [GROWTH ENGINE] Meaningful Action Referral Unlock & Atomic Dopamine Reward
+        let actualXpEarned = 0;
+        let newLevel = getLevelFromXP(0);
+        let newStreak = 0;
+        let newBadges = [];
         let referralRewardUnlocked = false;
-        if (testCount === 1 && user?.referred_by) {
-            // Log the attempt immediately for analytics
-            await supabase.rpc('increment_referrals', { target_user_id: user.referred_by });
-            
-            // Acquire Idempotency Lock
-            const { data: claimed } = await supabase.rpc('claim_referral_reward', { target_user_id: decoded.id });
-            
-            if (claimed) {
-                // Fetch the late-evaluated Fraud Risk Score
-                const { data: riskProfile } = await supabase.from('users').select('fraud_risk_score').eq('id', decoded.id).single();
-                
-                if (riskProfile && riskProfile.fraud_risk_score < 80) {
-                    console.log(`[GROWTH ENGINE] Validation passed. Dispensing 24h Premium & +20 Trust to ${decoded.id} and ${user.referred_by}`);
-                    const premiumTime = new Date(Date.now() + 86400000).toISOString();
-                    
-                    // Reward New User (Self)
+        let trustHint;
+        let postCommitWarning = null;
+
+        try {
+            // Adaptive engine + spaced repetition — run in parallel (non-blocking on scoring)
+            await allOrThrow([
+                ...adaptiveUpdates.map(u => updateQuestionDifficulty(u.questionId, u.isCorrect, u.currentMastery).catch(() => {})),
+                ...adaptiveUpdates.map(u => updateUserMastery(decoded.id, u.topicId, u.isCorrect, u.qDiff).catch(() => {})),
+                ...wrongAnswerQuestionIds.map(qId => scheduleNewCard(decoded.id, qId).catch(() => {})),
+            ]);
+
+            const xpEarned = calculateXP(scoreData);
+
+            // Update XP, Level, and Risk Telemetry
+            const { data: user } = await supabase.from('users').select('xp, streak, last_active_date, referred_by, trust_score').eq('id', decoded.id).single();
+
+            // [GROWTH ENGINE] Diminishing Returns Math
+            const todayStr = new Date().toISOString().split('T')[0];
+            const { count: dailyTestCount } = await supabase.from('tests').select('*', { count: 'exact', head: true })
+                .eq('user_id', decoded.id).gte('completed_at', todayStr + 'T00:00:00.000Z');
+
+            let xpMultiplier = 1;
+            if (dailyTestCount >= 5 && dailyTestCount < 10) xpMultiplier = 0.5; // Soft Cap
+            if (dailyTestCount >= 10) xpMultiplier = 0; // Hard Cap for farming limits
+
+            // [GROWTH ENGINE] Adaptive Risk Profiler
+            const timePerQuestion = (timeTaken || 1) / (processedAnswers.length || 1);
+            let trustPenalty = 0;
+
+            if (processedAnswers.length >= 5 && timePerQuestion < 3) {
+                trustPenalty = 15;
+                xpMultiplier = 0; // Destroy ROI of speedrunning bots
+                console.warn(`[SECURITY] User ${decoded.id} submitted ${processedAnswers.length} Qs in ${timeTaken}s. Trust -15.`);
+            } else if (processedAnswers.length >= 5 && timePerQuestion < 6 && scoreData.accuracy > 90) {
+                trustPenalty = 5;
+                xpMultiplier = 0.5; // Suspiciously perfect and fast
+            }
+
+            actualXpEarned = applyTrustXpModifier(
+                Math.floor(xpEarned * xpMultiplier),
+                user?.trust_score
+            );
+
+            if (trustPenalty > 0) {
+                await safeRpc('decrement_trust_score', { target_user_id: decoded.id, penalty: trustPenalty }, { route: '/api/tests/submit/trust', userId: decoded.id });
+            }
+
+            // MD Trust Recovery: Reward positive actions to enable trust restoration
+            if (trustPenalty === 0 && processedAnswers.length >= 3) {
+                const recoveryPoints = calculateTrustRecovery('test_completed', user?.trust_score);
+                if (recoveryPoints > 0) {
                     await safeUpdate('users', { id: decoded.id }, {
-                        premium_until: premiumTime,
-                        trust_score: Math.min(100, (user.trust_score || 100) + 20)
-                    }, {
-                        route: '/api/tests/submit/referral-self',
-                        userId: decoded.id,
-                    });
-                    
-                    // Reward Referrer
-                    await safeUpdate('users', { id: user.referred_by }, { premium_until: premiumTime }, {
-                        route: '/api/tests/submit/referral-referrer',
-                        userId: decoded.id,
-                    });
-                    
-                    referralRewardUnlocked = true;
-                } else {
-                    console.warn(`[GROWTH ENGINE] REFERRAL BLOCKED. Risk Score (${riskProfile?.fraud_risk_score}) exceeded threshold for user ${decoded.id}.`);
+                        trust_score: Math.min(100, (user?.trust_score || 100) + recoveryPoints)
+                    }, { route: '/api/tests/submit/trust_recovery', userId: decoded.id });
                 }
             }
+
+            if (actualXpEarned > 0) {
+                await safeRpc('increment_user_xp_atomic', { target_user_id: decoded.id, amount: actualXpEarned }, { route: '/api/tests/submit/xp', userId: decoded.id });
+            }
+
+            // Calculate predicted new XP and Level for frontend without an expensive refetch
+            const predictedXp = (user?.xp || 0) + actualXpEarned;
+            newLevel = getLevelFromXP(predictedXp);
+
+            // Streak Logic
+            const today = new Date().toISOString().split('T')[0];
+            const lastActive = user?.last_active_date ? user.last_active_date.split('T')[0] : null;
+            newStreak = user?.streak || 0;
+
+            if (lastActive !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                if (lastActive === yesterdayStr) {
+                    newStreak++;
+                } else {
+                    newStreak = 1;
+                }
+            }
+
+            // Update user state using atomic streak math instead of overwriting XP blindly
+            await safeUpdate('users', { id: decoded.id }, { streak: newStreak, last_active_date: new Date().toISOString() }, { route: '/api/tests/submit/streak', userId: decoded.id });
+
+            // MD Trust Recovery: Streak milestones give bonus trust recovery
+            if (newStreak >= 3 && trustPenalty === 0) {
+                const streakRecovery = calculateTrustRecovery('streak_maintained', user?.trust_score);
+                if (streakRecovery > 0) {
+                    await safeUpdate('users', { id: decoded.id }, {
+                        trust_score: Math.min(100, (user?.trust_score || 100) + streakRecovery)
+                    }, { route: '/api/tests/submit/streak_trust', userId: decoded.id });
+                }
+            }
+
+            // Achievements Logic
+            newBadges = [];
+            const checkAndAward = async (id) => {
+                const { data: existing } = await supabase.from('user_achievements').select('id').eq('user_id', decoded.id).eq('badge_type', id).single();
+                if (!existing) {
+                    const badge = ACHIEVEMENTS.find(b => b.id === id);
+                    if (badge) {
+                        await safeInsert('user_achievements', {
+                            user_id: decoded.id, badge_type: id, badge_name: badge.name, description: badge.description
+                        }, { route: '/api/tests/submit/badge', userId: decoded.id });
+                        newBadges.push(badge);
+                    }
+                }
+            };
+
+            const { count: testCount } = await supabase.from('tests').select('*', { count: 'exact', head: true }).eq('user_id', decoded.id).not('completed_at', 'is', null);
+
+            // [GROWTH ENGINE] Meaningful Action Referral Unlock & Atomic Dopamine Reward
+            referralRewardUnlocked = false;
+            if (testCount === 1 && user?.referred_by) {
+                // Log the attempt immediately for analytics
+                await supabase.rpc('increment_referrals', { target_user_id: user.referred_by });
+
+                // Acquire Idempotency Lock
+                const { data: claimed } = await supabase.rpc('claim_referral_reward', { target_user_id: decoded.id });
+
+                if (claimed) {
+                    // Fetch the late-evaluated Fraud Risk Score
+                    const { data: riskProfile } = await supabase.from('users').select('fraud_risk_score').eq('id', decoded.id).single();
+
+                    if (riskProfile && riskProfile.fraud_risk_score < 80) {
+                        console.log(`[GROWTH ENGINE] Validation passed. Dispensing 24h Premium & +20 Trust to ${decoded.id} and ${user.referred_by}`);
+                        const premiumTime = new Date(Date.now() + 86400000).toISOString();
+
+                        // Reward New User (Self)
+                        await safeUpdate('users', { id: decoded.id }, {
+                            premium_until: premiumTime,
+                            trust_score: Math.min(100, (user.trust_score || 100) + 20)
+                        }, {
+                            route: '/api/tests/submit/referral-self',
+                            userId: decoded.id,
+                        });
+
+                        // Reward Referrer
+                        await safeUpdate('users', { id: user.referred_by }, { premium_until: premiumTime }, {
+                            route: '/api/tests/submit/referral-referrer',
+                            userId: decoded.id,
+                        });
+
+                        referralRewardUnlocked = true;
+                    } else {
+                        console.warn(`[GROWTH ENGINE] REFERRAL BLOCKED. Risk Score (${riskProfile?.fraud_risk_score}) exceeded threshold for user ${decoded.id}.`);
+                    }
+                }
+            }
+
+            if (testCount === 1) await checkAndAward('first_test');
+            if (testCount >= 10) await checkAndAward('test_veteran');
+            if (scoreData.accuracy >= 100 && processedAnswers.length > 5) await checkAndAward('perfect_score');
+            if (fastAnswerCount >= 1) await checkAndAward('speed_demon');
+            if (newStreak >= 7) await checkAndAward('streak_7');
+
+            // MD Transparency: Include trust hint so frontend can show context
+            trustHint = getTrustHint(user?.trust_score);
+        } catch (postCommitError) {
+            postCommitWarning = 'POST_COMMIT_SIDE_EFFECTS_PENDING';
+            console.error('[SUBMIT_POST_COMMIT_SIDE_EFFECT_FAILED]', postCommitError);
+            try {
+                Sentry.captureException(postCommitError, {
+                    tags: { flow: 'test-submit', phase: 'post-commit-side-effects' },
+                    extra: { userId: decoded.id, testId },
+                });
+            } catch {}
         }
-
-        if (testCount === 1) await checkAndAward('first_test');
-        if (testCount >= 10) await checkAndAward('test_veteran');
-        if (scoreData.accuracy >= 100 && scoreData.attempted > 5) await checkAndAward('perfect_score');
-        if (fastAnswerCount >= 1) await checkAndAward('speed_demon');
-        if (newStreak >= 7) await checkAndAward('streak_7');
-
-        // MD Transparency: Include trust hint so frontend can show context
-        const trustHint = getTrustHint(user?.trust_score);
 
         return NextResponse.json({ 
             score: scoreData, xpEarned: actualXpEarned, level: newLevel, 
             streak: newStreak, badges: newBadges, answers: processedAnswers,
-            trustHint: trustHint.show ? trustHint : undefined,
-            referralRewardUnlocked
+            trustHint: trustHint?.show ? trustHint : undefined,
+            referralRewardUnlocked,
+            ...(postCommitWarning ? { warning: postCommitWarning } : {}),
         });
     } catch (error) {
         console.error('CRITICAL Submit error:', error);

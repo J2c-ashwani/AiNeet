@@ -18,11 +18,16 @@ export async function GET(request) {
                 'Referer': 'https://ncert.nic.in/'
             }
         }, {
+            timeoutMs: 12_000,
+            maxBytes: 25 * 1024 * 1024,
             errorMessage: 'Failed to fetch PDF from NCERT',
         });
 
         // Return the PDF buffer with appropriate content type and CORS headers
         const pdfBuffer = await response.arrayBuffer();
+        if (pdfBuffer.byteLength > 25 * 1024 * 1024) {
+            return NextResponse.json({ error: 'NCERT PDF is too large to proxy safely' }, { status: 413 });
+        }
 
         return new NextResponse(pdfBuffer, {
             status: 200,

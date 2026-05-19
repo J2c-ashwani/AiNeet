@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { safeUpdate } from '@/lib/core/db-safe';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 export async function POST(request) {
     try {
         const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { SUBSCRIPTION_PLANS } from '@/lib/payment_service';
+import { PaymentService, SUBSCRIPTION_PLANS } from '@/lib/payment_service';
 import { safeRpc, safeSelect, safeInsert } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
@@ -20,13 +20,7 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
         }
 
-        // Verify the signature
-        const expectedSignature = crypto
-            .createHmac('sha256', secretKey)
-            .update(timestamp + rawBody)
-            .digest('base64');
-
-        if (signature !== expectedSignature) {
+        if (!PaymentService.verifyWebhookSignature(rawBody, timestamp, signature)) {
             console.warn('Blocked webhook with invalid signature');
             return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
         }

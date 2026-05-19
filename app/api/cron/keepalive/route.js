@@ -1,17 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
+import { requireBearerSecret } from '@/lib/server-secrets';
 
-export async function GET() {
+export async function GET(request) {
+    const unauthorized = requireBearerSecret(request, 'CRON_SECRET');
+    if (unauthorized) return unauthorized;
+
     try {
         const supabase = await getDb();
         
-        // MD Mandate 3: Keepalive MUST Touch DB. Just fetching 'id' limits memory load.
-        const { data, error } = await supabase.from('users').select('id').limit(1);
+        const { error } = await supabase.from('feature_flags').select('id').limit(1);
         
         if (error) {
             console.error('Keepalive DB Error:', error);
-            // Even an error technically wakes the DB, but we want status 500 to detect real outages
-            return NextResponse.json({ status: 'waking', details: error.message }, { status: 500 });
+            return NextResponse.json({ status: 'degraded' }, { status: 500 });
         }
         
         return NextResponse.json({ 

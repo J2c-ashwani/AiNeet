@@ -93,16 +93,16 @@ export async function POST(request) {
             if (chapData) weakestChapterName = chapData.name;
         }
 
-        // Generate the Psychology Emotion triggers (MD Request)
-        // Simulated percentiles to inject immediate FOMO/Urgency
+        // Student-facing benchmark language must be derived from this attempt unless
+        // backed by a real cohort analytics table.
         const totalQCount = questionIds.length;
         const accuracyRate = totalQCount > 0 ? (correctCount / totalQCount) * 100 : 0;
-        let percentile = 15;
-        if (accuracyRate > 80) percentile = 82;
-        else if (accuracyRate > 60) percentile = 56;
-        else if (accuracyRate > 40) percentile = 33;
+        let performanceBand = 'Needs revision';
+        if (accuracyRate >= 80) performanceBand = 'Strong';
+        else if (accuracyRate >= 60) performanceBand = 'Developing';
+        else if (accuracyRate >= 40) performanceBand = 'Foundation gap';
         
-        const peerImprovement = accuracyRate < 50 ? '+85 marks' : '+40 marks';
+        const nextStepText = accuracyRate < 50 ? 'Start with a focused recovery plan' : 'Use a short targeted revision plan';
 
         const finalGradeData = {
             score: totalScore,
@@ -112,8 +112,10 @@ export async function POST(request) {
             accuracy: accuracyRate,
             weakestChapter: weakestChapterName,
             lostMarks: lostMarksDueToWeakness,
-            percentile: percentile,
-            peerImprovementText: peerImprovement,
+            percentile: Math.round(accuracyRate),
+            performanceBand,
+            peerImprovementText: nextStepText,
+            benchmarkSource: 'attempt_based',
             answersObject: answers
         };
 

@@ -1,7 +1,16 @@
 const { Client } = require('pg');
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '.env.local') });
+
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL is required. Refusing to run a production migration without an explicit connection string.');
+  process.exit(1);
+}
 
 const client = new Client({
-  connectionString: 'postgresql://postgres:Ashwani%407903@db.lfwnrehqjiwpfoylhmby.supabase.co:5432/postgres',
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
 async function run() {

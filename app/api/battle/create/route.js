@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto';
 import { getOpponentForElo } from '@/lib/game_engine';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString } from '@/lib/validate';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 /**
  * 1v1 AI Battle — Create
@@ -21,6 +22,8 @@ export async function POST(request) {
         const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         const body = await request.json().catch(() => ({}));
         const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;

@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - name: ESLint mobile gate rules
         run: npm run lint
+      - name: Secret hygiene audit
+        run: node scripts/audit-secret-hygiene.js
       - name: API contract tests
         run: npm run test:contracts
       - name: Dependency vulnerability gate
@@ -72,6 +74,8 @@ jobs:
         run: node scripts/verify-backup-restore.js
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          BACKUP_RESTORE_DRILL_ID: ${{ vars.BACKUP_RESTORE_DRILL_ID }}
 
   # ── Gate 4: Release Readiness ──────────────────────────────
   release-readiness:
@@ -88,6 +92,8 @@ jobs:
         run: node scripts/release-readiness-check.js
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          BACKUP_RESTORE_DRILL_ID: ${{ vars.BACKUP_RESTORE_DRILL_ID }}
       - name: Block deployment on failure
         if: failure()
         run: |

@@ -3,12 +3,15 @@ import { getDb } from '@/lib/core/db';
 import { safeUpdate } from '@/lib/core/db-safe';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { verifyAppCheck } from '@/lib/security/verify-app-check';
 
 export async function POST(request) {
     try {
         const supabase = await getDb();
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const appCheckResponse = await verifyAppCheck(request);
+        if (appCheckResponse) return appCheckResponse;
 
         let _body;
 

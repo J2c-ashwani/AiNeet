@@ -10,6 +10,42 @@ let userRatelimit = null;
 // MD Resilience: High-Speed Edge Micro-Cache (Global state persists across edge invocations locally)
 const sessionMicroCache = new Map();
 const CACHE_TTL_MS = 60000; // 60 seconds
+const PUBLIC_API_PREFIXES = [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/auth/callback',
+    '/api/auth/reset-password',
+    '/api/auth/verify-otp',
+    '/api/webhooks/',
+    '/api/health',
+    '/api/syllabus',
+    '/api/pyq/years',
+    '/api/ncert/library',
+    '/api/ncert/proxy',
+    '/api/blueprint',
+    '/api/stats/traffic',
+];
+const PROTECTED_PAGE_PREFIXES = [
+    '/admin',
+    '/dashboard',
+    '/analytics',
+    '/mistakes',
+    '/profile',
+    '/test/',
+    '/battle',
+    '/battleground',
+    '/omr',
+    '/revision',
+];
+
+function isPublicApi(pathname) {
+    return PUBLIC_API_PREFIXES.some(prefix => pathname.startsWith(prefix));
+}
+
+function shouldFailClosed(pathname) {
+    if (pathname.startsWith('/api/')) return !isPublicApi(pathname);
+    return PROTECTED_PAGE_PREFIXES.some(prefix => pathname.startsWith(prefix));
+}
 
 try {
     if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
@@ -166,15 +202,28 @@ export async function proxy(request) {
                     }
                 }
             } catch (rateLimitError) {
-                // Rate limiting failure is non-fatal — let the request through
                 console.error('Rate limit check failed:', rateLimitError);
+                const failClosed = process.env.RATE_LIMIT_FAILURE_MODE === 'closed'
+                    || process.env.NODE_ENV === 'production';
+                if (failClosed && shouldFailClosed(pathname)) {
+                    return NextResponse.json(
+                        { error: 'Request protection is temporarily unavailable. Please try again.' },
+                        { status: 503 }
+                    );
+                }
             }
         }
 
         return authResponse;
     } catch (middlewareError) {
-        // Catch-all: never let middleware crash — let the request through
         console.error('Middleware error:', middlewareError);
+        const pathname = request.nextUrl?.pathname || '';
+        if (shouldFailClosed(pathname)) {
+            return NextResponse.json(
+                { error: 'Security middleware unavailable. Please try again.' },
+                { status: 503 }
+            );
+        }
         return NextResponse.next();
     }
 }
