@@ -67,8 +67,9 @@ async function main() {
     console.log(`  Restored staging:    ${normalizedUrl(STAGING_DB_URL)}`);
     console.log(`  Restore drill id:    ${RESTORE_DRILL_ID}`);
 
-    const prodPool = new Pool({ connectionString: PROD_DB_URL, ssl: { rejectUnauthorized: false } });
-    const stagingPool = new Pool({ connectionString: STAGING_DB_URL, ssl: { rejectUnauthorized: false } });
+    // family: 4 forces IPv4 — GitHub Actions resolves Supabase hosts to IPv6 (ENETUNREACH)
+    const prodPool = new Pool({ connectionString: PROD_DB_URL, ssl: { rejectUnauthorized: false }, family: 4 });
+    const stagingPool = new Pool({ connectionString: STAGING_DB_URL, ssl: { rejectUnauthorized: false }, family: 4 });
 
     try {
         await check(stagingPool, 'Restored staging DB reachable', pool => pool.query('SELECT 1'));
