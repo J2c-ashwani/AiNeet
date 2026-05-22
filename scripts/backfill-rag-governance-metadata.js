@@ -23,7 +23,7 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false },
 });
 
-const BATCH_ID = `backfill-${new Date().toISOString().slice(0, 10)}`;
+const BATCH_ID = `backfill-${new Date().toISOString().slice(0, 10)}`; // for display only
 const SYLLABUS_VERSION = '2023-24'; // Current NEET syllabus year
 const NCERT_EDITION   = '2023';    // NCERT edition in use
 
@@ -70,30 +70,22 @@ async function main() {
     `, [NCERT_EDITION]);
     console.log(`  ✅ ncert_edition set on ${e} rows`);
 
-    // Backfill ingestion_batch_id
+    // Backfill ingestion_batch_id — UUID column, use gen_random_uuid() per row
     const { rowCount: b } = await pool.query(`
         UPDATE ncert_embeddings
-        SET ingestion_batch_id = $1
+        SET ingestion_batch_id = gen_random_uuid()
         WHERE ingestion_batch_id IS NULL AND corpus_status = 'active'
-    `, [BATCH_ID]);
+    `);
     console.log(`  ✅ ingestion_batch_id set on ${b} rows`);
 
-    // Backfill source_checksum — derive from chunk_text hash for existing rows
+    // Backfill source_checksum — use pgcrypto SHA256 if available, else md5
     const { rowCount: c } = await pool.query(`
         UPDATE ncert_embeddings
-        SET source_checksum = encode(digest(chunk_text, 'sha256'), 'hex')
+        SET source_checksum = md5(chunk_text)
         WHERE source_checksum IS NULL
           AND corpus_status = 'active'
           AND chunk_text IS NOT NULL
-    `).catch(async () => {
-        // pgcrypto may not be available — use a simpler placeholder
-        const { rowCount } = await pool.query(`
-            UPDATE ncert_embeddings
-            SET source_checksum = 'backfill-' || id::text
-            WHERE source_checksum IS NULL AND corpus_status = 'active'
-        `);
-        return { rowCount };
-    });
+    `);
     console.log(`  ✅ source_checksum set on ${c} rows`);
 
     // Verify
