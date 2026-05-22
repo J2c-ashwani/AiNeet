@@ -287,8 +287,9 @@ async function main() {
 
             const retrieved = chunk.chapter_title;
             const distance = parseFloat(chunk.distance).toFixed(4);
-            const isExpected = retrieved.toLowerCase().includes(test.expectedChapter.toLowerCase().substring(0, 15));
-            const isForbidden = test.forbiddenChapter && retrieved.toLowerCase().includes(test.forbiddenChapter.toLowerCase().substring(0, 10));
+            const isExpected = retrieved.toLowerCase().includes(test.expectedChapter.toLowerCase().substring(0, Math.max(20, test.expectedChapter.length)));
+            const isForbidden = test.forbiddenChapter &&
+                retrieved.toLowerCase().includes(test.forbiddenChapter.toLowerCase().substring(0, Math.max(20, test.forbiddenChapter.length)));
 
             if (isForbidden) {
                 console.log(`    ❌ CORRUPTION DETECTED — Got: "${retrieved}" (forbidden: "${test.forbiddenChapter}") distance=${distance}\n`);
