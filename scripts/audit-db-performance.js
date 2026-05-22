@@ -12,7 +12,7 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: '.env.local' });
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, family: 4 });
 const results = { passed: [], warned: [], failed: [] };
 const SLOW_QUERY_THRESHOLD_MS = 500;
 

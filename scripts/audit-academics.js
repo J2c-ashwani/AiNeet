@@ -3,7 +3,8 @@ require('dotenv').config({ path: '.env.local' });
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false },
+    family: 4, // force IPv4 — GitHub Actions ENETUNREACH on IPv6 Supabase hosts
 });
 
 async function auditAcademics() {

@@ -96,7 +96,7 @@ async function scriptCheck(name, cmd) {
 }
 
 async function dbCheck() {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, family: 4 });
     try {
         // Feature flags reachable
         const { rows } = await pool.query("SELECT COUNT(*) as c FROM feature_flags WHERE enabled = true");
