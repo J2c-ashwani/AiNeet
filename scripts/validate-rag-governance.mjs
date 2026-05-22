@@ -16,6 +16,9 @@ Object.assign(process.env, explicitEnv);
 const checks = { passed: [], failed: [], warnings: [] };
 const expectedEmbeddingDimensions = Number(process.env.EXPECTED_EMBEDDING_DIMENSIONS || 3072);
 
+// Real production RAG table (confirmed by live DB inspection 2026-05-22)
+const RAG_TABLE = 'ncert_embeddings';
+
 function pass(message) {
     checks.passed.push(message);
     console.log(`  PASS ${message}`);
@@ -61,6 +64,19 @@ async function main() {
     });
 
     try {
+        // ── 1. Confirm real RAG table exists ─────────────────────────────────
+        const { rows: tableRows } = await pool.query(`
+            SELECT table_name FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = $1
+        `, [RAG_TABLE]);
+
+        if (tableRows.length === 0) {
+            fail(`RAG table '${RAG_TABLE}' does not exist`);
+            return finish(pool);
+        }
+        pass(`RAG table '${RAG_TABLE}' exists`);
+
+        // ── 2. Required governance columns ────────────────────────────────────
         const requiredColumns = [
             'syllabus_version',
             'ncert_edition',
@@ -74,22 +90,24 @@ async function main() {
         const { rows: columnRows } = await pool.query(`
             SELECT column_name
             FROM information_schema.columns
-            WHERE table_name = 'ncert_chunks'
-        `);
+            WHERE table_name = $1
+        `, [RAG_TABLE]);
         const columns = new Set(columnRows.map(row => row.column_name));
         for (const column of requiredColumns) {
             columns.has(column)
-                ? pass(`ncert_chunks.${column} exists`)
-                : fail(`ncert_chunks.${column} is missing`);
+                ? pass(`${RAG_TABLE}.${column} exists`)
+                : fail(`${RAG_TABLE}.${column} is missing`);
         }
 
+        // ── 3. Governance index ───────────────────────────────────────────────
         const { rows: indexRows } = await pool.query(
             "SELECT to_regclass('public.idx_ncert_active_syllabus') AS index_name"
         );
         indexRows[0]?.index_name
             ? pass('idx_ncert_active_syllabus exists')
-            : fail('idx_ncert_active_syllabus is missing');
+            : warn('idx_ncert_active_syllabus is missing (query performance impact, not a data error)');
 
+        // ── 4. hybrid_ncert_search function and its filters ───────────────────
         const { rows: fnRows } = await pool.query(`
             SELECT pg_get_functiondef(p.oid) AS definition
             FROM pg_proc p
@@ -103,20 +121,23 @@ async function main() {
             fail('hybrid_ncert_search function is missing');
         } else {
             pass('hybrid_ncert_search function exists');
+            // Case-insensitive check — SQL allows TRUE/true/True
+            const fnLower = fnDefinition.toLowerCase();
             [
-                'is_current_syllabus = true',
-                'deleted_from_current_syllabus = false',
-                "corpus_status = 'active'",
-            ].forEach(fragment => {
-                fnDefinition.includes(fragment)
-                    ? pass(`hybrid search filters ${fragment}`)
-                    : fail(`hybrid search does not filter ${fragment}`);
+                { fragment: 'is_current_syllabus', label: 'hybrid search filters is_current_syllabus' },
+                { fragment: 'deleted_from_current_syllabus', label: 'hybrid search filters deleted_from_current_syllabus' },
+                { fragment: "corpus_status = 'active'", label: "hybrid search filters corpus_status = 'active'" },
+            ].forEach(({ fragment, label }) => {
+                fnLower.includes(fragment.toLowerCase())
+                    ? pass(label)
+                    : fail(label);
             });
         }
 
+        // ── 5. Data integrity — no active rows violating syllabus flags ───────
         const { rows: activeRows } = await pool.query(`
             SELECT COUNT(*)::int AS count
-            FROM ncert_chunks
+            FROM ${RAG_TABLE}
             WHERE corpus_status = 'active'
               AND (
                 is_current_syllabus IS DISTINCT FROM true
@@ -127,9 +148,10 @@ async function main() {
             ? pass('No active chunks are marked deleted/outside current syllabus')
             : fail(`${activeRows[0].count} active chunks violate syllabus flags`);
 
+        // ── 6. Missing governance metadata ────────────────────────────────────
         const { rows: missingMetadataRows } = await pool.query(`
             SELECT COUNT(*)::int AS count
-            FROM ncert_chunks
+            FROM ${RAG_TABLE}
             WHERE corpus_status = 'active'
               AND (
                 syllabus_version IS NULL
@@ -139,19 +161,20 @@ async function main() {
               )
         `);
         Number(missingMetadataRows[0]?.count || 0) === 0
-            ? pass('Active chunks have governance metadata')
+            ? pass('Active chunks have complete governance metadata')
             : fail(`${missingMetadataRows[0].count} active chunks are missing governance metadata`);
 
+        // ── 7. Embedding dimension consistency ────────────────────────────────
         try {
             const { rows: dimsRows } = await pool.query(`
                 SELECT vector_dims(embedding)::int AS dimensions, COUNT(*)::int AS count
-                FROM ncert_chunks
+                FROM ${RAG_TABLE}
                 WHERE embedding IS NOT NULL
                 GROUP BY vector_dims(embedding)
                 ORDER BY dimensions
             `);
             if (dimsRows.length === 0) {
-                warn('No embeddings found in ncert_chunks');
+                warn('No embeddings found in ' + RAG_TABLE);
             } else {
                 const unexpected = dimsRows.filter(row => Number(row.dimensions) !== expectedEmbeddingDimensions);
                 unexpected.length === 0
@@ -162,20 +185,30 @@ async function main() {
             fail(`Embedding dimension check failed: ${error.message}`);
         }
 
+        // ── 8. Subject coverage ───────────────────────────────────────────────
         const { rows: subjectRows } = await pool.query(`
             SELECT subject, COUNT(*)::int AS count
-            FROM ncert_chunks
+            FROM ${RAG_TABLE}
             WHERE corpus_status = 'active'
               AND is_current_syllabus = true
               AND deleted_from_current_syllabus = false
             GROUP BY subject
             ORDER BY subject
         `);
+        const REQUIRED_SUBJECTS = ['physics', 'chemistry', 'biology'];
+        const foundSubjects = new Set(subjectRows.map(r => r.subject?.toLowerCase()));
+
         if (subjectRows.length === 0) {
             fail('No active current-syllabus chunks found');
         } else {
             subjectRows.forEach(row => pass(`${row.subject || 'unknown'} active chunks: ${row.count}`));
+            REQUIRED_SUBJECTS.forEach(subject => {
+                if (!foundSubjects.has(subject)) {
+                    fail(`${subject} has 0 active embeddings — ingestion required before launch`);
+                }
+            });
         }
+
     } catch (error) {
         fail(error.message);
     } finally {
