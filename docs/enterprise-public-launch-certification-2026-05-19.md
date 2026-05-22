@@ -108,8 +108,10 @@ node scripts/test-payment-flow.mjs
 Manual proof required:
 
 - One low-value production payment.
-- One refund/cancel drill.
+- One cancellation drill that confirms no refund is issued, future billing stops, and access continues until the current billing period ends.
 - One webhook replay verification.
+
+If paid checkout is enabled during the controlled rollout, this payment proof is a controlled-rollout blocker. If checkout remains disabled behind a feature flag, it may remain a pre-scale gate.
 
 ## Phase 6: Signed Mobile Release Certification
 
@@ -177,6 +179,8 @@ Required before launch:
 - Feature flags for AI, payments, OMR, battleground, notifications, experimental systems.
 - Rollback plan tested once.
 
+Rollback evidence must include the actual previous/current Vercel deployment IDs or URLs, rollback timestamp, operator, elapsed time, and post-rollback health check result. A documented procedure alone is not rollback proof.
+
 ## Rollout Sequence
 
 1. Internal production dry run.
@@ -195,4 +199,3 @@ Status can be changed to `ENTERPRISE PUBLIC LAUNCH CERTIFIED` only after:
 - The signed mobile release proof is attached.
 - The rollback drill is completed.
 - MD sir approves the phased rollout.
-
