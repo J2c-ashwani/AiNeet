@@ -67,6 +67,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '${{ env.NODE_VERSION }}', cache: 'npm' }
       - run: npm ci
+      - name: Force IPv4 networking
+        run: |
+          sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+          sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
       - name: Database performance audit
         run: node scripts/audit-db-performance.js
         env:
