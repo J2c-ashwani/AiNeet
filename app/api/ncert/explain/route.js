@@ -3,11 +3,14 @@ import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const featureDisabled = await requireFeatureEnabled('rag_explanations');
+        if (featureDisabled) return featureDisabled;
 
         // Rate limit: 20 requests per minute per user
         const rl = await rateLimit(`user:${decoded.id}:explain`, 20, 60000, 'soft');
@@ -37,7 +40,7 @@ export async function POST(request) {
         const cleanBookId = bookId ? sanitizeString(bookId, 128) : null;
 
         // Call AI Engine (RAG)
-        const { getAIResponse } = await import('@/lib/ai-engine');
+        const { callAIWithFallback } = await import('@/lib/ai-engine');
 
         const systemPrompt = `You are a helpful and expert NEET Coach. A student has highlighted the following text from an NCERT Biology/Physics/Chemistry textbook (Book ID: ${cleanBookId}). 
 Please explain this concept simply but thoroughly, keeping in mind it is for the NEET exam. 
@@ -47,7 +50,8 @@ Format your response with:
 3. How this concept is typically tested in NEET (if applicable).
 Keep it concise and format with basic Markdown.`;
 
-        const explanationHtml = await getAIResponse(systemPrompt, `Highlighted Text: "${cleanText}"`);
+        const aiResult = await callAIWithFallback(systemPrompt, `Highlighted Text: "${cleanText}"`);
+        const explanationHtml = aiResult.text;
 
         return NextResponse.json({ explanation: explanationHtml });
 

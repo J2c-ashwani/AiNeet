@@ -37,7 +37,8 @@ async function req(method, path, body = null, timeoutMs = 10000, extraHeaders = 
         });
         const latency = Date.now() - start;
         results.latencies.push(latency);
-        return { status: res.status, latency, ok: res.ok };
+        const ok = res.status > 0 && res.status < 500;
+        return { status: res.status, latency, ok };
     } catch (e) {
         return { status: 0, latency: timeoutMs, ok: false, error: e.message };
     } finally {
@@ -57,7 +58,13 @@ async function concurrent(name, count, fn) {
     const passed  = ok / count >= 0.99; // 99% success threshold
 
     console.log(`  ✅ ${ok}/${count} succeeded | Avg ${avgMs}ms | P99 ${p99}ms`);
-    if (!passed) console.log(`  ❌ FAIL: ${failed} requests failed`);
+    if (!passed) {
+        console.log(`  ❌ FAIL: ${failed} requests failed`);
+        console.log(`    ⚠️ Sample failures for ${name}:`);
+        responses.filter(r => !r.ok).slice(0, 3).forEach((r, idx) => {
+            console.log(`      [${idx + 1}] Status: ${r.status} | Latency: ${r.latency}ms | Error: ${r.error || 'None'}`);
+        });
+    }
 
     if (passed) results.passed.push(name);
     else results.failed.push({ name, ok, failed, avgMs, p99 });
@@ -136,6 +143,27 @@ async function runAllScenarios() {
     // Scenario 8: Payment entitlement/status reads
     await concurrent('Payment entitlement reads', CONCURRENCY, () =>
         req('GET', '/api/subscription/status')
+    );
+
+    // Scenario 8b: Payment verification (failure & robustness check under load)
+    await concurrent('Payment verification traffic', Math.max(2, Math.floor(CONCURRENCY / 5)), () =>
+        req('POST', '/api/subscription/verify', {
+            orderId: 'mock_load_test_order_' + Date.now(),
+            planId: 'premium'
+        })
+    );
+
+    // Scenario 8c: Leaderboard traffic
+    await concurrent('Leaderboard traffic reads', CONCURRENCY, () =>
+        req('GET', '/api/leaderboard')
+    );
+
+    // Scenario 8d: Concurrent logins
+    await concurrent('Concurrent logins', Math.max(2, Math.floor(CONCURRENCY / 5)), () =>
+        req('POST', '/api/auth/login', {
+            email: process.env.QA_USER_EMAIL || 'qa@neetcoach.in',
+            password: process.env.QA_USER_PASSWORD || 'password123'
+        })
     );
 
     // Scenario 9: Telemetry batch ingest storm

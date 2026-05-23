@@ -181,7 +181,9 @@ export async function proxy(request) {
         }
 
         // ─── Edge Rate Limiting (API Routes Only, non-fatal) ───
-        if (pathname.startsWith('/api/') && !pathname.startsWith('/api/webhooks') && ipRatelimit) {
+        if (process.env.DISABLE_RATE_LIMITS === 'true') {
+            // Rate limiting globally bypassed for load testing/simulations
+        } else if (pathname.startsWith('/api/') && !pathname.startsWith('/api/webhooks') && ipRatelimit) {
             try {
                 // Find IP
                 const ip = request.ip ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for") ?? "127.0.0.1";
