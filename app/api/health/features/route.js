@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
+import { getStaticFeatureSnapshot } from '@/lib/feature-flags';
 
 export async function GET() {
-    // Expose Kill Switch states securely without leaking env values directly
-    const features = {
-        ai: process.env.DISABLE_AI !== 'true',
-        payments: process.env.DISABLE_PAYMENTS !== 'true',
-        referrals: process.env.DISABLE_REFERRALS !== 'true'
-    };
+    // Expose kill switch states securely without leaking environment values directly.
+    const snapshot = getStaticFeatureSnapshot();
+    const features = Object.fromEntries(
+        Object.entries(snapshot).map(([name, config]) => [name, config.enabled])
+    );
 
     // Edge Caching: 60s max-age protects against polling spikes while retaining quick operational shutdown capability
     return NextResponse.json(features, {

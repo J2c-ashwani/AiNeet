@@ -14,10 +14,15 @@ Every high-risk system is behind a **remote feature flag** in the `feature_flags
 | Flag | System |
 |---|---|
 | `ff_adaptive_engine` | Adaptive recommendations |
+| `ff_ai_generation` | AI question generation and doubt-solving |
+| `ff_rag_explanations` | NCERT RAG explanations |
 | `ff_battleground` | Multiplayer mode |
 | `ff_omr_enabled` | OMR grading pipeline |
+| `ff_payments` | Cashfree and Google Play payments |
 | `ff_notifications` | Push notifications |
 | `ff_ai_explanations` | AI question explanations |
+| `ff_referrals` | Referral rewards |
+| `ff_leaderboard` | Leaderboard |
 | `ff_parent_reports` | Weekly parent summaries |
 | `ff_fraud_signals` | Fraud detection |
 

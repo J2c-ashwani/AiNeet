@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getLevelFromXP } from '@/lib/scoring';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request) {
     try {
+        const featureDisabled = await requireFeatureEnabled('leaderboard');
+        if (featureDisabled) return featureDisabled;
+
         const supabase = await getDb();
 
         // 1. Fetch top 20 users by XP

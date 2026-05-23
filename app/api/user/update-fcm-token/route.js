@@ -2,6 +2,7 @@ import { safeUpdate, safeUpsert } from '@/lib/core/db-safe';
 import { NextResponse } from 'next/server';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 const MAX_TOKEN_LENGTH = 4096;
 const MAX_META_LENGTH = 160;
@@ -17,6 +18,8 @@ export async function POST(request) {
         }
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('notifications');
+        if (featureDisabled) return featureDisabled;
 
         let _body;
 

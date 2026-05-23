@@ -7,12 +7,15 @@ import { randomUUID } from 'crypto';
 import { sanitizeString } from '@/lib/validate';
 import { rateLimit } from '@/lib/rate-limit';
 import { logError } from '@/lib/error-logger';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     let decoded = null;
     try {
         decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const featureDisabled = await requireFeatureEnabled('ai_generation');
+        if (featureDisabled) return featureDisabled;
 
         // Rate limit: 20 AI doubt requests per minute per user
         const rl = await rateLimit(`user:${decoded.id}:doubt`, 20, 60000, 'soft');

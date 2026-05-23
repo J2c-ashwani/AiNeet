@@ -8,6 +8,10 @@
 /coverage
 eslint-report*.json
 ui-governance-report*.json
+/playwright-report/
+/playwright-report-production/
+/test-results/
+
 
 # next.js
 /.next/

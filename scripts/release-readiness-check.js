@@ -30,6 +30,9 @@ async function run() {
     await scriptCheck('Mobile enterprise audit', 'node scripts/audit-mobile-enterprise.js');
     await scriptCheck('Performance budget audit', 'node scripts/audit-performance-budget.js');
     await scriptCheck('Secret hygiene audit', 'node scripts/audit-secret-hygiene.js');
+    await scriptCheck('Feature flag rollout audit', 'node scripts/audit-feature-flag-readiness.mjs');
+    await scriptCheck('Observability readiness audit', 'node scripts/audit-observability-readiness.mjs');
+    await scriptCheck('Rollout operations audit', 'node scripts/audit-rollout-ops-readiness.mjs');
 
     // ── DB-Dependent Checks ─────────────────────────────────
     if (process.env.DATABASE_URL) {

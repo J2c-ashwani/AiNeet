@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/nextjs';
 import { logError } from '@/lib/error-logger';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 const ACHIEVEMENTS = [
     { id: 'first_test', name: 'First Steps', description: 'Completed your first test', icon: '🎯' },
@@ -380,10 +381,11 @@ export async function POST(request) {
             };
 
             const { count: testCount } = await supabase.from('tests').select('*', { count: 'exact', head: true }).eq('user_id', decoded.id).not('completed_at', 'is', null);
+            const referralsEnabled = await isFeatureEnabled('referrals');
 
             // [GROWTH ENGINE] Meaningful Action Referral Unlock & Atomic Dopamine Reward
             referralRewardUnlocked = false;
-            if (testCount === 1 && user?.referred_by) {
+            if (referralsEnabled && testCount === 1 && user?.referred_by) {
                 // Log the attempt immediately for analytics
                 await supabase.rpc('increment_referrals', { target_user_id: user.referred_by });
 

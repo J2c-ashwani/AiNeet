@@ -5,11 +5,14 @@ import { generateDoubtResponse } from '@/lib/ai-engine';
 import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import Tesseract from 'tesseract.js';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+        const featureDisabled = await requireFeatureEnabled('ai_generation');
+        if (featureDisabled) return featureDisabled;
 
         // User Rate limit: 5 AI image requests per minute
         const rl = await rateLimit(`user:${decoded.id}:doubt:image`, 5, 60000, 'soft');

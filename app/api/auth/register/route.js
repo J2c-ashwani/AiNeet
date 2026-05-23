@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeString, validateEmail, validatePassword } from '@/lib/validate';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
@@ -129,9 +130,10 @@ export async function POST(request) {
 
         const id = authData.user.id;
         const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const referralsEnabled = await isFeatureEnabled('referrals');
 
         let referredBy = null;
-        if (referralCode) {
+        if (referralsEnabled && referralCode) {
             const { data: referrer } = await supabase
                 .from('users')
                 .select('id, referrals_count')

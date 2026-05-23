@@ -4,12 +4,15 @@ import { getUserFromRequest } from '@/lib/core/auth';
 import { analyzeImageDoubt } from '@/lib/vision_engine';
 import { getDb } from '@/lib/core/db';
 import { rateLimit } from '@/lib/rate-limit';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
         // 1. Auth Check
         const decoded = await getUserFromRequest(request);
         if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const featureDisabled = await requireFeatureEnabled('ai_generation');
+        if (featureDisabled) return featureDisabled;
 
         // Rate limit: 5 image analysis requests per minute (expensive AI)
         const rl = await rateLimit(`user:${decoded.id}:snap`, 5, 60000, 'soft');

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { safeUpdate } from '@/lib/core/db-safe';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,8 @@ export async function GET(request) {
         if (!decoded) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+        const featureDisabled = await requireFeatureEnabled('battleground');
+        if (featureDisabled) return featureDisabled;
 
         const { searchParams } = new URL(request.url);
         const battleId = searchParams.get('battleId');

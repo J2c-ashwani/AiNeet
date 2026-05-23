@@ -5,6 +5,7 @@ import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { AI_OPPONENTS } from '@/lib/game_engine';
 import { sanitizeString, validateEnum, validatePositiveInt } from '@/lib/validate';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 /**
  * 1v1 AI Battle — Submit Results
@@ -19,6 +20,8 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('battleground');
+        if (featureDisabled) return featureDisabled;
 
         let _body;
 

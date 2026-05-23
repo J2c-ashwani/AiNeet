@@ -6,6 +6,7 @@ import { getUserFromRequest } from '@/lib/core/auth';
 import { randomUUID } from 'crypto';
 import { rateLimit } from '@/lib/rate-limit';
 import { validateArray, validateEnum, validatePositiveInt } from '@/lib/validate';
+import { isFeatureEnabled, requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
@@ -54,6 +55,9 @@ export async function POST(request) {
 
         // MONETIZATION: Usage Limit Check
         if (decoded && type === 'ai_generated') {
+            const featureDisabled = await requireFeatureEnabled('ai_generation');
+            if (featureDisabled) return featureDisabled;
+
             const { UsageTracker } = await import('@/lib/usage');
             const check = await UsageTracker.checkLimit(decoded.id, decoded.plan_type || decoded.subscription_tier, 'test');
             if (!check.allowed) {
@@ -120,6 +124,13 @@ export async function POST(request) {
 
             } else {
                 console.log(`Insufficient questions (Found ${questions.length}, Needed ${limit}). Triggering AI RAG...`);
+                const aiEnabled = await isFeatureEnabled('ai_generation');
+                if (!aiEnabled) {
+                    return NextResponse.json({
+                        error: 'Not enough verified questions are available right now. Please choose fewer questions or another chapter.',
+                        code: 'INSUFFICIENT_QUESTION_POOL',
+                    }, { status: 409 });
+                }
                 const { generateInstantQuestions } = await import('@/lib/rag_engine');
 
                 // Determine topic for generation (use first requested topic or 'General')

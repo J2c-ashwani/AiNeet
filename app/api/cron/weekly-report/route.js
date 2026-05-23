@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { generateWeeklyReports } from '@/lib/reporting_engine';
 import { requireRequestSecret } from '@/lib/server-secrets';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function GET(request) {
     try {
@@ -11,6 +12,8 @@ export async function GET(request) {
             query: ['secret'],
         });
         if (authError) return authError;
+        const featureDisabled = await requireFeatureEnabled('notifications');
+        if (featureDisabled) return featureDisabled;
 
         const result = await generateWeeklyReports();
 

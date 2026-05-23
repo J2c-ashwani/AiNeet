@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { safeInsert } from '@/lib/core/db-safe';
 import { rateLimit } from '@/lib/rate-limit';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
@@ -38,34 +39,44 @@ export async function POST(request) {
         const databaseFallbackMode = bioQuestions.length < 7;
         let questions = databaseFallbackMode ? (fetchPyq || []).sort(() => Math.random() - 0.5).slice(0, 7) : bioQuestions.slice(0, 7);
 
-        // 3. Dynamic RAG Call (3 Questions) to maintain "AI Magic" premium feel
-        console.log('[ACQUISITION FUNNEL] Generating 3 Dynamic Biology AI Questions...');
-        try {
-            const { generateInstantQuestions } = await import('@/lib/rag_engine');
-            const { verifyQuestion } = await import('@/lib/ai_verifier');
-            
-            // Generate exact 3, verify rapidly
-            const aiQuestions = await generateInstantQuestions('NEET High Yield Biology', 3);
-            for (let q of aiQuestions) {
-                const verification = await verifyQuestion(q, q.source_context || '');
-                if (verification.verification_status !== 'rejected') {
-                    q.correct_option = verification.verified_answer || q.correct_option;
-                    
-                    await safeInsert('questions', {
-                        id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, 
-                        option_c: q.option_c, option_d: q.option_d, correct_option: q.correct_option, 
-                        difficulty: 'medium', subject_id: 3, is_ai_generated: 1
-                    }, {
-                        route: '/api/tests/diagnostic/generate',
-                    });
+        // 3. Dynamic RAG Call (3 Questions) to maintain "AI Magic" premium feel.
+        // The remote kill switch must be able to force a pure-DB diagnostic during AI quota incidents.
+        const aiEnabled = await isFeatureEnabled('ai_generation');
+        if (aiEnabled) {
+            console.log('[ACQUISITION FUNNEL] Generating 3 Dynamic Biology AI Questions...');
+            try {
+                const { generateInstantQuestions } = await import('@/lib/rag_engine');
+                const { verifyQuestion } = await import('@/lib/ai_verifier');
 
-                    questions.push(q);
+                // Generate exact 3, verify rapidly
+                const aiQuestions = await generateInstantQuestions('NEET High Yield Biology', 3);
+                for (let q of aiQuestions) {
+                    const verification = await verifyQuestion(q, q.source_context || '');
+                    if (verification.verification_status !== 'rejected') {
+                        q.correct_option = verification.verified_answer || q.correct_option;
+
+                        await safeInsert('questions', {
+                            id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b,
+                            option_c: q.option_c, option_d: q.option_d, correct_option: q.correct_option,
+                            difficulty: 'medium', subject_id: 3, is_ai_generated: 1
+                        }, {
+                            route: '/api/tests/diagnostic/generate',
+                        });
+
+                        questions.push(q);
+                    }
                 }
+            } catch (llmErr) {
+                console.error('[ACQUISITION FUNNEL] LLM failed, substituting purely from DB pool');
             }
-        } catch (llmErr) {
-            console.error('[ACQUISITION FUNNEL] LLM failed, substituting purely from DB pool');
+        } else {
+            console.warn('[ACQUISITION FUNNEL] AI generation disabled by feature flag, using DB-only diagnostic');
+        }
+
+        if (questions.length < 10) {
+            console.warn('[ACQUISITION FUNNEL] Filling remaining diagnostic slots from DB pool');
             // If LLM dies, grab 3 more from DB to ensure they don't bounce
-            const safetyNets = (fetchPyq || []).sort(() => Math.random() - 0.5).slice(0, 15).filter(sq => !questions.some(q => q.id === sq.id)).slice(0, 3);
+            const safetyNets = (fetchPyq || []).sort(() => Math.random() - 0.5).slice(0, 15).filter(sq => !questions.some(q => q.id === sq.id)).slice(0, 10 - questions.length);
             questions.push(...safetyNets);
         }
 

@@ -42,6 +42,9 @@ add('Contract tests', ['npm', 'run', 'test:contracts']);
 add('Performance budget', ['node', 'scripts/audit-performance-budget.js']);
 add('Mobile enterprise audit', ['node', 'scripts/audit-mobile-enterprise.js']);
 add('Master audit', ['node', 'scripts/audit-master.js']);
+add('Feature flag rollout controls', ['node', 'scripts/audit-feature-flag-readiness.mjs']);
+add('Observability readiness', ['node', 'scripts/audit-observability-readiness.mjs']);
+add('Rollout operations readiness', ['node', 'scripts/audit-rollout-ops-readiness.mjs']);
 add('App Check static/native certification', ['node', 'scripts/test-app-check-enforcement.mjs'], {
     env: envWith({ APP_CHECK_ENFORCEMENT: process.env.APP_CHECK_ENFORCEMENT || 'native' }),
 });
@@ -98,4 +101,3 @@ if (failed.length === 0 && skipped.length === 0) {
 
 console.log('\nVerdict: NOT LAUNCH CERTIFIED');
 process.exit(1);
-

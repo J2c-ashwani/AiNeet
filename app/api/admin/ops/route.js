@@ -2,17 +2,17 @@ import { NextResponse } from 'next/server';
 import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
 import { getDb } from '@/lib/core/db';
 import { Redis } from '@upstash/redis';
+import { FEATURE_FLAGS, isFeatureEnabled, clearFeatureFlagCache } from '@/lib/feature-flags';
 
 export const GET = withApiRoute(async () => {
     const supabase = await getDb();
     const today = new Date().toISOString().split('T')[0];
 
     // ─── 1. Kill Switch Status ───
-    const killSwitches = {
-        ai: process.env.DISABLE_AI !== 'true',
-        payments: process.env.DISABLE_PAYMENTS !== 'true',
-        referrals: process.env.DISABLE_REFERRALS !== 'true'
-    };
+    const killSwitches = {};
+    for (const name of Object.keys(FEATURE_FLAGS)) {
+        killSwitches[name] = await isFeatureEnabled(name);
+    }
 
     // ─── 2. Circuit Breaker States (Module-level Map is in-memory only per instance) ───
     // We read from the imported module's live state
@@ -157,3 +157,51 @@ export const GET = withApiRoute(async () => {
     auth: 'admin',
     rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ops' },
 });
+
+export const POST = withApiRoute(async (req, { body }) => {
+    const { key, enabled, rollout_pct } = body || {};
+    if (!key) {
+        return NextResponse.json({ error: 'Feature flag key is required.' }, { status: 400 });
+    }
+
+    // Verify if it is a valid registered key or config key
+    const validDbKeys = Object.values(FEATURE_FLAGS).map(f => f.key);
+    const validConfigKeys = Object.keys(FEATURE_FLAGS);
+    
+    let dbKey = key;
+    if (validConfigKeys.includes(key)) {
+        dbKey = FEATURE_FLAGS[key].key;
+    } else if (!validDbKeys.includes(key)) {
+        return NextResponse.json({ 
+            error: `Invalid feature flag: '${key}'. Must be one of: ${validConfigKeys.join(', ')}` 
+        }, { status: 400 });
+    }
+
+    const supabase = await getDb();
+    const updateData = {};
+    if (enabled !== undefined) updateData.enabled = enabled;
+    if (rollout_pct !== undefined) updateData.rollout_pct = Number(rollout_pct);
+    updateData.updated_at = new Date().toISOString();
+
+    const { data, error } = await supabase
+        .from('feature_flags')
+        .upsert({ key: dbKey, ...updateData }, { onConflict: 'key' })
+        .select();
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Instantly reset process-level in-memory cache
+    clearFeatureFlagCache();
+
+    return NextResponse.json({ 
+        success: true, 
+        message: `Feature flag '${dbKey}' successfully updated.`,
+        flag: data?.[0]
+    });
+}, {
+    auth: 'admin',
+    rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ops:post' },
+});
+

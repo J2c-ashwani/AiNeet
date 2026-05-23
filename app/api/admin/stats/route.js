@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
 import { getUserFromRequest } from '@/lib/core/auth';
+import { FEATURE_FLAGS, isFeatureEnabled } from '@/lib/feature-flags';
 
 async function requireAdmin(request) {
     const user = await getUserFromRequest(request);
@@ -120,6 +121,11 @@ export async function GET(request) {
             }
         } catch (e) { /* */ }
 
+        const killSwitches = {};
+        for (const name of Object.keys(FEATURE_FLAGS)) {
+            killSwitches[name] = await isFeatureEnabled(name);
+        }
+
         return NextResponse.json({
             users: usersCount || 0,
             questions: questionsCount || 0,
@@ -129,7 +135,8 @@ export async function GET(request) {
             dailyActivity,
             subscriptionBreakdown,
             aiTelemetry,
-            killSwitchesActive: process.env.DISABLE_AI !== 'true' && process.env.DISABLE_PAYMENTS !== 'true'
+            killSwitches,
+            killSwitchesActive: Object.values(killSwitches).every(Boolean)
         });
     } catch (error) {
         console.error('Stats API Error:', error);

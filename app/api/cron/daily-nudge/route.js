@@ -3,6 +3,7 @@ import { getDb } from '@/lib/core/db';
 import { safeInsert, safeUpdate } from '@/lib/core/db-safe';
 import { getMessaging, isFirebaseConfigured } from '@/lib/firebase-admin';
 import { requireRequestSecret } from '@/lib/server-secrets';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 function getLocalTimeData(tz) {
     try {
@@ -73,6 +74,8 @@ export async function GET(request) {
             query: ['secret'],
         });
         if (authError) return authError;
+        const featureDisabled = await requireFeatureEnabled('notifications');
+        if (featureDisabled) return featureDisabled;
 
         if (!isFirebaseConfigured()) {
             return NextResponse.json({ status: 'skipped', reason: 'Firebase not configured' });

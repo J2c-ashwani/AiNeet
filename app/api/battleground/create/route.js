@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { validatePositiveInt } from '@/lib/validate';
 import { checkFeatureAccess } from '@/lib/plan_gate';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
@@ -14,6 +15,8 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('battleground');
+        if (featureDisabled) return featureDisabled;
 
         // Plan gate: Battleground requires Pro or Premium
         const blocked = await checkFeatureAccess(decoded.id, 'battleground_enabled', 'pro');

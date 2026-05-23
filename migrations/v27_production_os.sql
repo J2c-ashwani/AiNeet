@@ -80,7 +80,12 @@ INSERT INTO feature_flags (key, enabled, rollout_pct, description) VALUES
     ('ff_omr_enabled',        true,  100, 'OMR sheet grading pipeline'),
     ('ff_notifications',      true,  100, 'Push notification delivery'),
     ('ff_battleground',       true,  100, 'Real-time multiplayer battleground'),
+    ('ff_ai_generation',      true,  100, 'AI question generation and doubt-solving kill switch'),
+    ('ff_rag_explanations',   true,  100, 'NCERT RAG explanation and retrieval kill switch'),
     ('ff_ai_explanations',    true,  100, 'AI-generated question explanations'),
+    ('ff_payments',           true,  100, 'Cashfree and Google Play payment kill switch'),
+    ('ff_referrals',          true,  100, 'Referral reward kill switch'),
+    ('ff_leaderboard',        true,  100, 'Leaderboard kill switch'),
     ('ff_parent_reports',     true,  100, 'Weekly parent progress reports'),
     ('ff_fraud_signals',      true,  100, 'Behavior-based fraud detection')
 ON CONFLICT (key) DO NOTHING;

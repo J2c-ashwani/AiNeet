@@ -65,7 +65,17 @@ async function audit() {
 
     // 6. Verify feature_flags table has all required flags
     const flags = await pool.query(`SELECT key FROM feature_flags`);
-    const required = ['ff_adaptive_engine', 'ff_battleground', 'ff_notifications', 'ff_omr_enabled'];
+    const required = [
+        'ff_adaptive_engine',
+        'ff_ai_generation',
+        'ff_rag_explanations',
+        'ff_omr_enabled',
+        'ff_battleground',
+        'ff_payments',
+        'ff_notifications',
+        'ff_referrals',
+        'ff_leaderboard',
+    ];
     const existing = flags.rows.map(r => r.key);
     const missing  = required.filter(k => !existing.includes(k));
     if (missing.length === 0) {

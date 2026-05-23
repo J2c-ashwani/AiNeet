@@ -4,6 +4,7 @@ import { safeUpdate } from '@/lib/core/db-safe';
 import { logAcademicEvent } from '@/lib/core/academic-timeline';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     try {
@@ -12,6 +13,8 @@ export async function POST(request) {
         if (!decoded) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('battleground');
+        if (featureDisabled) return featureDisabled;
 
         let _body;
 

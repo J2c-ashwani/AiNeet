@@ -4,6 +4,7 @@ import { playVerifyBodySchema } from '@/lib/contracts/api';
 import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 import { verifyGooglePlaySubscription } from '@/lib/payments/google-play';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 const ROUTE = '/api/subscription/play/verify';
 
@@ -16,6 +17,9 @@ function eventIdForPurchase(purchaseToken) {
 }
 
 export const POST = withApiRoute(async (_request, { user, body }) => {
+    const featureDisabled = await requireFeatureEnabled('payments');
+    if (featureDisabled) return featureDisabled;
+
     const { purchaseToken, productId } = body;
 
     const existingSub = await safeSelect(

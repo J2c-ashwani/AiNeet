@@ -11,6 +11,7 @@ import {
     serializeOmrScanReference,
 } from '@/lib/mobile/omr-scan-storage';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 /**
  * OMR Scan API — v2
@@ -28,6 +29,8 @@ export async function POST(request) {
         }
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('omr');
+        if (featureDisabled) return featureDisabled;
 
         let _body;
         try { _body = await request.json(); } catch {

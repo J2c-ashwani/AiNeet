@@ -11,6 +11,7 @@
     "lint:report": "node scripts/lint-report.js",
     "test:visual": "npx playwright test",
     "test:e2e": "npx playwright test tests/e2e/",
+    "test:production": "npx playwright test -c playwright.production.config.js",
     "test:launch": "npx playwright test tests/e2e/ tests/a11y/ tests/visual/",
     "analyze": "next build && node scripts/check_bundle_size.mjs",
     "lint:design": "node scripts/check-design-system.js && node scripts/validate-routes.js && node scripts/validate-css-classes.js",
@@ -21,6 +22,15 @@
     "test:app-check": "node scripts/test-app-check-enforcement.mjs",
     "test:payments": "node scripts/test-cashfree-webhook-security.mjs && node scripts/test-payment-flow.mjs",
     "test:rag-governance": "node scripts/validate-rag-governance.mjs",
+    "test:rag-live": "node scripts/validate-rag-governance.mjs && node scripts/validate-retrieval.mjs --subject chemistry && node scripts/validate-retrieval.mjs --subject physics && node scripts/validate-retrieval.mjs --subject biology",
+    "test:load": "node scripts/load-test/neet-season-simulation.js",
+    "test:live-certification": "node scripts/enterprise-launch-certify.mjs --live",
+    "collect:uptime": "node scripts/collect-uptime-checks.mjs",
+    "record:infra-cost": "node scripts/record-infra-usage-snapshot.mjs",
+    "record:quality-audit": "node scripts/record-educational-quality-audit.mjs",
+    "certify:scale": "node scripts/scale-readiness-certify.mjs",
+    "toggle:feature": "node scripts/toggle-feature.mjs",
+    "audit:ops": "node scripts/audit-feature-flag-readiness.mjs && node scripts/audit-observability-readiness.mjs && node scripts/audit-rollout-ops-readiness.mjs",
     "prepare": "husky"
   },
   "dependencies": {

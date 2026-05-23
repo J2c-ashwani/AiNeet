@@ -7,6 +7,7 @@ import { rateLimit } from '@/lib/rate-limit';
 import { safeRpc, safeSelect, safeUpdate } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 import { verifyAppCheck } from '@/lib/security/verify-app-check';
+import { requireFeatureEnabled } from '@/lib/feature-flags';
 
 export async function POST(request) {
     const ROUTE = '/api/subscription/verify';
@@ -18,6 +19,8 @@ export async function POST(request) {
         }
         const appCheckResponse = await verifyAppCheck(request);
         if (appCheckResponse) return appCheckResponse;
+        const featureDisabled = await requireFeatureEnabled('payments');
+        if (featureDisabled) return featureDisabled;
 
         // Rate limit: 5 verify attempts per 5 minutes
         const rl = await rateLimit(`user:${decoded.id}:verify`, 5, 300000, 'closed');
