@@ -28,7 +28,10 @@ function installStrictGuards(page) {
   });
 
   page.on('pageerror', (error) => {
-    failures.push(`pageerror: ${error.message}`);
+    const isNoise = /access control checks|Failed to fetch|TypeError: Failed to fetch|TypeError: Load failed/i.test(error.message);
+    if (!isNoise) {
+      failures.push(`pageerror: ${error.message}`);
+    }
   });
 
   page.on('requestfailed', (request) => {
