@@ -13,6 +13,8 @@ export default function AdminQuestionsPage() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
+    const [editingQuestionId, setEditingQuestionId] = useState(null);
+    const [formError, setFormError] = useState('');
 
     // New Question Form State
     const [newQ, setNewQ] = useState({
@@ -20,6 +22,11 @@ export default function AdminQuestionsPage() {
         subject_id: 1, chapter_id: 1, topic_id: 1, difficulty: 'medium',
         is_pyq: false, exam_name: '', year_asked: ''
     });
+    const emptyQuestion = {
+        text: '', option_a: '', option_b: '', option_c: '', option_d: '', correct_option: 'A',
+        subject_id: 1, chapter_id: 1, topic_id: 1, difficulty: 'medium',
+        is_pyq: false, exam_name: '', year_asked: ''
+    };
 
     useEffect(() => {
         fetchQuestions();
@@ -42,27 +49,62 @@ export default function AdminQuestionsPage() {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this question?')) return;
         try {
-            await fetch(`/api/admin/questions?id=${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/questions?id=${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Failed to delete question');
             fetchQuestions(); // Refresh
-        } catch (e) { alert('Failed to delete'); }
+        } catch (e) { setFormError('Failed to delete this question. Please try again.'); }
+    };
+
+    const openAddModal = () => {
+        setEditingQuestionId(null);
+        setNewQ(emptyQuestion);
+        setFormError('');
+        setShowAddModal(true);
+    };
+
+    const openEditModal = (question) => {
+        setEditingQuestionId(question.id);
+        setNewQ({
+            text: question.text || '',
+            option_a: question.option_a || '',
+            option_b: question.option_b || '',
+            option_c: question.option_c || '',
+            option_d: question.option_d || '',
+            correct_option: (question.correct_option || 'A').toUpperCase(),
+            subject_id: question.subject_id || 1,
+            chapter_id: question.chapter_id || 1,
+            topic_id: question.topic_id || 1,
+            difficulty: question.difficulty || 'medium',
+            is_pyq: Boolean(question.is_pyq),
+            exam_name: question.exam_name || '',
+            year_asked: question.year_asked || ''
+        });
+        setFormError('');
+        setShowAddModal(true);
     };
 
     const handleAddSubmit = async () => {
+        setFormError('');
         try {
             const res = await fetch('/api/admin/questions', {
-                method: 'POST',
+                method: editingQuestionId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newQ)
+                body: JSON.stringify(editingQuestionId ? {
+                    ...newQ,
+                    id: editingQuestionId,
+                    change_reason: 'Admin edit from question manager',
+                } : newQ)
             });
             if (res.ok) {
-                alert('Question Added!');
                 setShowAddModal(false);
-                if (activeTab === 'all') fetchQuestions();
+                setEditingQuestionId(null);
+                setNewQ(emptyQuestion);
+                fetchQuestions();
             } else {
                 const d = await res.json();
-                alert(d.error);
+                setFormError(d.error || 'Unable to save question.');
             }
-        } catch (e) { alert('Failed to add'); }
+        } catch (e) { setFormError('Unable to save question. Please try again.'); }
     };
 
     return (
@@ -81,10 +123,16 @@ export default function AdminQuestionsPage() {
                         </Button>
                     </div>
                 </div>
-                <Button className="btn btn-primary shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-shadow" onClick={() => setShowAddModal(true)}>
+                <Button className="btn btn-primary shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-shadow" onClick={openAddModal}>
                     + Add Question
                 </Button>
             </header>
+
+            {formError && (
+                <div className="space_mb_4 space_pa_3 radius_lg border line_red_500_20 surface_red_900_20 tone_red_300">
+                    {formError}
+                </div>
+            )}
 
             {/* Toolbar for 'All' tab */}
             {activeTab === 'all' && (
@@ -168,7 +216,7 @@ export default function AdminQuestionsPage() {
 
                             {/* Actions */}
                             <div className="relative z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
-                                <Button className="space_pa_2_5 radius_lg surface_blue_500_10 tone_blue_400 hover_surface_blue_500 hover_tone_white transition-colors border line_blue_500_20" title="Edit">
+                                <Button onClick={() => openEditModal(q)} className="space_pa_2_5 radius_lg surface_blue_500_10 tone_blue_400 hover_surface_blue_500 hover_tone_white transition-colors border line_blue_500_20" title="Edit">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 </Button>
                                 <Button onClick={() => handleDelete(q.id)} className="space_pa_2_5 radius_lg surface_red_500_10 tone_red_400 hover_surface_red_500 hover_tone_white transition-colors border line_red_500_20" title="Delete">
@@ -185,8 +233,8 @@ export default function AdminQuestionsPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center space_pa_4 surface_black_80 backdrop-blur-sm animate-fade-in">
                     <div className="bg-[#0f0f1a] border line_white_10 radius_2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-scale-in">
                         <div className="space_pa_6 border-b line_white_5 flex justify-between items-center">
-                            <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Add New Question</h2>
-                            <Button onClick={() => setShowAddModal(false)} className="tone_gray_500 hover_tone_white"><Icon name="Star" size={16} /></Button>
+                            <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">{editingQuestionId ? 'Edit Question' : 'Add New Question'}</h2>
+                            <Button onClick={() => setShowAddModal(false)} className="tone_gray_500 hover_tone_white"><Icon name="X" size={16} /></Button>
                         </div>
 
                         <div className="space_pa_6 space-y-4">

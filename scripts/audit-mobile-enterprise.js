@@ -82,6 +82,7 @@ assert(!installPrompt.includes('Download App (APK)'), 'Student-facing install CT
 assert(!installPrompt.includes('📱') && !installPrompt.includes('🧠'), 'Install prompt has no emoji rendering artifacts');
 
 assert(flutterShell.includes('version: 3'), 'Flutter shell injects native bridge v3 capabilities');
+assert(flutterShell.includes("defaultValue: 'https://ai-neet.vercel.app'"), 'Flutter shell defaults to the certified production web URL');
 [
     'REGISTER_FCM',
     'CAPTURE_IMAGE',
@@ -99,6 +100,7 @@ assert(androidManifest.includes('com.android.vending.BILLING') && androidManifes
 assert(androidBuildGradle.includes('NEET_UPLOAD_KEYSTORE') && !androidBuildGradle.includes('signingConfigs.getByName("debug")'), 'Android release builds require upload keystore signing');
 assert(androidManifest.includes('${admobApplicationId}') && !androidManifest.includes('ca-app-pub-3940256099942544~3347511713'), 'Android manifest does not hardcode test AdMob app ID');
 assert(flutterAds.includes('String.fromEnvironment') && flutterAds.includes('ADMOB_BANNER_ANDROID') && !flutterAds.includes('ca-app-pub-XXXXXXXXXXXX'), 'Flutter ads require production ad unit dart-defines outside debug');
+assert(read('mobile/README.md').includes('--dart-define=NEET_WEB_URL'), 'Mobile release instructions require explicit production web URL dart-define');
 
 console.log('\n═══════════════════════════════════════════════════');
 console.log(`  ✅ Passed: ${totalChecks - failures.length}`);

@@ -51,6 +51,7 @@ const requiredFlags = [
         routes: [
             'app/api/subscription/create/route.js',
             'app/api/subscription/verify/route.js',
+            'app/api/subscription/cancel/route.js',
             'app/api/subscription/play/verify/route.js',
         ],
     },

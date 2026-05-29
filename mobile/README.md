@@ -19,6 +19,7 @@ export ADMOB_ANDROID_APP_ID="ca-app-pub-...~..."
 Required Flutter dart-defines:
 
 ```bash
+--dart-define=NEET_WEB_URL=https://ai-neet.vercel.app
 --dart-define=ADMOB_BANNER_ANDROID=ca-app-pub-.../...
 --dart-define=ADMOB_INTERSTITIAL_ANDROID=ca-app-pub-.../...
 --dart-define=ADMOB_REWARDED_ANDROID=ca-app-pub-.../...
@@ -30,6 +31,7 @@ Required Flutter dart-defines:
 flutter pub get
 dart analyze
 flutter build appbundle --release \
+  --dart-define=NEET_WEB_URL="$NEET_WEB_URL" \
   --dart-define=ADMOB_BANNER_ANDROID="$ADMOB_BANNER_ANDROID" \
   --dart-define=ADMOB_INTERSTITIAL_ANDROID="$ADMOB_INTERSTITIAL_ANDROID" \
   --dart-define=ADMOB_REWARDED_ANDROID="$ADMOB_REWARDED_ANDROID"

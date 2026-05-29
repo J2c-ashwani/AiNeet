@@ -14,6 +14,7 @@ export default function GrowthCopilotPage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [results, setResults] = useState(null);
     const [copiedIndex, setCopiedIndex] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Setup Paste Event Listener (So founder can just hit Cmd+V)
     useEffect(() => {
@@ -42,10 +43,14 @@ export default function GrowthCopilotPage() {
     };
 
     const handleGenerate = async () => {
-        if (!doubtText && !imageBase64) return alert('Provide text or an image doubt');
+        if (!doubtText && !imageBase64) {
+            setErrorMessage('Provide text or an image doubt before generating variants.');
+            return;
+        }
         setIsGenerating(true);
         setResults(null);
         setCopiedIndex(null);
+        setErrorMessage('');
 
         try {
             const res = await fetch('/api/admin/growth/solve', {
@@ -61,11 +66,11 @@ export default function GrowthCopilotPage() {
                 const json = await res.json();
                 setResults(json);
             } else {
-                alert('Generation Failed');
+                setErrorMessage('Unable to generate variants. Please try again.');
             }
         } catch (e) {
             console.error(e);
-            alert('Generation Exception');
+            setErrorMessage('Unable to reach the growth copilot service. Please try again.');
         }
         setIsGenerating(false);
     };
@@ -103,6 +108,11 @@ export default function GrowthCopilotPage() {
                 <div className="card" style={{ padding: 32 }}>
                     <h3 className="text-xl font-bold space_mb_4">1. Ingest Doubt</h3>
                     <p className="text-sm text-muted space_mb_6">Take a screenshot of a Facebook/Telegram doubt and press <strong className="tone_white bg-slate-800 space_px_2 space_py_1 rounded">Cmd + V</strong> to paste it.</p>
+                    {errorMessage && (
+                        <div className="space_mb_4 space_pa_3 radius_lg border line_red_500_20 surface_red_900_20 tone_red_300 text-sm">
+                            {errorMessage}
+                        </div>
+                    )}
 
                     <div 
                         style={{ border: '2px dashed var(--border-color)', minHeight: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, background: imagePreview ? 'transparent' : 'var(--bg-glass)', position: 'relative', overflow: 'hidden' }}
@@ -142,7 +152,7 @@ export default function GrowthCopilotPage() {
                             disabled={isGenerating}
                             className="btn btn-primary"
                         >
-                            {isGenerating ? 'Firing Vision Engine...' : <><Icon name="Zap" size={16} /> Generate Variants</>}
+                            {isGenerating ? 'Generating...' : <><Icon name="Zap" size={16} /> Generate Variants</>}
                         </Button>
                     </div>
                 </div>

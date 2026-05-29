@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
 import { getDb } from '@/lib/core/db';
+import { safeUpsert } from '@/lib/core/db-safe';
 import { Redis } from '@upstash/redis';
 import { FEATURE_FLAGS, isFeatureEnabled, clearFeatureFlagCache } from '@/lib/feature-flags';
 
@@ -158,7 +159,7 @@ export const GET = withApiRoute(async () => {
     rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ops' },
 });
 
-export const POST = withApiRoute(async (req, { body }) => {
+export const POST = withApiRoute(async (req, { body, user }) => {
     const { key, enabled, rollout_pct } = body || {};
     if (!key) {
         return NextResponse.json({ error: 'Feature flag key is required.' }, { status: 400 });
@@ -177,20 +178,15 @@ export const POST = withApiRoute(async (req, { body }) => {
         }, { status: 400 });
     }
 
-    const supabase = await getDb();
     const updateData = {};
     if (enabled !== undefined) updateData.enabled = enabled;
     if (rollout_pct !== undefined) updateData.rollout_pct = Number(rollout_pct);
     updateData.updated_at = new Date().toISOString();
 
-    const { data, error } = await supabase
-        .from('feature_flags')
-        .upsert({ key: dbKey, ...updateData }, { onConflict: 'key' })
-        .select();
-
-    if (error) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    const [flag] = await safeUpsert('feature_flags', { key: dbKey, ...updateData }, { onConflict: 'key' }, {
+        route: '/api/admin/ops',
+        userId: user?.id,
+    });
 
     // Instantly reset process-level in-memory cache
     clearFeatureFlagCache();
@@ -198,10 +194,9 @@ export const POST = withApiRoute(async (req, { body }) => {
     return NextResponse.json({ 
         success: true, 
         message: `Feature flag '${dbKey}' successfully updated.`,
-        flag: data?.[0]
+        flag
     });
 }, {
     auth: 'admin',
     rateLimit: { ...RATE_LIMITS.STANDARD, failBehavior: 'closed', key: 'admin:ops:post' },
 });
-

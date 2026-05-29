@@ -88,10 +88,10 @@ const TESTIMONIALS = [
 ];
 
 const FAQ = [
-    { q: 'Can I cancel anytime?', a: 'Yes. Cancel anytime from your Profile page. No questions asked.' },
-    { q: 'Do I get a refund?', a: 'We offer a 7-day money-back guarantee if you\'re not satisfied.' },
+    { q: 'Can I cancel anytime?', a: 'Yes. Cancel renewal anytime from your Profile page. Your paid access remains active until the end of the current billing period, and there will be no charge from the next cycle.' },
+    { q: 'Do I get a refund?', a: 'Subscriptions are non-refundable once a billing period has started. Exceptional duplicate-charge, fraud, or chargeback cases are reviewed by billing support.' },
     { q: 'Is payment secure?', a: 'Yes. All payments are processed through Cashfree, India\'s trusted payment gateway.' },
-    { q: 'Can I switch plans?', a: 'Absolutely. Upgrade or downgrade anytime. We\'ll prorate the difference.' },
+    { q: 'Can I switch plans?', a: 'You can upgrade from the pricing page. Downgrade and plan-change requests are handled by billing support so your access and billing period stay consistent.' },
 ];
 
 export default function PricingPage() {

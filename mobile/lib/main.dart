@@ -23,7 +23,7 @@ import 'security/app_check.dart';
 const String kAppVersion = '1.1.0';
 const String kInitialWebUrl = String.fromEnvironment(
   'NEET_WEB_URL',
-  defaultValue: 'https://aineetcoach.com/login',
+  defaultValue: 'https://ai-neet.vercel.app',
 );
 const List<String> kOmrAllowedMimeTypes = [
   'image/jpeg',

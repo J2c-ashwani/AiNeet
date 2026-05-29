@@ -23,6 +23,7 @@ function ProfilePageContent() {
     const searchParams = useSearchParams();
     const { user, loading: authLoading, logout } = useAuth();
     const [isRestoring, setIsRestoring] = useState(false);
+    const [isCancelling, setIsCancelling] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState('');
 
@@ -85,6 +86,7 @@ function ProfilePageContent() {
 
     const handleRestorePurchases = async () => {
         setIsRestoring(true);
+        setPaymentStatus('Checking for active purchases...');
         try {
             const restoreResult = await restoreNativePurchases();
             const purchases = Array.isArray(restoreResult?.purchases) ? restoreResult.purchases : [];
@@ -108,13 +110,53 @@ function ProfilePageContent() {
             }
 
             await mutateEnt();
-            alert(verifiedCount > 0 ? 'Purchases restored successfully.' : 'No active purchases were found.');
+            setPaymentStatus(verifiedCount > 0 ? 'Purchases restored successfully.' : 'No active purchases were found.');
             setIsRestoring(false);
         } catch (err) {
             console.error(err);
-            alert('Restore purchases is only available on the Android app.');
+            setPaymentStatus('Restore purchases is only available on the Android app.');
             setIsRestoring(false);
         }
+    };
+
+    const handleManageSubscription = async () => {
+        if (entitlement?.billing_source === 'play') {
+            window.location.href = 'https://play.google.com/store/account/subscriptions';
+            return;
+        }
+
+        const confirmed = window.confirm('Cancel renewal for this subscription? You will keep access until the current billing period ends.');
+        if (!confirmed) return;
+
+        setIsCancelling(true);
+        setPaymentStatus('Cancelling renewal...');
+        try {
+            const res = await checkedFetch('/api/subscription/cancel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            }, {
+                allowedStatuses: [400, 404, 409],
+                errorMessage: 'Subscription cancellation failed',
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || 'Unable to cancel renewal.');
+            }
+
+            const accessUntil = data.accessUntil ? new Date(data.accessUntil).toLocaleDateString() : 'the end of your current billing period';
+            setPaymentStatus(`Renewal canceled. Your paid access stays active until ${accessUntil}.`);
+            await mutateEnt();
+        } catch (err) {
+            setPaymentStatus(err.message || 'Unable to cancel renewal. Please contact billing support.');
+        } finally {
+            setIsCancelling(false);
+        }
+    };
+
+    const handleBillingHelp = () => {
+        const subject = encodeURIComponent('Billing Help');
+        const body = encodeURIComponent(`Hi NEET Coach Support,\n\nI need help with billing for ${user?.email || 'my account'}.\n\nIssue:\n`);
+        window.location.href = `mailto:support@aineetcoach.com?subject=${subject}&body=${body}`;
     };
 
     if (!hasMounted) return null;
@@ -232,16 +274,12 @@ function ProfilePageContent() {
                             </>
                         ) : (
                             <>
-                                <Button variant="outline" onClick={() => {
-                                    if (entitlement?.billing_source === 'play') {
-                                        window.location.href = 'https://play.google.com/store/account/subscriptions';
-                                    } else {
-                                        alert('Redirecting to Cashfree Billing Portal...');
-                                    }
-                                }} className="profile-sub-btn">
-                                    Manage Subscription
+                                <Button variant="outline" onClick={handleManageSubscription} disabled={isCancelling} className="profile-sub-btn">
+                                    {entitlement?.billing_source === 'play'
+                                        ? 'Manage in Google Play'
+                                        : isCancelling ? 'Cancelling...' : 'Cancel Renewal'}
                                 </Button>
-                                <Button variant="outline" onClick={() => alert('Redirecting to Support Chat...')} className="profile-sub-btn">
+                                <Button variant="outline" onClick={handleBillingHelp} className="profile-sub-btn">
                                     Billing Help
                                 </Button>
                             </>

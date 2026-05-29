@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
-import Link from 'next/link';
+import EducatorExportButton from '@/components/EducatorExportButton';
 
 export const metadata = { title: 'Educator Dashboard | NEET Coach' };
 
@@ -79,9 +79,7 @@ export default async function EducatorDashboard({ searchParams }) {
                 <a href="/educator?days=30" className={`block px-4 py-2 rounded-md ${daysLimit === 30 ? 'bg-primary text-white font-bold' : 'text-gray-400 hover:text-white'}`}>
                     Last 30 Days
                 </a>
-                <Button onClick={() => alert('PDF Report Generator compiling...')} className="ml-auto space_px_4 space_py_2 radius_md surface_white tone_black font-bold text-sm flex items-center gap-2">
-                    📄 Export Weekly PDF
-                </Button>
+                <EducatorExportButton />
             </div>
 
             {/* Metric 1: Macro Accuracy */}
