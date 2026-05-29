@@ -50,6 +50,7 @@ export default function TestPage({ params }) {
     // ─── P0-1: Recovery State ───
     const [recoveryState, setRecoveryState] = useState('checking'); // checking | prompt | none
     const [startedAt, setStartedAt] = useState(null);
+    const [showRecoveryBanner, setShowRecoveryBanner] = useState(false);
     const saveInFlightRef = useRef(false);
 
     // ─── P0-1: Persist full session to IDB ───
