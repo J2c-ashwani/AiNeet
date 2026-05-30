@@ -6,7 +6,7 @@ import { createSupabaseClient } from '@/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { copyToClipboard } from '@/lib/utils/clipboard';
 import { openWhatsAppShare } from '@/lib/utils/whatsapp';
-import { Card, Button, Badge } from '@/components/ui';
+import { Card, Button, Badge, Input } from '@/components/ui';
 
 export default function BattlegroundPage() {
     const router = useRouter();
