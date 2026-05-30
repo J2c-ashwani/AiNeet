@@ -59,8 +59,15 @@ async function runChaos() {
         const battleId = 'chaos_battle_' + Date.now();
         
         try {
-            await client.query(`INSERT INTO battlegrounds (id, status, questions_json) VALUES ($1, 'active', '[]')`, [battleId]);
-            await client.query(`INSERT INTO battleground_participants (battleground_id, user_id) VALUES ($1, $2)`, [battleId, testUserId]);
+            await client.query(`
+                INSERT INTO battlegrounds (id, status, invite_code, question_count, time_limit_seconds, questions_json) 
+                VALUES ($1, 'active', $1, 10, 600, '[]')
+            `, [battleId]);
+            const participantId = 'chaos_participant_' + Date.now();
+            await client.query(`
+                INSERT INTO battleground_participants (id, battleground_id, user_id) 
+                VALUES ($1, $2, $3)
+            `, [participantId, battleId, testUserId]);
 
             const battleSubmitPromises = Array(3).fill().map(() => 
                 client.query(`
