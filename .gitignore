@@ -83,6 +83,7 @@ rpc_*.js
 # Mobile build output
 mobile/build/
 mobile/.dart_tool/
+mobile/android/.kotlin/
 scripts/*.pdf
 scripts/*.json
 scripts/*.txt
