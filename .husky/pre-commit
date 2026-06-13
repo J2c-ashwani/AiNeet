@@ -17,6 +17,6 @@ npm run lint || exit 1
 
 # 3. Contract Tests (Critical Flows)
 echo "🔍 Running API contract tests..."
-npx playwright test --config=playwright.contracts.config.js || exit 1
+node ./node_modules/@playwright/test/cli.js test --config=playwright.contracts.config.js || exit 1
 
 echo "✅ All governance gates passed! Proceeding with commit."
