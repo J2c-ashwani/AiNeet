@@ -25,6 +25,10 @@ const String kInitialWebUrl = String.fromEnvironment(
   'NEET_WEB_URL',
   defaultValue: 'https://ai-neet.vercel.app',
 );
+const Map<String, String> kPlaySubscriptionProducts = {
+  'pro': 'neet_pro_monthly',
+  'premium': 'neet_premium_monthly',
+};
 const List<String> kOmrAllowedMimeTypes = [
   'image/jpeg',
   'image/png',
@@ -118,6 +122,7 @@ class _WebViewScreenState extends State<WebViewScreen>
   String? _fcmToken;
   final AdService _adService = AdService();
   final ImagePicker _imagePicker = ImagePicker();
+  final Map<String, PurchaseDetails> _pendingPurchases = {};
   BannerAd? _bannerAd;
   bool _isBannerReady = false;
   bool _hideAdsOnCurrentPage = false;
@@ -352,7 +357,7 @@ class _WebViewScreenState extends State<WebViewScreen>
     // 3. Native capability injection (NEETCoachNativeCapabilities contract)
     controller.runJavaScript('''
       window.NEETCoachNativeCapabilities = {
-        version: 3,
+        version: 4,
         platform: "android",
         appVersion: "$kAppVersion",
         share: false,
@@ -363,6 +368,7 @@ class _WebViewScreenState extends State<WebViewScreen>
         cameraCapture: true,
         adsInterstitial: true,
         adsRewarded: true,
+        purchaseSubscription: true,
         purchaseRestore: true,
         fileDownload: false,
         crashReporting: true,
@@ -424,7 +430,7 @@ class _WebViewScreenState extends State<WebViewScreen>
     AppCheckBridge.injectScript(controller);
   }
 
-  /// Handle NEETCoachNativeBridge v3 messages from JS.
+  /// Handle NEETCoachNativeBridge v4 messages from JS.
   void _handleNativeBridgeMessage(String rawMessage) {
     _handleNativeBridgeMessageAsync(rawMessage);
   }
@@ -489,6 +495,20 @@ class _WebViewScreenState extends State<WebViewScreen>
           break;
         case 'RESTORE_PURCHASES':
           await _ackNativeIntent(id, payload: await _restorePurchases());
+          break;
+        case 'PURCHASE_SUBSCRIPTION':
+          await _ackNativeIntent(
+            id,
+            payload: await _purchaseSubscription(payload['planId']?.toString()),
+          );
+          break;
+        case 'ACKNOWLEDGE_PURCHASE':
+          await _ackNativeIntent(
+            id,
+            payload: await _acknowledgePurchase(
+              payload['purchaseToken']?.toString(),
+            ),
+          );
           break;
         case 'SHARE':
           await _ackNativeIntent(
@@ -702,16 +722,14 @@ class _WebViewScreenState extends State<WebViewScreen>
         for (final purchase in details) {
           if (purchase.status == PurchaseStatus.restored ||
               purchase.status == PurchaseStatus.purchased) {
-            purchases.add({
-              'productId': purchase.productID,
-              'purchaseId': purchase.purchaseID,
-              'purchaseToken': purchase.verificationData.serverVerificationData,
-              'source': purchase.verificationData.source,
-              'status': purchase.status.name,
-            });
-          }
-          if (purchase.pendingCompletePurchase) {
-            await iap.completePurchase(purchase);
+            final payload = _purchasePayload(purchase);
+            purchases.add(payload);
+            final token = payload['purchaseToken']?.toString();
+            if (purchase.pendingCompletePurchase &&
+                token != null &&
+                token.isNotEmpty) {
+              _pendingPurchases[token] = purchase;
+            }
           }
         }
       },
@@ -738,6 +756,116 @@ class _WebViewScreenState extends State<WebViewScreen>
           .toSet()
           .toList(),
       'purchases': purchases,
+    };
+  }
+
+  Map<String, dynamic> _purchasePayload(PurchaseDetails purchase) {
+    return {
+      'productId': purchase.productID,
+      'purchaseId': purchase.purchaseID,
+      'purchaseToken': purchase.verificationData.serverVerificationData,
+      'source': purchase.verificationData.source,
+      'status': purchase.status.name,
+      'pendingCompletePurchase': purchase.pendingCompletePurchase,
+    };
+  }
+
+  Future<Map<String, dynamic>> _purchaseSubscription(String? planId) async {
+    final productId = kPlaySubscriptionProducts[planId];
+    if (productId == null) {
+      throw Exception('Unsupported subscription plan');
+    }
+
+    final iap = InAppPurchase.instance;
+    if (!await iap.isAvailable()) {
+      throw Exception('Google Play Billing is unavailable');
+    }
+
+    final productResponse = await iap.queryProductDetails({productId});
+    if (productResponse.error != null) {
+      throw Exception(
+        'Unable to load Google Play subscription: ${productResponse.error!.message}',
+      );
+    }
+    if (productResponse.productDetails.isEmpty) {
+      throw Exception('Google Play subscription product is not configured');
+    }
+
+    final completer = Completer<Map<String, dynamic>>();
+    late final StreamSubscription<List<PurchaseDetails>> subscription;
+    subscription = iap.purchaseStream.listen(
+      (details) {
+        for (final purchase in details.where(
+          (detail) => detail.productID == productId,
+        )) {
+          final payload = _purchasePayload(purchase);
+          final token = payload['purchaseToken']?.toString();
+          if (purchase.pendingCompletePurchase &&
+              token != null &&
+              token.isNotEmpty) {
+            _pendingPurchases[token] = purchase;
+          }
+
+          if ((purchase.status == PurchaseStatus.purchased ||
+                  purchase.status == PurchaseStatus.restored) &&
+              !completer.isCompleted) {
+            completer.complete(payload);
+          } else if (purchase.status == PurchaseStatus.canceled &&
+              !completer.isCompleted) {
+            completer.completeError(Exception('Purchase canceled'));
+          } else if (purchase.status == PurchaseStatus.error &&
+              !completer.isCompleted) {
+            completer.completeError(
+              Exception(purchase.error?.message ?? 'Google Play purchase failed'),
+            );
+          }
+        }
+      },
+      onError: (Object error) {
+        if (!completer.isCompleted) completer.completeError(error);
+      },
+    );
+
+    try {
+      final started = await iap.buyNonConsumable(
+        purchaseParam: PurchaseParam(
+          productDetails: productResponse.productDetails.first,
+        ),
+      );
+      if (!started) {
+        throw Exception('Google Play purchase could not be started');
+      }
+      return await completer.future.timeout(
+        const Duration(minutes: 5),
+        onTimeout: () => throw TimeoutException(
+          'Google Play purchase confirmation timed out',
+        ),
+      );
+    } finally {
+      await subscription.cancel();
+    }
+  }
+
+  Future<Map<String, dynamic>> _acknowledgePurchase(
+    String? purchaseToken,
+  ) async {
+    if (purchaseToken == null || purchaseToken.isEmpty) {
+      throw Exception('Purchase token is required');
+    }
+
+    final purchase = _pendingPurchases[purchaseToken];
+    if (purchase == null) {
+      throw Exception('Purchase must be restored before acknowledgement');
+    }
+
+    if (purchase.pendingCompletePurchase) {
+      await InAppPurchase.instance.completePurchase(purchase);
+    }
+    _pendingPurchases.remove(purchaseToken);
+
+    return {
+      'acknowledged': true,
+      'productId': purchase.productID,
     };
   }
 

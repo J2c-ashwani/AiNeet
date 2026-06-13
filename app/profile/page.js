@@ -8,8 +8,9 @@ import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/swr';
-import { isInsideNativeApp, restoreNativePurchases } from '@/lib/platform';
+import { acknowledgeNativePurchase, isInsideNativeApp, restoreNativePurchases } from '@/lib/platform';
 import { checkedFetch } from '@/lib/http';
+import { purgeLocalUserData } from '@/lib/client/purge-local-user-data';
 
 const ACHIEVEMENT_ICONS = {
     'first_test': <Icon name="Target" size={20} />, 'test_veteran': <Icon name="Trophy" size={20} />, 'perfect_score': '💯',
@@ -24,8 +25,10 @@ function ProfilePageContent() {
     const { user, loading: authLoading, logout } = useAuth();
     const [isRestoring, setIsRestoring] = useState(false);
     const [isCancelling, setIsCancelling] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [hasMounted, setHasMounted] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState('');
+    const [accountStatus, setAccountStatus] = useState('');
 
     useEffect(() => {
         setHasMounted(true);
@@ -106,7 +109,12 @@ function ProfilePageContent() {
                     errorMessage: 'Restore purchase verification failed',
                 });
 
-                if (res.ok) verifiedCount++;
+                if (res.ok) {
+                    if (purchase.pendingCompletePurchase !== false) {
+                        await acknowledgeNativePurchase(purchaseToken);
+                    }
+                    verifiedCount++;
+                }
             }
 
             await mutateEnt();
@@ -157,6 +165,47 @@ function ProfilePageContent() {
         const subject = encodeURIComponent('Billing Help');
         const body = encodeURIComponent(`Hi NEET Coach Support,\n\nI need help with billing for ${user?.email || 'my account'}.\n\nIssue:\n`);
         window.location.href = `mailto:support@aineetcoach.com?subject=${subject}&body=${body}`;
+    };
+
+    const handleDeleteAccount = async () => {
+        const confirmed = window.confirm(
+            'Delete your AI NEET Coach account and associated personal data? This ends access immediately and cannot be undone.'
+        );
+        if (!confirmed) return;
+
+        const finalConfirmation = window.confirm(
+            'Final confirmation: permanently delete this account? Active Google Play renewal must be canceled first.'
+        );
+        if (!finalConfirmation) return;
+
+        setIsDeleting(true);
+        setAccountStatus('Submitting your deletion request...');
+
+        try {
+            const response = await checkedFetch('/api/auth/delete-account', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            }, {
+                allowedStatuses: [409],
+                errorMessage: 'Account deletion failed',
+            });
+            const data = await response.json();
+
+            if (response.status === 409 && data.code === 'PLAY_SUBSCRIPTION_ACTIVE') {
+                setAccountStatus('Cancel your active Google Play subscription first, then return here to delete the account.');
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(data.error || 'Unable to delete the account.');
+            }
+
+            await purgeLocalUserData();
+            await logout();
+        } catch (error) {
+            setAccountStatus(error.message || 'Unable to delete the account. Please contact support.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     if (!hasMounted) return null;
@@ -349,6 +398,23 @@ function ProfilePageContent() {
                 <div className="profile-parent-settings">
                     <ParentSettings />
                 </div>
+
+                <Card className="profile-account-card">
+                    <h3 className="profile-section-title"><Icon name="Shield" /> Account and Data</h3>
+                    <p className="profile-account-copy">
+                        Review our policies or permanently delete your account and associated personal data.
+                    </p>
+                    <div className="profile-account-links">
+                        <Link href="/privacy">Privacy Policy</Link>
+                        <Link href="/terms">Terms of Service</Link>
+                        <Link href="/refund-policy">Refund Policy</Link>
+                        <Link href="/account-deletion">Deletion Information</Link>
+                    </div>
+                    {accountStatus && <p className="profile-account-status" role="status">{accountStatus}</p>}
+                    <Button variant="danger" onClick={handleDeleteAccount} disabled={isDeleting}>
+                        {isDeleting ? 'Deleting Account...' : 'Delete Account'}
+                    </Button>
+                </Card>
 
                 <div className="profile-logout-container">
                     <Button variant="danger" onClick={handleLogout}>

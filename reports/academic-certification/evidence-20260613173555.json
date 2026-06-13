@@ -1,0 +1,481 @@
+{
+  "certificationVersion": "academic-cert-v1",
+  "academicCorpusVersion": "not-provided",
+  "officialSyllabusVersion": "not-provided",
+  "officialSyllabusSourceUrl": null,
+  "syllabusSourceChecksum": null,
+  "generatedBy": "academic-certification-evidence-collector",
+  "generatedAt": "2026-06-13T17:35:55.274Z",
+  "levels": {
+    "syllabusCompliance": {
+      "sampleSize": 2679,
+      "metrics": {
+        "deletedChapterLeakagePct": 0
+      },
+      "evidence": [
+        {
+          "type": "db-rag-syllabus-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-06-13T17:35:57.928Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "questionQuality": {
+      "sampleSize": 2,
+      "metrics": {
+        "invalidOptionPct": 0,
+        "duplicateQuestionPct": 0
+      },
+      "evidence": [
+        {
+          "type": "db-question-bank-snapshot",
+          "source": "questions",
+          "hash": "sha256:c5d6f99c05cfd1259a674478f88597f41b8728b3a7770694193df0f0b043401f",
+          "capturedAt": "2026-06-13T17:35:58.394Z",
+          "summary": {
+            "generatedQuestionFilter": "WHERE COALESCE(is_ai_generated::text, '') IN ('1', 'true', 't')",
+            "total": 2,
+            "invalidOptions": 0,
+            "duplicateQuestions": 0,
+            "questionsWithExplanations": 2,
+            "verifiedQuestions": 0,
+            "rejectedOrQuarantined": 0,
+            "avgQualityScore": 80,
+            "avgConfidenceScore": 1
+          }
+        }
+      ]
+    },
+    "answerQuality": {
+      "sampleSize": 2,
+      "metrics": {
+        "referenceConsistencyPct": null
+      },
+      "evidence": [
+        {
+          "type": "db-question-explanation-snapshot",
+          "source": "questions",
+          "hash": "sha256:c5d6f99c05cfd1259a674478f88597f41b8728b3a7770694193df0f0b043401f",
+          "capturedAt": "2026-06-13T17:35:58.394Z",
+          "summary": {
+            "generatedQuestionFilter": "WHERE COALESCE(is_ai_generated::text, '') IN ('1', 'true', 't')",
+            "total": 2,
+            "invalidOptions": 0,
+            "duplicateQuestions": 0,
+            "questionsWithExplanations": 2,
+            "verifiedQuestions": 0,
+            "rejectedOrQuarantined": 0,
+            "avgQualityScore": 80,
+            "avgConfidenceScore": 1
+          }
+        },
+        {
+          "type": "db-rag-explanation-snapshot",
+          "source": "rag_explanations",
+          "hash": "sha256:872cf45e1a997ed64c84725a00f110d6a00265a56554ad4d4589ac7940f7dcfe",
+          "capturedAt": "2026-06-13T17:35:59.107Z",
+          "summary": {
+            "total": 0,
+            "usableExplanations": 0,
+            "citedExplanations": 0,
+            "passedConfidenceGate": 0,
+            "insufficientGrounding": 0,
+            "reviewed": 0,
+            "approved": 0,
+            "rejected": 0,
+            "avgConfidenceScore": null
+          }
+        }
+      ]
+    },
+    "doubtSolver": {
+      "sampleSize": 15,
+      "metrics": {},
+      "evidence": [
+        {
+          "type": "db-doubt-solver-snapshot",
+          "source": "doubt_messages",
+          "hash": "sha256:b6865479287e594f4e12296d61ca1a1233b7deb04935560afd35af7620c01b64",
+          "capturedAt": "2026-06-13T17:35:59.403Z",
+          "summary": {
+            "assistant_responses": 15,
+            "user_messages": 25,
+            "conversations": 18
+          }
+        }
+      ]
+    },
+    "mockTest": {
+      "sampleSize": 124,
+      "metrics": {},
+      "evidence": [
+        {
+          "type": "db-mock-test-snapshot",
+          "source": "tests",
+          "hash": "sha256:026470c08c7fb15a055aae31af1904b63a27b861765e53313611d5c769418143",
+          "capturedAt": "2026-06-13T17:35:59.694Z",
+          "summary": {
+            "total_tests": 124,
+            "generated_or_practice_tests": 124,
+            "full_mock_tests": 0,
+            "focused_tests": 110,
+            "avg_questions": "63.4596774193548387",
+            "avg_time_seconds": "224.1904761904761905"
+          }
+        }
+      ]
+    },
+    "ragCertification": {
+      "sampleSize": 2679,
+      "metrics": {
+        "corpusIntegrityPct": 100,
+        "deletedContentRetrievalPct": 0,
+        "groundingAccuracyPct": null
+      },
+      "evidence": [
+        {
+          "type": "db-rag-corpus-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-06-13T17:35:57.928Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        },
+        {
+          "type": "db-rag-explanation-grounding-snapshot",
+          "source": "rag_explanations",
+          "hash": "sha256:872cf45e1a997ed64c84725a00f110d6a00265a56554ad4d4589ac7940f7dcfe",
+          "capturedAt": "2026-06-13T17:35:59.107Z",
+          "summary": {
+            "total": 0,
+            "usableExplanations": 0,
+            "citedExplanations": 0,
+            "passedConfidenceGate": 0,
+            "insufficientGrounding": 0,
+            "reviewed": 0,
+            "approved": 0,
+            "rejected": 0,
+            "avgConfidenceScore": null
+          }
+        }
+      ]
+    },
+    "facultyReview": {
+      "sampleSize": 0,
+      "metrics": {
+        "facultyApprovalPct": null,
+        "averageFacultyRating": null,
+        "reviewerSubjectCoverageCount": 0,
+        "externalBoardCoverageCount": 0,
+        "externalBoardApprovalPct": null
+      },
+      "evidence": [
+        {
+          "type": "db-faculty-review-snapshot",
+          "source": "academic_faculty_review_items",
+          "hash": "sha256:986456b5d16b1876937e65696975cd480a539de2a21802c690a40212cc74d6f3",
+          "capturedAt": "2026-06-13T17:35:59.992Z",
+          "summary": {
+            "total": 0,
+            "approved": 0,
+            "subjectCoverage": 0,
+            "avgRating": null
+          }
+        },
+        {
+          "type": "db-teacher-review-queue-snapshot",
+          "source": "teacher_review_queue",
+          "hash": "sha256:f829aa2fe21bf1765c7c49b35954bb20ab33306696241b25e4e5f1a2482258a7",
+          "capturedAt": "2026-06-13T17:36:00.282Z",
+          "summary": {
+            "total": 0,
+            "resolved": 0,
+            "approved": 0,
+            "rejected": 0
+          }
+        },
+        {
+          "type": "db-external-review-board-snapshot",
+          "source": "academic_external_review_signoffs",
+          "hash": "sha256:986456b5d16b1876937e65696975cd480a539de2a21802c690a40212cc74d6f3",
+          "capturedAt": "2026-06-13T17:36:00.570Z",
+          "summary": {
+            "total": 0,
+            "approved": 0,
+            "subjectCoverage": 0,
+            "avgRating": null
+          }
+        }
+      ]
+    },
+    "studentOutcome": {
+      "sampleSize": 0,
+      "metrics": {
+        "learningImpactScore": null,
+        "averageImprovementPct": null,
+        "retentionPct": null,
+        "completionRatePct": null,
+        "weakTopicRecoveryPct": null,
+        "timeEfficiencyImprovementPct": null
+      },
+      "evidence": [
+        {
+          "type": "db-student-outcome-snapshot",
+          "source": "academic_student_outcome_snapshots",
+          "hash": "sha256:6f837fbc4643e2bc4f5c3a136fd2a58bbac94a27e4db4e3e9c8c1100716c69fc",
+          "capturedAt": "2026-06-13T17:36:00.863Z",
+          "summary": {
+            "snapshots": 0,
+            "sampleSize": 0,
+            "avgImprovement": null,
+            "weakTopicRecovery": null,
+            "timeEfficiency": null,
+            "retention": null,
+            "completion": null,
+            "learningImpactScore": null
+          }
+        }
+      ]
+    },
+    "academicGovernance": {
+      "sampleSize": 2679,
+      "metrics": {
+        "governanceCompliancePct": 100,
+        "embeddingDimensionsCorrectPct": 100,
+        "corpusVersionCoveragePct": 100,
+        "checksumCoveragePct": 100,
+        "auditTrailCompletenessPct": 100
+      },
+      "evidence": [
+        {
+          "type": "db-academic-governance-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-06-13T17:35:57.928Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "neetBenchmark": {
+      "sampleSize": 0,
+      "metrics": {
+        "officialPaperCoverageCount": 0,
+        "ntaSamplePaperCoverageCount": 0,
+        "patternSimilarityPct": null,
+        "bloomTaxonomySimilarityPct": null,
+        "topicDistributionSimilarityPct": null,
+        "difficultyDistributionSimilarityPct": null,
+        "questionStyleSimilarityPct": null,
+        "neetPatternAlignmentPct": null,
+        "goldStandardQuestionBankSize": 0
+      },
+      "evidence": [
+        {
+          "type": "db-neet-benchmark-snapshot",
+          "source": "neet_benchmark_certification_runs/neet_benchmark_papers/certified_question_repository",
+          "hash": "sha256:c64882bd34aeffd1b652b6b170ef30d18f7f80133652084fd0c593ee37c8d6f1",
+          "capturedAt": "2026-06-13T17:36:02.619Z",
+          "summary": {
+            "latestRun": {},
+            "papers": {
+              "official_papers": 0,
+              "nta_sample_papers": 0,
+              "official_answer_keys": 0,
+              "year_coverage": 0
+            },
+            "goldBank": {
+              "verified_questions": 0,
+              "subject_coverage": 0,
+              "official_pyq_questions": 0,
+              "faculty_verified_questions": 0
+            },
+            "officialPaperCount": 0,
+            "ntaSamplePaperCount": 0,
+            "goldBankSize": 0
+          }
+        }
+      ]
+    }
+  },
+  "databaseSnapshot": {
+    "collectedAt": "2026-06-13T17:35:55.274Z",
+    "missingTables": [],
+    "rag": {
+      "total": 2679,
+      "activeCurrent": 2679,
+      "activeViolations": 0,
+      "missingMetadata": 0,
+      "embeddingsPresent": 2679,
+      "embeddings3072": 2679,
+      "subjectCoverage": [
+        {
+          "subject": "biology",
+          "count": 626
+        },
+        {
+          "subject": "chemistry",
+          "count": 916
+        },
+        {
+          "subject": "physics",
+          "count": 1137
+        }
+      ]
+    },
+    "questions": {
+      "generatedQuestionFilter": "WHERE COALESCE(is_ai_generated::text, '') IN ('1', 'true', 't')",
+      "total": 2,
+      "invalidOptions": 0,
+      "duplicateQuestions": 0,
+      "questionsWithExplanations": 2,
+      "verifiedQuestions": 0,
+      "rejectedOrQuarantined": 0,
+      "avgQualityScore": 80,
+      "avgConfidenceScore": 1
+    },
+    "ragExplanations": {
+      "total": 0,
+      "usableExplanations": 0,
+      "citedExplanations": 0,
+      "passedConfidenceGate": 0,
+      "insufficientGrounding": 0,
+      "reviewed": 0,
+      "approved": 0,
+      "rejected": 0,
+      "avgConfidenceScore": null
+    },
+    "doubts": {
+      "assistant_responses": 15,
+      "user_messages": 25,
+      "conversations": 18
+    },
+    "tests": {
+      "total_tests": 124,
+      "generated_or_practice_tests": 124,
+      "full_mock_tests": 0,
+      "focused_tests": 110,
+      "avg_questions": "63.4596774193548387",
+      "avg_time_seconds": "224.1904761904761905"
+    },
+    "facultyReview": {
+      "total": 0,
+      "approved": 0,
+      "subjectCoverage": 0,
+      "avgRating": null
+    },
+    "teacherReviewQueue": {
+      "total": 0,
+      "resolved": 0,
+      "approved": 0,
+      "rejected": 0
+    },
+    "externalReviewBoard": {
+      "total": 0,
+      "approved": 0,
+      "subjectCoverage": 0,
+      "avgRating": null
+    },
+    "studentOutcomes": {
+      "snapshots": 0,
+      "sampleSize": 0,
+      "avgImprovement": null,
+      "weakTopicRecovery": null,
+      "timeEfficiency": null,
+      "retention": null,
+      "completion": null,
+      "learningImpactScore": null
+    },
+    "adversarialAcademic": {
+      "total": 0,
+      "passed": 0,
+      "misconceptionDetected": 0,
+      "falsePremiseDetected": 0,
+      "ambiguityHandled": 0,
+      "safetyPreserved": 0,
+      "scenarioCoverage": 0,
+      "subjectCoverage": 0
+    },
+    "neetBenchmark": {
+      "latestRun": {},
+      "papers": {
+        "official_papers": 0,
+        "nta_sample_papers": 0,
+        "official_answer_keys": 0,
+        "year_coverage": 0
+      },
+      "goldBank": {
+        "verified_questions": 0,
+        "subject_coverage": 0,
+        "official_pyq_questions": 0,
+        "faculty_verified_questions": 0
+      },
+      "officialPaperCount": 0,
+      "ntaSamplePaperCount": 0,
+      "goldBankSize": 0
+    }
+  }
+}

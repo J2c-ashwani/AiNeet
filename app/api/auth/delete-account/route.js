@@ -1,56 +1,72 @@
-import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/core/db';
-import { getUserFromRequest } from '@/lib/core/auth';
-import { safeUpdate } from '@/lib/core/db-safe';
+import { ApiError, withApiRoute } from '@/lib/api-handler';
+import { safeDelete, safeSelect, safeUpdate } from '@/lib/core/db-safe';
+import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
-/**
- * Handles the 'Delete Account' request from the frontend.
- * Enforces the Layer 6 'Soft Delete' Tiered Compliance Strategy.
- */
-export async function POST(request) {
-    try {
-        const supabase = await getDb();
-        
-        // 1. Verify User Session Security
-        const decoded = await getUserFromRequest(request);
-        if (!decoded || !decoded.id) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        const userId = decoded.id;
+const ROUTE = '/api/auth/delete-account';
 
-        // 2. Fetch the user to ensure they haven't already been softly-deleted
-        const { data: user, error: fetchErr } = await supabase
-            .from('users')
-            .select('account_status, subscription_status')
-            .eq('id', userId)
-            .single();
+export const POST = withApiRoute(async (_request, { user }) => {
+    const userId = user.id;
+    const profile = await safeSelect('users', query => query
+        .select('id, account_status')
+        .eq('id', userId)
+        .single(), { route: `${ROUTE}/profile`, userId });
 
-        if (fetchErr || user.account_status === 'deleted') {
-            return NextResponse.json({ error: 'Account already processed' }, { status: 400 });
-        }
-
-        // 3. Mark the user as Soft-Deleted and Scrub Basic PII immediately 
-        // Note: The physical email scrub and Category B ghost reassignments will happen 
-        // in an asynchronous CRON worker to ensure UI responsiveness.
-        await safeUpdate('users', { id: userId }, {
-            deleted_at: new Date().toISOString(),
-            account_status: 'deleted',
-            name: 'Deleted User',
-            avatar: 'deleted',
-            scrubbed_identity: 0
-        }, {
-            route: '/api/auth/delete-account',
-            userId,
-        });
-
-        // 4. Force Admin Wipe of Auth Tokens (Logs the user out globally)
-        // Note: Edge deployments don't allow auth.admin calls directly via the ANON key if 
-        // the Service Role is missing. We log this intention. 
-        console.log(`[COMPLIANCE] User ${userId} requested full deletion. Soft boundaries activated. Scheduled for Ghost Sweep.`);
-
-        return NextResponse.json({ success: true, message: "Account successfully disabled and scheduled for PII wiping." });
-    } catch (error) {
-        console.error('Account Deletion Error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    if (profile.account_status === 'deleted') {
+        return { success: true, alreadyDeleted: true };
     }
-}
+
+    const subscriptions = await safeSelect('subscriptions', query => query
+        .select('id, billing_source, billing_provider, billing_status, external_subscription_id, plan_tier, expires_at')
+        .eq('user_id', userId)
+        .in('billing_status', ['active', 'grace'])
+        .gt('expires_at', new Date().toISOString()), { route: `${ROUTE}/subscriptions`, userId });
+
+    const activePlaySubscription = subscriptions.find(subscription => subscription.billing_source === 'play');
+    if (activePlaySubscription) {
+        throw new ApiError(
+            'Cancel your active Google Play subscription before deleting this account.',
+            409,
+            'PLAY_SUBSCRIPTION_ACTIVE'
+        );
+    }
+
+    for (const subscription of subscriptions.filter(item => item.billing_source === 'web')) {
+        await safeUpdate('subscriptions', { id: subscription.id, user_id: userId }, {
+            billing_status: 'canceled',
+        }, { route: `${ROUTE}/cancel-subscription`, userId });
+
+        await logPaymentTimeline({
+            userId,
+            provider: subscription.billing_provider || 'cashfree',
+            requestId: subscription.external_subscription_id || subscription.id,
+            sourceRoute: ROUTE,
+            status: 'canceled',
+            metadata: {
+                reason: 'account_deletion',
+                planTier: subscription.plan_tier,
+                accessUntil: subscription.expires_at,
+            },
+        });
+    }
+
+    await safeDelete('user_devices', { user_id: userId }, { route: `${ROUTE}/devices`, userId });
+
+    await safeUpdate('users', { id: userId }, {
+        deleted_at: new Date().toISOString(),
+        account_status: 'deleted',
+        name: 'Deleted User',
+        avatar: 'deleted',
+        parent_email: null,
+        parent_phone: null,
+        scrubbed_identity: 0,
+    }, { route: ROUTE, userId });
+
+    return {
+        success: true,
+        message: 'Account disabled and scheduled for personal-data deletion.',
+    };
+}, {
+    auth: 'user',
+    appCheck: 'native',
+    rateLimit: { limit: 2, window: 60 * 60 * 1000, failBehavior: 'closed', key: 'account-delete' },
+});

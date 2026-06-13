@@ -878,6 +878,12 @@ html {
 
 .profile-parent-settings { margin-bottom: 32px; }
 .profile-logout-container { display: flex; justify-content: flex-end; margin-bottom: 40px; }
+.profile-account-card { margin: 24px 0; border-color: color-mix(in srgb, var(--danger) 35%, var(--border)); }
+.profile-account-copy { color: var(--text-secondary); margin: 0 0 14px; line-height: 1.6; }
+.profile-account-links { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-bottom: 18px; }
+.profile-account-links a { color: var(--accent-primary); font-size: 0.875rem; text-decoration: none; }
+.profile-account-links a:hover { text-decoration: underline; }
+.profile-account-status { color: var(--text-secondary); margin: 0 0 14px; font-size: 0.9rem; line-height: 1.5; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

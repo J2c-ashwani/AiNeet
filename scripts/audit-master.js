@@ -95,6 +95,7 @@ const APPROVED_MOBILE_RUNTIME_FILES = new Set([
   'lib/utils/whatsapp.js',
   'lib/hooks/usePlatformShare.js',
   'lib/client/offline-queue.js',
+  'lib/client/purge-local-user-data.js',
   'lib/mobile/lifecycle-manager.js',
 ]);
 

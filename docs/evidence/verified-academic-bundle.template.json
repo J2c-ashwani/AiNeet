@@ -1,0 +1,137 @@
+{
+  "cycleCode": "academic-YYYYMMDD",
+  "evidenceOwner": "Chief Academic Office / external reviewer coordinator",
+  "bundleHash": "sha256:<hash-of-this-final-reviewed-bundle>",
+  "academicCorpusVersion": "neet-current-YYYY-MM-DD",
+  "officialSyllabusVersion": "official-neet-current",
+  "officialSyllabusSourceUrl": "https://official-source.example/neet-syllabus.pdf",
+  "syllabusSourceChecksum": "sha256:<official-syllabus-source-hash>",
+  "externalReviewBoardMembers": [
+    {
+      "fullName": "External reviewer full name",
+      "subject": "physics",
+      "affiliation": "Institution / coaching / independent academic reviewer",
+      "yearsNeetExperience": 10,
+      "credentialSummary": "Real credential summary with NEET teaching/review experience.",
+      "independenceAttestation": true,
+      "conflictOfInterestStatement": "No conflict declared.",
+      "active": true
+    }
+  ],
+  "externalReviewSignoffs": [
+    {
+      "reviewerName": "External reviewer full name",
+      "subject": "physics",
+      "approvalStatus": "approved",
+      "reviewedSampleSize": 100,
+      "averageRating": 9.2,
+      "signedReportUrl": "https://secure-location.example/signed-report.pdf",
+      "signatureHash": "sha256:<signed-report-hash>",
+      "observations": "Reviewer observations."
+    }
+  ],
+  "facultyReviewItems": [
+    {
+      "subject": "physics",
+      "contentType": "question",
+      "contentId": "question-or-batch-id",
+      "reviewerName": "Internal faculty reviewer",
+      "reviewerRole": "neet_faculty",
+      "accuracyScore": 9,
+      "relevanceScore": 9,
+      "difficultyScore": 9,
+      "examUsefulnessScore": 9,
+      "approved": true,
+      "notes": "Review notes.",
+      "evidence": {
+        "reviewBatchHash": "sha256:<batch-hash>"
+      }
+    }
+  ],
+  "studentOutcomeSnapshots": [
+    {
+      "cohortName": "Closed beta cohort name",
+      "sampleSize": 100,
+      "diagnosticAvg": 50,
+      "followupAvg": 65,
+      "accuracyImprovementPct": 15,
+      "weakTopicRecoveryPct": 70,
+      "timeEfficiencyImprovementPct": 10,
+      "retentionPct": 80,
+      "completionRatePct": 85,
+      "evidence": {
+        "cohortDefinitionHash": "sha256:<cohort-evidence-hash>"
+      }
+    }
+  ],
+  "adversarialEvaluationItems": [
+    {
+      "subject": "biology",
+      "scenarioType": "wrong_premise",
+      "promptText": "Real adversarial prompt text.",
+      "expectedBehavior": "Expected model behavior.",
+      "modelResponse": "Actual captured model response.",
+      "passed": true,
+      "misconceptionDetected": true,
+      "falsePremiseDetected": true,
+      "ambiguityHandled": true,
+      "safetyPreserved": true,
+      "evaluator": "Evaluator name or system",
+      "evidence": {
+        "transcriptHash": "sha256:<transcript-hash>"
+      }
+    }
+  ],
+  "neetBenchmarkPapers": [
+    {
+      "paperYear": 2025,
+      "paperType": "neet_official",
+      "sourceUrl": "https://official-source.example/neet-2025-paper.pdf",
+      "sourceChecksum": "sha256:<paper-source-hash>",
+      "totalQuestions": 180,
+      "metadata": {
+        "answerKeyHash": "sha256:<answer-key-hash>"
+      }
+    }
+  ],
+  "neetBenchmarkCertificationRuns": [
+    {
+      "benchmarkWindowYears": 10,
+      "officialPaperCount": 10,
+      "ntaSamplePaperCount": 1,
+      "generatedMockCount": 100,
+      "patternSimilarityPct": 95,
+      "bloomSimilarityPct": 95,
+      "topicDistributionSimilarityPct": 95,
+      "difficultyDistributionSimilarityPct": 95,
+      "questionStyleSimilarityPct": 95,
+      "alignmentPct": 95,
+      "evidence": {
+        "benchmarkNotebookHash": "sha256:<benchmark-analysis-hash>"
+      }
+    }
+  ],
+  "certifiedQuestionRepository": [
+    {
+      "subject": "physics",
+      "classLevel": 11,
+      "chapterTitle": "Real chapter title",
+      "topicSlug": "real-topic-slug",
+      "questionText": "Real manually verified question text.",
+      "optionA": "Option A",
+      "optionB": "Option B",
+      "optionC": "Option C",
+      "optionD": "Option D",
+      "correctOption": "A",
+      "explanation": "Real faculty-verified explanation.",
+      "difficulty": "medium",
+      "bloomLevel": "application",
+      "neetStyleTags": ["numerical", "single-correct"],
+      "sourceType": "faculty_verified",
+      "sourceReference": "Batch/reviewer/source reference",
+      "sourceChecksum": "sha256:<source-evidence-hash>",
+      "reviewerName": "Reviewer full name",
+      "reviewerSubject": "physics"
+    }
+  ]
+}

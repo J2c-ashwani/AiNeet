@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { Card, Button, Badge } from '@/components/ui';
-import { openCashfreeCheckout } from '@/lib/client/cashfree-checkout';
+import { startSubscriptionCheckout } from '@/lib/client/subscription-checkout';
 
 const PLANS = [
     {
@@ -90,7 +90,7 @@ const TESTIMONIALS = [
 const FAQ = [
     { q: 'Can I cancel anytime?', a: 'Yes. Cancel renewal anytime from your Profile page. Your paid access remains active until the end of the current billing period, and there will be no charge from the next cycle.' },
     { q: 'Do I get a refund?', a: 'Subscriptions are non-refundable once a billing period has started. Exceptional duplicate-charge, fraud, or chargeback cases are reviewed by billing support.' },
-    { q: 'Is payment secure?', a: 'Yes. All payments are processed through Cashfree, India\'s trusted payment gateway.' },
+    { q: 'Is payment secure?', a: 'Yes. Payments are processed through the secure billing provider shown at checkout.' },
     { q: 'Can I switch plans?', a: 'You can upgrade from the pricing page. Downgrade and plan-change requests are handled by billing support so your access and billing period stay consistent.' },
 ];
 
@@ -108,20 +108,10 @@ export default function PricingPage() {
         setLoading(planId);
         setError('');
         try {
-            const res = await fetch('/api/subscription/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ planId })
-            });
-            const data = await res.json();
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to initiate payment.');
+            const result = await startSubscriptionCheckout(planId);
+            if (result.provider === 'google_play') {
+                window.location.href = '/profile';
             }
-
-            await openCashfreeCheckout({
-                paymentSessionId: data.paymentSessionId,
-                environment: data.environment,
-            });
         } catch (err) {
             setError(err.message);
         } finally {
@@ -313,7 +303,7 @@ export default function PricingPage() {
                         Still thinking? Start with Free.
                     </h2>
                     <p style={{ marginBottom: 32, }}>
-                        No credit card required. Upgrade only when you see results.
+                        Start free. Upgrade only when you see results.
                     </p>
                     <Link href="/register">
                         <Button variant="accent" size="lg">

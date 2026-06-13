@@ -1,7 +1,7 @@
 # Native Bridge Contract
 
-**Version:** 3  
-**Last Updated:** 2026-05-18  
+**Version:** 4
+**Last Updated:** 2026-06-13
 **Parties:** Next.js WebView (Frontend) ↔ Flutter Shell (Native)
 
 This is the canonical specification for all communication between the WebView layer and the Flutter native shell. Both sides MUST conform to this contract. Any new intent type or capability MUST be added here before implementation.
@@ -22,7 +22,7 @@ On WebView load, Flutter injects the following **before** any JavaScript execute
 window.NEETCoachNativeBridge = <JavaScriptChannel>; // postMessage channel
 
 window.NEETCoachNativeCapabilities = {
-  version: 3,          // Bumped when new capabilities added
+  version: 4,          // Bumped when new capabilities added
   share: false,        // Native share sheet; false until share package is included
   clipboard: true,     // Android clipboard manager
   externalIntent: true,// window.open / URL intent delegation
@@ -31,6 +31,7 @@ window.NEETCoachNativeCapabilities = {
   cameraCapture: true, // Native camera/document capture
   adsInterstitial: true,// Interstitial ads
   adsRewarded: true,   // Rewarded ads
+  purchaseSubscription: true,// Play Billing purchase and acknowledgement
   purchaseRestore: true,// Play Billing restore/sync
   fileDownload: false  // Reserved
 };
@@ -140,7 +141,7 @@ Success payload:
 ```
 
 ### `RESTORE_PURCHASES`
-Restores or syncs Play Billing purchases.
+Restores or syncs Play Billing purchases. Purchases are returned unacknowledged. The web layer must verify each purchase with the backend and then dispatch `ACKNOWLEDGE_PURCHASE`.
 
 ```jsonc
 {
@@ -162,9 +163,60 @@ Success payload:
       "purchaseId": "GPA.0000-0000-0000-00000",
       "purchaseToken": "string",
       "source": "google_play",
-      "status": "restored"
+      "status": "restored",
+      "pendingCompletePurchase": false
     }
   ]
+}
+```
+
+### `PURCHASE_SUBSCRIPTION`
+Starts Google Play Billing for a supported subscription. The Android shell maps the plan to the canonical Play product IDs `neet_pro_monthly` or `neet_premium_monthly`.
+
+```jsonc
+{
+  "id": "550e8400-...",
+  "type": "PURCHASE_SUBSCRIPTION",
+  "payload": {
+    "planId": "pro"
+  }
+}
+```
+
+Success payload:
+
+```jsonc
+{
+  "productId": "neet_pro_monthly",
+  "purchaseId": "GPA.0000-0000-0000-00000",
+  "purchaseToken": "string",
+  "source": "google_play",
+  "status": "purchased",
+  "pendingCompletePurchase": true
+}
+```
+
+The web layer must send the returned token and product ID to `/api/subscription/play/verify`. It must not acknowledge the purchase when server verification fails.
+
+### `ACKNOWLEDGE_PURCHASE`
+Acknowledges a Google Play purchase only after the backend has verified and activated it.
+
+```jsonc
+{
+  "id": "550e8400-...",
+  "type": "ACKNOWLEDGE_PURCHASE",
+  "payload": {
+    "purchaseToken": "string"
+  }
+}
+```
+
+Success payload:
+
+```jsonc
+{
+  "acknowledged": true,
+  "productId": "neet_pro_monthly"
 }
 ```
 
@@ -278,7 +330,9 @@ Flutter calls `window.NEET_NATIVE_ACK(json)` to respond. The web layer MUST regi
 
 ## Timeout Semantics
 
-- All intents must be ACKed within **3000ms**.
+- Standard intents must be ACKed within **3000ms**.
+- `PURCHASE_SUBSCRIPTION` may remain open for up to **5 minutes** while the Play purchase UI is active.
+- `ACKNOWLEDGE_PURCHASE` must complete within **15 seconds**.
 - If no ACK arrives, the web layer:
   1. Rejects the intent promise with `BRIDGE_TIMEOUT:<TYPE>`.
   2. Executes the appropriate web fallback.
@@ -297,6 +351,8 @@ Flutter calls `window.NEET_NATIVE_ACK(json)` to respond. The web layer MUST regi
 | `HAPTIC` | None | Best-effort by design |
 | `REGISTER_FCM` | App lifecycle retry | Token rotation must be handled by native shell |
 | `RESTORE_PURCHASES` | User-initiated manual retry | Billing restore must never be silently repeated |
+| `PURCHASE_SUBSCRIPTION` | User-initiated manual retry only | Prevent duplicate purchase prompts |
+| `ACKNOWLEDGE_PURCHASE` | Retry after successful server verification | Never acknowledge an unverified purchase |
 | `SHOW_INTERSTITIAL` | None | Prevent duplicate ad impressions |
 | `SHOW_REWARDED` | None | Prevent duplicate reward grants |
 | `CAPTURE_IMAGE` | User-initiated manual retry | Prevent duplicate uploads |
@@ -321,3 +377,4 @@ When a new native capability is added:
 | 1 | 2026-05-01 | Initial bridge — share only |
 | 2 | 2026-05-12 | Added clipboard, externalIntent, ACK protocol, timeout semantics |
 | 3 | 2026-05-18 | Added haptics, FCM registration, camera capture, ads, purchase restore, and ACK payloads |
+| 4 | 2026-06-13 | Added Play subscription purchase and post-verification acknowledgement |

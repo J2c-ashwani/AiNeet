@@ -34,6 +34,10 @@ test.describe('API Contract Registry', () => {
             productId: 'neet_pro_monthly',
         }).productId).toBe('neet_pro_monthly');
         expect(() => playVerifyBodySchema.parse({ purchaseToken: 'short', productId: 'x' })).toThrow();
+        expect(() => playVerifyBodySchema.parse({
+            purchaseToken: 'purchase_token_12345',
+            productId: 'unapproved_subscription',
+        })).toThrow();
     });
 
     test('validates runtime health does not require fake external SLOs', () => {

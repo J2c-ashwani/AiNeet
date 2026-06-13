@@ -25,6 +25,13 @@ Required Flutter dart-defines:
 --dart-define=ADMOB_REWARDED_ANDROID=ca-app-pub-.../...
 ```
 
+Create these exact subscriptions in Play Console before building:
+
+- `neet_pro_monthly`
+- `neet_premium_monthly`
+
+Android users purchase digital subscriptions only through Google Play Billing. Cashfree remains web-only.
+
 ## Build
 
 ```bash
@@ -35,6 +42,11 @@ flutter build appbundle --release \
   --dart-define=ADMOB_BANNER_ANDROID="$ADMOB_BANNER_ANDROID" \
   --dart-define=ADMOB_INTERSTITIAL_ANDROID="$ADMOB_INTERSTITIAL_ANDROID" \
   --dart-define=ADMOB_REWARDED_ANDROID="$ADMOB_REWARDED_ANDROID"
+
+cd ..
+npm run audit:play-store
 ```
+
+Do not upload the AAB unless `PLAY_STORE_RELEASE_READY = true`.
 
 For local debug testing, no release keystore or production AdMob values are required.

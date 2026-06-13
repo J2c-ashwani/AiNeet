@@ -83,15 +83,16 @@ export default function Footer() {
                             <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Legal</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {[
-                                    { label: 'Privacy Policy', href: '#' },
-                                    { label: 'Terms of Service', href: '#' },
-                                    { label: 'Refund Policy', href: '#' },
+                                    { label: 'Privacy Policy', href: '/privacy' },
+                                    { label: 'Terms of Service', href: '/terms' },
+                                    { label: 'Refund Policy', href: '/refund-policy' },
+                                    { label: 'Account Deletion', href: '/account-deletion' },
                                 ].map(l => (
-                                    <a key={l.label} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
+                                    <Link key={l.label} href={l.href} style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem', transition: 'color 0.2s' }}
                                         onMouseEnter={e => e.target.style.color = 'var(--text-secondary)'}
                                         onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
                                         {l.label}
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                         </div>

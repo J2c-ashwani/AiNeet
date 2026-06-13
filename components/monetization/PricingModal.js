@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
-import { openCashfreeCheckout } from '@/lib/client/cashfree-checkout';
+import { startSubscriptionCheckout } from '@/lib/client/subscription-checkout';
 
 export default function PricingModal({ isOpen, onClose, userPlan }) {
     const [submittingPlan, setSubmittingPlan] = useState(null);
@@ -15,21 +15,12 @@ export default function PricingModal({ isOpen, onClose, userPlan }) {
         setSubmittingPlan(planId);
         setError('');
         try {
-            const res = await fetch('/api/subscription/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ planId })
-            });
-            const data = await res.json();
-
-            if (!res.ok || data.error) {
-                throw new Error(data.error || 'Payment could not be started.');
+            const result = await startSubscriptionCheckout(planId);
+            if (result.provider === 'google_play') {
+                window.location.href = '/profile';
+            } else {
+                onClose();
             }
-
-            await openCashfreeCheckout({
-                paymentSessionId: data.paymentSessionId,
-                environment: data.environment,
-            });
         } catch (err) {
             setError(err.message || 'Payment could not be started.');
         } finally {
@@ -119,7 +110,7 @@ export default function PricingModal({ isOpen, onClose, userPlan }) {
                 )}
 
                 <div className="surface_gray_900_50 space_pa_4 text-center tone_gray_500 text-xs">
-                    Secure payment via Cashfree. Cancel anytime.
+                    Secure billing. Cancel renewal anytime.
                 </div>
             </div>
         </div>

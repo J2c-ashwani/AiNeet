@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { ApiError, RATE_LIMITS, withApiRoute } from '@/lib/api-handler';
-import { playVerifyBodySchema } from '@/lib/contracts/api';
+import { playSubscriptionProducts, playVerifyBodySchema } from '@/lib/contracts/api';
 import { safeRpc, safeSelect } from '@/lib/core/db-safe';
 import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 import { verifyGooglePlaySubscription } from '@/lib/payments/google-play';
@@ -9,7 +9,7 @@ import { requireFeatureEnabled } from '@/lib/feature-flags';
 const ROUTE = '/api/subscription/play/verify';
 
 function planTierFromProduct(productId) {
-    return productId.toLowerCase().includes('premium') ? 'premium' : 'pro';
+    return playSubscriptionProducts[productId] || null;
 }
 
 function eventIdForPurchase(purchaseToken) {
@@ -50,7 +50,11 @@ export const POST = withApiRoute(async (_request, { user, body }) => {
         throw new ApiError('Invalid Google Play receipt', 400, 'INVALID_PLAY_RECEIPT');
     }
 
-    const planTier = planTierFromProduct(verification.productId || productId);
+    const verifiedProductId = verification.productId || productId;
+    const planTier = planTierFromProduct(verifiedProductId);
+    if (!planTier) {
+        throw new ApiError('Unsupported Google Play subscription product', 400, 'PLAY_PRODUCT_UNSUPPORTED');
+    }
     const expiryTimeMillis = verification.expiryTimeMillis;
     if (!expiryTimeMillis || expiryTimeMillis <= Date.now()) {
         throw new ApiError('Google Play subscription is not active', 400, 'PLAY_SUBSCRIPTION_INACTIVE');
@@ -61,7 +65,7 @@ export const POST = withApiRoute(async (_request, { user, body }) => {
             p_user_id: user.id,
             p_plan_tier: planTier,
             p_purchase_token: purchaseToken,
-            p_product_id: verification.productId || productId,
+            p_product_id: verifiedProductId,
             p_event_id: eventIdForPurchase(purchaseToken),
             p_event_type: 'PURCHASE_VERIFICATION',
             p_payload: {
@@ -88,7 +92,7 @@ export const POST = withApiRoute(async (_request, { user, body }) => {
         status: 'verified',
         metadata: {
             planTier,
-            productId: verification.productId || productId,
+            productId: verifiedProductId,
             source: verification.source,
         },
     });

@@ -1,0 +1,45 @@
+{
+  "evidenceOwner": "Academic audit owner",
+  "bundleHash": "sha256:<hash-of-final-audit-bundle>",
+  "levels": {
+    "questionQuality": {
+      "sampleSize": 5000,
+      "metrics": {
+        "accuracyPct": 97,
+        "ambiguityPct": 1,
+        "duplicateQuestionPct": 2,
+        "hallucinationPct": 1,
+        "invalidOptionPct": 1,
+        "difficultyCalibrationPct": 95,
+        "ncertGroundingPct": 98
+      },
+      "evidence": [
+        {
+          "type": "question-quality-batch",
+          "source": "Real reviewed batch ID or report URL",
+          "hash": "sha256:<question-quality-evidence-hash>",
+          "summary": "Real summary of the reviewed question batch."
+        }
+      ]
+    },
+    "answerQuality": {
+      "sampleSize": 2000,
+      "metrics": {
+        "answerAccuracyPct": 98,
+        "explanationAccuracyPct": 98,
+        "hallucinationPct": 1,
+        "referenceConsistencyPct": 98,
+        "scientificCorrectnessPct": 98,
+        "terminologyCorrectnessPct": 98
+      },
+      "evidence": [
+        {
+          "type": "answer-quality-batch",
+          "source": "Real answer evaluation batch ID or report URL",
+          "hash": "sha256:<answer-quality-evidence-hash>",
+          "summary": "Real summary of answer/explanation review."
+        }
+      ]
+    }
+  }
+}

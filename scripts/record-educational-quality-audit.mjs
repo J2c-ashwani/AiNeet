@@ -33,8 +33,29 @@ if (!process.env.DATABASE_URL) {
     process.exit(1);
 }
 
-if (!['rag_retrieval', 'teacher_review', 'model_benchmark', 'question_bank'].includes(auditType)) {
-    console.error('--type must be rag_retrieval, teacher_review, model_benchmark, or question_bank.');
+const allowedAuditTypes = [
+    'rag_retrieval',
+    'teacher_review',
+    'model_benchmark',
+    'question_bank',
+    'syllabus_compliance',
+    'question_quality',
+    'answer_quality',
+    'doubt_solver',
+    'mock_test',
+    'rag_certification',
+    'faculty_review',
+    'student_outcome',
+    'academic_governance',
+    'neet_benchmark',
+    'external_board',
+    'gold_standard_bank',
+    'adversarial_academic',
+    'public_certification_report',
+];
+
+if (!allowedAuditTypes.includes(auditType)) {
+    console.error(`--type must be one of: ${allowedAuditTypes.join(', ')}.`);
     process.exit(1);
 }
 

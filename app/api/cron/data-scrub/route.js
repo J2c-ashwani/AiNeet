@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
-import { safeUpdate } from '@/lib/core/db-safe';
+import { safeSelect, safeUpdate } from '@/lib/core/db-safe';
 import { requireBearerSecret } from '@/lib/server-secrets';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 // Category B Analytics & Intelligence Tables
 const TABLES_TO_ANONYMIZE = [
@@ -22,34 +23,36 @@ export async function GET(request) {
         const authError = requireBearerSecret(request, 'CRON_SECRET');
         if (authError) return authError;
 
-        const supabase = await getDb();
+        await getDb();
 
-        // 1. Find all soft-deleted users pending scrub
-        const { data: users, error: fetchErr } = await supabase
-            .from('users')
-            .select('id, email')
+        const users = await safeSelect('users', query => query
+            .select('id')
             .eq('account_status', 'deleted')
             .eq('scrubbed_identity', 0)
-            .limit(50); // batch size
+            .limit(50), { route: '/api/cron/data-scrub/pending' });
 
-        if (fetchErr || !users || users.length === 0) {
+        if (!users || users.length === 0) {
             return NextResponse.json({ success: true, message: 'No users pending cleanup' });
         }
 
-        console.log(`🧹 CRON DATA-SCRUB: Found ${users.length} soft-deleted users.`);
+        const adminClient = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY,
+            { auth: { persistSession: false, autoRefreshToken: false } }
+        );
+        let processedCount = 0;
+        let failedCount = 0;
 
         for (const user of users) {
-             console.log(`[SCRUB] Processing user: ${user.id}`);
-             
-             try {
-                // A. Anonymize identity (convert email to unreadable hash)
-                const hashedEmail = `deleted-${Math.random().toString(36).substring(7)}@ghost.neetcoach.in`;
+            try {
+                const hashedEmail = `deleted-${crypto.randomUUID()}@ghost.neetcoach.in`;
                 
                 await safeUpdate('users', { id: user.id }, {
                     email: hashedEmail,
                     parent_email: null,
                     parent_phone: null,
-                    scrubbed_identity: 1
+                    name: 'Deleted User',
+                    avatar: 'deleted',
                 }, {
                     route: '/api/cron/data-scrub',
                     userId: user.id,
@@ -62,24 +65,36 @@ export async function GET(request) {
                         userId: user.id,
                     });
                 }
-                
-                // C. Force Supabase Auth wipe (The ultimate disconnect)
-                // Need Service Role Key for Admin privileges
-                if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-                    const adminClient = createClient(
-                        process.env.NEXT_PUBLIC_SUPABASE_URL,
-                        process.env.SUPABASE_SERVICE_ROLE_KEY
-                    );
-                    await adminClient.auth.admin.deleteUser(user.id).catch(e => console.warn('Auth admin wipe skipped/failed:', e.message));
+
+                const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(user.id);
+                if (authDeleteError && !String(authDeleteError.message).toLowerCase().includes('not found')) {
+                    throw authDeleteError;
                 }
-                
-                console.log(`[SCRUB SUCCESS] Identity completely stripped and analytics archived for ${user.id}`);
-             } catch(err) {
-                 console.error(`[SCRUB ERROR] Failed mapping for user ${user.id}:`, err);
-             }
+
+                await safeUpdate('users', { id: user.id }, {
+                    scrubbed_identity: 1,
+                }, {
+                    route: '/api/cron/data-scrub/complete',
+                    userId: user.id,
+                });
+
+                processedCount += 1;
+            } catch (error) {
+                failedCount += 1;
+                console.error(`[SCRUB ERROR] Failed mapping for user ${user.id}:`, error);
+            }
         }
 
-        return NextResponse.json({ success: true, processedCount: users.length });
+        if (failedCount > 0) {
+            return NextResponse.json({
+                success: false,
+                processedCount,
+                failedCount,
+                error: 'One or more deletion jobs failed and remain queued for retry.',
+            }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true, processedCount, failedCount });
     } catch (error) {
         console.error('Data Scrub Cron Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
