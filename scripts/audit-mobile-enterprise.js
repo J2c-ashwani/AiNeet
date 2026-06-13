@@ -47,7 +47,7 @@ const androidManifest = read('mobile/android/app/src/main/AndroidManifest.xml');
 const mobilePubspec = read('mobile/pubspec.yaml');
 const androidBuildGradle = read('mobile/android/app/build.gradle.kts');
 const footer = read('components/Footer.js');
-const profile = read('app/profile/page.js');
+const profile = exists('app/profile/ProfileClient.js') ? read('app/profile/ProfileClient.js') : read('app/profile/page.js');
 const deleteAccountRoute = read('app/api/auth/delete-account/route.js');
 
 assert(clientLayout.includes('bootApp()'), 'Boot orchestrator is called from the app shell');
