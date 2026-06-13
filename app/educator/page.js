@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import EducatorExportButton from '@/components/EducatorExportButton';
 
+export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Educator Dashboard | NEET Coach' };
 
 export default async function EducatorDashboard({ searchParams }) {

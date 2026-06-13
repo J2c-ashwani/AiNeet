@@ -1,7 +1,10 @@
 const { defineConfig, devices } = require('@playwright/test');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env.local'), override: true });
 
 module.exports = defineConfig({
-  testDir: './tests/visual',
+  testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

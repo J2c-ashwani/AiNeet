@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "npx eslint app components lib utils providers proxy.js next.config.mjs",
     "lint:report": "node scripts/lint-report.js",
-    "test:visual": "npx playwright test",
+    "test:visual": "npx playwright test tests/visual/",
     "test:e2e": "npx playwright test tests/e2e/",
     "test:production": "npx playwright test -c playwright.production.config.js",
     "test:launch": "npx playwright test tests/e2e/ tests/a11y/ tests/visual/",

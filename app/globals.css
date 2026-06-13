@@ -910,6 +910,9 @@ body {
 }
 
 @media (max-width: 768px) {
+  .navbar-root {
+    display: none !important;
+  }
   .bottom-nav-mobile {
     display: flex !important;
   }

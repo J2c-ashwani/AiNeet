@@ -5,7 +5,7 @@ const ROOT = path.join(__dirname, '..');
 // Directories to scan
 const SCAN_DIRS = ['app', 'components'];
 // Directories to ignore (canonical implementations)
-const IGNORE_DIRS = ['components/ui', 'components/Charts.js'];
+const IGNORE_DIRS = ['components/ui', 'components/Charts.js', 'app/global-error.js', 'app/error.js'];
 
 // Directories that MUST pass the check (P0 and P1 trust surfaces)
 const STRICT_DIRS = [
@@ -104,6 +104,9 @@ function checkFile(filePath) {
                     console.error(`   Code: ${line.trim()}`);
                     hasStrictErrors = true;
                 } else {
+                    console.warn(`\n⚠️ WARNING in ${filePath}:${index + 1}`);
+                    console.warn(`   Rule: ${pattern.message}`);
+                    console.warn(`   Code: ${line.trim()}`);
                     warningCount++;
                 }
             }

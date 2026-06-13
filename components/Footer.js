@@ -1,14 +1,21 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { isInsideNativeApp } from '@/lib/platform';
 
 export default function Footer() {
     const pathname = usePathname();
+    const [isNative, setIsNative] = useState(false);
 
-    // Hide footer on full-screen app experiences
+    useEffect(() => {
+        setIsNative(isInsideNativeApp());
+    }, []);
+
+    // Hide footer on full-screen app experiences or when inside native mobile shell
     const hideOnRoutes = ['/doubts', '/battleground'];
-    if (hideOnRoutes.includes(pathname)) return null;
+    if (isNative || hideOnRoutes.includes(pathname)) return null;
 
     return (
         <footer style={{

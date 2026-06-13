@@ -64,7 +64,7 @@ const PLANS = [
         gradient: 'var(--bg-glass-hover)',
         borderColor: 'var(--accent-primary)',
         accentColor: 'var(--accent-primary)',
-        badge: <><Icon name="Star" size={16} /> MOST POPULAR</>,
+        badge: { icon: 'Star', text: 'MOST POPULAR' },
         features: [
             { text: '100 Custom AI Tests / month', included: true },
             { text: 'Unlimited AI Doubts', included: true },
@@ -161,8 +161,9 @@ export default function PricingPage() {
                             }}>
                                 {plan.badge && (
                                     <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)' }}>
-                                        <Badge variant="accent" style={{ padding: '6px 16px', fontWeight: 800, letterSpacing: 1 }}>
-                                            {plan.badge}
+                                        <Badge variant="accent" style={{ padding: '6px 16px', fontWeight: 800, letterSpacing: 1, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                            {plan.badge.icon && <Icon name={plan.badge.icon} size={16} />}
+                                            <span>{plan.badge.text}</span>
                                         </Badge>
                                     </div>
                                 )}

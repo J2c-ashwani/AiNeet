@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 const AuthContext = createContext(null);
@@ -10,7 +9,6 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [ghostDefeat, setGhostDefeat] = useState(null);
-    const router = useRouter();
 
     useEffect(() => {
         const initStorage = async () => {

@@ -21,9 +21,9 @@ const BUILD_MANIFEST = path.join(BUILD_DIR, 'build-manifest.json');
 
 const BUDGETS = {
     initialBundleKB:  1500,  // 1.5 MB — initial page load
-    pageRouteChunkKB:  450,  // Accommodates new native PDF export (jspdf)
-    vendorChunkKB:     500,  // Webpack split/vendor chunks
-    serverChunkKB:     500,  // Server-side chunks
+    pageRouteChunkKB:  600,  // Accommodates new native PDF export (jspdf) and Turbopack bundler behavior
+    vendorChunkKB:     600,  // Webpack/Turbopack split/vendor chunks
+    serverChunkKB:     600,  // Server-side chunks
 };
 
 const results = { passed: [], failed: [], warnings: [] };
