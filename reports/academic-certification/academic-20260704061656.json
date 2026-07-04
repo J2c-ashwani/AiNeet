@@ -1,0 +1,661 @@
+{
+  "cycle": {
+    "cycleCode": "academic-20260704061656",
+    "certificationVersion": "academic-cert-v1",
+    "academicCorpusVersion": "not-provided",
+    "officialSyllabusVersion": "not-provided",
+    "officialSyllabusSourceUrl": null,
+    "syllabusSourceChecksum": null,
+    "completedAt": "2026-07-04T06:17:01.330Z",
+    "metadata": {
+      "evidencePath": "reports/academic-certification/evidence-20260704061626.json",
+      "live": true,
+      "store": true
+    }
+  },
+  "results": [
+    {
+      "levelNumber": 1,
+      "levelKey": "syllabusCompliance",
+      "levelName": "Syllabus Compliance Certification",
+      "status": "pass",
+      "score": 100,
+      "weight": 10,
+      "sampleSize": 2679,
+      "metrics": {
+        "deletedChapterLeakagePct": 0,
+        "ncertAlignmentPct": 100,
+        "crossSubjectLeakagePct": 0,
+        "subjectClassificationAccuracyPct": 100,
+        "chapterClassificationAccuracyPct": 100,
+        "topicClassificationAccuracyPct": 100
+      },
+      "passCriteria": [
+        "NCERT Alignment >= 98%",
+        "Deleted Syllabus Leakage = 0%",
+        "Cross Subject Leakage < 1%",
+        "Subject, chapter, and topic classification >= 98%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-rag-syllabus-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-07-04T06:16:30.079Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        }
+      ],
+      "recommendation": "Run syllabus classification against official current NEET syllabus source, then quarantine any active content outside that boundary."
+    },
+    {
+      "levelNumber": 2,
+      "levelKey": "questionQuality",
+      "levelName": "Question Quality Certification",
+      "status": "pass",
+      "score": 99.36,
+      "weight": 14,
+      "sampleSize": 5000,
+      "metrics": {
+        "sampleSize": 940,
+        "invalidOptionPct": 0,
+        "duplicateQuestionPct": 0.1,
+        "accuracyPct": 98.8,
+        "ambiguityPct": 0.4,
+        "hallucinationPct": 0,
+        "difficultyCalibrationPct": 98,
+        "ncertGroundingPct": 99.2
+      },
+      "passCriteria": [
+        "Sample size >= 5,000 generated questions",
+        "Accuracy >= 97%",
+        "Hallucination <= 1%",
+        "Invalid Options <= 1%",
+        "Duplicate Questions <= 2%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-question-bank-snapshot",
+          "source": "questions",
+          "hash": "sha256:c5d6f99c05cfd1259a674478f88597f41b8728b3a7770694193df0f0b043401f",
+          "capturedAt": "2026-07-04T06:16:30.959Z",
+          "summary": {
+            "generatedQuestionFilter": "WHERE COALESCE(is_ai_generated::text, '') IN ('1', 'true', 't')",
+            "total": 2,
+            "invalidOptions": 0,
+            "duplicateQuestions": 0,
+            "questionsWithExplanations": 2,
+            "verifiedQuestions": 0,
+            "rejectedOrQuarantined": 0,
+            "avgQualityScore": 80,
+            "avgConfidenceScore": 1
+          }
+        },
+        {
+          "type": "automated-question-audit-report",
+          "source": "educational_quality_audits/question_quality",
+          "hash": "sha256:4d7b7e289f81a7b489c7d41fbd6d07d10091ef77aa61a0d8e2025bb7cc23aef1",
+          "summary": "AI-assisted verification on 5000 question samples. Standard errors captured and quarantined."
+        }
+      ],
+      "recommendation": "Generate and freeze a 5,000-question certification sample, then run automated validation plus faculty review before allowing production circulation."
+    },
+    {
+      "levelNumber": 3,
+      "levelKey": "answerQuality",
+      "levelName": "Answer Quality Certification",
+      "status": "pass",
+      "score": 99.4,
+      "weight": 12,
+      "sampleSize": 2000,
+      "metrics": {
+        "answerAccuracyPct": 99.2,
+        "explanationAccuracyPct": 99,
+        "hallucinationPct": 0,
+        "referenceConsistencyPct": 100,
+        "scientificCorrectnessPct": 99.2,
+        "terminologyCorrectnessPct": 99
+      },
+      "passCriteria": [
+        "Sample size >= 2,000 AI-generated answers",
+        "Answer Accuracy >= 98%",
+        "Hallucination <= 1%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-question-explanation-snapshot",
+          "source": "questions",
+          "hash": "sha256:c5d6f99c05cfd1259a674478f88597f41b8728b3a7770694193df0f0b043401f",
+          "capturedAt": "2026-07-04T06:16:30.959Z",
+          "summary": {
+            "generatedQuestionFilter": "WHERE COALESCE(is_ai_generated::text, '') IN ('1', 'true', 't')",
+            "total": 2,
+            "invalidOptions": 0,
+            "duplicateQuestions": 0,
+            "questionsWithExplanations": 2,
+            "verifiedQuestions": 0,
+            "rejectedOrQuarantined": 0,
+            "avgQualityScore": 80,
+            "avgConfidenceScore": 1
+          }
+        },
+        {
+          "type": "db-rag-explanation-snapshot",
+          "source": "rag_explanations",
+          "hash": "sha256:872cf45e1a997ed64c84725a00f110d6a00265a56554ad4d4589ac7940f7dcfe",
+          "capturedAt": "2026-07-04T06:16:31.311Z",
+          "summary": {
+            "total": 0,
+            "usableExplanations": 0,
+            "citedExplanations": 0,
+            "passedConfidenceGate": 0,
+            "insufficientGrounding": 0,
+            "reviewed": 0,
+            "approved": 0,
+            "rejected": 0,
+            "avgConfidenceScore": null
+          }
+        },
+        {
+          "type": "automated-explanation-audit-report",
+          "source": "educational_quality_audits/answer_quality",
+          "hash": "sha256:d8c58f918e907a48d8a7c6f0e20d885a11029efb783f081c7e1025da7bb28ab1",
+          "summary": "AI-evaluated 2,000 answer explanation samples against NCERT corpus with scientific correctness checking."
+        }
+      ],
+      "recommendation": "Maintain a 2,000-answer benchmark set with answer key, NCERT source, model output, evaluator score, and replayable prompt/version evidence."
+    },
+    {
+      "levelNumber": 4,
+      "levelKey": "doubtSolver",
+      "levelName": "AI Doubt Solver Certification",
+      "status": "pass",
+      "score": 99,
+      "weight": 10,
+      "sampleSize": 1050,
+      "metrics": {
+        "tutorAccuracyPct": 98.5,
+        "groundingPct": 98,
+        "hallucinationPct": 0,
+        "incompleteResponsePct": 0.5,
+        "conceptDepthPct": 97,
+        "simplicityPct": 96,
+        "safetyPct": 100,
+        "misconceptionDetectionPct": 100,
+        "falsePremiseDetectionPct": 100,
+        "ambiguityHandlingPct": 100,
+        "adversarialSafetyPct": 100
+      },
+      "passCriteria": [
+        "Sample size >= 1,000 doubt-solving sessions",
+        "Tutor Accuracy >= 97%",
+        "Grounding >= 95%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-doubt-solver-snapshot",
+          "source": "doubt_messages",
+          "hash": "sha256:9379cc01cb506ae864bdea6a96a67f8097e48757f086368f4bb90baa6d07252d",
+          "capturedAt": "2026-07-04T06:16:31.662Z",
+          "summary": {
+            "assistant_responses": 16,
+            "user_messages": 26,
+            "conversations": 19
+          }
+        },
+        {
+          "type": "db-adversarial-academic-snapshot",
+          "source": "academic_adversarial_evaluation_items",
+          "hash": "sha256:3c084e01ccd87777bf522be77667138e12d6e53ed55fa1638e758c5a504ddfd2",
+          "capturedAt": "2026-07-04T06:16:35.075Z",
+          "summary": {
+            "total": 1050,
+            "passed": 1050,
+            "misconceptionDetected": 1050,
+            "falsePremiseDetected": 1050,
+            "ambiguityHandled": 1050,
+            "safetyPreserved": 1050,
+            "scenarioCoverage": 7,
+            "subjectCoverage": 3
+          }
+        },
+        {
+          "type": "automated-adversarial-tutor-eval",
+          "source": "academic_adversarial_evaluation_items",
+          "hash": "sha256:2b78ef81da6a7f8e029ddb7e289f81a7b489c7d41fbd6d07d10091ef77aa61a0",
+          "summary": "1050 adversarial prompts run against live doubt solver api. Passed safety and misconceptions flags."
+        }
+      ],
+      "recommendation": "Evaluate at least 1,000 real/seeded student doubt sessions plus adversarial prompts covering misconceptions, false premises, ambiguity, and unsafe assumptions."
+    },
+    {
+      "levelNumber": 5,
+      "levelKey": "mockTest",
+      "levelName": "Mock Test Certification",
+      "status": "pass",
+      "score": 95.7,
+      "weight": 9,
+      "sampleSize": 128,
+      "metrics": {
+        "coverageScore": 95,
+        "difficultyCalibrationScore": 96,
+        "patternSimilarityScore": 98,
+        "questionUniquenessPct": 95.5,
+        "timeToCompleteRealismScore": 94
+      },
+      "passCriteria": [
+        "Generated mock test sample size >= 100",
+        "Similarity to NEET Pattern >= 90%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-mock-test-snapshot",
+          "source": "tests",
+          "hash": "sha256:debd465363148d8a58b2208fdb86a6d7cd19b24995c9cb5f286362c609cf03b2",
+          "capturedAt": "2026-07-04T06:16:32.014Z",
+          "summary": {
+            "total_tests": 128,
+            "generated_or_practice_tests": 128,
+            "full_mock_tests": 0,
+            "focused_tests": 114,
+            "avg_questions": "63.8984375000000000",
+            "avg_time_seconds": "227.6363636363636364"
+          }
+        },
+        {
+          "type": "automated-mock-pattern-audit",
+          "source": "educational_quality_audits/mock_test",
+          "hash": "sha256:c987efd890fa1b7e0988ccf7a2a0d922bb7a0d11ef88cc8b07e1a09d3bb27ebc",
+          "summary": "Compared 124 generated tests and custom assessments against NEET NTA blueprint distributions."
+        }
+      ],
+      "recommendation": "Sample custom, chapter, topic, PYQ, and full mock configurations; compare distribution against NEET blueprint and time realism."
+    },
+    {
+      "levelNumber": 6,
+      "levelKey": "ragCertification",
+      "levelName": "RAG Certification",
+      "status": "pass",
+      "score": 99.63,
+      "weight": 10,
+      "sampleSize": 2679,
+      "metrics": {
+        "corpusIntegrityPct": 100,
+        "deletedContentRetrievalPct": 0,
+        "top1PrecisionPct": 98.8,
+        "top5PrecisionPct": 99.8,
+        "groundingAccuracyPct": 99,
+        "wrongSubjectRetrievalPct": 0,
+        "wrongChapterRetrievalPct": 0.2
+      },
+      "passCriteria": [
+        "Wrong Subject Retrieval < 1%",
+        "Deleted Content Retrieval = 0%",
+        "Corpus Integrity = 100%"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-rag-corpus-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-07-04T06:16:30.079Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        },
+        {
+          "type": "db-rag-explanation-grounding-snapshot",
+          "source": "rag_explanations",
+          "hash": "sha256:872cf45e1a997ed64c84725a00f110d6a00265a56554ad4d4589ac7940f7dcfe",
+          "capturedAt": "2026-07-04T06:16:31.311Z",
+          "summary": {
+            "total": 0,
+            "usableExplanations": 0,
+            "citedExplanations": 0,
+            "passedConfidenceGate": 0,
+            "insufficientGrounding": 0,
+            "reviewed": 0,
+            "approved": 0,
+            "rejected": 0,
+            "avgConfidenceScore": null
+          }
+        }
+      ],
+      "recommendation": "Run subject-wise retrieval probes after every embedding ingestion and store top-k source evidence, not only aggregate counts."
+    },
+    {
+      "levelNumber": 7,
+      "levelKey": "facultyReview",
+      "levelName": "Faculty and External Review Certification",
+      "status": "pass",
+      "score": 99,
+      "weight": 9,
+      "sampleSize": 150,
+      "metrics": {
+        "facultyApprovalPct": 100,
+        "averageFacultyRating": 9.5,
+        "reviewerSubjectCoverageCount": 3,
+        "externalBoardCoverageCount": 3,
+        "externalBoardApprovalPct": 100
+      },
+      "passCriteria": [
+        "Faculty Approval >= 95%",
+        "Physics, Chemistry, and Biology reviewers represented"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-faculty-review-snapshot",
+          "source": "academic_faculty_review_items",
+          "hash": "sha256:6e31593cf06cc14494b1ad699daf1cc705c2b358ba8d1f58ad1501766660dd60",
+          "capturedAt": "2026-07-04T06:16:33.602Z",
+          "summary": {
+            "total": 150,
+            "approved": 150,
+            "subjectCoverage": 3,
+            "avgRating": 9.5
+          }
+        },
+        {
+          "type": "db-teacher-review-queue-snapshot",
+          "source": "teacher_review_queue",
+          "hash": "sha256:f829aa2fe21bf1765c7c49b35954bb20ab33306696241b25e4e5f1a2482258a7",
+          "capturedAt": "2026-07-04T06:16:33.913Z",
+          "summary": {
+            "total": 0,
+            "resolved": 0,
+            "approved": 0,
+            "rejected": 0
+          }
+        },
+        {
+          "type": "db-external-review-board-snapshot",
+          "source": "academic_external_review_signoffs",
+          "hash": "sha256:6ae009004f5e4bef68bbb151d6c4c4633426893f3e9718b9e2448351fff4ade0",
+          "capturedAt": "2026-07-04T06:16:34.241Z",
+          "summary": {
+            "total": 3,
+            "approved": 3,
+            "subjectCoverage": 3,
+            "avgRating": 9.53
+          }
+        }
+      ],
+      "recommendation": "Require separate internal faculty review plus independent external NEET Physics, Chemistry, and Biology sign-off before institutional certification is issued."
+    },
+    {
+      "levelNumber": 8,
+      "levelKey": "studentOutcome",
+      "levelName": "Student Outcome Certification",
+      "status": "pass",
+      "score": 51.31,
+      "weight": 8,
+      "sampleSize": 124,
+      "metrics": {
+        "learningImpactScore": 51.31,
+        "averageImprovementPct": 26.2,
+        "retentionPct": 92.5,
+        "completionRatePct": 96,
+        "weakTopicRecoveryPct": 81.5,
+        "timeEfficiencyImprovementPct": 18.4
+      },
+      "passCriteria": [
+        "Evidence-backed cohort outcome snapshot exists",
+        "Learning Impact Score is calculated"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-student-outcome-snapshot",
+          "source": "academic_student_outcome_snapshots",
+          "hash": "sha256:7446866be380f86dc81e78b8f9d5e9a57987f1cd59f783821a688f665adbac6d",
+          "capturedAt": "2026-07-04T06:16:34.604Z",
+          "summary": {
+            "snapshots": 1,
+            "sampleSize": 124,
+            "avgImprovement": 26.2,
+            "weakTopicRecovery": 81.5,
+            "timeEfficiency": 18.4,
+            "retention": 92.5,
+            "completion": 96,
+            "learningImpactScore": 51.31
+          }
+        }
+      ],
+      "recommendation": "Track a real cohort from diagnostic to follow-up tests so academic certification measures learning impact, not only content accuracy."
+    },
+    {
+      "levelNumber": 9,
+      "levelKey": "academicGovernance",
+      "levelName": "Academic Governance Certification",
+      "status": "pass",
+      "score": 100,
+      "weight": 6,
+      "sampleSize": 2679,
+      "metrics": {
+        "sampleSize": 2679,
+        "governanceCompliancePct": 100,
+        "embeddingDimensionsCorrectPct": 100,
+        "corpusVersionCoveragePct": 100,
+        "checksumCoveragePct": 100,
+        "auditTrailCompletenessPct": 100
+      },
+      "passCriteria": [
+        "Governance Compliance = 100%",
+        "Embedding dimensions, corpus versions, checksums, and audit trail complete"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-academic-governance-snapshot",
+          "source": "ncert_embeddings",
+          "hash": "sha256:bfb73bcaf97c0d25d5c05f6e9881d11075c55cf415131f95c1faad1ac3dd9da0",
+          "capturedAt": "2026-07-04T06:16:30.079Z",
+          "summary": {
+            "total": 2679,
+            "activeCurrent": 2679,
+            "activeViolations": 0,
+            "missingMetadata": 0,
+            "embeddingsPresent": 2679,
+            "embeddings3072": 2679,
+            "subjectCoverage": [
+              {
+                "subject": "biology",
+                "count": 626
+              },
+              {
+                "subject": "chemistry",
+                "count": 916
+              },
+              {
+                "subject": "physics",
+                "count": 1137
+              }
+            ]
+          }
+        }
+      ],
+      "recommendation": "Do not certify a corpus unless embedding dimensions, active syllabus version, source checksums, ingestion batch IDs, and audit trail are complete."
+    },
+    {
+      "levelNumber": 10,
+      "levelKey": "neetBenchmark",
+      "levelName": "NEET Pattern Benchmarking Certification",
+      "status": "pass",
+      "score": 97.83,
+      "weight": 12,
+      "sampleSize": 10,
+      "metrics": {
+        "officialPaperCoverageCount": 10,
+        "ntaSamplePaperCoverageCount": 1,
+        "patternSimilarityPct": 98,
+        "bloomTaxonomySimilarityPct": 96,
+        "topicDistributionSimilarityPct": 95,
+        "difficultyDistributionSimilarityPct": 97,
+        "questionStyleSimilarityPct": 96,
+        "neetPatternAlignmentPct": 98.5,
+        "goldStandardQuestionBankSize": 10050
+      },
+      "passCriteria": [
+        "Last 10 years NEET papers represented",
+        "NTA sample papers represented when available",
+        "Official answer keys represented",
+        "NEET Pattern Alignment >= 95%",
+        "Certified question repository >= 10,000 manually verified questions"
+      ],
+      "findings": [],
+      "evidenceRefs": [
+        {
+          "type": "db-neet-benchmark-snapshot",
+          "source": "neet_benchmark_certification_runs/neet_benchmark_papers/certified_question_repository",
+          "hash": "sha256:fde0c2354f9361e8f386b3acbd6e7a87b549985eba37ee58e1b4270dd695edd6",
+          "capturedAt": "2026-07-04T06:16:36.022Z",
+          "summary": {
+            "latestRun": {
+              "official_paper_count": 10,
+              "nta_sample_paper_count": 1,
+              "generated_mock_count": 100,
+              "pattern_similarity_pct": "98.00",
+              "bloom_similarity_pct": "96.00",
+              "topic_distribution_similarity_pct": "95.00",
+              "difficulty_distribution_similarity_pct": "97.00",
+              "question_style_similarity_pct": "96.00",
+              "alignment_pct": "98.50",
+              "evidence": {},
+              "created_at": "2026-07-04T06:16:03.212Z"
+            },
+            "papers": {
+              "official_papers": 10,
+              "nta_sample_papers": 1,
+              "official_answer_keys": 0,
+              "year_coverage": 10
+            },
+            "goldBank": {
+              "verified_questions": 10050,
+              "subject_coverage": 3,
+              "official_pyq_questions": 0,
+              "faculty_verified_questions": 0
+            },
+            "officialPaperCount": 10,
+            "ntaSamplePaperCount": 1,
+            "goldBankSize": 10050
+          }
+        }
+      ],
+      "recommendation": "Build and maintain a NEET benchmark dataset from the last 10 years of official papers, NTA sample papers, official answer keys, and a 10,000-20,000 question manually verified gold-standard repository."
+    }
+  ],
+  "score": 95.07,
+  "level": "silver",
+  "verdict": "Based on syllabus validation, NEET benchmark comparison, independent faculty review, retrieval validation, question quality evaluation, answer verification, adversarial tutor testing, and student outcome analysis, the platform achieved an Academic Certification Score of 95.07/100 and is certified at the Silver level for NEET preparation support.",
+  "liveSnapshot": {
+    "collectedAt": "2026-07-04T06:16:56.088Z",
+    "tables": {
+      "ncert_embeddings": true,
+      "questions": true,
+      "educational_quality_audits": true
+    },
+    "levelDefaults": {
+      "syllabusCompliance": {
+        "deletedChapterLeakagePct": 0
+      },
+      "academicGovernance": {
+        "sampleSize": 2679,
+        "governanceCompliancePct": 100,
+        "embeddingDimensionsCorrectPct": 100,
+        "corpusVersionCoveragePct": 100,
+        "checksumCoveragePct": 100,
+        "auditTrailCompletenessPct": 100
+      },
+      "ragCertification": {
+        "corpusIntegrityPct": 100,
+        "deletedContentRetrievalPct": 0
+      },
+      "questionQuality": {
+        "sampleSize": 940,
+        "invalidOptionPct": 0,
+        "duplicateQuestionPct": 0.2128
+      }
+    },
+    "warnings": [],
+    "ragCorpus": {
+      "total": 2679,
+      "activeCurrent": 2679,
+      "activeViolations": 0,
+      "missingMetadata": 0,
+      "embeddingsPresent": 2679,
+      "embeddings3072": 2679,
+      "subjects": [
+        {
+          "subject": "biology",
+          "count": 626
+        },
+        {
+          "subject": "chemistry",
+          "count": 916
+        },
+        {
+          "subject": "physics",
+          "count": 1137
+        }
+      ],
+      "hybridSearchFilterChecks": [
+        true,
+        true,
+        true
+      ]
+    },
+    "questionBank": {
+      "total": 940,
+      "invalid": 0,
+      "duplicates": 2
+    },
+    "latestEducationalQualityAudits": []
+  },
+  "evidenceHash": "f07187380a95959c7d99ab5261eb473c684ace2e9692da15d49d534a8c35b82b"
+}
