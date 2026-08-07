@@ -196,7 +196,7 @@ export default function RootLayout({ children }) {
                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
                         transition: opacity 0.4s ease;
                     }
-                    #app-splash.hide { opacity: 0; pointer-events: none; }
+                    #app-splash.hide { opacity: 0; pointer-events: none; display: none !important; }
                     #app-splash .splash-ring {
                         width: 80px; height: 80px;
                         border: 3px solid transparent;
