@@ -45,29 +45,17 @@ function RegistrationFormStep({ refCode, onSuccess }) {
 
     const registerMutation = useMutation({
         mutationFn: async (formData) => {
-            // Cold-start resilient registration with one automatic retry
-            const attemptRegister = async () => {
-                const res = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...formData, referralCode: refCode || undefined }),
-                });
-                const text = await res.text();
-                let data;
-                try { data = JSON.parse(text); }
-                catch { throw new Error('Server starting. Please try again in 5 seconds.'); }
-                if (!res.ok) throw new Error(data.error || 'Registration failed');
-                return data;
-            };
-
-            try {
-                return await attemptRegister();
-            } catch (err) {
-                if (err.message?.includes('starting')) throw err;
-                // Cold-start retry after 6 seconds
-                await new Promise(r => setTimeout(r, 6000));
-                return await attemptRegister();
-            }
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, referralCode: refCode || undefined }),
+            });
+            const text = await res.text();
+            let data;
+            try { data = JSON.parse(text); }
+            catch { throw new Error('Registration failed. Please try again.'); }
+            if (!res.ok) throw new Error(data.error || 'Registration failed');
+            return data;
         },
         onSuccess: (_data, formData) => onSuccess(formData),
         onError: (error) => {
@@ -143,6 +131,7 @@ function RegistrationFormStep({ refCode, onSuccess }) {
 
 // ── OTP Verification Step ─────────────────────────────────────────────────────
 function OtpVerificationStep({ email, password, challengeId }) {
+    const router = useRouter();
     const [resendCooldown, setResendCooldown] = useState(0);
     const methods = useForm({
         resolver: zodResolver(otpSchema),
@@ -171,9 +160,7 @@ function OtpVerificationStep({ email, password, challengeId }) {
             return data;
         },
         onSuccess: () => {
-            setTimeout(() => {
-                window.location.href = challengeId ? `/challenge/${challengeId}` : '/welcome';
-            }, 1500);
+            router.push(challengeId ? `/challenge/${challengeId}` : '/welcome');
         },
         onError: (error) => {
             methods.setError('root.serverError', { type: 'server', message: error.message });

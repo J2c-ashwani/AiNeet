@@ -2,6 +2,7 @@
 import { Icon } from '@/components/ui/Icon';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import useSWR from 'swr';
 import { fetcher } from '@/lib/swr';
 import { ActivityHeatmap } from '@/components/Charts';
@@ -30,8 +31,8 @@ export default function DashboardClient() {
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { window.location.href = '/login'; }
-    }, [user, authLoading]);
+        if (!user) { router.push('/login'); }
+    }, [user, authLoading, router]);
 
     const { data: performance, error: apiError, isLoading: isSwrLoading } = useSWR(
         !authLoading && user ? '/api/performance' : null,
@@ -59,7 +60,7 @@ export default function DashboardClient() {
             <div className="dash-error-icon"><Icon name="BarChart2" /></div>
             <h2 className="dash-error-title">Dashboard Loading Issue</h2>
             <p className="dash-error-body">We could not load your performance data. This usually resolves after your first test.</p>
-            <a href="/test/configure" className="dash-error-cta">Take Your First Test →</a>
+            <Link href="/test/configure" className="dash-error-cta">Take Your First Test →</Link>
         </div>
     );
 
@@ -164,16 +165,16 @@ export default function DashboardClient() {
                             <p className="dash-next-body">
                                 Your accuracy in <strong >{weakAreas[0].topic_name}</strong> is currently {Math.round(weakAreas[0].accuracy)}%. Practice this weak area now.
                             </p>
-                            <a href={`/test/configure?type=custom&topic=${encodeURIComponent(weakAreas[0].topic_name)}`} className="dash-next-cta">
+                            <Link href={`/test/configure?type=custom&topic=${encodeURIComponent(weakAreas[0].topic_name)}`} className="dash-next-cta">
                                 Practice Weak Area →
-                            </a>
+                            </Link>
                         </>
                     ) : (
                         <>
                             <p className="dash-next-body">Ready for your next challenge? Generate an AI-curated mock test based on your current level.</p>
-                            <a href="/test/configure?type=ai_generated" className="dash-next-cta">
+                            <Link href="/test/configure?type=ai_generated" className="dash-next-cta">
                                 Generate AI Test →
-                            </a>
+                            </Link>
                         </>
                     )}
                 </div>
@@ -199,13 +200,13 @@ export default function DashboardClient() {
 
                     <div className="dash-history-list">
                         {testHistory.slice(0, 5).map((t, i) => (
-                            <a key={i} href={`/test/${t.id}/results`} className="dash-history-item">
+                            <Link key={i} href={`/test/${t.id}/results`} className="dash-history-item">
                                 <div>
                                     <div className="dash-history-item-name">{t.type.charAt(0).toUpperCase() + t.type.slice(1)} Test</div>
                                     <div className="dash-history-item-meta">{t.total_questions} questions • {new Date(t.completed_at).toLocaleDateString()}</div>
                                 </div>
                                 <span className="dash-history-item-score">{Math.round(t.score)}/720</span>
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </div>

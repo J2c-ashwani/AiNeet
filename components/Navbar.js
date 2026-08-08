@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui';
@@ -45,21 +46,21 @@ export default function Navbar() {
         <>
         <nav className="navbar-root">
             {/* Brand */}
-            <a href="/" className="navbar-brand">
+            <Link href="/" className="navbar-brand">
                 <img src="/logo.png" alt="AI NEET Coach" className="navbar-logo" />
                 <span className="navbar-brand-text">AI NEET Coach</span>
-            </a>
+            </Link>
 
             {/* Nav Links */}
             <ul className="navbar-links">
                 {navItems.map(item => (
                     <li key={item.path}>
-                        <a
+                        <Link
                             href={item.path}
                             className={`navbar-link${pathname === item.path ? ' is-active' : ''}`}
                         >
                             {item.name}
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </ul>
@@ -70,20 +71,20 @@ export default function Navbar() {
                     <div className="navbar-skeleton" />
                 ) : user ? (
                     <>
-                        <a href="/profile" className="navbar-profile-btn">
+                        <Link href="/profile" className="navbar-profile-btn">
                             <span className="navbar-avatar">
                                 {(user.full_name || user.email || 'U')[0].toUpperCase()}
                             </span>
                             {user.full_name?.split(' ')[0] || 'Account'}
-                        </a>
+                        </Link>
                         <Button variant="ghost" size="sm" onClick={logout} className="navbar-logout-btn">
                             Logout
                         </Button>
                     </>
                 ) : (
                     <>
-                        <a href="/login" className="navbar-signin-link">Sign In</a>
-                        <a href="/register" className="navbar-register-btn">Register Free</a>
+                        <Link href="/login" className="navbar-signin-link">Sign In</Link>
+                        <Link href="/register" className="navbar-register-btn">Register Free</Link>
                     </>
                 )}
             </div>
@@ -107,18 +108,18 @@ export default function Navbar() {
                         <div>
                             <h3 className="navbar-section-label">Practice</h3>
                             <div className="navbar-tool-grid">
-                                <a href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary">
+                                <Link href="/test/configure" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary">
                                     <BookOpen size={28} style={{ color: 'var(--accent-primary)' }} aria-hidden="true" />
                                     <span className="navbar-tool-label-lg">Custom Mock Test</span>
-                                </a>
-                                <a href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-cyan">
+                                </Link>
+                                <Link href="/omr" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-cyan">
                                     <Camera size={28} style={{ color: 'var(--text-accent)' }} aria-hidden="true" />
                                     <span className="navbar-tool-label-lg">OMR Scanner</span>
-                                </a>
-                                <a href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
+                                </Link>
+                                <Link href="/battleground" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
                                     <Swords size={20} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Battleground</span>
-                                </a>
+                                </Link>
                             </div>
                         </div>
 
@@ -126,18 +127,18 @@ export default function Navbar() {
                         <div>
                             <h3 className="navbar-section-label">Improve</h3>
                             <div className="navbar-tool-grid">
-                                <a href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-green">
+                                <Link href="/doubts" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-primary-green">
                                     <Lightbulb size={28} style={{ color: 'var(--success)' }} aria-hidden="true" />
                                     <span className="navbar-tool-label-lg">AI Doubt Solver</span>
-                                </a>
-                                <a href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                </Link>
+                                <Link href="/mistakes" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
                                     <NotebookPen size={18} style={{ color: 'var(--accent-secondary)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Mistakes</span>
-                                </a>
-                                <a href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                </Link>
+                                <Link href="/revision" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
                                     <RotateCcw size={18} style={{ color: 'var(--text-accent)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Revision</span>
-                                </a>
+                                </Link>
                             </div>
                         </div>
 
@@ -145,18 +146,18 @@ export default function Navbar() {
                         <div>
                             <h3 className="navbar-section-label">Track</h3>
                             <div className="navbar-tool-grid">
-                                <a href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                <Link href="/blueprint" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
                                     <BookMarked size={18} style={{ color: 'var(--accent-secondary)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Blueprint</span>
-                                </a>
-                                <a href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                </Link>
+                                <Link href="/study-plan" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
                                     <CalendarDays size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Study Plan</span>
-                                </a>
-                                <a href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
+                                </Link>
+                                <Link href="/dashboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card-fullwidth">
                                     <BarChart2 size={18} style={{ color: 'var(--success)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Dashboard Analytics</span>
-                                </a>
+                                </Link>
                             </div>
                         </div>
 
@@ -164,10 +165,10 @@ export default function Navbar() {
                         <div>
                             <h3 className="navbar-section-label">Compete</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
-                                <a href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
+                                <Link href="/leaderboard" onClick={() => { handleHaptic(); setIsDrawerOpen(false); }} className="navbar-tool-card">
                                     <Trophy size={18} style={{ color: 'var(--warning)', flexShrink: 0 }} aria-hidden="true" />
                                     <span className="navbar-tool-label">Global Leaderboard</span>
-                                </a>
+                                </Link>
                             </div>
                         </div>
 

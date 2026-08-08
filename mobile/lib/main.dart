@@ -49,12 +49,30 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // ── Crashlytics ────────────────────────────────────────────
-  if (!kDebugMode) {
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  } else {
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-  }
+  // Parallelize secondary SDK initializations post-Firebase.initializeApp
+  await Future.wait([
+    // 1. Crashlytics
+    (() async {
+      if (!kDebugMode) {
+        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      } else {
+        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+      }
+    })(),
+
+    // 2. App Check
+    FirebaseAppCheck.instance.activate(
+      providerAndroid: kDebugMode
+          ? const AndroidDebugProvider()
+          : const AndroidPlayIntegrityProvider(),
+      providerApple: const AppleDeviceCheckProvider(),
+    ),
+
+    // 3. AdMob
+    AdService().initialize().catchError((e) {
+      debugPrint('⚠️ AdMob init failed: $e — app will continue without ads');
+    }),
+  ]);
 
   // Catch all Flutter framework errors
   FlutterError.onError = (errorDetails) {
@@ -67,23 +85,8 @@ void main() async {
     return true;
   };
 
-  // ── App Check ──────────────────────────────────────────────
-  await FirebaseAppCheck.instance.activate(
-    providerAndroid: kDebugMode
-        ? const AndroidDebugProvider()
-        : const AndroidPlayIntegrityProvider(),
-    providerApple: const AppleDeviceCheckProvider(),
-  );
-
   // Register background message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // AdMob — initialize after Firebase
-  try {
-    await AdService().initialize();
-  } catch (e) {
-    debugPrint('⚠️ AdMob init failed: $e — app will continue without ads');
-  }
 
   runApp(const MyApp());
 }

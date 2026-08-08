@@ -1,19 +1,23 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { resilientStorage, STORAGE_KEYS } from '@/lib/storage-resilient';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+    const router = useRouter();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [ghostDefeat, setGhostDefeat] = useState(null);
 
     useEffect(() => {
         const initStorage = async () => {
-            const storedDiagnostic = await resilientStorage.get(STORAGE_KEYS.PENDING_DIAGNOSTIC);
-            const ghost_id = await resilientStorage.get(STORAGE_KEYS.GHOST_ID);
+            const [storedDiagnostic, ghost_id] = await Promise.all([
+                resilientStorage.get(STORAGE_KEYS.PENDING_DIAGNOSTIC),
+                resilientStorage.get(STORAGE_KEYS.GHOST_ID),
+            ]);
 
             fetch('/api/auth/me')
                 .then(r => r.json())
@@ -56,8 +60,7 @@ export function AuthProvider({ children }) {
         try {
             await fetch('/api/auth/logout', { method: 'POST' });
             setUser(null);
-            // Hard navigate to completely purge local active session state memory
-            window.location.href = '/';
+            router.push('/login');
         } catch (err) {
             console.error('Logout failed:', err);
         }
@@ -95,7 +98,7 @@ export function AuthProvider({ children }) {
                             onClick={async () => {
                                 await resilientStorage.remove(STORAGE_KEYS.GHOST_ID);
                                 setGhostDefeat(null);
-                                window.location.href = '/test/diagnostic';
+                                router.push('/test/diagnostic');
                             }}
                             style={{ background: 'linear-gradient(135deg, var(--warning), #f59e0b)', color: 'var(--bg-primary)', border: 'none', padding: '16px 32px', borderRadius: 'var(--radius-md)', fontWeight: 800, fontSize: '1.1rem', cursor: 'pointer', width: '100%', boxShadow: '0 10px 20px rgba(245, 158, 11, 0.2)', marginBottom: 16 }}
                         >
