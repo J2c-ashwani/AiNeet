@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/api/api_client.dart';
-import '../../../../core/cache/offline_cache.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/cache/offline_cache.dart';
 
 /// Native V2 Home Dashboard
 /// Fast first paint using local cached data before network revalidation.
@@ -100,7 +100,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                         ],
                       ),
                       alignment: Alignment.center,
-                      child: const Text(
+                      child: Text(
                         'A',
                         style: TextStyle(
                           fontSize: 22,
@@ -217,7 +217,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
       ),
       child: Column(
         children: [
-          Text(icon, style: const TextStyle(fontSize: 22)),
+          Text(icon, style: TextStyle(fontSize: 22)),
           const SizedBox(height: 6),
           Text(
             value,
@@ -230,7 +230,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               color: NeetTokens.textMuted,
               fontWeight: FontWeight.w500,
@@ -262,7 +262,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
             children: [
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: NeetTokens.textPrimary,
@@ -270,7 +270,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
               ),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: NeetTokens.textMuted,
                 ),
@@ -323,7 +323,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
           const SizedBox(height: 12),
           Text(
             topicName,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
               color: NeetTokens.textPrimary,
@@ -332,7 +332,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
           const SizedBox(height: 6),
           Text(
             'Your accuracy in this topic is currently $accuracy%. Practice 10 targeted questions to boost your mastery.',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: NeetTokens.textSecondary,
               height: 1.4,
@@ -351,7 +351,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                 borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
               ),
             ),
-            child: const Text(
+            child: Text(
               'Practice Weak Area →',
               style: TextStyle(
                 fontSize: 14,

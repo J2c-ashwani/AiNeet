@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/cache/offline_cache.dart';
-import '../../../../core/api/api_client.dart';
-import 'package:uuid/uuid.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/cache/offline_cache.dart';
+import '../../../core/api/api_client.dart';
 
 class NativeTestEngineScreen extends StatefulWidget {
   final String testTitle;
@@ -62,7 +61,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
         if (res.statusCode == 200 && res.data != null) {
           final List<dynamic> fetchedQuestions = res.data['questions'] ?? [];
           _questions = fetchedQuestions.cast<Map<String, dynamic>>();
-          _testId = res.data['id'] ?? const Uuid().v4();
+          _testId = res.data['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
           
           await OfflineCacheService.cacheUserData('questions_current', {'questions': _questions, 'testId': _testId});
         } else {
@@ -170,21 +169,21 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(
+      builder: (context) => Center(
         child: CircularProgressIndicator(color: NeetTokens.accentGlow),
       ),
     );
 
     try {
       final res = await _apiClient.submitTest(
-        testId: _testId ?? const Uuid().v4(),
-        answers: _selectedAnswers,
+        testId: _testId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        answers: _selectedAnswers.map((k, v) => MapEntry(k.toString(), v)),
         timeTakenSeconds: _elapsedSeconds,
       );
 
       // Clear cached answers on success
-      await OfflineCacheService.clearUserData('active_test_answers');
-      await OfflineCacheService.clearUserData('questions_current');
+      await OfflineCacheService.removeKey('active_test_answers');
+      await OfflineCacheService.removeKey('questions_current');
 
       if (mounted) {
         Navigator.pop(context); // pop dialog
@@ -221,7 +220,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           backgroundColor: NeetTokens.bgSecondary,
           title: Text(widget.testTitle),
         ),
-        body: const Center(
+        body: Center(
           child: CircularProgressIndicator(color: NeetTokens.accentGlow),
         ),
       );
@@ -240,12 +239,12 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: NeetTokens.error),
+                Icon(Icons.error_outline, size: 64, color: NeetTokens.error),
                 const SizedBox(height: 16),
                 Text(
                   _errorMessage!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
+                  style: TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
@@ -267,7 +266,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           backgroundColor: NeetTokens.bgSecondary,
           title: Text(widget.testTitle),
         ),
-        body: const Center(
+        body: Center(
           child: Text('No questions available.', style: TextStyle(color: NeetTokens.textPrimary)),
         ),
       );
@@ -286,7 +285,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           children: [
             Text(
               widget.testTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: NeetTokens.textPrimary,
@@ -294,7 +293,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
             ),
             Text(
               'Q ${_currentIndex + 1} of ${_questions.length}',
-              style: const TextStyle(fontSize: 12, color: NeetTokens.textMuted),
+              style: TextStyle(fontSize: 12, color: NeetTokens.textMuted),
             ),
           ],
         ),
@@ -374,7 +373,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                             ),
                             child: Text(
                               (currentQ['subject'] ?? 'PHYSICS').toString().toUpperCase(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w800,
                                 color: NeetTokens.physicsColor,
@@ -399,7 +398,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                       // Question Text
                       Text(
                         currentQ['text']?.toString() ?? '',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: NeetTokens.textPrimary,
@@ -450,7 +449,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                                     ),
                                     alignment: Alignment.center,
                                     child: isSelected
-                                        ? const Icon(
+                                        ? Icon(
                                             Icons.check,
                                             size: 14,
                                             color: Colors.white,
@@ -488,7 +487,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           // Bottom Bar (Palette + Navigation)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: NeetTokens.bgSecondary,
               border: Border(top: BorderSide(color: NeetTokens.border)),
             ),
@@ -496,7 +495,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.grid_view_rounded, color: NeetTokens.accentSecondary),
+                  icon: Icon(Icons.grid_view_rounded, color: NeetTokens.accentSecondary),
                   onPressed: _showQuestionPalette,
                 ),
                 Row(
@@ -509,7 +508,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                             curve: Curves.easeOut,
                           );
                         },
-                        child: const Text('← Prev', style: TextStyle(color: NeetTokens.textMuted)),
+                        child: Text('← Prev', style: TextStyle(color: NeetTokens.textMuted)),
                       ),
                     const SizedBox(width: 8),
                     ElevatedButton(
@@ -533,7 +532,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                         _currentIndex == _questions.length - 1
                             ? 'Submit Test'
                             : 'Next →',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -543,6 +542,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 
@@ -550,7 +550,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: NeetTokens.bgSecondary,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -560,7 +560,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Question Palette',
                 style: TextStyle(
                   fontSize: 18,
@@ -628,15 +628,15 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: NeetTokens.bgSecondary,
-        title: const Text('Submit Test?', style: TextStyle(color: NeetTokens.textPrimary)),
+        title: Text('Submit Test?', style: TextStyle(color: NeetTokens.textPrimary)),
         content: Text(
           'You have answered ${_selectedAnswers.length} of ${_questions.length} questions. Are you sure you want to submit?',
-          style: const TextStyle(color: NeetTokens.textSecondary),
+          style: TextStyle(color: NeetTokens.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: NeetTokens.textMuted)),
+            child: Text('Cancel', style: TextStyle(color: NeetTokens.textMuted)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -644,7 +644,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
               _handleAutoSubmit();
             },
             style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentGlow),
-            child: const Text('Submit Now', style: TextStyle(color: Colors.white)),
+            child: Text('Submit Now', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

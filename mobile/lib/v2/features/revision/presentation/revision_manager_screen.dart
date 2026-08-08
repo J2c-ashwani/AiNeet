@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeRevisionManagerScreen extends StatelessWidget {
   const NativeRevisionManagerScreen({super.key});
@@ -11,7 +11,7 @@ class NativeRevisionManagerScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Spaced Repetition Revision',
           style: TextStyle(
             fontSize: 18,
@@ -85,9 +85,9 @@ class NativeRevisionManagerScreen extends StatelessWidget {
               children: [
                 Text(subject.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color)),
                 const SizedBox(height: 4),
-                Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary)),
+                Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary)),
                 const SizedBox(height: 2),
-                Text(interval, style: const TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
+                Text(interval, style: TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
               ],
             ),
           ),
@@ -96,7 +96,7 @@ class NativeRevisionManagerScreen extends StatelessWidget {
               NeetTokens.hapticMedium();
             },
             style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentGlow),
-            child: const Text('Revise Now', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
+            child: Text('Revise Now', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700)),
           ),
         ],
       ),

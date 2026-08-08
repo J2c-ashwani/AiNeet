@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeStudyPlanScreen extends StatelessWidget {
   const NativeStudyPlanScreen({super.key});
@@ -11,7 +11,7 @@ class NativeStudyPlanScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'AI Personal Study Plan',
           style: TextStyle(
             fontSize: 18,
@@ -73,7 +73,7 @@ class NativeStudyPlanScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(time, style: const TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
+                Text(time, style: TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
                 const SizedBox(height: 2),
                 Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: isDone ? NeetTokens.textMuted : NeetTokens.textPrimary)),
               ],

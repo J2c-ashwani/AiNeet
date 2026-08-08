@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/api/api_client.dart';
-import '../../../../core/security/secure_storage.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/security/secure_storage.dart';
 
 class NativeLoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
@@ -91,7 +91,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                       borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'AI',
                       style: TextStyle(
                         fontSize: 28,
@@ -102,7 +102,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Welcome Back',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -112,7 +112,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Sign in to resume your NEET preparation',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -133,7 +133,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                     ),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: NeetTokens.error, fontSize: 13),
+                      style: TextStyle(color: NeetTokens.error, fontSize: 13),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -143,23 +143,23 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: NeetTokens.textPrimary),
+                  style: TextStyle(color: NeetTokens.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Email Address',
-                    labelStyle: const TextStyle(color: NeetTokens.textMuted),
+                    labelStyle: TextStyle(color: NeetTokens.textMuted),
                     filled: true,
                     fillColor: NeetTokens.bgSecondary,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.border),
+                      borderSide: BorderSide(color: NeetTokens.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.border),
+                      borderSide: BorderSide(color: NeetTokens.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.accentPrimary),
+                      borderSide: BorderSide(color: NeetTokens.accentPrimary),
                     ),
                   ),
                 ),
@@ -167,23 +167,23 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
-                  style: const TextStyle(color: NeetTokens.textPrimary),
+                  style: TextStyle(color: NeetTokens.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: const TextStyle(color: NeetTokens.textMuted),
+                    labelStyle: TextStyle(color: NeetTokens.textMuted),
                     filled: true,
                     fillColor: NeetTokens.bgSecondary,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.border),
+                      borderSide: BorderSide(color: NeetTokens.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.border),
+                      borderSide: BorderSide(color: NeetTokens.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                      borderSide: const BorderSide(color: NeetTokens.accentPrimary),
+                      borderSide: BorderSide(color: NeetTokens.accentPrimary),
                     ),
                   ),
                 ),
@@ -209,7 +209,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text(
+                      : Text(
                           'Sign In →',
                           style: TextStyle(
                             fontSize: 16,
@@ -223,7 +223,7 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                 // Register Link
                 TextButton(
                   onPressed: widget.onNavigateToRegister,
-                  child: const Text(
+                  child: Text(
                     "Don't have an account? Register Free",
                     style: TextStyle(
                       color: NeetTokens.accentSecondary,

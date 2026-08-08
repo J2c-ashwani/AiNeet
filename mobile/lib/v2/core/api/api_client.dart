@@ -9,7 +9,7 @@ class NeetApiClient {
 
   static const String defaultBaseUrl = String.fromEnvironment(
     'NEET_API_URL',
-    defaultValue: 'https://api.aineetcoach.com',
+    defaultValue: 'https://aineet.onrender.com',
   );
 
   NeetApiClient({String? baseUrl}) {

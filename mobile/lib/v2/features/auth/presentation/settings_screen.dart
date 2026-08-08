@@ -35,7 +35,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: NeetTokens.bgSecondary,
-        title: const Text('Change Password'),
+        title: Text('Change Password'),
         content: TextField(
           controller: pwdController,
           obscureText: true,
@@ -44,7 +44,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentPrimary),
@@ -67,7 +67,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
                 }
               }
             },
-            child: const Text('Save'),
+            child: Text('Save'),
           ),
         ],
       ),
@@ -79,12 +79,12 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: NeetTokens.bgSecondary,
-        title: const Text('Delete Account'),
-        content: const Text('Are you sure? This action cannot be undone and all your data will be permanently deleted.'),
+        title: Text('Delete Account'),
+        content: Text('Are you sure? This action cannot be undone and all your data will be permanently deleted.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.error),
@@ -101,7 +101,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
                 }
               }
             },
-            child: const Text('Delete'),
+            child: Text('Delete'),
           ),
         ],
       ),
@@ -113,7 +113,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
     return Scaffold(
       backgroundColor: NeetTokens.bgPrimary,
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text('Settings'),
         backgroundColor: NeetTokens.bgPrimary,
         elevation: 0,
       ),
@@ -121,21 +121,21 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
         children: [
           _buildSectionHeader('Account'),
           ListTile(
-            leading: const Icon(Icons.lock_outline),
-            title: const Text('Change Password'),
+            leading: Icon(Icons.lock_outline),
+            title: Text('Change Password'),
             onTap: _showChangePasswordDialog,
           ),
           ListTile(
-            leading: const Icon(Icons.delete_outline, color: NeetTokens.error),
-            title: const Text('Delete Account', style: TextStyle(color: NeetTokens.error)),
+            leading: Icon(Icons.delete_outline, color: NeetTokens.error),
+            title: Text('Delete Account', style: TextStyle(color: NeetTokens.error)),
             onTap: _showDeleteAccountDialog,
           ),
 
           _buildSectionHeader('Notifications'),
           SwitchListTile(
-            secondary: const Icon(Icons.notifications_none),
-            title: const Text('Push Notifications'),
-            subtitle: const Text('Coming Soon', style: TextStyle(color: NeetTokens.accentPrimary)),
+            secondary: Icon(Icons.notifications_none),
+            title: Text('Push Notifications'),
+            subtitle: Text('Coming Soon', style: TextStyle(color: NeetTokens.accentPrimary)),
             value: _notificationsEnabled,
             onChanged: (v) => setState(() => _notificationsEnabled = v),
             activeColor: NeetTokens.accentPrimary,
@@ -143,21 +143,21 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
 
           _buildSectionHeader('About'),
           ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('App Version'),
-            trailing: const Text(kAppVersion, style: TextStyle(color: NeetTokens.textMuted)),
+            leading: Icon(Icons.info_outline),
+            title: Text('App Version'),
+            trailing: Text(kAppVersion, style: TextStyle(color: NeetTokens.textMuted)),
           ),
           ListTile(
-            leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Privacy Policy'),
+            leading: Icon(Icons.privacy_tip_outlined),
+            title: Text('Privacy Policy'),
             onTap: () => _launchUrl('https://aineetcoach.com/privacy'),
-            trailing: const Icon(Icons.open_in_new, size: 16),
+            trailing: Icon(Icons.open_in_new, size: 16),
           ),
           ListTile(
-            leading: const Icon(Icons.description_outlined),
-            title: const Text('Terms of Service'),
+            leading: Icon(Icons.description_outlined),
+            title: Text('Terms of Service'),
             onTap: () => _launchUrl('https://aineetcoach.com/terms'),
-            trailing: const Icon(Icons.open_in_new, size: 16),
+            trailing: Icon(Icons.open_in_new, size: 16),
           ),
 
           _buildSectionHeader('Danger Zone'),
@@ -168,11 +168,11 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
                 backgroundColor: NeetTokens.bgSecondary,
                 foregroundColor: NeetTokens.error,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                side: const BorderSide(color: NeetTokens.error),
+                side: BorderSide(color: NeetTokens.error),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              icon: const Icon(Icons.logout),
-              label: const Text('Log Out'),
+              icon: Icon(Icons.logout),
+              label: Text('Log Out'),
               onPressed: widget.onLogout,
             ),
           ),
@@ -187,7 +187,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
       child: Text(
         title.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.bold,
           color: NeetTokens.textMuted,

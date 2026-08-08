@@ -34,12 +34,12 @@ class _NeetSplashScreen extends StatelessWidget {
                 gradient: NeetTokens.primaryGradient,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.school_rounded, color: Colors.white, size: 40),
+              child: Icon(Icons.school_rounded, color: Colors.white, size: 40),
             ),
             const SizedBox(height: 24),
-            const Text('AI NEET Coach', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+            Text('AI NEET Coach', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
             const SizedBox(height: 8),
-            const Text('Loading...', style: TextStyle(fontSize: 13, color: NeetTokens.textMuted)),
+            Text('Loading...', style: TextStyle(fontSize: 13, color: NeetTokens.textMuted)),
             const SizedBox(height: 32),
             const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: NeetTokens.accentPrimary)),
           ],
@@ -134,8 +134,7 @@ class _NeetV2AppState extends State<NeetV2App> {
                             MaterialPageRoute(
                               builder: (context) => NativeTestEngineScreen(
                                 testTitle: topic,
-                                questions: const [],
-                                onSubmitTest: () => Navigator.pop(context),
+                                onSubmitTest: (_) => Navigator.pop(context),
                               ),
                             ),
                           );

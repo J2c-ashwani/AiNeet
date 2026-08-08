@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeBattlegroundScreen extends StatefulWidget {
   const NativeBattlegroundScreen({super.key});
@@ -38,7 +38,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
         elevation: 0,
         title: Row(
           children: const [
-            Icon(Icons.swords, color: NeetTokens.warning),
+            Icon(Icons.sports_esports, color: NeetTokens.warning),
             SizedBox(width: 8),
             Text(
               '1v1 Battleground',
@@ -74,7 +74,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Text(
+                    Text(
                       'REAL-TIME MULTIPLAYER',
                       style: TextStyle(
                         fontSize: 11,
@@ -84,7 +84,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'Compete 1v1 Live',
                       style: TextStyle(
                         fontSize: 24,
@@ -93,7 +93,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Answer 5 rapid NEET questions faster than your opponent.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 13, color: NeetTokens.textMuted),
@@ -127,7 +127,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                                 ),
                               ],
                             )
-                          : const Text(
+                          : Text(
                               'Find Live Match ⚔️',
                               style: TextStyle(
                                 fontSize: 15,
@@ -142,7 +142,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
               const SizedBox(height: 28),
 
               // Global Leaderboard
-              const Text(
+              Text(
                 'Top NEET Champions',
                 style: TextStyle(
                   fontSize: 18,
@@ -175,7 +175,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
         children: [
           Text(
             rank,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               color: NeetTokens.warning,
@@ -188,7 +188,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: NeetTokens.textPrimary,
@@ -196,14 +196,14 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                 ),
                 Text(
                   city,
-                  style: const TextStyle(fontSize: 11, color: NeetTokens.textMuted),
+                  style: TextStyle(fontSize: 11, color: NeetTokens.textMuted),
                 ),
               ],
             ),
           ),
           Text(
             score,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
               color: NeetTokens.biologyColor,

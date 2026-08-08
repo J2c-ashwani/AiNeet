@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeTestResultsScreen extends StatelessWidget {
   final Map<String, dynamic> resultData;
@@ -30,7 +30,7 @@ class NativeTestResultsScreen extends StatelessWidget {
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
+        title: Text(
           'Test Performance Analysis',
           style: TextStyle(
             fontSize: 18,
@@ -54,7 +54,7 @@ class NativeTestResultsScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     'TOTAL SCORE',
                     style: TextStyle(
                       fontSize: 12,
@@ -66,7 +66,7 @@ class NativeTestResultsScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     '$score / ${totalQuestions * 4}', // Assuming 4 marks per question for max score calc
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
                       color: NeetTokens.accentPrimary,
@@ -95,7 +95,7 @@ class NativeTestResultsScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             if (explanations.isNotEmpty) ...[
-              const Text(
+              Text(
                 'Question Explanations',
                 style: TextStyle(
                   fontSize: 18,
@@ -133,7 +133,7 @@ class NativeTestResultsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Return to Home Dashboard →',
                 style: TextStyle(
                   fontSize: 16,
@@ -161,7 +161,7 @@ class NativeTestResultsScreen extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 11,
             color: NeetTokens.textMuted,
           ),
@@ -198,7 +198,7 @@ class NativeTestResultsScreen extends StatelessWidget {
             children: [
               Text(
                 'Question $qNum',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: NeetTokens.textPrimary,
@@ -212,7 +212,7 @@ class NativeTestResultsScreen extends StatelessWidget {
                 ),
                 child: Text(
                   pyqTag,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     color: NeetTokens.chemistryColor,
@@ -224,7 +224,7 @@ class NativeTestResultsScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             question,
-            style: const TextStyle(fontSize: 13, color: NeetTokens.textSecondary),
+            style: TextStyle(fontSize: 13, color: NeetTokens.textSecondary),
           ),
           const SizedBox(height: 12),
           Text(
@@ -237,7 +237,7 @@ class NativeTestResultsScreen extends StatelessWidget {
           ),
           Text(
             'Correct Answer: $correctAnswer',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: NeetTokens.biologyColor,
@@ -252,7 +252,7 @@ class NativeTestResultsScreen extends StatelessWidget {
             ),
             child: Text(
               'Explanation: $explanation',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: NeetTokens.textMuted,
                 height: 1.4,

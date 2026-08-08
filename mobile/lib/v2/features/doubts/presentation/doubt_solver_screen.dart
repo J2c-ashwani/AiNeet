@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/api/api_client.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
 
 class NativeDoubtSolverScreen extends StatefulWidget {
   const NativeDoubtSolverScreen({super.key});
@@ -121,7 +121,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                             color: NeetTokens.accentPrimary.withOpacity(0.5),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
+                          Text(
                             'Ask any Physics, Chemistry, or Biology doubt',
                             style: TextStyle(
                               fontSize: 14,
@@ -152,12 +152,12 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.cloud_off_outlined, color: NeetTokens.error),
+                                    Icon(Icons.cloud_off_outlined, color: NeetTokens.error),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Text(
                                         chat['message'] ?? '',
-                                        style: const TextStyle(color: NeetTokens.error),
+                                        style: TextStyle(color: NeetTokens.error),
                                       ),
                                     ),
                                   ],
@@ -183,7 +183,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                                     backgroundColor: NeetTokens.error.withOpacity(0.2),
                                     foregroundColor: NeetTokens.error,
                                   ),
-                                  child: const Text('Retry'),
+                                  child: Text('Retry'),
                                 ),
                               ],
                             ),
@@ -265,14 +265,14 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
             // Input Bar
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: NeetTokens.bgSecondary,
                 border: Border(top: BorderSide(color: NeetTokens.border)),
               ),
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.camera_alt_outlined,
                       color: NeetTokens.chemistryColor,
                     ),
@@ -281,7 +281,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                   Expanded(
                     child: TextField(
                       controller: _questionController,
-                      style: const TextStyle(color: NeetTokens.textPrimary),
+                      style: TextStyle(color: NeetTokens.textPrimary),
                       decoration: const InputDecoration(
                         hintText: 'Type or snap a question...',
                         hintStyle: TextStyle(color: NeetTokens.textMuted),
@@ -290,7 +290,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.send_rounded,
                       color: NeetTokens.accentPrimary,
                     ),

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/api/api_client.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
 
 class NativeOmrScannerScreen extends StatefulWidget {
   const NativeOmrScannerScreen({super.key});
@@ -138,7 +138,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                             color: NeetTokens.chemistryColor.withOpacity(0.6),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
+                          Text(
                             'Align OMR Sheet inside camera frame',
                             style: TextStyle(
                               fontSize: 15,
@@ -147,7 +147,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
+                          Text(
                             'Supports 180 & 200 Question NEET OMR Sheets',
                             style: TextStyle(fontSize: 12, color: NeetTokens.textMuted),
                           ),
@@ -168,12 +168,12 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.error_outline, color: NeetTokens.error),
+                          Icon(Icons.error_outline, color: NeetTokens.error),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               _errorMessage!,
-                              style: const TextStyle(color: NeetTokens.error),
+                              style: TextStyle(color: NeetTokens.error),
                             ),
                           ),
                         ],
@@ -185,7 +185,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                           backgroundColor: NeetTokens.error.withOpacity(0.2),
                           foregroundColor: NeetTokens.error,
                         ),
-                        child: const Text('Retry Scan'),
+                        child: Text('Retry Scan'),
                       ),
                     ],
                   ),
@@ -198,8 +198,8 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _isScanning ? null : () => _handleScan(ImageSource.camera),
-                      icon: const Icon(Icons.camera_sharp, color: Colors.black),
-                      label: const Text(
+                      icon: Icon(Icons.camera_sharp, color: Colors.black),
+                      label: Text(
                         'Scan with Camera',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.black),
                         textAlign: TextAlign.center,
@@ -217,8 +217,8 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: _isScanning ? null : () => _handleScan(ImageSource.gallery),
-                      icon: const Icon(Icons.image, color: Colors.white),
-                      label: const Text(
+                      icon: Icon(Icons.image, color: Colors.white),
+                      label: Text(
                         'Upload from Gallery',
                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white),
                         textAlign: TextAlign.center,
@@ -247,7 +247,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'GRADED OMR RESULTS',
                         style: TextStyle(
                           fontSize: 11,
@@ -259,7 +259,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                       const SizedBox(height: 12),
                       Text(
                         'Score: ${_scanResult!['score']} / 720',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w900,
                           color: NeetTokens.textPrimary,
@@ -269,9 +269,9 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Correct: ${_scanResult!['correct']}', style: const TextStyle(color: NeetTokens.biologyColor, fontWeight: FontWeight.w700)),
-                          Text('Incorrect: ${_scanResult!['incorrect']}', style: const TextStyle(color: NeetTokens.error, fontWeight: FontWeight.w700)),
-                          Text('Unattempted: ${_scanResult!['unattempted']}', style: const TextStyle(color: NeetTokens.textMuted, fontWeight: FontWeight.w700)),
+                          Text('Correct: ${_scanResult!['correct']}', style: TextStyle(color: NeetTokens.biologyColor, fontWeight: FontWeight.w700)),
+                          Text('Incorrect: ${_scanResult!['incorrect']}', style: TextStyle(color: NeetTokens.error, fontWeight: FontWeight.w700)),
+                          Text('Unattempted: ${_scanResult!['unattempted']}', style: TextStyle(color: NeetTokens.textMuted, fontWeight: FontWeight.w700)),
                         ],
                       ),
                     ],

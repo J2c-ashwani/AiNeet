@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeNcertReaderScreen extends StatefulWidget {
   const NativeNcertReaderScreen({super.key});
@@ -41,7 +41,7 @@ class _NativeNcertReaderScreenState extends State<NativeNcertReaderScreen> {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'NCERT Textbook Library',
           style: TextStyle(
             fontSize: 18,
@@ -110,14 +110,14 @@ class _NativeNcertReaderScreenState extends State<NativeNcertReaderScreen> {
                 children: [
                   Text(
                     _selectedChapter,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                       color: NeetTokens.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
+                  Text(
                     'NCERT Class 11 & 12 Syllabus Aligned',
                     style: TextStyle(fontSize: 12, color: NeetTokens.textMuted),
                   ),

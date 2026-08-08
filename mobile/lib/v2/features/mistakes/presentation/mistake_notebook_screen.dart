@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeMistakeNotebookScreen extends StatelessWidget {
   const NativeMistakeNotebookScreen({super.key});
@@ -11,7 +11,7 @@ class NativeMistakeNotebookScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Mistake Notebook',
           style: TextStyle(
             fontSize: 18,
@@ -24,7 +24,7 @@ class NativeMistakeNotebookScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
+            Text(
               'Recorded Question Errors',
               style: TextStyle(
                 fontSize: 16,
@@ -83,14 +83,14 @@ class NativeMistakeNotebookScreen extends StatelessWidget {
               ),
               Text(
                 topic,
-                style: const TextStyle(fontSize: 11, color: NeetTokens.textMuted),
+                style: TextStyle(fontSize: 11, color: NeetTokens.textMuted),
               ),
             ],
           ),
           const SizedBox(height: 10),
           Text(
             question,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary),
           ),
           const SizedBox(height: 10),
           Container(
@@ -101,7 +101,7 @@ class NativeMistakeNotebookScreen extends StatelessWidget {
             ),
             child: Text(
               '💡 Key Error: $mistakeReason',
-              style: const TextStyle(fontSize: 12, color: NeetTokens.textSecondary),
+              style: TextStyle(fontSize: 12, color: NeetTokens.textSecondary),
             ),
           ),
         ],

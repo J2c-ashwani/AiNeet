@@ -81,7 +81,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: NeetTokens.textPrimary),
+          icon: Icon(Icons.arrow_back, color: NeetTokens.textPrimary),
           onPressed: widget.onNavigateToLogin,
         ),
       ),
@@ -93,7 +93,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
+                Text(
                   'Create Account',
                   style: TextStyle(
                     fontSize: 28,
@@ -102,7 +102,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Join AI NEET Coach and start your journey.',
                   style: TextStyle(fontSize: 16, color: NeetTokens.textMuted),
                 ),
@@ -119,7 +119,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                     ),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: NeetTokens.error),
+                      style: TextStyle(color: NeetTokens.error),
                     ),
                   ),
 
@@ -185,7 +185,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                 if (!_showReferral)
                   TextButton(
                     onPressed: () => setState(() => _showReferral = true),
-                    child: const Text('Have a referral code?', style: TextStyle(color: NeetTokens.accentPrimary)),
+                    child: Text('Have a referral code?', style: TextStyle(color: NeetTokens.accentPrimary)),
                   )
                 else
                   TextFormField(
@@ -210,14 +210,14 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                   ),
                   child: _isLoading
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      : Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
                 
                 const SizedBox(height: 16),
 
                 TextButton(
                   onPressed: widget.onNavigateToLogin,
-                  child: const Text('Already have an account? Sign in', style: TextStyle(color: NeetTokens.textMuted)),
+                  child: Text('Already have an account? Sign in', style: TextStyle(color: NeetTokens.textMuted)),
                 ),
               ],
             ),

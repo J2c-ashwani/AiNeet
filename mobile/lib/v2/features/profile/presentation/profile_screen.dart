@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/security/secure_storage.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/security/secure_storage.dart';
 
 class NativeProfileScreen extends StatefulWidget {
   final VoidCallback onLogout;
@@ -40,7 +40,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Profile & Settings',
           style: TextStyle(
             fontSize: 18,
@@ -68,7 +68,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
                     backgroundColor: NeetTokens.accentPrimary,
                     child: Text(
                       _userEmail[0].toUpperCase(),
-                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white),
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -76,8 +76,8 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('NEET Student', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
-                        Text(_userEmail, style: const TextStyle(fontSize: 12, color: NeetTokens.textMuted)),
+                        Text('NEET Student', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+                        Text(_userEmail, style: TextStyle(fontSize: 12, color: NeetTokens.textMuted)),
                       ],
                     ),
                   ),
@@ -86,7 +86,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
             ),
             const SizedBox(height: 24),
 
-            const Text('Account Controls', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: NeetTokens.textMuted)),
+            Text('Account Controls', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: NeetTokens.textMuted)),
             const SizedBox(height: 12),
 
             _buildSettingsItem(Icons.security, 'Parental Controls & Summary Emails', () {}),
@@ -102,7 +102,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
               ),
-              child: const Text('Sign Out', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+              child: Text('Sign Out', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
             ),
           ],
         ),
@@ -121,7 +121,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
       child: ListTile(
         leading: Icon(icon, color: isDestructive ? NeetTokens.error : NeetTokens.accentPrimary),
         title: Text(title, style: TextStyle(fontSize: 14, color: isDestructive ? NeetTokens.error : NeetTokens.textPrimary, fontWeight: FontWeight.w600)),
-        trailing: const Icon(Icons.chevron_right, color: NeetTokens.textMuted),
+        trailing: Icon(Icons.chevron_right, color: NeetTokens.textMuted),
         onTap: onTap,
       ),
     );

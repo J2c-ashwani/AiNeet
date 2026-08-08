@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
+import '../../../core/constants/tokens.dart';
 
 class NativeBlueprintScreen extends StatelessWidget {
   const NativeBlueprintScreen({super.key});
@@ -11,7 +11,7 @@ class NativeBlueprintScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'NEET Weightage Blueprint',
           style: TextStyle(
             fontSize: 18,
@@ -24,7 +24,7 @@ class NativeBlueprintScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
+            Text(
               'High-Weightage Chapter Breakdown',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary),
             ),
@@ -64,14 +64,14 @@ class NativeBlueprintScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(color: NeetTokens.warning.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
-                child: Text(priority, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: NeetTokens.warning)),
+                child: Text(priority, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: NeetTokens.warning)),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(chapter, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+          Text(chapter, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
           const SizedBox(height: 4),
-          Text(marks, style: const TextStyle(fontSize: 12, color: NeetTokens.textMuted)),
+          Text(marks, style: TextStyle(fontSize: 12, color: NeetTokens.textMuted)),
         ],
       ),
     );

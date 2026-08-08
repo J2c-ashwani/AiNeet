@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/billing/billing_service.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/billing/billing_service.dart';
 
 class NativePricingScreen extends StatefulWidget {
   const NativePricingScreen({super.key});
@@ -50,7 +50,7 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
       appBar: AppBar(
         backgroundColor: NeetTokens.bgSecondary,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'NEET Coach Premium',
           style: TextStyle(
             fontSize: 18,
@@ -67,7 +67,7 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
             children: [
               _buildPricingCard(),
               const SizedBox(height: 24),
-              const Text('Included in Pro Pass:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+              Text('Included in Pro Pass:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
               const SizedBox(height: 12),
               _buildFeatureRow('Unlimited AI Doubt Solving with camera OCR'),
               _buildFeatureRow('Full-length 720-Mark NTA Pattern Mock Tests'),
@@ -83,7 +83,7 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
                   ),
-                  child: const Text('Subscribe via Google Play →', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
+                  child: Text('Subscribe via Google Play →', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
                 ),
             ],
           ),
@@ -139,9 +139,9 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
         ),
         child: Column(
           children: [
-            const Icon(Icons.info_outline, color: NeetTokens.info, size: 32),
+            Icon(Icons.info_outline, color: NeetTokens.info, size: 32),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Premium subscriptions coming soon to Play Store. Check back shortly.',
               textAlign: TextAlign.center,
               style: TextStyle(color: NeetTokens.textPrimary),
@@ -149,8 +149,8 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
             const SizedBox(height: 16),
             TextButton.icon(
               onPressed: _initializeBilling,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Refresh'),
+              icon: Icon(Icons.refresh),
+              label: Text('Refresh'),
             ),
           ],
         ),
@@ -171,11 +171,11 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
       ),
       child: Column(
         children: [
-          Text(proProduct.title.toUpperCase(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.2)),
+          Text(proProduct.title.toUpperCase(), style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.2)),
           const SizedBox(height: 8),
-          Text(proProduct.price, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
+          Text(proProduct.price, style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white)),
           const SizedBox(height: 4),
-          const Text('Billed via Google Play Billing', style: TextStyle(fontSize: 12, color: Colors.white70)),
+          Text('Billed via Google Play Billing', style: TextStyle(fontSize: 12, color: Colors.white70)),
         ],
       ),
     );
@@ -186,9 +186,9 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         children: [
-          const Icon(Icons.check_circle, color: NeetTokens.biologyColor, size: 20),
+          Icon(Icons.check_circle, color: NeetTokens.biologyColor, size: 20),
           const SizedBox(width: 12),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 14, color: NeetTokens.textSecondary))),
+          Expanded(child: Text(text, style: TextStyle(fontSize: 14, color: NeetTokens.textSecondary))),
         ],
       ),
     );

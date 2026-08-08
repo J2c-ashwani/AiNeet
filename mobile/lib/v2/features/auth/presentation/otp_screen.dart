@@ -100,7 +100,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: NeetTokens.textPrimary),
+          icon: Icon(Icons.arrow_back, color: NeetTokens.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -110,7 +110,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
+              Text(
                 'Verify Email',
                 style: TextStyle(
                   fontSize: 28,
@@ -121,7 +121,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
               const SizedBox(height: 8),
               Text(
                 'We sent a 6-digit code to ${widget.email}',
-                style: const TextStyle(fontSize: 16, color: NeetTokens.textMuted),
+                style: TextStyle(fontSize: 16, color: NeetTokens.textMuted),
               ),
               const SizedBox(height: 32),
 
@@ -136,7 +136,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                   ),
                   child: Text(
                     _errorMessage!,
-                    style: const TextStyle(color: NeetTokens.error),
+                    style: TextStyle(color: NeetTokens.error),
                   ),
                 ),
 
@@ -145,7 +145,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                 keyboardType: TextInputType.number,
                 maxLength: 6,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 24, letterSpacing: 8),
+                style: TextStyle(fontSize: 24, letterSpacing: 8),
                 decoration: InputDecoration(
                   counterText: '',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -168,7 +168,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                 ),
                 child: _isLoading
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('Verify', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    : Text('Verify', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
 
               const Spacer(),
