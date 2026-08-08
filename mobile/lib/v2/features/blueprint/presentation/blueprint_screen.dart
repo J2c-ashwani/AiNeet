@@ -1,8 +1,59 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/tokens.dart';
+import '../../../../core/constants/tokens.dart';
+import '../../../../core/api/api_client.dart';
 
-class NativeBlueprintScreen extends StatelessWidget {
+class NativeBlueprintScreen extends StatefulWidget {
   const NativeBlueprintScreen({super.key});
+
+  @override
+  State<NativeBlueprintScreen> createState() => _NativeBlueprintScreenState();
+}
+
+class _NativeBlueprintScreenState extends State<NativeBlueprintScreen> {
+  final NeetApiClient _apiClient = NeetApiClient();
+  bool _isLoading = true;
+  List<dynamic> _chapters = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBlueprint();
+  }
+
+  Future<void> _loadBlueprint() async {
+    setState(() => _isLoading = true);
+    try {
+      final res = await _apiClient.getBlueprint();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          if (res.data is List) {
+            _chapters = res.data;
+          } else if (res.data is Map && res.data['chapters'] != null) {
+            _chapters = res.data['chapters'];
+          } else {
+            _setFallbackBlueprint();
+          }
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _setFallbackBlueprint();
+        });
+      }
+    }
+  }
+
+  void _setFallbackBlueprint() {
+    _chapters = [
+      {'chapter': 'Human Physiology', 'subject': 'Biology', 'marks': '14-16 Questions (56-64 Marks)', 'priority': 'High Priority'},
+      {'chapter': 'Current Electricity & Magnetism', 'subject': 'Physics', 'marks': '8-10 Questions (32-40 Marks)', 'priority': 'High Priority'},
+      {'chapter': 'Organic Chemistry - Reaction Mechanisms', 'subject': 'Chemistry', 'marks': '10-12 Questions (40-48 Marks)', 'priority': 'High Priority'},
+      {'chapter': 'Optics & Wave Optics', 'subject': 'Physics', 'marks': '6-8 Questions (24-32 Marks)', 'priority': 'Medium Priority'},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +72,26 @@ class NativeBlueprintScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            Text(
-              'High-Weightage Chapter Breakdown',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary),
-            ),
-            const SizedBox(height: 12),
-            _buildBlueprintCard('Human Physiology', 'Biology', '14-16 Questions (56-64 Marks)', 'High Priority'),
-            _buildBlueprintCard('Current Electricity & Magnetism', 'Physics', '8-10 Questions (32-40 Marks)', 'High Priority'),
-            _buildBlueprintCard('Organic Chemistry - Reaction Mechanisms', 'Chemistry', '10-12 Questions (40-48 Marks)', 'High Priority'),
-            _buildBlueprintCard('Optics & Wave Optics', 'Physics', '6-8 Questions (24-32 Marks)', 'Medium Priority'),
-          ],
+        child: RefreshIndicator(
+          onRefresh: _loadBlueprint,
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator(color: NeetTokens.accentGlow))
+              : ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    Text(
+                      'High-Weightage Chapter Breakdown',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary),
+                    ),
+                    const SizedBox(height: 12),
+                    ..._chapters.map((c) => _buildBlueprintCard(
+                          c['chapter'] ?? 'Chapter',
+                          c['subject'] ?? 'Physics',
+                          c['marks'] ?? 'N/A',
+                          c['priority'] ?? 'High Priority',
+                        )),
+                  ],
+                ),
         ),
       ),
     );

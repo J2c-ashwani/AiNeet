@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/security/secure_storage.dart';
+import '../../auth/presentation/settings_screen.dart';
 
 class NativeProfileScreen extends StatefulWidget {
   final VoidCallback onLogout;
@@ -31,6 +32,15 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
     NeetTokens.hapticMedium();
     await SecureStorageService.clearSession();
     widget.onLogout();
+  }
+
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NativeSettingsScreen(onLogout: _handleLogout),
+      ),
+    );
   }
 
   @override
@@ -67,7 +77,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
                     radius: 28,
                     backgroundColor: NeetTokens.accentPrimary,
                     child: Text(
-                      _userEmail[0].toUpperCase(),
+                      _userEmail.isNotEmpty ? _userEmail[0].toUpperCase() : 'S',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white),
                     ),
                   ),
@@ -89,9 +99,14 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
             Text('Account Controls', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: NeetTokens.textMuted)),
             const SizedBox(height: 12),
 
-            _buildSettingsItem(Icons.security, 'Parental Controls & Summary Emails', () {}),
-            _buildSettingsItem(Icons.lock_reset, 'Change Password', () {}),
-            _buildSettingsItem(Icons.delete_forever, 'Delete Account Data', () {}, isDestructive: true),
+            _buildSettingsItem(Icons.settings, 'Account & Security Settings', _openSettings),
+            _buildSettingsItem(Icons.security, 'Parental Controls & Summary Emails', () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Weekly progress summaries are sent to your registered email.')),
+              );
+            }),
+            _buildSettingsItem(Icons.lock_reset, 'Change Password', _openSettings),
+            _buildSettingsItem(Icons.delete_forever, 'Delete Account Data', _openSettings, isDestructive: true),
             const SizedBox(height: 24),
 
             ElevatedButton(

@@ -1,8 +1,60 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/tokens.dart';
+import '../../../../core/constants/tokens.dart';
+import '../../../../core/api/api_client.dart';
 
-class NativeStudyPlanScreen extends StatelessWidget {
+class NativeStudyPlanScreen extends StatefulWidget {
   const NativeStudyPlanScreen({super.key});
+
+  @override
+  State<NativeStudyPlanScreen> createState() => _NativeStudyPlanScreenState();
+}
+
+class _NativeStudyPlanScreenState extends State<NativeStudyPlanScreen> {
+  final NeetApiClient _apiClient = NeetApiClient();
+  bool _isLoading = true;
+  List<dynamic> _tasks = [];
+  String _totalHours = '3.5 Hours';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStudyPlan();
+  }
+
+  Future<void> _loadStudyPlan() async {
+    setState(() => _isLoading = true);
+    try {
+      final res = await _apiClient.getStudyPlan();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          if (res.data != null && res.data['plan'] is List) {
+            _tasks = res.data['plan'];
+            if (res.data['totalStudyHours'] != null) {
+              _totalHours = '${res.data['totalStudyHours']} Hours';
+            }
+          } else {
+            _setFallbackPlan();
+          }
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _setFallbackPlan();
+        });
+      }
+    }
+  }
+
+  void _setFallbackPlan() {
+    _tasks = [
+      {'time': '09:00 AM - 10:30 AM', 'activity': 'Physics: Thermodynamics Problem Solving', 'status': 'Completed', 'isDone': true},
+      {'time': '11:00 AM - 12:30 PM', 'activity': 'Biology: Cell Division NCERT Reading', 'status': 'In Progress', 'isDone': false},
+      {'time': '04:00 PM - 05:00 PM', 'activity': 'Chemistry: 30-Question Custom Mock Test', 'status': 'Pending', 'isDone': false},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,33 +73,41 @@ class NativeStudyPlanScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: NeetTokens.cardGradient,
-                borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-                border: Border.all(color: NeetTokens.accentPrimary.withOpacity(0.3)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'STUDY SCHEDULE - TODAY',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: NeetTokens.accentPrimary, letterSpacing: 1.1),
-                  ),
-                  SizedBox(height: 8),
-                  Text('Daily Goal: 3.5 Hours', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: NeetTokens.textPrimary)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildScheduleTask('09:00 AM - 10:30 AM', 'Physics: Thermodynamics Problem Solving', 'Completed', true),
-            _buildScheduleTask('11:00 AM - 12:30 PM', 'Biology: Cell Division NCERT Reading', 'In Progress', false),
-            _buildScheduleTask('04:00 PM - 05:00 PM', 'Chemistry: 30-Question Custom Mock Test', 'Pending', false),
-          ],
+        child: RefreshIndicator(
+          onRefresh: _loadStudyPlan,
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator(color: NeetTokens.accentGlow))
+              : ListView(
+                  padding: const EdgeInsets.all(20),
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: NeetTokens.cardGradient,
+                        borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
+                        border: Border.all(color: NeetTokens.accentPrimary.withOpacity(0.3)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'STUDY SCHEDULE - TODAY',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: NeetTokens.accentPrimary, letterSpacing: 1.1),
+                          ),
+                          const SizedBox(height: 8),
+                          Text('Daily Goal: $_totalHours', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: NeetTokens.textPrimary)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ..._tasks.map((task) => _buildScheduleTask(
+                          task['time'] ?? '10:00 AM',
+                          task['activity'] ?? task['title'] ?? 'Study Session',
+                          task['status'] ?? 'Pending',
+                          task['isDone'] == true,
+                        )),
+                  ],
+                ),
         ),
       ),
     );
