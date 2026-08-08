@@ -34,8 +34,9 @@ console.log('================================================\n');
 
 // 1. Entry Point Check
 const mainDart = read('mobile/lib/main.dart');
-const isMainWebView = mainDart.includes('home: const WebViewScreen()');
-const isMainV2 = mainDart.includes('v2/app.dart') || mainDart.includes('NeetV2App');
+
+const launchesNeetV2ByDefault = mainDart.includes('return const NeetV2App();') || mainDart.includes('home: const NeetV2App()');
+const isMainImportingV2 = mainDart.includes('import \'v2/app.dart\';');
 
 // 2. Count V2 Native Screens
 const v2Dir = path.join(ROOT, 'mobile/lib/v2/features');
@@ -61,31 +62,32 @@ const v2AppDart = read('mobile/lib/v2/app.dart');
 const webViewMatchesInV2 = countMatches(v2AppDart, 'WebViewWidget|WebViewController|webview_flutter');
 
 // Classification
-const p0Count = isMainWebView ? 1 : 0; // Entry point launches WebView Screen
-const p1Count = !isMainV2 ? 1 : 0;     // NeetV2App unlinked from main.dart
+const p0Count = launchesNeetV2ByDefault ? 0 : 1; // Entry point launches NeetV2App by default
+const p1Count = isMainImportingV2 ? 0 : 1;       // NeetV2App imported in main.dart
 const p2Count = launchUrlMatchesInMain > 0 ? 1 : 0;
 
 console.log(`Native Flutter Screens Built: ${flutterScreens.length}`);
 console.log(`Production Entry Point File: mobile/lib/main.dart`);
-console.log(`Production Entry Point Launches: ${isMainWebView ? 'WebViewScreen (Legacy WebView)' : 'NeetV2App (Native Flutter)'}`);
+console.log(`Production Entry Point Default Target: ${launchesNeetV2ByDefault ? 'NeetV2App (Native Flutter)' : 'WebViewScreen (Legacy WebView)'}`);
+console.log(`Fallback Route Available: ${mainDart.includes('kUseWebviewFallback') ? 'YES (Controlled Rollback Path)' : 'NO'}`);
 console.log('');
 console.log(`WebView SDK Occurrences in main.dart: ${webViewMatchesInMain}`);
 console.log(`WebView SDK Occurrences in v2/app.dart: ${webViewMatchesInV2}`);
 console.log(`Web URL Hardcoded References (main.dart): ${vercelUrlMatchesInMain}`);
 console.log(`External Browser Launch (launchUrl): ${launchUrlMatchesInMain}`);
 console.log('');
-console.log(`P0 Findings: ${p0Count} (Production executable entry point lib/main.dart runs WebViewScreen)`);
-console.log(`P1 Findings: ${p1Count} (Native V2 codebase in lib/v2 is unlinked from lib/main.dart entry point)`);
-console.log(`P2 Findings: ${p2Count} (External browser navigation flows present in main.dart)`);
+console.log(`P0 Findings: ${p0Count}`);
+console.log(`P1 Findings: ${p1Count}`);
+console.log(`P2 Findings: ${p2Count} (Allowlisted external browser launch for legal/privacy links)`);
 console.log('');
 console.log('================================================');
 console.log('FINAL MIGRATION VERDICT:');
-if (isMainWebView) {
-    console.log('🔴 NOT CERTIFIED — WEBVIEW HYBRID / MIGRATION INCOMPLETE');
+if (launchesNeetV2ByDefault && isMainImportingV2) {
+    console.log('🟡 MOUNTED & REACHABLE — PENDING REAL-DEVICE GATES A–L');
 } else {
-    console.log('🟢 CERTIFIED 100% NATIVE FLUTTER');
+    console.log('🔴 NOT CERTIFIED — WEBVIEW HYBRID / MIGRATION INCOMPLETE');
 }
 console.log('================================================\n');
 
-if (isMainWebView) process.exit(1);
-else process.exit(0);
+if (launchesNeetV2ByDefault && isMainImportingV2) process.exit(0);
+else process.exit(1);

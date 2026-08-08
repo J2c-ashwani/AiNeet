@@ -19,8 +19,13 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'core/ad_service.dart';
 import 'runtime/crash_forwarder.dart';
 import 'security/app_check.dart';
+import 'v2/app.dart';
 
 const String kAppVersion = '1.1.0';
+const bool kUseWebviewFallback = bool.fromEnvironment(
+  'ENABLE_WEBVIEW_FALLBACK',
+  defaultValue: false,
+);
 const String kInitialWebUrl = String.fromEnvironment(
   'NEET_WEB_URL',
   defaultValue: 'https://ai-neet.vercel.app',
@@ -96,19 +101,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AI NEET Coach',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
+    if (kUseWebviewFallback) {
+      return MaterialApp(
+        title: 'AI NEET Coach (Fallback)',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark,
+          ),
+          scaffoldBackgroundColor: const Color(0xFF080c18),
+          useMaterial3: true,
         ),
-        scaffoldBackgroundColor: const Color(0xFF080c18),
-        useMaterial3: true,
-      ),
-      home: const WebViewScreen(),
-      debugShowCheckedModeBanner: false,
-    );
+        home: const WebViewScreen(),
+        debugShowCheckedModeBanner: false,
+      );
+    }
+
+    return const NeetV2App();
   }
 }
 
