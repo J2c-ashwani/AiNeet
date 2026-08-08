@@ -2,21 +2,24 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/tokens.dart';
 
 class NativeTestResultsScreen extends StatelessWidget {
-  final int totalQuestions;
-  final int correctAnswers;
-  final int score;
+  final Map<String, dynamic> resultData;
   final VoidCallback onReturnHome;
 
   const NativeTestResultsScreen({
     super.key,
-    required this.totalQuestions,
-    required this.correctAnswers,
-    required this.score,
+    required this.resultData,
     required this.onReturnHome,
   });
 
   @override
   Widget build(BuildContext context) {
+    final int totalQuestions = resultData['totalQuestions'] ?? 0;
+    final int correctAnswers = resultData['correct'] ?? 0;
+    final int score = resultData['score'] ?? 0;
+    final int incorrect = resultData['incorrect'] ?? 0;
+    final int unattempted = resultData['unattempted'] ?? 0;
+    final List<dynamic> explanations = resultData['explanations'] ?? [];
+
     final accuracy = totalQuestions > 0
         ? ((correctAnswers / totalQuestions) * 100).round()
         : 0;
@@ -62,7 +65,7 @@ class NativeTestResultsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '$score / 720',
+                    '$score / ${totalQuestions * 4}', // Assuming 4 marks per question for max score calc
                     style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
@@ -78,32 +81,47 @@ class NativeTestResultsScreen extends StatelessWidget {
                       _buildMiniStat('Total Qs', '$totalQuestions'),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildMiniStat('Incorrect', '$incorrect', color: NeetTokens.error),
+                      _buildMiniStat('Unattempted', '$unattempted', color: NeetTokens.textMuted),
+                    ],
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
 
-            // Verified PYQ Explanations Section
-            const Text(
-              'Question Explanations',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: NeetTokens.textPrimary,
+            if (explanations.isNotEmpty) ...[
+              const Text(
+                'Question Explanations',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: NeetTokens.textPrimary,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            _buildExplanationCard(
-              qNum: 1,
-              question: 'A body of mass 2 kg is accelerated from rest to a speed of 10 m/s in 2 seconds. Calculate work done.',
-              userAnswer: 'A) 50 J',
-              correctAnswer: 'B) 100 J',
-              explanation: 'Work done = Change in Kinetic Energy = (1/2) * m * v^2 = (1/2) * 2 * (10)^2 = 100 Joules.',
-              isCorrect: false,
-              pyqTag: 'NEET 2023 Authentic PYQ',
-            ),
-            const SizedBox(height: 24),
+              ...List.generate(explanations.length, (index) {
+                final exp = explanations[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _buildExplanationCard(
+                    qNum: index + 1,
+                    question: exp['question'] ?? '',
+                    userAnswer: exp['userAnswer'] ?? 'Unattempted',
+                    correctAnswer: exp['correctAnswer'] ?? '',
+                    explanation: exp['explanation'] ?? '',
+                    isCorrect: exp['isCorrect'] ?? false,
+                    pyqTag: exp['pyqTag'] ?? 'Practice Question',
+                  ),
+                );
+              }),
+              const SizedBox(height: 24),
+            ],
 
             // Action Buttons
             ElevatedButton(
@@ -130,15 +148,15 @@ class NativeTestResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniStat(String label, String value) {
+  Widget _buildMiniStat(String label, String value, {Color color = NeetTokens.textPrimary}) {
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: NeetTokens.textPrimary,
+            color: color,
           ),
         ),
         Text(

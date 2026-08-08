@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'core/constants/tokens.dart';
+import 'core/security/secure_storage.dart';
 import 'features/auth/presentation/login_screen.dart';
+import 'features/auth/presentation/register_screen.dart';
+import 'features/auth/presentation/otp_screen.dart';
+import 'features/auth/presentation/settings_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 import 'features/doubts/presentation/doubt_solver_screen.dart';
 import 'features/ncert/presentation/ncert_reader_screen.dart';
@@ -14,6 +18,37 @@ import 'features/pricing/presentation/pricing_screen.dart';
 import 'features/profile/presentation/profile_screen.dart';
 import 'features/practice/presentation/test_engine_screen.dart';
 
+class _NeetSplashScreen extends StatelessWidget {
+  const _NeetSplashScreen();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: NeetTokens.bgPrimary,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 72, height: 72,
+              decoration: BoxDecoration(
+                gradient: NeetTokens.primaryGradient,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(Icons.school_rounded, color: Colors.white, size: 40),
+            ),
+            const SizedBox(height: 24),
+            const Text('AI NEET Coach', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+            const SizedBox(height: 8),
+            const Text('Loading...', style: TextStyle(fontSize: 13, color: NeetTokens.textMuted)),
+            const SizedBox(height: 32),
+            const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: NeetTokens.accentPrimary)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Flutter V2 100% Complete Native Application Entry
 class NeetV2App extends StatefulWidget {
   const NeetV2App({super.key});
@@ -23,8 +58,25 @@ class NeetV2App extends StatefulWidget {
 }
 
 class _NeetV2AppState extends State<NeetV2App> {
-  bool _isLoggedIn = true;
+  bool _isCheckingSession = true;
+  bool _isLoggedIn = false;
   int _currentTab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSession();
+  }
+
+  Future<void> _restoreSession() async {
+    final token = await SecureStorageService.getAuthToken();
+    if (mounted) {
+      setState(() {
+        _isLoggedIn = token != null && token.isNotEmpty;
+        _isCheckingSession = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,63 +91,95 @@ class _NeetV2AppState extends State<NeetV2App> {
         ),
         useMaterial3: true,
       ),
-      home: !_isLoggedIn
-          ? NativeLoginScreen(
-              onLoginSuccess: () => setState(() => _isLoggedIn = true),
-              onNavigateToRegister: () {},
-            )
-          : Scaffold(
-              body: IndexedStack(
-                index: _currentTab,
-                children: [
-                  NativeDashboardScreen(
-                    onStartPractice: (topic) {
+      home: _isCheckingSession
+          ? const _NeetSplashScreen()
+          : !_isLoggedIn
+              ? Builder(
+                  builder: (ctx) => NativeLoginScreen(
+                    onLoginSuccess: () => setState(() => _isLoggedIn = true),
+                    onNavigateToRegister: () {
                       Navigator.push(
-                        context,
+                        ctx,
                         MaterialPageRoute(
-                          builder: (context) => NativeTestEngineScreen(
-                            testTitle: topic,
-                            questions: const [],
-                            onSubmitTest: () => Navigator.pop(context),
+                          builder: (registerCtx) => NativeRegisterScreen(
+                            onNavigateToLogin: () => Navigator.pop(registerCtx),
+                            onRegistered: (email) {
+                              Navigator.pushReplacement(
+                                registerCtx,
+                                MaterialPageRoute(
+                                  builder: (otpCtx) => NativeOtpScreen(
+                                    email: email,
+                                    onOtpSuccess: () {
+                                      Navigator.of(otpCtx).popUntil((route) => route.isFirst);
+                                      setState(() => _isLoggedIn = true);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       );
                     },
-                    onOpenTools: () {},
                   ),
-                  const NativeDoubtSolverScreen(),
-                  const NativeOmrScannerScreen(),
-                  const NativeNcertReaderScreen(),
-                  const NativeBattlegroundScreen(),
-                  const NativeMistakeNotebookScreen(),
-                  const NativeRevisionManagerScreen(),
-                  const NativeBlueprintScreen(),
-                  const NativeStudyPlanScreen(),
-                  const NativePricingScreen(),
-                  NativeProfileScreen(
-                    onLogout: () => setState(() => _isLoggedIn = false),
+                )
+              : Scaffold(
+                  body: IndexedStack(
+                    index: _currentTab,
+                    children: [
+                      NativeDashboardScreen(
+                        onStartPractice: (topic) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NativeTestEngineScreen(
+                                testTitle: topic,
+                                questions: const [],
+                                onSubmitTest: () => Navigator.pop(context),
+                              ),
+                            ),
+                          );
+                        },
+                        onOpenTools: () {},
+                      ),
+                      const NativeDoubtSolverScreen(),
+                      const NativeOmrScannerScreen(),
+                      const NativeNcertReaderScreen(),
+                      const NativeBattlegroundScreen(),
+                      const NativeMistakeNotebookScreen(),
+                      const NativeRevisionManagerScreen(),
+                      const NativeBlueprintScreen(),
+                      const NativeStudyPlanScreen(),
+                      const NativePricingScreen(),
+                      Builder(
+                        builder: (ctx) => NativeProfileScreen(
+                          onLogout: () async {
+                            await SecureStorageService.clearSession();
+                            setState(() => _isLoggedIn = false);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              bottomNavigationBar: BottomNavigationBar(
-                currentIndex: _currentTab < 5 ? _currentTab : 0,
-                onTap: (idx) {
-                  NeetTokens.hapticSelection();
-                  setState(() => _currentTab = idx);
-                },
-                backgroundColor: NeetTokens.bgSecondary,
-                selectedItemColor: NeetTokens.accentPrimary,
-                unselectedItemColor: NeetTokens.textMuted,
-                type: BottomNavigationBarType.fixed,
-                items: const [
-                  BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-                  BottomNavigationBarItem(icon: Icon(Icons.lightbulb_outline), label: 'Doubts'),
-                  BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: 'OMR'),
-                  BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'NCERT'),
-                  BottomNavigationBarItem(icon: Icon(Icons.sports_esports_outlined), label: 'Battle'),
-                ],
-              ),
-            ),
+                  bottomNavigationBar: BottomNavigationBar(
+                    currentIndex: _currentTab < 5 ? _currentTab : 0,
+                    onTap: (idx) {
+                      NeetTokens.hapticSelection();
+                      setState(() => _currentTab = idx);
+                    },
+                    backgroundColor: NeetTokens.bgSecondary,
+                    selectedItemColor: NeetTokens.accentPrimary,
+                    unselectedItemColor: NeetTokens.textMuted,
+                    type: BottomNavigationBarType.fixed,
+                    items: const [
+                      BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+                      BottomNavigationBarItem(icon: Icon(Icons.lightbulb_outline), label: 'Doubts'),
+                      BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: 'OMR'),
+                      BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'NCERT'),
+                      BottomNavigationBarItem(icon: Icon(Icons.sports_esports_outlined), label: 'Battle'),
+                    ],
+                  ),
+                ),
       debugShowCheckedModeBanner: false,
     );
   }

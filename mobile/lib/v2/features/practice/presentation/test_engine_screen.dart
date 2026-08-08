@@ -2,16 +2,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/tokens.dart';
 import '../../../../core/cache/offline_cache.dart';
+import '../../../../core/api/api_client.dart';
+import 'package:uuid/uuid.dart';
 
 class NativeTestEngineScreen extends StatefulWidget {
   final String testTitle;
-  final List<Map<String, dynamic>> questions;
-  final VoidCallback onSubmitTest;
+  final Map<String, dynamic>? testConfig;
+  final Function(Map<String, dynamic> resultData) onSubmitTest;
 
   const NativeTestEngineScreen({
     super.key,
     required this.testTitle,
-    required this.questions,
+    this.testConfig,
     required this.onSubmitTest,
   });
 
@@ -26,14 +28,86 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
   final Set<int> _markedForReview = {};
 
   int _remainingSeconds = 15 * 60; // 15-minute mock test default
+  int _elapsedSeconds = 0;
   Timer? _timer;
+
+  List<Map<String, dynamic>> _questions = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+  String? _testId;
+
+  final NeetApiClient _apiClient = NeetApiClient();
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-    _startTimer();
-    _restoreTestState();
+    _loadQuestions();
+  }
+
+  Future<void> _loadQuestions() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      // Fetch or generate questions
+      if (widget.testConfig != null) {
+        final res = await _apiClient.generateTest(
+          subject: widget.testConfig!['subject'],
+          topic: widget.testConfig!['topic'],
+        );
+        
+        if (res.statusCode == 200 && res.data != null) {
+          final List<dynamic> fetchedQuestions = res.data['questions'] ?? [];
+          _questions = fetchedQuestions.cast<Map<String, dynamic>>();
+          _testId = res.data['id'] ?? const Uuid().v4();
+          
+          await OfflineCacheService.cacheUserData('questions_current', {'questions': _questions, 'testId': _testId});
+        } else {
+          throw Exception('Failed to generate test');
+        }
+      } else {
+         final cached = await OfflineCacheService.getCachedUserData('questions_current');
+         if (cached != null && cached['questions'] != null) {
+           final List<dynamic> cachedQ = cached['questions'];
+           _questions = cachedQ.cast<Map<String, dynamic>>();
+           _testId = cached['testId'];
+         } else {
+            throw Exception('No configuration and no cached questions available.');
+         }
+      }
+      
+      await _restoreTestState();
+      
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _startTimer();
+      }
+    } catch (e) {
+      if (mounted) {
+        // Try to load from cache
+        final cached = await OfflineCacheService.getCachedUserData('questions_current');
+        if (cached != null && cached['questions'] != null) {
+           setState(() {
+             final List<dynamic> cachedQ = cached['questions'];
+             _questions = cachedQ.cast<Map<String, dynamic>>();
+             _testId = cached['testId'];
+             _isLoading = false;
+           });
+           await _restoreTestState();
+           _startTimer();
+        } else {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = 'Failed to load test questions. Please check your connection and try again.';
+          });
+        }
+      }
+    }
   }
 
   @override
@@ -49,7 +123,10 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
         timer.cancel();
         _handleAutoSubmit();
       } else {
-        setState(() => _remainingSeconds--);
+        setState(() {
+          _remainingSeconds--;
+          _elapsedSeconds++;
+        });
       }
     });
   }
@@ -85,9 +162,48 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     NeetTokens.hapticLight();
   }
 
-  void _handleAutoSubmit() {
+  Future<void> _handleAutoSubmit() async {
+    _timer?.cancel();
     NeetTokens.hapticSuccess();
-    widget.onSubmitTest();
+    
+    // Show submitting overlay
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: NeetTokens.accentGlow),
+      ),
+    );
+
+    try {
+      final res = await _apiClient.submitTest(
+        testId: _testId ?? const Uuid().v4(),
+        answers: _selectedAnswers,
+        timeTakenSeconds: _elapsedSeconds,
+      );
+
+      // Clear cached answers on success
+      await OfflineCacheService.clearUserData('active_test_answers');
+      await OfflineCacheService.clearUserData('questions_current');
+
+      if (mounted) {
+        Navigator.pop(context); // pop dialog
+        widget.onSubmitTest(res.data ?? {
+          'score': 0,
+          'correct': 0,
+          'incorrect': 0,
+          'unattempted': _questions.length,
+          'totalQuestions': _questions.length,
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // pop dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to submit test. Answers are saved locally.')),
+        );
+      }
+    }
   }
 
   String _formatTimer(int seconds) {
@@ -98,14 +214,66 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQ = widget.questions.isNotEmpty
-        ? widget.questions[_currentIndex]
-        : {
-            'text': 'A body of mass 2 kg is accelerated from rest to a speed of 10 m/s in 2 seconds. Calculate the work done by the force.',
-            'options': ['A) 50 J', 'B) 100 J', 'C) 200 J', 'D) 25 J'],
-            'subject': 'Physics',
-          };
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: NeetTokens.bgPrimary,
+        appBar: AppBar(
+          backgroundColor: NeetTokens.bgSecondary,
+          title: Text(widget.testTitle),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(color: NeetTokens.accentGlow),
+        ),
+      );
+    }
 
+    if (_errorMessage != null) {
+      return Scaffold(
+        backgroundColor: NeetTokens.bgPrimary,
+        appBar: AppBar(
+          backgroundColor: NeetTokens.bgSecondary,
+          title: Text(widget.testTitle),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: NeetTokens.error),
+                const SizedBox(height: 16),
+                Text(
+                  _errorMessage!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _loadQuestions,
+                  style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentGlow),
+                  child: const Text('Retry'),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_questions.isEmpty) {
+       return Scaffold(
+        backgroundColor: NeetTokens.bgPrimary,
+        appBar: AppBar(
+          backgroundColor: NeetTokens.bgSecondary,
+          title: Text(widget.testTitle),
+        ),
+        body: const Center(
+          child: Text('No questions available.', style: TextStyle(color: NeetTokens.textPrimary)),
+        ),
+      );
+    }
+
+    final currentQ = _questions[_currentIndex];
     final options = (currentQ['options'] as List<dynamic>?) ?? ['A', 'B', 'C', 'D'];
 
     return Scaffold(
@@ -125,7 +293,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
               ),
             ),
             Text(
-              'Q ${_currentIndex + 1} of ${widget.questions.isEmpty ? 15 : widget.questions.length}',
+              'Q ${_currentIndex + 1} of ${_questions.length}',
               style: const TextStyle(fontSize: 12, color: NeetTokens.textMuted),
             ),
           ],
@@ -181,7 +349,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
               onPageChanged: (index) {
                 setState(() => _currentIndex = index);
               },
-              itemCount: widget.questions.isEmpty ? 15 : widget.questions.length,
+              itemCount: _questions.length,
               itemBuilder: (context, index) {
                 final selectedOption = _selectedAnswers[index];
                 final isMarked = _markedForReview.contains(index);
@@ -346,7 +514,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
-                        if (_currentIndex < (widget.questions.isEmpty ? 14 : widget.questions.length - 1)) {
+                        if (_currentIndex < _questions.length - 1) {
                           _pageController.nextPage(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeOut,
@@ -362,7 +530,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                         ),
                       ),
                       child: Text(
-                        _currentIndex == (widget.questions.isEmpty ? 14 : widget.questions.length - 1)
+                        _currentIndex == _questions.length - 1
                             ? 'Submit Test'
                             : 'Next →',
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
@@ -375,7 +543,6 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           ),
         ],
       ),
-    ),
     );
   }
 
@@ -409,7 +576,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: widget.questions.isEmpty ? 15 : widget.questions.length,
+                itemCount: _questions.length,
                 itemBuilder: (context, idx) {
                   final isAnswered = _selectedAnswers.containsKey(idx);
                   final isCurrent = _currentIndex == idx;
@@ -463,7 +630,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
         backgroundColor: NeetTokens.bgSecondary,
         title: const Text('Submit Test?', style: TextStyle(color: NeetTokens.textPrimary)),
         content: Text(
-          'You have answered ${_selectedAnswers.length} of ${widget.questions.isEmpty ? 15 : widget.questions.length} questions. Are you sure you want to submit?',
+          'You have answered ${_selectedAnswers.length} of ${_questions.length} questions. Are you sure you want to submit?',
           style: const TextStyle(color: NeetTokens.textSecondary),
         ),
         actions: [

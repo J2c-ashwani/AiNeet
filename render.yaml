@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: neet-api
+    env: node
+    region: singapore
+    plan: free
+    # next build directly — bypasses local linters that require dev toolchain
+    buildCommand: npm install && npx next build
+    # npm start = next start = production Next.js server (NOT dev server)
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEET_API_ORIGIN
+        value: api.aineetcoach.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://api.aineetcoach.com
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://api.aineetcoach.com
+      - key: APP_CHECK_ENFORCEMENT
+        value: native
+      - key: DISABLE_AI
+        value: "false"
+      - key: DISABLE_RAG
+        value: "false"
+      - key: DISABLE_OMR
+        value: "false"
+      - key: DISABLE_PAYMENTS
+        value: "false"
+      - key: GOOGLE_PLAY_ALLOW_MOCK
+        value: "false"
+      - key: RAG_ALLOW_MOCK
+        value: "false"
+      # ── Set these in Render Dashboard → Environment (NEVER commit) ──
+      # NEXT_PUBLIC_SUPABASE_URL
+      # NEXT_PUBLIC_SUPABASE_ANON_KEY
+      # SUPABASE_URL
+      # SUPABASE_ANON_KEY
+      # SUPABASE_SERVICE_ROLE_KEY
+      # DATABASE_URL
+      # GEMINI_API_KEY
+      # FIREBASE_SERVICE_ACCOUNT_KEY
+      # FIREBASE_PROJECT_ID
+      # FIREBASE_APP_ID
+      # NEXT_PUBLIC_FIREBASE_APP_ID
+      # UPSTASH_REDIS_REST_URL
+      # UPSTASH_REDIS_REST_TOKEN
+      # RESEND_API_KEY
+      # RESEND_FROM_EMAIL
+      # GOOGLE_PLAY_PACKAGE_NAME
+      # NEXT_PUBLIC_SENTRY_DSN
+      # CRON_SECRET
+      # OMR_SCAN_BUCKET
+    autoDeploy: true

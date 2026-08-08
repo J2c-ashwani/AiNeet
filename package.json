@@ -19,6 +19,7 @@
     "lint:primary-routes": "node scripts/assert-primary-routes.js",
     "audit:frontend-wiring": "node scripts/audit-frontend-wiring.mjs",
     "audit:mobile": "node scripts/audit-mobile-enterprise.js",
+    "audit:mobile:production": "node scripts/audit-mobile-production.mjs",
     "audit:play-store": "node scripts/audit-play-store-release.mjs",
     "audit:rls": "node scripts/audit-rls-coverage.mjs",
     "db:rls-hardening": "node scripts/apply-rls-hardening.mjs",

@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../../../core/constants/tokens.dart';
 import '../../../../core/api/api_client.dart';
 
@@ -11,44 +14,72 @@ class NativeDoubtSolverScreen extends StatefulWidget {
 
 class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
   final _questionController = TextEditingController();
-  final List<Map<String, String>> _chatHistory = [];
+  final List<Map<String, dynamic>> _chatHistory = [];
   final NeetApiClient _apiClient = NeetApiClient();
+  final ImagePicker _picker = ImagePicker();
   bool _isSolving = false;
 
-  Future<void> _handleAskDoubt() async {
+  Future<void> _handleAskDoubt({String? imageBase64, String? imagePath}) async {
     final text = _questionController.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty && imageBase64 == null) return;
 
     NeetTokens.hapticMedium();
 
     setState(() {
-      _chatHistory.add({'sender': 'user', 'message': text});
+      _chatHistory.add({
+        'sender': 'user',
+        'message': text,
+        'imagePath': imagePath,
+      });
       _isSolving = true;
       _questionController.clear();
     });
 
     try {
-      final res = await _apiClient.solveDoubt(text);
+      final res = await _apiClient.solveDoubt(text, imageBase64: imageBase64);
       if (res.statusCode == 200 && res.data != null && mounted) {
-        final answer = res.data['solution'] ?? res.data['answer'] ?? res.data['text'] ??
-            'Based on NCERT Physics Chapter 5 (Laws of Motion):\nWork done = Change in Kinetic Energy = (1/2) * 2 * (10)^2 = 100 Joules.';
+        final answer = res.data['solution'] ?? res.data['answer'] ?? res.data['text'] ?? 'Solution provided.';
         setState(() {
-          _chatHistory.add({'sender': 'ai', 'message': answer.toString()});
+          _chatHistory.add({'sender': 'ai', 'message': answer.toString(), 'isError': false});
           _isSolving = false;
         });
         NeetTokens.hapticSuccess();
+      } else {
+        throw Exception('Failed to solve doubt');
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _chatHistory.add({
             'sender': 'ai',
-            'message': 'Based on NCERT Physics Chapter 5 (Laws of Motion):\nWork done = Change in Kinetic Energy = (1/2) * m * v^2 = 100 Joules.',
+            'message': 'AI service is temporarily unavailable. Please try again in a moment.',
+            'isError': true,
+            'retryText': text,
+            'retryImage': imageBase64,
+            'retryImagePath': imagePath,
           });
           _isSolving = false;
         });
-        NeetTokens.hapticSuccess();
+        NeetTokens.hapticLight();
       }
+    }
+  }
+
+  Future<void> _handleCameraCapture() async {
+    NeetTokens.hapticLight();
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 92,
+        maxWidth: 2400,
+      );
+      if (image != null) {
+        final bytes = await image.readAsBytes();
+        final base64String = base64Encode(bytes);
+        _handleAskDoubt(imageBase64: base64String, imagePath: image.path);
+      }
+    } catch (e) {
+      // Handle camera error gracefully if needed
     }
   }
 
@@ -106,11 +137,61 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                       itemBuilder: (context, index) {
                         final chat = _chatHistory[index];
                         final isUser = chat['sender'] == 'user';
+                        final isError = chat['isError'] == true;
+
+                        if (isError) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: NeetTokens.error.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                              border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.cloud_off_outlined, color: NeetTokens.error),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        chat['message'] ?? '',
+                                        style: const TextStyle(color: NeetTokens.error),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Remove the error message and retry
+                                    setState(() {
+                                      _chatHistory.removeAt(index);
+                                      // If the previous message was the user's prompt, remove it too so we don't duplicate
+                                      if (index > 0 && _chatHistory[index - 1]['sender'] == 'user') {
+                                        _chatHistory.removeAt(index - 1);
+                                      }
+                                    });
+                                    _questionController.text = chat['retryText'] ?? '';
+                                    _handleAskDoubt(
+                                      imageBase64: chat['retryImage'],
+                                      imagePath: chat['retryImagePath'],
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: NeetTokens.error.withOpacity(0.2),
+                                    foregroundColor: NeetTokens.error,
+                                  ),
+                                  child: const Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
 
                         return Align(
-                          alignment: isUser
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
+                          alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.only(bottom: 12),
                             padding: const EdgeInsets.all(16),
@@ -118,25 +199,36 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                               maxWidth: MediaQuery.of(context).size.width * 0.82,
                             ),
                             decoration: BoxDecoration(
-                              color: isUser
-                                  ? NeetTokens.accentGlow
-                                  : NeetTokens.bgSecondary,
-                              borderRadius: BorderRadius.circular(
-                                NeetTokens.radiusMd,
-                              ),
-                              border: isUser
-                                  ? null
-                                  : Border.all(color: NeetTokens.border),
+                              color: isUser ? NeetTokens.accentGlow : NeetTokens.bgSecondary,
+                              borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                              border: isUser ? null : Border.all(color: NeetTokens.border),
                             ),
-                            child: Text(
-                              chat['message'] ?? '',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: isUser
-                                    ? Colors.white
-                                    : NeetTokens.textPrimary,
-                                height: 1.4,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                              children: [
+                                if (chat['imagePath'] != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(chat['imagePath']),
+                                        height: 150,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                if (chat['message']?.isNotEmpty == true)
+                                  Text(
+                                    chat['message'] ?? '',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: isUser ? Colors.white : NeetTokens.textPrimary,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         );
@@ -184,9 +276,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                       Icons.camera_alt_outlined,
                       color: NeetTokens.chemistryColor,
                     ),
-                    onPressed: () {
-                      NeetTokens.hapticLight();
-                    },
+                    onPressed: _handleCameraCapture,
                   ),
                   Expanded(
                     child: TextField(
@@ -204,7 +294,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                       Icons.send_rounded,
                       color: NeetTokens.accentPrimary,
                     ),
-                    onPressed: _handleAskDoubt,
+                    onPressed: () => _handleAskDoubt(),
                   ),
                 ],
               ),

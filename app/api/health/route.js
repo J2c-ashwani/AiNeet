@@ -69,6 +69,15 @@ export async function GET() {
 
     checks.totalLatencyMs = Date.now() - start;
 
+    checks.origin = process.env.NEET_API_ORIGIN || 'vercel';
+    checks.version = process.env.npm_package_version || process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0';
+    checks.services = {
+        database: checks.db.status === 'ok' ? 'reachable' : 'error',
+        authentication: checks.db.status === 'ok' ? 'available' : 'error',
+        ai: 'unknown',
+        api: 'alive',
+    };
+
     const isHealthy = checks.db.status === 'ok' && checks.redis.status === 'ok';
 
     return NextResponse.json(checks, {

@@ -18,8 +18,14 @@ class OfflineCacheService {
     }
   }
 
-  static Future<void> cacheUserData(String key, dynamic data) async {
-    final encoded = jsonEncode(data);
+  static Future<void> cacheUserData(String key, dynamic data, {int? ttlSeconds}) async {
+    final payload = {
+      'data': data,
+      'cachedAt': DateTime.now().millisecondsSinceEpoch,
+      'ttlSeconds': ttlSeconds,
+    };
+    final encoded = jsonEncode(payload);
+    
     if (_box != null && _box!.isOpen) {
       await _box!.put(key, encoded);
     } else {
@@ -35,11 +41,33 @@ class OfflineCacheService {
       raw = _memoryStore[key];
     }
     if (raw == null) return null;
+    
     try {
-      return jsonDecode(raw);
+      final decoded = jsonDecode(raw);
+      if (decoded is Map<String, dynamic> && decoded.containsKey('cachedAt')) {
+        final cachedAt = decoded['cachedAt'] as int;
+        final ttlSeconds = decoded['ttlSeconds'] as int?;
+        
+        if (ttlSeconds != null) {
+          final now = DateTime.now().millisecondsSinceEpoch;
+          if (now - cachedAt > ttlSeconds * 1000) {
+            await removeKey(key);
+            return null; // Expired
+          }
+        }
+        return decoded['data'];
+      }
+      return decoded; // Fallback for old cache format
     } catch (_) {
       return null;
     }
+  }
+
+  static Future<void> removeKey(String key) async {
+    if (_box != null && _box!.isOpen) {
+      await _box!.delete(key);
+    }
+    _memoryStore.remove(key);
   }
 
   static Future<void> clearAll() async {

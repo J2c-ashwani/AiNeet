@@ -29,6 +29,10 @@ class SecureStorageService {
     return await _storage.read(key: _keyAuthToken);
   }
 
+  static Future<String?> getRefreshToken() async {
+    return await _storage.read(key: _keyRefreshToken);
+  }
+
   static Future<String?> getUserId() async {
     return await _storage.read(key: _keyUserId);
   }

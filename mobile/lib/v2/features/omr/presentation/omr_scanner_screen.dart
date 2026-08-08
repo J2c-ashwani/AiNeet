@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/constants/tokens.dart';
+import '../../../../core/api/api_client.dart';
 
 class NativeOmrScannerScreen extends StatefulWidget {
   const NativeOmrScannerScreen({super.key});
@@ -11,26 +14,70 @@ class NativeOmrScannerScreen extends StatefulWidget {
 class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
   bool _isScanning = false;
   Map<String, dynamic>? _scanResult;
+  String? _errorMessage;
+  final NeetApiClient _apiClient = NeetApiClient();
+  final ImagePicker _picker = ImagePicker();
 
-  void _handleScanOMR() {
-    setState(() => _isScanning = true);
-    NeetTokens.hapticMedium();
+  Future<void> _handleScan(ImageSource source) async {
+    setState(() {
+      _errorMessage = null;
+      _scanResult = null;
+    });
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        imageQuality: 90,
+        maxWidth: 2400,
+      );
+
+      if (image == null) return; // User cancelled
+
+      setState(() => _isScanning = true);
+      NeetTokens.hapticMedium();
+
+      final bytes = await image.readAsBytes();
+      final base64String = base64Encode(bytes);
+      
+      // Determine mime type from path extension roughly, or default to jpeg
+      String mimeType = 'image/jpeg';
+      if (image.name.toLowerCase().endsWith('.png')) {
+        mimeType = 'image/png';
+      }
+
+      final response = await _apiClient.gradeOmr(
+        imageBase64: base64String,
+        mimeType: mimeType,
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200 && response.data != null) {
         setState(() {
           _isScanning = false;
           _scanResult = {
-            'totalScanned': 180,
-            'correct': 142,
-            'incorrect': 28,
-            'unattempted': 10,
-            'calculatedScore': 540,
+            'score': response.data['score'] ?? 0,
+            'correct': response.data['correct'] ?? 0,
+            'incorrect': response.data['incorrect'] ?? 0,
+            'unattempted': response.data['unattempted'] ?? 0,
           };
         });
         NeetTokens.hapticSuccess();
+      } else {
+        throw Exception(response.data?['message'] ?? 'Failed to grade OMR.');
       }
-    });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isScanning = false;
+        if (e.toString().contains('permission')) {
+          _errorMessage = 'Camera permission denied. Please enable it in settings.';
+        } else {
+          _errorMessage = 'OMR grading requires internet connection or service is unavailable. Please try again.';
+        }
+      });
+      NeetTokens.hapticLight();
+    }
   }
 
   @override
@@ -109,20 +156,83 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
               ),
               const SizedBox(height: 24),
 
-              ElevatedButton.icon(
-                onPressed: _isScanning ? null : _handleScanOMR,
-                icon: const Icon(Icons.camera_sharp, color: Colors.black),
-                label: const Text(
-                  'Scan OMR Sheet with Camera',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: NeetTokens.chemistryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
+              if (_errorMessage != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: NeetTokens.error.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                    border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: NeetTokens.error),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              _errorMessage!,
+                              style: const TextStyle(color: NeetTokens.error),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () => _handleScan(ImageSource.camera),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: NeetTokens.error.withOpacity(0.2),
+                          foregroundColor: NeetTokens.error,
+                        ),
+                        child: const Text('Retry Scan'),
+                      ),
+                    ],
                   ),
                 ),
+                const SizedBox(height: 24),
+              ],
+
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _isScanning ? null : () => _handleScan(ImageSource.camera),
+                      icon: const Icon(Icons.camera_sharp, color: Colors.black),
+                      label: const Text(
+                        'Scan with Camera',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: NeetTokens.chemistryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _isScanning ? null : () => _handleScan(ImageSource.gallery),
+                      icon: const Icon(Icons.image, color: Colors.white),
+                      label: const Text(
+                        'Upload from Gallery',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: NeetTokens.bgCardHover,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 
@@ -148,7 +258,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Score: ${_scanResult!['calculatedScore']} / 720',
+                        'Score: ${_scanResult!['score']} / 720',
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w900,
