@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
-import '../../../core/security/secure_storage.dart';
 
 class NativeRegisterScreen extends StatefulWidget {
-  final void Function(String token, String email) onRegistered;
+  final void Function(String email) onRegistered;
   final VoidCallback onNavigateToLogin;
 
   const NativeRegisterScreen({
@@ -73,19 +72,8 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = res.data;
-        final token = data['token'] ?? data['access_token'] ?? '';
-        final userId = data['user']?['id'] ?? '';
-
-        if (token.toString().isNotEmpty) {
-          await SecureStorageService.saveSession(
-            token: token.toString(),
-            userId: userId.toString(),
-            email: email,
-          );
-        }
         NeetTokens.hapticSuccess();
-        widget.onRegistered(token.toString(), email);
+        widget.onRegistered(email);
       } else {
         setState(() {
           _errorMessage = res.data?['error']?.toString() ?? 'Registration failed. Please try again.';

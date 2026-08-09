@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/core/db';
-import { safeDelete, safeInsert } from '@/lib/core/db-safe';
+import { safeInsert } from '@/lib/core/db-safe';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { getLevelFromXP } from '@/lib/scoring';
 import { rateLimit } from '@/lib/rate-limit';
@@ -28,7 +28,7 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
         }
 
-        // Anti-Abuse Feature: Risk Scoring
+        // Risk Scoring
         let fraudRiskScore = 0;
         const deviceHash = crypto.createHash('sha256').update(`${ip}:${userAgent}`).digest('hex');
 
@@ -69,13 +69,13 @@ export async function POST(request) {
             return NextResponse.json({ error: 'This email is already registered. Please sign in instead.' }, { status: 409 });
         }
 
-        // Create confirmed user directly via Supabase Admin API
+        // Create user via Supabase Admin API with OTP requirement (email_confirm: false)
         let authData, authError;
         try {
             const result = await supabase.auth.admin.createUser({
                 email: cleanEmail,
                 password,
-                email_confirm: true,
+                email_confirm: false,
                 user_metadata: {
                     full_name: cleanName
                 }
@@ -90,6 +90,23 @@ export async function POST(request) {
         if (authError || !authData.user) {
             console.error('Supabase createUser error:', authError);
             return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
+        }
+
+        // Send OTP email token
+        let otpSent = true;
+        try {
+            const anonClient = await createSupabaseServerClient();
+            const { error: resendError } = await anonClient.auth.resend({
+                type: 'signup',
+                email: cleanEmail,
+            });
+            if (resendError) {
+                console.error('OTP email resend error (non-fatal):', resendError.message);
+                otpSent = false;
+            }
+        } catch (emailErr) {
+            console.error('OTP email trigger error (non-fatal):', emailErr);
+            otpSent = false;
         }
 
         const id = authData.user.id;
@@ -130,36 +147,11 @@ export async function POST(request) {
             userId: id,
         });
 
-        // Sign in user using anon client to generate real session token
-        let token = null;
-        let refreshToken = null;
-        try {
-            const anonClient = await createSupabaseServerClient();
-            const { data: loginData } = await anonClient.auth.signInWithPassword({
-                email: cleanEmail,
-                password,
-            });
-            if (loginData?.session) {
-                token = loginData.session.access_token;
-                refreshToken = loginData.session.refresh_token;
-            }
-        } catch (signInErr) {
-            console.error('Instant sign-in error:', signInErr);
-        }
-
-        const { data: user } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        const levelInfo = user ? getLevelFromXP(user.xp) : null;
-
         return NextResponse.json({
             success: true,
-            token,
-            refresh_token: refreshToken,
-            user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id },
+            otpSent,
+            message: otpSent ? 'A 6-digit OTP code has been sent to your email.' : 'Account created. Enter OTP code or check email.',
+            email: cleanEmail,
         }, { status: 201 });
 
     } catch (error) {
