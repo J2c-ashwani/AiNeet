@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
 
@@ -23,14 +25,17 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
   final _passwordController = TextEditingController();
   final _referralController = TextEditingController();
 
-  String _targetYear = '2025';
+  String _targetYear = '2027';
   bool _obscurePassword = true;
   bool _isLoading = false;
   String? _errorMessage;
+  String? _loadingHint;
   bool _showReferral = false;
+  Timer? _slowTimer;
 
   @override
   void dispose() {
+    _slowTimer?.cancel();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -44,6 +49,16 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _loadingHint = null;
+    });
+
+    _slowTimer?.cancel();
+    _slowTimer = Timer(const Duration(seconds: 4), () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _loadingHint = 'Connecting to server... (this may take up to 20s on cold start)';
+        });
+      }
     });
 
     try {
@@ -59,16 +74,30 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
         widget.onRegistered(_emailController.text.trim());
       } else {
         setState(() {
-          _errorMessage = res.data['error'] ?? 'Registration failed';
+          _errorMessage = res.data?['error']?.toString() ?? 'Registration failed. Please try again.';
         });
       }
     } catch (e) {
+      String msg = 'An error occurred. Please try again.';
+      if (e is DioException) {
+        if (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout) {
+          msg = 'Connection timed out while server was waking up. Please try tapping Create Account again.';
+        } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+          msg = e.response!.data['error'].toString();
+        } else if (e.response?.statusCode == 409) {
+          msg = 'This email is already registered. Please tap "Sign in" below.';
+        }
+      }
       setState(() {
-        _errorMessage = 'An error occurred. Please try again.';
+        _errorMessage = msg;
       });
     } finally {
+      _slowTimer?.cancel();
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _loadingHint = null;
+        });
       }
     }
   }
@@ -113,18 +142,50 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
-                      color: NeetTokens.error.withOpacity(0.1),
+                      color: NeetTokens.error.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
                     ),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(color: NeetTokens.error),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: NeetTokens.error, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(color: NeetTokens.error, fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                if (_loadingHint != null)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 24),
+                    decoration: BoxDecoration(
+                      color: NeetTokens.warning.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: NeetTokens.warning.withOpacity(0.5)),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: NeetTokens.warning)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _loadingHint!,
+                            style: TextStyle(color: NeetTokens.warning, fontWeight: FontWeight.w600, fontSize: 12),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
                 TextFormField(
                   controller: _nameController,
+                  style: TextStyle(color: NeetTokens.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Full Name',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -134,10 +195,11 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                   validator: (v) => v == null || v.isEmpty ? 'Enter your full name' : null,
                 ),
                 const SizedBox(height: 16),
-                
+
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(color: NeetTokens.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Email Address',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -151,6 +213,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
+                  style: TextStyle(color: NeetTokens.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -167,13 +230,15 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
 
                 DropdownButtonFormField<String>(
                   value: _targetYear,
+                  dropdownColor: NeetTokens.bgSecondary,
+                  style: TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
                   decoration: InputDecoration(
-                    labelText: 'Target Year',
+                    labelText: 'Target NEET Year',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     filled: true,
                     fillColor: NeetTokens.bgSecondary,
                   ),
-                  items: ['2025', '2026', '2027', '2028'].map((year) {
+                  items: ['2027', '2028', '2029', '2030'].map((year) {
                     return DropdownMenuItem(value: year, child: Text(year));
                   }).toList(),
                   onChanged: (v) {
@@ -190,6 +255,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                 else
                   TextFormField(
                     controller: _referralController,
+                    style: TextStyle(color: NeetTokens.textPrimary),
                     decoration: InputDecoration(
                       labelText: 'Referral Code (Optional)',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -197,7 +263,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                       fillColor: NeetTokens.bgSecondary,
                     ),
                   ),
-                
+
                 const SizedBox(height: 32),
 
                 ElevatedButton(
@@ -212,7 +278,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
-                
+
                 const SizedBox(height: 16),
 
                 TextButton(

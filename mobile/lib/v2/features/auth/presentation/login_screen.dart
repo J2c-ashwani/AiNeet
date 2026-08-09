@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/security/secure_storage.dart';
@@ -25,6 +27,16 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
 
   bool _isLoading = false;
   String? _errorMessage;
+  String? _loadingHint;
+  Timer? _slowTimer;
+
+  @override
+  void dispose() {
+    _slowTimer?.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
@@ -38,6 +50,16 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _loadingHint = null;
+    });
+
+    _slowTimer?.cancel();
+    _slowTimer = Timer(const Duration(seconds: 4), () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _loadingHint = 'Connecting to server... (Render API waking up, please wait)';
+        });
+      }
     });
 
     NeetTokens.hapticMedium();
@@ -58,15 +80,31 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
           NeetTokens.hapticSuccess();
           widget.onLoginSuccess();
         } else {
-          setState(() => _errorMessage = 'Login succeeded but token was missing.');
+          setState(() => _errorMessage = 'Login succeeded but session token was missing.');
         }
       } else {
-        setState(() => _errorMessage = res.data['error'] ?? 'Sign in failed.');
+        setState(() => _errorMessage = res.data?['error']?.toString() ?? 'Sign in failed. Check your credentials.');
       }
     } catch (e) {
-      setState(() => _errorMessage = 'Sign in failed. Check your credentials.');
+      String msg = 'Sign in failed. Check your credentials.';
+      if (e is DioException) {
+        if (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout) {
+          msg = 'Connection timed out while server was waking up. Please tap Sign In again.';
+        } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+          msg = e.response!.data['error'].toString();
+        } else if (e.response?.statusCode == 401) {
+          msg = 'Invalid email or password. Please check your details.';
+        }
+      }
+      setState(() => _errorMessage = msg);
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      _slowTimer?.cancel();
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _loadingHint = null;
+        });
+      }
     }
   }
 
@@ -131,9 +169,41 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                       border: Border.all(color: NeetTokens.error.withOpacity(0.4)),
                       borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
                     ),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(color: NeetTokens.error, fontSize: 13),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: NeetTokens.error, size: 20),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: TextStyle(color: NeetTokens.error, fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+
+                if (_loadingHint != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: NeetTokens.warning.withOpacity(0.15),
+                      border: Border.all(color: NeetTokens.warning.withOpacity(0.4)),
+                      borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: NeetTokens.warning)),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _loadingHint!,
+                            style: TextStyle(color: NeetTokens.warning, fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),

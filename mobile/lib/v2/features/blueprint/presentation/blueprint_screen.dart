@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/tokens.dart';
-import '../../../../core/api/api_client.dart';
+import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
 
 class NativeBlueprintScreen extends StatefulWidget {
   const NativeBlueprintScreen({super.key});
