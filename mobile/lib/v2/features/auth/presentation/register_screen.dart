@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/security/secure_storage.dart';
 
 class NativeRegisterScreen extends StatefulWidget {
-  final void Function(String email) onRegistered;
+  final void Function(String token, String email) onRegistered;
   final VoidCallback onNavigateToLogin;
 
   const NativeRegisterScreen({
@@ -62,16 +63,29 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
     });
 
     try {
+      final email = _emailController.text.trim();
       final res = await NeetApiClient().register(
         name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
+        email: email,
         password: _passwordController.text,
         targetYear: _targetYear,
         referralCode: _referralController.text.trim().isNotEmpty ? _referralController.text.trim() : null,
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
-        widget.onRegistered(_emailController.text.trim());
+        final data = res.data;
+        final token = data['token'] ?? data['access_token'] ?? '';
+        final userId = data['user']?['id'] ?? '';
+
+        if (token.toString().isNotEmpty) {
+          await SecureStorageService.saveSession(
+            token: token.toString(),
+            userId: userId.toString(),
+            email: email,
+          );
+        }
+        NeetTokens.hapticSuccess();
+        widget.onRegistered(token.toString(), email);
       } else {
         setState(() {
           _errorMessage = res.data?['error']?.toString() ?? 'Registration failed. Please try again.';
@@ -81,7 +95,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
       String msg = 'An error occurred. Please try again.';
       if (e is DioException) {
         if (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout) {
-          msg = 'Connection timed out while server was waking up. Please try tapping Create Account again.';
+          msg = 'Connection timed out while server was waking up. Please tap Create Account again.';
         } else if (e.response?.data is Map && e.response?.data['error'] != null) {
           msg = e.response!.data['error'].toString();
         } else if (e.response?.statusCode == 409) {

@@ -28,16 +28,15 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
         }
 
-        // Anti-Abuse Feature: Risk Scoring (MD Mandate)
+        // Anti-Abuse Feature: Risk Scoring
         let fraudRiskScore = 0;
         const deviceHash = crypto.createHash('sha256').update(`${ip}:${userAgent}`).digest('hex');
 
-        // Rapid signup penalty
         if (limitPos.remaining < 3) fraudRiskScore += 20;
 
         const { data: matchedDevice } = await supabase.from('users').select('id').eq('device_hash', deviceHash).limit(1).single();
         if (matchedDevice) {
-            fraudRiskScore += 50; // High probability of self-referral farming
+            fraudRiskScore += 50;
         }
 
         if (!name || !email || !password) {
@@ -57,38 +56,24 @@ export async function POST(request) {
             return NextResponse.json({ error: pwCheck.message }, { status: 400 });
         }
 
+        const cleanEmail = email.toLowerCase().trim();
+
         // Check if email already exists in our users table
         const { data: existing } = await supabase
             .from('users')
             .select('id')
-            .eq('email', email.toLowerCase().trim())
+            .eq('email', cleanEmail)
             .single();
 
         if (existing) {
-            // Check if the Supabase auth user is confirmed or still pending verification
-            const { data: authUserData } = await supabase.auth.admin.getUserById(existing.id);
-            const isConfirmed = authUserData?.user?.email_confirmed_at;
-
-            if (isConfirmed) {
-                // Fully registered user — reject
-                return NextResponse.json({ error: 'This email is already registered. Please sign in instead.' }, { status: 409 });
-            } else {
-                // Zombie: account created but OTP never completed — clean up and allow fresh re-registration
-                console.log(`Cleaning up zombie unconfirmed account for ${email}`);
-                await supabase.auth.admin.deleteUser(existing.id);
-                await safeDelete('users', { id: existing.id }, {
-                    route: '/api/auth/register',
-                });
-            }
+            return NextResponse.json({ error: 'This email is already registered. Please sign in instead.' }, { status: 409 });
         }
 
-        // Supabase Native SignUp via Admin API
-        // CRITICAL FIX: Using admin.createUser prevents the backend 'supabase' client from accidentally modifying its Bearer
-        // token and locking itself out via RLS.
+        // Create confirmed user directly via Supabase Admin API
         let authData, authError;
         try {
             const result = await supabase.auth.admin.createUser({
-                email: email.toLowerCase().trim(),
+                email: cleanEmail,
                 password,
                 email_confirm: true,
                 user_metadata: {
@@ -98,35 +83,14 @@ export async function POST(request) {
             authData = result.data;
             authError = result.error;
         } catch (signUpCrash) {
-            console.error('Supabase signUp crashed:', signUpCrash);
+            console.error('Supabase admin.createUser crashed:', signUpCrash);
             return NextResponse.json({ error: 'Authentication service unavailable. Please try again later.' }, { status: 503 });
         }
 
         if (authError || !authData.user) {
-            console.error('Supabase signUp error:', authError);
+            console.error('Supabase createUser error:', authError);
             return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
         }
-
-        // IMPORTANT: admin.createUser() does NOT send any email by itself.
-        // We use supabase.auth.resend() with the anon-key SSR client to trigger
-        // the actual "Confirm signup" email containing the {{ .Token }} OTP code.
-        // Note: generateLink() only generates a token — it does NOT send an email.
-        try {
-            const anonClient = await createSupabaseServerClient();
-            const { error: resendError } = await anonClient.auth.resend({
-                type: 'signup',
-                email: email.toLowerCase().trim(),
-            });
-            if (resendError) {
-                console.error('OTP email resend failed:', resendError.message);
-                // Clean up the user we just created if we can't send the email
-                await supabase.auth.admin.deleteUser(authData.user.id);
-                return NextResponse.json({ error: resendError.message }, { status: 400 });
-            }
-        } catch (emailErr) {
-            console.error('OTP email trigger failed (non-fatal):', emailErr);
-        }
-
 
         const id = authData.user.id;
         const myReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -142,9 +106,6 @@ export async function POST(request) {
 
             if (referrer) {
                 referredBy = referrer.id;
-                // MD Feature: Do NOT instantly increment referral counts here to prevent abuse.
-                // The referral reward will only unlock organically in `tests/submit` 
-                // when this newly registered student completes their first meaningful Mock Test.
             }
         }
 
@@ -153,9 +114,9 @@ export async function POST(request) {
         await safeInsert('users', {
             id,
             name: cleanName,
-            email: email.toLowerCase().trim(),
+            email: cleanEmail,
             password_hash: passwordHash,
-            target_year: parseInt(targetYear) || 2026,
+            target_year: parseInt(targetYear) || 2027,
             referral_code: myReferralCode,
             referred_by: referredBy,
             utm_source: tracking?.utmSource || null,
@@ -169,6 +130,23 @@ export async function POST(request) {
             userId: id,
         });
 
+        // Sign in user using anon client to generate real session token
+        let token = null;
+        let refreshToken = null;
+        try {
+            const anonClient = await createSupabaseServerClient();
+            const { data: loginData } = await anonClient.auth.signInWithPassword({
+                email: cleanEmail,
+                password,
+            });
+            if (loginData?.session) {
+                token = loginData.session.access_token;
+                refreshToken = loginData.session.refresh_token;
+            }
+        } catch (signInErr) {
+            console.error('Instant sign-in error:', signInErr);
+        }
+
         const { data: user } = await supabase
             .from('users')
             .select('*')
@@ -177,9 +155,13 @@ export async function POST(request) {
 
         const levelInfo = user ? getLevelFromXP(user.xp) : null;
 
-        // P0-2 Trust Fix: Server only creates account. Client will handle login separately.
-        // This eliminates SSR cookie propagation ambiguity that caused forced double-login.
-        return NextResponse.json({ user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id } });
+        return NextResponse.json({
+            success: true,
+            token,
+            refresh_token: refreshToken,
+            user: user ? { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } : { id },
+        }, { status: 201 });
+
     } catch (error) {
         console.error('Register error:', error);
         return NextResponse.json({ error: 'Something went wrong during signup.' }, { status: 500 });

@@ -103,19 +103,9 @@ class _NeetV2AppState extends State<NeetV2App> {
                         MaterialPageRoute(
                           builder: (registerCtx) => NativeRegisterScreen(
                             onNavigateToLogin: () => Navigator.pop(registerCtx),
-                            onRegistered: (email) {
-                              Navigator.pushReplacement(
-                                registerCtx,
-                                MaterialPageRoute(
-                                  builder: (otpCtx) => NativeOtpScreen(
-                                    email: email,
-                                    onOtpSuccess: () {
-                                      Navigator.of(otpCtx).popUntil((route) => route.isFirst);
-                                      setState(() => _isLoggedIn = true);
-                                    },
-                                  ),
-                                ),
-                              );
+                            onRegistered: (token, email) {
+                              Navigator.of(registerCtx).popUntil((route) => route.isFirst);
+                              setState(() => _isLoggedIn = true);
                             },
                           ),
                         ),
