@@ -32,5 +32,27 @@ jobs:
             echo "ℹ️ Waking up server / status code: $HTTP_CODE"
           fi
 
+      - name: Ping Supabase Staging Project (Prevent 7-Day Inactivity Pause)
+        env:
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$STAGING_SUPABASE_URL" ] && [ -n "$STAGING_SUPABASE_ANON_KEY" ]; then
+            echo "Pinging Supabase Staging REST endpoint..."
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+              --max-time 15 \
+              -H "apikey: $STAGING_SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $STAGING_SUPABASE_ANON_KEY" \
+              "$STAGING_SUPABASE_URL/rest/v1/")
+            echo "Supabase Staging response: HTTP $HTTP_CODE"
+            if [ "$HTTP_CODE" != "000" ]; then
+              echo "✅ Supabase Staging is alive and active (HTTP $HTTP_CODE)"
+            else
+              echo "⚠️ Could not connect to Supabase Staging."
+            fi
+          else
+            echo "ℹ️ STAGING_SUPABASE_URL or STAGING_SUPABASE_ANON_KEY not configured in GitHub Secrets yet."
+          fi
+
       - name: Log Keep-Alive Timestamp
         run: echo "✅ Keep-alive completed at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
