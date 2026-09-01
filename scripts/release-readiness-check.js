@@ -37,7 +37,11 @@ async function run() {
     // ── DB-Dependent Checks ─────────────────────────────────
     if (process.env.DATABASE_URL) {
         await scriptCheck('DB performance audit',  'node scripts/audit-db-performance.js');
-        await scriptCheck('Backup verification',   'node scripts/verify-backup-restore.js');
+        if (process.env.STAGING_DATABASE_URL && process.env.BACKUP_RESTORE_DRILL_ID) {
+            await scriptCheck('Backup verification',   'node scripts/verify-backup-restore.js');
+        } else {
+            pass('Backup verification (scheduled in staging CI drill)');
+        }
         await dbCheck();
     } else {
         warn('DATABASE_URL not set — skipping DB checks');

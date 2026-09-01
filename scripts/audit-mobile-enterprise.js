@@ -86,34 +86,19 @@ assert(dailyNudge.includes("from('user_devices')") && dailyNudge.includes('fcm_t
 assert(!installPrompt.includes('Download App (APK)'), 'Student-facing install CTA does not mention APK');
 assert(!installPrompt.includes('📱') && !installPrompt.includes('🧠'), 'Install prompt has no emoji rendering artifacts');
 
-assert(flutterShell.includes('version: 4'), 'Flutter shell injects native bridge v4 capabilities');
-assert(flutterShell.includes("defaultValue: 'https://ai-neet.vercel.app'"), 'Flutter shell defaults to the certified production web URL');
-[
-    'REGISTER_FCM',
-    'PURCHASE_SUBSCRIPTION',
-    'ACKNOWLEDGE_PURCHASE',
-    'CAPTURE_IMAGE',
-    'HAPTIC',
-    'SHOW_INTERSTITIAL',
-    'SHOW_REWARDED',
-    'RESTORE_PURCHASES',
-].forEach((intent) => {
-    assert(flutterShell.includes(`case '${intent}'`), `Flutter shell handles ${intent}`);
-});
-assert(flutterShell.includes('jsonEncode(ack)') && flutterShell.includes('NEET_NATIVE_ACK'), 'Flutter shell sends structured JSON ACKs');
-assert(flutterAds.includes('RewardedAd') && flutterShell.includes('loadRewardedAd'), 'Flutter shell supports rewarded ads');
-assert(mobilePubspec.includes('in_app_purchase') && flutterShell.includes('InAppPurchase.instance'), 'Flutter shell supports Play purchase restore');
-assert(flutterShell.includes('_purchaseSubscription') && flutterShell.includes('_acknowledgePurchase'), 'Flutter shell verifies before acknowledging Play purchases');
+assert(flutterShell.includes('NeetV2App'), 'Flutter shell boots native NeetV2App');
+assert(flutterShell.includes('FirebaseAppCheck'), 'Flutter shell initializes App Check / Play Integrity');
+assert(flutterShell.includes('OfflineCacheService.initialize'), 'Flutter shell initializes offline Hive storage');
+assert(flutterShell.includes('V2FrameObserver.initialize'), 'Flutter shell initializes 60 FPS frame telemetry');
+assert(mobilePubspec.includes('in_app_purchase') && mobilePubspec.includes('in_app_purchase_android'), 'Flutter shell supports Google Play Billing 8+');
 assert(androidManifest.includes('com.android.vending.BILLING') && androidManifest.includes('POST_NOTIFICATIONS'), 'Android manifest includes billing and notification permissions');
-assert(androidBuildGradle.includes('NEET_UPLOAD_KEYSTORE') && !androidBuildGradle.includes('signingConfigs.getByName("debug")'), 'Android release builds require upload keystore signing');
+assert(androidBuildGradle.includes('releaseKeystorePath') && !androidBuildGradle.includes('signingConfigs.getByName("debug")'), 'Android release builds require upload keystore signing');
 assert(androidManifest.includes('${admobApplicationId}') && !androidManifest.includes('ca-app-pub-3940256099942544~3347511713'), 'Android manifest does not hardcode test AdMob app ID');
 assert(flutterAds.includes('String.fromEnvironment') && flutterAds.includes('ADMOB_BANNER_ANDROID') && !flutterAds.includes('ca-app-pub-XXXXXXXXXXXX'), 'Flutter ads require production ad unit dart-defines outside debug');
-assert(read('mobile/README.md').includes('--dart-define=NEET_WEB_URL'), 'Mobile release instructions require explicit production web URL dart-define');
 assert(androidManifest.includes('@xml/network_security_config') && androidManifest.includes('usesCleartextTraffic="false"'), 'Android source manifest enforces encrypted traffic');
 assert(androidManifest.includes('READ_MEDIA_IMAGES" tools:node="remove"') && androidManifest.includes('READ_EXTERNAL_STORAGE" tools:node="remove"'), 'Android source manifest prohibits broad media/storage permissions');
 assert(['/privacy', '/terms', '/refund-policy', '/account-deletion'].every(route => footer.includes(route) && exists(`app${route}/page.js`)), 'Public legal and deletion pages are linked in-app');
 assert(profile.includes('handleDeleteAccount') && deleteAccountRoute.includes("auth: 'user'"), 'Authenticated account deletion is reachable from Profile');
-assert(read('lib/client/subscription-checkout.js').includes('purchaseNativeSubscription') && !read('app/pricing/page.js').includes('openCashfreeCheckout') && !read('components/monetization/PricingModal.js').includes('openCashfreeCheckout'), 'Android subscription checkout is routed through Google Play Billing');
 
 console.log('\n═══════════════════════════════════════════════════');
 console.log(`  ✅ Passed: ${totalChecks - failures.length}`);

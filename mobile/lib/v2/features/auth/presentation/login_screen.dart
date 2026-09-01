@@ -68,31 +68,13 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
       final res = await _apiClient.login(email, password);
       if (res.statusCode == 200 && res.data != null) {
         final data = res.data;
-        String token = (data['token'] ??
-                data['access_token'] ??
-                data['accessToken'] ??
-                data['session']?['access_token'] ??
-                data['sessionToken'] ??
-                '')
-            .toString();
+        final token = data['token'] ?? data['access_token'] ?? data['session']?['access_token'] ?? '';
+        final userId = data['user']?['id'] ?? '';
 
-        if (token.isEmpty) {
-          final cookies = res.headers['set-cookie'] ?? [];
-          for (final cookie in cookies) {
-            final match = RegExp(r'(?:sb-[^=]+-auth-token|sb-access-token|access_token)=([^;]+)').firstMatch(cookie);
-            if (match != null) {
-              token = match.group(1) ?? '';
-              break;
-            }
-          }
-        }
-
-        final userId = (data['user']?['id'] ?? data['userId'] ?? '').toString();
-
-        if (token.isNotEmpty) {
+        if (token.toString().isNotEmpty) {
           await SecureStorageService.saveSession(
-            token: token,
-            userId: userId,
+            token: token.toString(),
+            userId: userId.toString(),
             email: email,
           );
           NeetTokens.hapticSuccess();
