@@ -118,7 +118,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                           Icon(
                             Icons.auto_awesome,
                             size: 48,
-                            color: NeetTokens.accentPrimary.withOpacity(0.5),
+                            color: NeetTokens.accentPrimary.withValues(alpha: 0.5),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -144,9 +144,9 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                             margin: const EdgeInsets.only(bottom: 12),
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: NeetTokens.error.withOpacity(0.1),
+                              color: NeetTokens.error.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                              border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                              border: Border.all(color: NeetTokens.error.withValues(alpha: 0.5)),
                             ),
                             child: Column(
                               children: [
@@ -180,7 +180,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: NeetTokens.error.withOpacity(0.2),
+                                    backgroundColor: NeetTokens.error.withValues(alpha: 0.2),
                                     foregroundColor: NeetTokens.error,
                                   ),
                                   child: Text('Retry'),

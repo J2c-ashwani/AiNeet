@@ -12,7 +12,6 @@ class NativeRevisionManagerScreen extends StatefulWidget {
 class _NativeRevisionManagerScreenState extends State<NativeRevisionManagerScreen> {
   final NeetApiClient _apiClient = NeetApiClient();
   bool _isLoading = true;
-  String? _errorMessage;
   List<dynamic> _revisionQueue = [];
 
   @override
@@ -24,7 +23,6 @@ class _NativeRevisionManagerScreenState extends State<NativeRevisionManagerScree
   Future<void> _loadRevisionQueue() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
     });
     try {
       final res = await _apiClient.getRevisionDue();
@@ -108,7 +106,7 @@ class _NativeRevisionManagerScreenState extends State<NativeRevisionManagerScree
                       decoration: BoxDecoration(
                         color: NeetTokens.bgSecondary,
                         borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                        border: Border.all(color: NeetTokens.accentPrimary.withOpacity(0.3)),
+                        border: Border.all(color: NeetTokens.accentPrimary.withValues(alpha: 0.3)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

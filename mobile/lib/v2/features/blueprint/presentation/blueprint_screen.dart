@@ -121,7 +121,7 @@ class _NativeBlueprintScreenState extends State<NativeBlueprintScreen> {
               Text(subject.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: color)),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(color: NeetTokens.warning.withOpacity(0.2), borderRadius: BorderRadius.circular(4)),
+                decoration: BoxDecoration(color: NeetTokens.warning.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4)),
                 child: Text(priority, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: NeetTokens.warning)),
               ),
             ],

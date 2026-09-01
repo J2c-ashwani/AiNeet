@@ -138,7 +138,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
             subtitle: Text('Coming Soon', style: TextStyle(color: NeetTokens.accentPrimary)),
             value: _notificationsEnabled,
             onChanged: (v) => setState(() => _notificationsEnabled = v),
-            activeColor: NeetTokens.accentPrimary,
+            activeThumbColor: NeetTokens.accentPrimary,
           ),
 
           _buildSectionHeader('About'),

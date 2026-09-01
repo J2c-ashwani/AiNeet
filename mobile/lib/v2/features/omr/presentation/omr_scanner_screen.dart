@@ -114,7 +114,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                 decoration: BoxDecoration(
                   color: NeetTokens.bgCard,
                   borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-                  border: Border.all(color: NeetTokens.chemistryColor.withOpacity(0.4)),
+                  border: Border.all(color: NeetTokens.chemistryColor.withValues(alpha: 0.4)),
                 ),
                 alignment: Alignment.center,
                 child: _isScanning
@@ -135,7 +135,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                           Icon(
                             Icons.document_scanner_outlined,
                             size: 64,
-                            color: NeetTokens.chemistryColor.withOpacity(0.6),
+                            color: NeetTokens.chemistryColor.withValues(alpha: 0.6),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -160,9 +160,9 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: NeetTokens.error.withOpacity(0.1),
+                    color: NeetTokens.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                    border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                    border: Border.all(color: NeetTokens.error.withValues(alpha: 0.5)),
                   ),
                   child: Column(
                     children: [
@@ -182,7 +182,7 @@ class _NativeOmrScannerScreenState extends State<NativeOmrScannerScreen> {
                       ElevatedButton(
                         onPressed: () => _handleScan(ImageSource.camera),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: NeetTokens.error.withOpacity(0.2),
+                          backgroundColor: NeetTokens.error.withValues(alpha: 0.2),
                           foregroundColor: NeetTokens.error,
                         ),
                         child: Text('Retry Scan'),

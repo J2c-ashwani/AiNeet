@@ -85,7 +85,7 @@ class _NativeStudyPlanScreenState extends State<NativeStudyPlanScreen> {
                       decoration: BoxDecoration(
                         gradient: NeetTokens.cardGradient,
                         borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-                        border: Border.all(color: NeetTokens.accentPrimary.withOpacity(0.3)),
+                        border: Border.all(color: NeetTokens.accentPrimary.withValues(alpha: 0.3)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

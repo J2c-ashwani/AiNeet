@@ -125,7 +125,7 @@ class NeetApiClient {
       'email': email,
       'password': password,
       'targetYear': targetYear,
-      if (referralCode != null) 'referralCode': referralCode,
+      'referralCode': ?referralCode,
     });
   }
 
@@ -145,7 +145,7 @@ class NeetApiClient {
   Future<Response> solveDoubt(String questionText, {String? imageBase64}) async {
     return await dio.post('/api/doubts/solve', data: {
       'questionText': questionText,
-      if (imageBase64 != null) 'imageBase64': imageBase64,
+      'imageBase64': ?imageBase64,
       'model': 'gemini-1.5-flash',
     });
   }
@@ -311,7 +311,7 @@ class NeetApiClient {
       return await dio.post('/api/telemetry/mobile-events', data: {
         'event': event,
         'timestamp': DateTime.now().toIso8601String(),
-        if (properties != null) ...properties,
+        ...?properties,
       });
     } catch (_) {
       // Telemetry failures must never crash the app

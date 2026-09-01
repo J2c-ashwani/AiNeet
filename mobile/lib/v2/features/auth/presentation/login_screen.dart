@@ -68,13 +68,31 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
       final res = await _apiClient.login(email, password);
       if (res.statusCode == 200 && res.data != null) {
         final data = res.data;
-        final token = data['token'] ?? data['session']?['access_token'] ?? '';
-        final userId = data['user']?['id'] ?? '';
+        String token = (data['token'] ??
+                data['access_token'] ??
+                data['accessToken'] ??
+                data['session']?['access_token'] ??
+                data['sessionToken'] ??
+                '')
+            .toString();
 
-        if (token.toString().isNotEmpty) {
+        if (token.isEmpty) {
+          final cookies = res.headers['set-cookie'] ?? [];
+          for (final cookie in cookies) {
+            final match = RegExp(r'(?:sb-[^=]+-auth-token|sb-access-token|access_token)=([^;]+)').firstMatch(cookie);
+            if (match != null) {
+              token = match.group(1) ?? '';
+              break;
+            }
+          }
+        }
+
+        final userId = (data['user']?['id'] ?? data['userId'] ?? '').toString();
+
+        if (token.isNotEmpty) {
           await SecureStorageService.saveSession(
-            token: token.toString(),
-            userId: userId.toString(),
+            token: token,
+            userId: userId,
             email: email,
           );
           NeetTokens.hapticSuccess();
@@ -165,8 +183,8 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: NeetTokens.error.withOpacity(0.15),
-                      border: Border.all(color: NeetTokens.error.withOpacity(0.4)),
+                      color: NeetTokens.error.withValues(alpha: 0.15),
+                      border: Border.all(color: NeetTokens.error.withValues(alpha: 0.4)),
                       borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
                     ),
                     child: Row(
@@ -189,8 +207,8 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: NeetTokens.warning.withOpacity(0.15),
-                      border: Border.all(color: NeetTokens.warning.withOpacity(0.4)),
+                      color: NeetTokens.warning.withValues(alpha: 0.15),
+                      border: Border.all(color: NeetTokens.warning.withValues(alpha: 0.4)),
                       borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
                     ),
                     child: Row(

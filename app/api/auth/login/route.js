@@ -52,13 +52,28 @@ export async function POST(request) {
             });
         }
 
+        const sessionToken = authData.session?.access_token || '';
+        const refreshToken = authData.session?.refresh_token || '';
+
         if (user) {
             const levelInfo = getLevelFromXP(user.xp);
-            return NextResponse.json({ user: { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo } });
+            return NextResponse.json({
+                success: true,
+                token: sessionToken,
+                access_token: sessionToken,
+                refresh_token: refreshToken,
+                user: { id: user.id, name: user.name, email: user.email, xp: user.xp, level: user.level, streak: user.streak, levelInfo }
+            });
         }
 
         // Failsafe returned minimal user
-        return NextResponse.json({ user: { id: authUserId, email: authData.user.email, name: authData.user.user_metadata?.full_name || 'User' } });
+        return NextResponse.json({
+            success: true,
+            token: sessionToken,
+            access_token: sessionToken,
+            refresh_token: refreshToken,
+            user: { id: authUserId, email: authData.user.email, name: authData.user.user_metadata?.full_name || 'User' }
+        });
     } catch (error) {
         console.error('Login error:', error);
         return NextResponse.json({ error: 'Login failed. Please check your connection and try again.' }, { status: 500 });

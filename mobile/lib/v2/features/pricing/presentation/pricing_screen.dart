@@ -111,9 +111,9 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: NeetTokens.error.withOpacity(0.1),
+          color: NeetTokens.error.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-          border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+          border: Border.all(color: NeetTokens.error.withValues(alpha: 0.5)),
         ),
         child: Column(
           children: const [

@@ -130,9 +130,9 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 24),
                   decoration: BoxDecoration(
-                    color: NeetTokens.error.withOpacity(0.1),
+                    color: NeetTokens.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                    border: Border.all(color: NeetTokens.error.withValues(alpha: 0.5)),
                   ),
                   child: Text(
                     _errorMessage!,
@@ -176,7 +176,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
               TextButton(
                 onPressed: _cooldown > 0 ? null : _startCooldown,
                 child: Text(
-                  _cooldown > 0 ? 'Resend code in $_cooldown\s' : 'Resend Code',
+                  _cooldown > 0 ? 'Resend code in ${_cooldown}s' : 'Resend Code',
                   style: TextStyle(
                     color: _cooldown > 0 ? NeetTokens.textMuted : NeetTokens.accentPrimary,
                   ),

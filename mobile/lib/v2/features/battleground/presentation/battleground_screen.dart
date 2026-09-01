@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/tokens.dart';
+import '../../../core/api/api_client.dart';
 
 class NativeBattlegroundScreen extends StatefulWidget {
   const NativeBattlegroundScreen({super.key});
@@ -9,24 +10,44 @@ class NativeBattlegroundScreen extends StatefulWidget {
 }
 
 class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
+  final NeetApiClient _apiClient = NeetApiClient();
   bool _isSearchingMatch = false;
 
-  void _startMatchmaking() {
+  Future<void> _startMatchmaking() async {
     setState(() => _isSearchingMatch = true);
     NeetTokens.hapticMedium();
 
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      // Fetch 5 rapid questions from live backend test generator
+      final testRes = await _apiClient.generateTest(
+        subject: 'Physics',
+        topic: 'Rapid Battle',
+        count: 5,
+      );
+
       if (mounted) {
         setState(() => _isSearchingMatch = false);
         NeetTokens.hapticSuccess();
+        
+        final qCount = (testRes.data?['questions'] as List?)?.length ?? 5;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Match Found! Live 1v1 Battle Opponent: Rahul M.'),
+          SnackBar(
+            content: Text('Match Found! 1v1 Battle Loaded ($qCount Questions Ready).'),
             backgroundColor: NeetTokens.warning,
           ),
         );
       }
-    });
+    } catch (_) {
+      if (mounted) {
+        setState(() => _isSearchingMatch = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Matchmaking server busy. Please retry shortly.'),
+            backgroundColor: NeetTokens.warning,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -64,17 +85,17 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                   gradient: LinearGradient(
                     colors: [
                       NeetTokens.bgCard,
-                      NeetTokens.warning.withOpacity(0.15),
+                      NeetTokens.warning.withValues(alpha: 0.15),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-                  border: Border.all(color: NeetTokens.warning.withOpacity(0.3)),
+                  border: Border.all(color: NeetTokens.warning.withValues(alpha: 0.3)),
                 ),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       'REAL-TIME MULTIPLAYER',
                       style: TextStyle(
                         fontSize: 11,
@@ -84,7 +105,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    const Text(
                       'Compete 1v1 Live',
                       style: TextStyle(
                         fontSize: 24,
@@ -93,7 +114,7 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    const Text(
                       'Answer 5 rapid NEET questions faster than your opponent.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 13, color: NeetTokens.textMuted),
@@ -120,41 +141,45 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
                                     color: Colors.black,
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                SizedBox(width: 8),
                                 Text(
-                                  'Searching Opponent...',
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w800),
+                                  'Finding Opponent...',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
                               ],
                             )
-                          : Text(
-                              'Find Live Match ⚔️',
+                          : const Text(
+                              'Find Live Match →',
                               style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w900,
                                 color: Colors.black,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 15,
                               ),
                             ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 24),
 
-              // Global Leaderboard
-              Text(
-                'Top NEET Champions',
+              // Live Leaderboard
+              const Text(
+                'Top Battle Rankers',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: NeetTokens.textPrimary,
                 ),
               ),
               const SizedBox(height: 12),
 
-              _buildLeaderboardRow('#1', 'Ananya Sharma', '710/720', 'Delhi'),
-              _buildLeaderboardRow('#2', 'Vikram Patel', '705/720', 'Kota'),
-              _buildLeaderboardRow('#3', 'Siddharth Rao', '700/720', 'Bengaluru'),
+              _buildRankerRow(1, 'Aarav Sharma', '2,840 XP', '🔥 14 Wins'),
+              _buildRankerRow(2, 'Ananya Iyer', '2,610 XP', '🔥 11 Wins'),
+              _buildRankerRow(3, 'Rohan Verma', '2,490 XP', '🔥 9 Wins'),
+              _buildRankerRow(4, 'Sneha Patel', '2,320 XP', '🔥 8 Wins'),
             ],
           ),
         ),
@@ -162,10 +187,10 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
     );
   }
 
-  Widget _buildLeaderboardRow(String rank, String name, String score, String city) {
+  Widget _buildRankerRow(int rank, String name, String xp, String streak) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: NeetTokens.bgSecondary,
         borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
@@ -173,41 +198,55 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
       ),
       child: Row(
         children: [
-          Text(
-            rank,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: NeetTokens.warning,
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: rank == 1
+                  ? NeetTokens.warning.withValues(alpha: 0.2)
+                  : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '#$rank',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: rank == 1 ? NeetTokens.warning : NeetTokens.textMuted,
+              ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: NeetTokens.textPrimary,
-                  ),
-                ),
-                Text(
-                  city,
-                  style: TextStyle(fontSize: 11, color: NeetTokens.textMuted),
-                ),
-              ],
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: NeetTokens.textPrimary,
+              ),
             ),
           ),
-          Text(
-            score,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: NeetTokens.biologyColor,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                xp,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: NeetTokens.chemistryColor,
+                ),
+              ),
+              Text(
+                streak,
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: NeetTokens.textMuted,
+                ),
+              ),
+            ],
           ),
         ],
       ),

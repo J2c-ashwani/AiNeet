@@ -22,22 +22,10 @@ fun requiredForRelease(name: String, description: String): String {
     return value.orEmpty()
 }
 
-val releaseKeystorePath = requiredForRelease(
-    "NEET_UPLOAD_KEYSTORE",
-    "Set it to the absolute path of the Play upload keystore."
-)
-val releaseKeystorePassword = requiredForRelease(
-    "NEET_UPLOAD_KEYSTORE_PASSWORD",
-    "Set it to the upload keystore password."
-)
-val releaseKeyAlias = requiredForRelease(
-    "NEET_UPLOAD_KEY_ALIAS",
-    "Set it to the upload key alias."
-)
-val releaseKeyPassword = requiredForRelease(
-    "NEET_UPLOAD_KEY_PASSWORD",
-    "Set it to the upload key password."
-)
+val releaseKeystorePath = configValue("NEET_UPLOAD_KEYSTORE") ?: configValue("KEYSTORE_PATH") ?: (if (releaseTaskRequested) throw GradleException("Missing NEET_UPLOAD_KEYSTORE / KEYSTORE_PATH for release build.") else "")
+val releaseKeystorePassword = configValue("NEET_UPLOAD_KEYSTORE_PASSWORD") ?: configValue("KEYSTORE_PASSWORD") ?: (if (releaseTaskRequested) throw GradleException("Missing NEET_UPLOAD_KEYSTORE_PASSWORD / KEYSTORE_PASSWORD for release build.") else "")
+val releaseKeyAlias = configValue("NEET_UPLOAD_KEY_ALIAS") ?: configValue("KEY_ALIAS") ?: (if (releaseTaskRequested) throw GradleException("Missing NEET_UPLOAD_KEY_ALIAS / KEY_ALIAS for release build.") else "")
+val releaseKeyPassword = configValue("NEET_UPLOAD_KEY_PASSWORD") ?: configValue("KEY_PASSWORD") ?: (if (releaseTaskRequested) throw GradleException("Missing NEET_UPLOAD_KEY_PASSWORD / KEY_PASSWORD for release build.") else "")
 val admobApplicationId = configValue("ADMOB_ANDROID_APP_ID")
     ?: if (releaseTaskRequested) {
         throw GradleException("Missing ADMOB_ANDROID_APP_ID for release build. Use the production AdMob app ID, not Google's test ID.")

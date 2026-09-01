@@ -112,7 +112,7 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
             ElevatedButton(
               onPressed: _handleLogout,
               style: ElevatedButton.styleFrom(
-                backgroundColor: NeetTokens.error.withOpacity(0.15),
+                backgroundColor: NeetTokens.error.withValues(alpha: 0.15),
                 foregroundColor: NeetTokens.error,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),

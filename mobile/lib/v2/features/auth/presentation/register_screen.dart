@@ -144,9 +144,9 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
-                      color: NeetTokens.error.withOpacity(0.15),
+                      color: NeetTokens.error.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: NeetTokens.error.withOpacity(0.5)),
+                      border: Border.all(color: NeetTokens.error.withValues(alpha: 0.5)),
                     ),
                     child: Row(
                       children: [
@@ -167,9 +167,9 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
-                      color: NeetTokens.warning.withOpacity(0.15),
+                      color: NeetTokens.warning.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: NeetTokens.warning.withOpacity(0.5)),
+                      border: Border.all(color: NeetTokens.warning.withValues(alpha: 0.5)),
                     ),
                     child: Row(
                       children: [
@@ -231,7 +231,7 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
                 const SizedBox(height: 16),
 
                 DropdownButtonFormField<String>(
-                  value: _targetYear,
+                  initialValue: _targetYear,
                   dropdownColor: NeetTokens.bgSecondary,
                   style: TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
                   decoration: InputDecoration(

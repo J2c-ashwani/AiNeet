@@ -50,7 +50,7 @@ class NativeTestResultsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: NeetTokens.cardGradient,
                 borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
-                border: Border.all(color: NeetTokens.accentPrimary.withOpacity(0.3)),
+                border: Border.all(color: NeetTokens.accentPrimary.withValues(alpha: 0.3)),
               ),
               child: Column(
                 children: [
@@ -186,8 +186,8 @@ class NativeTestResultsScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
         border: Border.all(
           color: isCorrect
-              ? NeetTokens.biologyColor.withOpacity(0.4)
-              : NeetTokens.error.withOpacity(0.4),
+              ? NeetTokens.biologyColor.withValues(alpha: 0.4)
+              : NeetTokens.error.withValues(alpha: 0.4),
         ),
       ),
       child: Column(
@@ -207,7 +207,7 @@ class NativeTestResultsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: NeetTokens.chemistryColor.withOpacity(0.15),
+                  color: NeetTokens.chemistryColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
                 ),
                 child: Text(

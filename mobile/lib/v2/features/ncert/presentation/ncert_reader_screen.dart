@@ -80,7 +80,7 @@ class _NativeNcertReaderScreenState extends State<NativeNcertReaderScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? color.withOpacity(0.2)
+                              ? color.withValues(alpha: 0.2)
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
                           border: Border.all(
