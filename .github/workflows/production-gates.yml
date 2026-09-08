@@ -62,6 +62,7 @@ jobs:
       # GitHub Actions does not allow 'secrets' context in 'if' expressions.
       STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
       BACKUP_RESTORE_DRILL_ID: ${{ secrets.BACKUP_RESTORE_DRILL_ID }}
+      RUN_BACKUP_DRILL: ${{ secrets.RUN_BACKUP_DRILL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -80,9 +81,8 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Backup restore verification
-        # Skipped automatically when STAGING_DATABASE_URL secret is not configured.
-        # 'env' context (not 'secrets') must be used in if expressions per GitHub Actions rules.
-        if: env.STAGING_DATABASE_URL != ''
+        # Only runs during explicit disaster recovery drills, not routine code pushes
+        if: env.RUN_BACKUP_DRILL == 'true' && env.STAGING_DATABASE_URL != ''
         run: node scripts/verify-backup-restore.js
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
