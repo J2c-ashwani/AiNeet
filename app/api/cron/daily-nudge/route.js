@@ -52,7 +52,7 @@ function toNudgeRecipient(device) {
         id: device.user_id,
         name: profile.name,
         streak: profile.streak,
-        last_active_at: profile.last_active_at,
+        last_active_at: profile.last_active_date || profile.last_active_at,
         onboarding_completed: profile.onboarding_completed,
         timezone: device.timezone || profile.timezone || 'Asia/Kolkata',
         fcmToken: device.fcm_token,
@@ -100,7 +100,7 @@ export async function GET(request) {
                 timezone,
                 notification_failure_count,
                 last_seen_at,
-                users(id, name, fcm_token, streak, last_active_at, onboarding_completed, timezone)
+                users(id, name, fcm_token, streak, last_active_date, onboarding_completed, timezone)
             `)
             .eq('is_active', true)
             .eq('push_permission', 'granted')
