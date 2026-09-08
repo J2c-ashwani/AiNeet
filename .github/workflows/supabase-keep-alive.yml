@@ -43,7 +43,7 @@ jobs:
               --max-time 15 \
               -H "apikey: $STAGING_SUPABASE_ANON_KEY" \
               -H "Authorization: Bearer $STAGING_SUPABASE_ANON_KEY" \
-              "$STAGING_SUPABASE_URL/rest/v1/")
+              "$STAGING_SUPABASE_URL/rest/v1/questions?select=id&limit=1")
             echo "Supabase Staging response: HTTP $HTTP_CODE"
             if [ "$HTTP_CODE" != "000" ]; then
               echo "✅ Supabase Staging is alive and active (HTTP $HTTP_CODE)"
