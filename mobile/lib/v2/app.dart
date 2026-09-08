@@ -4,6 +4,8 @@ import 'core/security/secure_storage.dart';
 import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'features/auth/presentation/otp_screen.dart';
+import 'features/auth/presentation/forgot_password_screen.dart';
+import 'features/auth/presentation/new_password_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 import 'features/doubts/presentation/doubt_solver_screen.dart';
 import 'features/ncert/presentation/ncert_reader_screen.dart';
@@ -139,9 +141,48 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                                 MaterialPageRoute(
                                   builder: (otpCtx) => NativeOtpScreen(
                                     email: email,
+                                    otpType: 'signup',
                                     onOtpSuccess: () {
                                       Navigator.of(otpCtx).popUntil((route) => route.isFirst);
                                       setState(() => _isLoggedIn = true);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                    onNavigateToForgotPassword: () {
+                      Navigator.push(
+                        ctx,
+                        MaterialPageRoute(
+                          builder: (forgotCtx) => NativeForgotPasswordScreen(
+                            onResetCodeSent: (email) {
+                              Navigator.pushReplacement(
+                                forgotCtx,
+                                MaterialPageRoute(
+                                  builder: (otpCtx) => NativeOtpScreen(
+                                    email: email,
+                                    otpType: 'recovery',
+                                    onOtpSuccess: () {
+                                      Navigator.pushReplacement(
+                                        otpCtx,
+                                        MaterialPageRoute(
+                                          builder: (newPwCtx) => NativeNewPasswordScreen(
+                                            onPasswordReset: () {
+                                              Navigator.of(newPwCtx).popUntil((route) => route.isFirst);
+                                              ScaffoldMessenger.of(newPwCtx).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Password reset successful! Please sign in.'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      );
                                     },
                                   ),
                                 ),

@@ -7,11 +7,13 @@ import '../../../core/security/secure_storage.dart';
 class NativeOtpScreen extends StatefulWidget {
   final String email;
   final VoidCallback onOtpSuccess;
+  final String otpType; // 'signup' or 'recovery'
 
   const NativeOtpScreen({
     super.key,
     required this.email,
     required this.onOtpSuccess,
+    this.otpType = 'signup',
   });
 
   @override
@@ -22,6 +24,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
   final _otpController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  String? _successMessage;
   int _cooldown = 60;
   Timer? _timer;
 
@@ -50,27 +53,47 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
     });
   }
 
+  Future<void> _handleResend() async {
+    setState(() {
+      _errorMessage = null;
+      _successMessage = null;
+    });
+
+    try {
+      if (widget.otpType == 'recovery') {
+        await NeetApiClient().resetPassword(widget.email);
+      } else {
+        await NeetApiClient().resendOtp(widget.email);
+      }
+      _startCooldown();
+      setState(() => _successMessage = 'A new verification code has been sent to your email.');
+    } catch (e) {
+      setState(() => _errorMessage = 'Failed to resend code. Please try again.');
+    }
+  }
+
   Future<void> _handleVerify() async {
     final otp = _otpController.text.trim();
-    if (otp.length != 6) {
-      setState(() => _errorMessage = 'Please enter a 6-digit code');
+    if (otp.length < 6) {
+      setState(() => _errorMessage = 'Please enter the full verification code');
       return;
     }
 
     setState(() {
       _isLoading = true;
       _errorMessage = null;
+      _successMessage = null;
     });
 
     try {
-      final res = await NeetApiClient().verifyOtp(widget.email, otp);
+      final res = await NeetApiClient().verifyOtp(widget.email, otp, type: widget.otpType);
       if (res.statusCode == 200) {
         final data = res.data;
         final token = data['token'] ?? data['access_token'];
         if (token != null) {
           await SecureStorageService.saveSession(
             token: token,
-            refreshToken: data['refreshToken'],
+            refreshToken: data['refresh_token'] ?? data['refreshToken'],
             userId: data['user']?['id']?.toString() ?? '',
             email: widget.email,
           );
@@ -79,7 +102,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
         }
       }
       setState(() {
-        _errorMessage = res.data['error'] ?? 'Invalid OTP';
+        _errorMessage = res.data['error'] ?? 'Invalid code. Please check and try again.';
       });
     } catch (e) {
       setState(() {
@@ -94,6 +117,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isRecovery = widget.otpType == 'recovery';
     return Scaffold(
       backgroundColor: NeetTokens.bgPrimary,
       appBar: AppBar(
@@ -111,7 +135,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Verify Email',
+                isRecovery ? 'Reset Password' : 'Verify Email',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -120,7 +144,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'We sent a 6-digit code to ${widget.email}',
+                'We sent a verification code to ${widget.email}',
                 style: TextStyle(fontSize: 16, color: NeetTokens.textMuted),
               ),
               const SizedBox(height: 32),
@@ -128,7 +152,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
               if (_errorMessage != null)
                 Container(
                   padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 24),
+                  margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
                     color: NeetTokens.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -140,10 +164,25 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                   ),
                 ),
 
+              if (_successMessage != null)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: NeetTokens.success.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: NeetTokens.success.withValues(alpha: 0.5)),
+                  ),
+                  child: Text(
+                    _successMessage!,
+                    style: TextStyle(color: NeetTokens.success),
+                  ),
+                ),
+
               TextField(
                 controller: _otpController,
                 keyboardType: TextInputType.number,
-                maxLength: 6,
+                maxLength: 8,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24, letterSpacing: 8),
                 decoration: InputDecoration(
@@ -153,7 +192,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
                   fillColor: NeetTokens.bgSecondary,
                 ),
                 onChanged: (v) {
-                  if (v.length == 6) _handleVerify();
+                  if (v.length == 8) _handleVerify();
                 },
               ),
               const SizedBox(height: 32),
@@ -174,7 +213,7 @@ class _NativeOtpScreenState extends State<NativeOtpScreen> {
               const Spacer(),
 
               TextButton(
-                onPressed: _cooldown > 0 ? null : _startCooldown,
+                onPressed: _cooldown > 0 ? null : _handleResend,
                 child: Text(
                   _cooldown > 0 ? 'Resend code in ${_cooldown}s' : 'Resend Code',
                   style: TextStyle(

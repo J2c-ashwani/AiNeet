@@ -50,12 +50,15 @@ void main() {
 
       bool loginSuccessCalled = false;
       bool registerCalled = false;
+      // ignore: unused_local_variable
+      bool forgotPasswordCalled = false;
 
       await tester.pumpWidget(
         MaterialApp(
           home: NativeLoginScreen(
             onLoginSuccess: () => loginSuccessCalled = true,
             onNavigateToRegister: () => registerCalled = true,
+            onNavigateToForgotPassword: () => forgotPasswordCalled = true,
           ),
         ),
       );
@@ -74,9 +77,12 @@ void main() {
       await tester.tap(find.text("Don't have an account? Register Free"));
       await tester.pump();
       expect(registerCalled, isTrue);
+
+      // Verify Forgot Password link exists
+      expect(find.text('Forgot Password?'), findsOneWidget);
     });
 
-    testWidgets('NativeOtpScreen renders 6-digit input and handles timer', (WidgetTester tester) async {
+    testWidgets('NativeOtpScreen renders verification code input and handles timer', (WidgetTester tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -93,7 +99,7 @@ void main() {
       );
 
       expect(find.text('Verify Email'), findsOneWidget);
-      expect(find.text('We sent a 6-digit code to test@student.com'), findsOneWidget);
+      expect(find.text('We sent a verification code to test@student.com'), findsOneWidget);
       expect(find.text('Verify'), findsOneWidget);
       expect(otpSuccess, isFalse);
     });

@@ -8,13 +8,16 @@ import '../../../core/security/secure_storage.dart';
 class NativeLoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
   final VoidCallback onNavigateToRegister;
+  final VoidCallback onNavigateToForgotPassword;
 
   const NativeLoginScreen({
     super.key,
     required onLoginSuccess,
     required onNavigateToRegister,
+    required onNavigateToForgotPassword,
   })  : onLoginSuccess = onLoginSuccess,
-        onNavigateToRegister = onNavigateToRegister;
+        onNavigateToRegister = onNavigateToRegister,
+        onNavigateToForgotPassword = onNavigateToForgotPassword;
 
   @override
   State<NativeLoginScreen> createState() => _NativeLoginScreenState();
@@ -257,7 +260,29 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 8),
+
+                // Forgot Password link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: widget.onNavigateToForgotPassword,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 32),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: NeetTokens.accentSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
 
                 // Submit Button
                 ElevatedButton(

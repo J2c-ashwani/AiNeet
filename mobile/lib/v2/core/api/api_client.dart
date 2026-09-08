@@ -129,11 +129,30 @@ class NeetApiClient {
     });
   }
 
-  Future<Response> verifyOtp(String email, String otp) async {
+  Future<Response> verifyOtp(String email, String otp, {String type = 'signup'}) async {
     return await dio.post('/api/auth/verify-otp', data: {
       'email': email,
       'otp': otp,
-      'type': 'signup',
+      'type': type,
+    });
+  }
+
+  Future<Response> resetPassword(String email) async {
+    return await dio.post('/api/auth/reset-password', data: {
+      'email': email,
+    });
+  }
+
+  Future<Response> updatePassword(String newPassword) async {
+    return await dio.post('/api/auth/update-password', data: {
+      'password': newPassword,
+    });
+  }
+
+  Future<Response> resendOtp(String email) async {
+    return await dio.post('/api/auth/register', data: {
+      'email': email,
+      'resend': true,
     });
   }
 
