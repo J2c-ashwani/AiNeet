@@ -123,14 +123,14 @@ export async function GET(request) {
         const { data: mistakeRows } = await supabase
             .from('mistake_log')
             .select(`
-                last_mistake_at,
+                logged_at,
                 questions!inner(
                     text, option_a, option_b, option_c, option_d, correct_option, explanation, year_asked,
                     subjects(name)
                 )
             `)
             .eq('user_id', decoded.id)
-            .order('last_mistake_at', { ascending: false })
+            .order('logged_at', { ascending: false })
             .limit(100);
 
         const mistakes = (mistakeRows || []).map(m => ({

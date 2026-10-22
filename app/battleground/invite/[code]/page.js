@@ -7,22 +7,33 @@ export async function generateMetadata({ params }) {
     // We fetch the battle to show who created it and how many questions
     const supabase = getSupabase();
     const { data: battle } = await supabase
-        .from('battles')
+        .from('battlegrounds')
         .select(`
             id,
-            questionCount,
-            users (name, level)
+            question_count,
+            creator_id
         `)
         .eq('invite_code', code)
         .single();
         
     if (!battle) return { title: 'Battleground Invite Not Found' };
 
-    const creatorName = battle.users?.name || 'A student';
-    const creatorLevel = battle.users?.level || 1;
+    let creatorName = 'A student';
+    let creatorLevel = 1;
+    if (battle.creator_id) {
+        const { data: creator } = await supabase
+            .from('users')
+            .select('name, level')
+            .eq('id', battle.creator_id)
+            .single();
+        if (creator) {
+            creatorName = creator.name || creatorName;
+            creatorLevel = creator.level || creatorLevel;
+        }
+    }
 
     const title = `🏟️ ${creatorName} invited you to a Battleground Mega-Quiz!`;
-    const description = `${creatorName} (Level ${creatorLevel}) is hosting a live ${battle.questionCount}-question NEET battle. Join the lobby now with code: ${code}. Space is limited!`;
+    const description = `${creatorName} (Level ${creatorLevel}) is hosting a live ${battle.question_count || 10}-question NEET battle. Join the lobby now with code: ${code}. Space is limited!`;
 
     return {
         title,

@@ -37,12 +37,12 @@ export async function GET(request) {
             const { data: existing } = await supabase.from('seo_pages').select('id').eq('source_question_id', String(candidate.question_id)).single();
             if (existing) continue;
 
-            const { data: qData } = await supabase.from('questions').select('text, topics(name), chapters(name), subject').eq('id', candidate.question_id).single();
+            const { data: qData } = await supabase.from('questions').select('text, topics(name), chapters(name), subjects(name)').eq('id', candidate.question_id).single();
             if (!qData) continue;
 
             // 2. Generate Unique SEO Content with Mistake Insights (MD Mandate)
             const topicName = qData.topics?.name || 'NEET Concept';
-            const subject = qData.subject?.toUpperCase() || 'SCIENCE';
+            const subject = qData.subjects?.name?.toUpperCase() || 'SCIENCE';
             
             // Clean question for SLUG
             const cleanSlug = qData.text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '').substring(0, 80);

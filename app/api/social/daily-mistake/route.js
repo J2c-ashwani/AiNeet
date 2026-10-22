@@ -16,7 +16,7 @@ export async function GET(request) {
         const { data: worstQuestion } = await supabase
             .from('mistake_log')
             .select('question_id, mistake_count')
-            .gte('last_mistake_at', yesterday)
+            .gte('logged_at', yesterday)
             .order('mistake_count', { ascending: false })
             .limit(1)
             .single();
@@ -27,7 +27,7 @@ export async function GET(request) {
 
         const { data: qData } = await supabase
             .from('questions')
-            .select('text, topics(name), subject')
+            .select('text, topics(name), subjects(name)')
             .eq('id', worstQuestion.question_id)
             .single();
 
@@ -36,7 +36,7 @@ export async function GET(request) {
         }
 
         const topicName = qData.topics?.name || 'Science';
-        const subject = qData.subject?.toUpperCase() || 'NEET';
+        const subject = qData.subjects?.name?.toUpperCase() || 'NEET';
 
         // 2. Generate the Social Media Video Script (MD Context Engine)
         const systemPrompt = `You are an aggressive, high-energy educational content creator specializing in Instagram Reels and YouTube Shorts for premed students (NEET exam).

@@ -16,7 +16,7 @@ export async function GET(request) {
         const supabase = await getDb();
         const { data: users } = await supabase
             .from('users')
-            .select('id, name, email, xp, subscription_tier, subscription_expires, created_at, role')
+            .select('id, name, email, xp, subscription_tier, subscription_expiry, created_at, role')
             .order('id', { ascending: false });
 
         return NextResponse.json({ users: users || [] });

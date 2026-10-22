@@ -72,7 +72,7 @@ console.log(`====================================================\n${RESET}`);
 // ── CHECK 1: Entry Point ────────────────────────────────────
 console.log(`${BOLD}[1] Native Entry Point${RESET}`);
 const mainDart = 'mobile/lib/main.dart';
-if (fileContains(mainDart, 'return const NeetV2App()')) {
+if (fileContains(mainDart, 'return const NeetV2App()') || fileContains(mainDart, 'runApp(const NeetV2App())')) {
   if (fileContains(mainDart, "defaultValue: false") || fileContains(mainDart, 'kUseWebviewFallback')) {
     pass('main.dart launches NeetV2App() by default');
     pass('WebView fallback is gated behind compile-time flag (defaultValue: false)');

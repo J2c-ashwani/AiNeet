@@ -28,7 +28,7 @@ export async function GET(request) {
             // Fetch questions with open reports (Quality Control)
             const status = searchParams.get('status') || 'open';
 
-            const { data: reports } = await supabase.from('question_reports').select('id, question_id, reason').eq('status', status);
+            const { data: reports } = await supabase.from('question_reports').select('id, question_id, issue_type, description').eq('status', status);
 
             if (!reports || reports.length === 0) {
                 return NextResponse.json({ questions: [] });
@@ -40,7 +40,8 @@ export async function GET(request) {
                     reportMap[r.question_id] = { count: 0, reasons: [] };
                 }
                 reportMap[r.question_id].count++;
-                if (r.reason) reportMap[r.question_id].reasons.push(r.reason);
+                const reasonText = [r.issue_type, r.description].filter(Boolean).join(': ');
+                if (reasonText) reportMap[r.question_id].reasons.push(reasonText);
             });
 
             const qIds = Object.keys(reportMap);

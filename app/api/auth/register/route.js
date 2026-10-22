@@ -100,7 +100,7 @@ export async function POST(request) {
         if (referralsEnabled && referralCode) {
             const { data: referrer } = await supabase
                 .from('users')
-                .select('id, referrals_count')
+                .select('id')
                 .eq('referral_code', referralCode.trim().toUpperCase())
                 .single();
 

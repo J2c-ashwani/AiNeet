@@ -1,5 +1,6 @@
 
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 import { getUserFromRequest } from '@/lib/core/auth';
 import { safeInsert } from '@/lib/core/db-safe';
 import { getAdaptiveQuestion } from '@/lib/adaptive_engine';
@@ -49,19 +50,27 @@ export async function POST(request) {
         }
 
         // Create Test Record
-        const [result] = await safeInsert('tests', {
+        const testId = randomUUID();
+        const totalMarks = selectedQuestions.length * 4;
+        const config = JSON.stringify({ subjectId, topicId, type: 'adaptive', questionCount: selectedQuestions.length });
+        const timeLimitSeconds = selectedQuestions.length * 90;
+        const now = new Date();
+        const startedAt = now.toISOString();
+        const expiresAt = new Date(now.getTime() + timeLimitSeconds * 1000).toISOString();
+
+        await safeInsert('tests', {
+            id: testId,
             user_id: decoded.id,
             type: 'adaptive',
-            subject_id: subjectId || null,
-            topic_id: topicId || null,
+            config_json: config,
             total_questions: selectedQuestions.length,
-            status: 'in_progress',
-            created_at: new Date().toISOString()
+            total_marks: totalMarks,
+            started_at: startedAt,
+            expires_at: expiresAt
         }, {
             route: '/api/tests/adaptive',
             userId: decoded.id,
         });
-        const testId = result.id;
 
         // Return questions (hide correct option)
         const clientQuestions = selectedQuestions.map(q => ({

@@ -97,10 +97,10 @@ export const GET = withApiRoute(async () => {
     let unitEconomics = { projectedMRR: 0, dailyCost: 0, margin: 100, costPerRequest: 0, costPerSession: 0, activeRequests: 0 };
     try {
         // Calculate Projected MRR from subscriptions
-        const { data: subs } = await supabase.from('users').select('subscription_tier, plan_type').or('plan_type.eq.pro,subscription_tier.eq.premium');
+        const { data: subs } = await supabase.from('users').select('subscription_tier').in('subscription_tier', ['pro', 'premium']);
         let proCount = 0; let premiumCount = 0;
         subs?.forEach(s => {
-            if (s.plan_type === 'pro') proCount++;
+            if (s.subscription_tier === 'pro') proCount++;
             if (s.subscription_tier === 'premium') premiumCount++;
         });
         

@@ -12,14 +12,25 @@ export async function GET(request) {
 
         const { data: user } = await supabase
             .from('users')
-            .select('id, name, email, xp, level, streak, target_year, daily_goal, avatar, onboarding_completed')
+            .select('id, name, email, xp, level, streak, target_year, daily_goal, avatar, onboarding_completed, referral_code')
             .eq('id', decoded.id)
             .single();
 
         if (!user) return NextResponse.json({ user: null });
 
+        const { count: referralsCount } = await supabase
+            .from('users')
+            .select('*', { count: 'exact', head: true })
+            .eq('referred_by', decoded.id);
+
         const levelInfo = getLevelFromXP(user.xp);
-        return NextResponse.json({ user: { ...user, levelInfo } });
+        return NextResponse.json({
+            user: {
+                ...user,
+                referrals_count: referralsCount || 0,
+                levelInfo
+            }
+        });
     } catch (error) {
         console.error('Auth me error:', error);
         return NextResponse.json({ error: 'Failed to load session profile' }, { status: 500 });

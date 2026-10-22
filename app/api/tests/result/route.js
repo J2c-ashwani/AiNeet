@@ -43,7 +43,7 @@ export async function GET(request) {
         if (questionIds.length > 0) {
             const { data: questions } = await supabase
                 .from('questions')
-                .select('id, text, option_a, option_b, option_c, option_d, correct_option, explanation, difficulty, year_asked, exam_name, is_teacher_reviewed')
+                .select('id, text, option_a, option_b, option_c, option_d, correct_option, explanation, difficulty, year_asked, exam_name, reviewed_by, verification_status')
                 .in('id', questionIds);
             questionMap = Object.fromEntries((questions || []).map(q => [String(q.id), q]));
         }
@@ -65,7 +65,7 @@ export async function GET(request) {
                 difficulty: question.difficulty,
                 year_asked: question.year_asked,
                 exam_name: question.exam_name,
-                is_teacher_reviewed: question.is_teacher_reviewed,
+                is_teacher_reviewed: Boolean(question.reviewed_by || question.verification_status === 'teacher_verified'),
             };
         });
 

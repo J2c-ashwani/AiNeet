@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/core/db';
-import { requireBearerSecret } from '@/lib/server-secrets';
+import { requireRequestSecret } from '@/lib/server-secrets';
 
 export async function GET(request) {
-    const unauthorized = requireBearerSecret(request, 'CRON_SECRET');
+    const unauthorized = requireRequestSecret(request, {
+        envName: 'CRON_SECRET',
+        bearer: true,
+        headers: ['x-cron-secret'],
+        query: ['secret'],
+    });
     if (unauthorized) return unauthorized;
 
     try {
         const supabase = await getDb();
         
-        const { error } = await supabase.from('feature_flags').select('id').limit(1);
+        const { error } = await supabase.from('feature_flags').select('key').limit(1);
         
         if (error) {
             console.error('Keepalive DB Error:', error);

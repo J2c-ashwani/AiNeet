@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
         .from('battles')
         .select(`
             *,
-            users (name)
+            users (name, xp, level)
         `)
         .eq('id', id)
         .single();

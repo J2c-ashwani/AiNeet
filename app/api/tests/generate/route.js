@@ -43,8 +43,11 @@ export async function POST(request) {
 
         // GROWTH ENGINE: Lock Grand Mock Test behind referrals
         if (type === 'mock') {
-            const { data: user } = await supabase.from('users').select('referrals_count').eq('id', decoded.id).single();
-            if ((user?.referrals_count || 0) < 1) {
+            const { count: referralsCount } = await supabase
+                .from('users')
+                .select('*', { count: 'exact', head: true })
+                .eq('referred_by', decoded.id);
+            if ((referralsCount || 0) < 1) {
                 return NextResponse.json({
                     error: 'Refer 1 friend to unlock the Grand Mock Test.',
                     locked: true,
