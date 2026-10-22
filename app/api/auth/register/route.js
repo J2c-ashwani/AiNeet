@@ -69,13 +69,13 @@ export async function POST(request) {
             return NextResponse.json({ error: 'This email is already registered. Please sign in instead.' }, { status: 409 });
         }
 
-        // Create user via Supabase Admin API with OTP requirement (email_confirm: false)
+        // Create user via Supabase Admin API with immediate confirmation (no OTP required)
         let authData, authError;
         try {
             const result = await supabase.auth.admin.createUser({
                 email: cleanEmail,
                 password,
-                email_confirm: false,
+                email_confirm: true,
                 user_metadata: {
                     full_name: cleanName
                 }
@@ -90,23 +90,6 @@ export async function POST(request) {
         if (authError || !authData.user) {
             console.error('Supabase createUser error:', authError);
             return NextResponse.json({ error: authError?.message || 'Registration failed' }, { status: 400 });
-        }
-
-        // Send OTP email token
-        let otpSent = true;
-        try {
-            const anonClient = await createSupabaseServerClient();
-            const { error: resendError } = await anonClient.auth.resend({
-                type: 'signup',
-                email: cleanEmail,
-            });
-            if (resendError) {
-                console.error('OTP email resend error (non-fatal):', resendError.message);
-                otpSent = false;
-            }
-        } catch (emailErr) {
-            console.error('OTP email trigger error (non-fatal):', emailErr);
-            otpSent = false;
         }
 
         const id = authData.user.id;
@@ -147,11 +130,35 @@ export async function POST(request) {
             userId: id,
         });
 
+        // Sign in immediately to provide session tokens (works for both mobile Bearer token and web cookies)
+        const supabaseAuth = await createSupabaseServerClient();
+        let sessionToken = '';
+        let refreshToken = '';
+        try {
+            const { data: signInData } = await supabaseAuth.auth.signInWithPassword({
+                email: cleanEmail,
+                password: password,
+            });
+            sessionToken = signInData?.session?.access_token || '';
+            refreshToken = signInData?.session?.refresh_token || '';
+        } catch (loginErr) {
+            console.warn('Auto login after registration non-fatal error:', loginErr?.message);
+        }
+
         return NextResponse.json({
             success: true,
-            otpSent,
-            message: otpSent ? 'A 6-digit OTP code has been sent to your email.' : 'Account created. Enter OTP code or check email.',
-            email: cleanEmail,
+            token: sessionToken,
+            access_token: sessionToken,
+            refresh_token: refreshToken,
+            user: {
+                id,
+                name: cleanName,
+                email: cleanEmail,
+                xp: 0,
+                level: 1,
+                streak: 0,
+            },
+            message: 'Account created successfully.',
         }, { status: 201 });
 
     } catch (error) {

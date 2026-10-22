@@ -117,7 +117,7 @@ function OtpStep({ email, onSuccess, onBack }) {
                 <Alert type="error">{methods.formState.errors.root.serverError.message}</Alert>
             )}
             <Form methods={methods} onSubmit={(d) => mutation.mutate(d)} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                <FormField name="otp" label="Verification Code" description={`We sent a 6-digit code to ${email}`}>
+                <FormField name="otp" label="Verification Code" description={`We sent a verification code to ${email}`}>
                     <Input
                         {...methods.register('otp')}
                         type="text"
@@ -206,7 +206,7 @@ export default function ForgotClient() {
 
     const stepConfig = {
         email:    { title: 'Reset Password',    sub: 'Enter your account email' },
-        otp:      { title: 'Check Your Email',  sub: `We sent a 6-digit code to ${email}` },
+        otp:      { title: 'Check Your Email',  sub: `We sent a verification code to ${email}` },
         password: { title: 'New Password',      sub: 'Set a secure new password' },
         done:     { title: 'Password Reset!',   sub: 'Redirecting you to the app...' },
     };

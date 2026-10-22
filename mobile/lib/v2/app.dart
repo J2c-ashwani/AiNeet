@@ -136,19 +136,8 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                           builder: (registerCtx) => NativeRegisterScreen(
                             onNavigateToLogin: () => Navigator.pop(registerCtx),
                             onRegistered: (email) {
-                              Navigator.pushReplacement(
-                                registerCtx,
-                                MaterialPageRoute(
-                                  builder: (otpCtx) => NativeOtpScreen(
-                                    email: email,
-                                    otpType: 'signup',
-                                    onOtpSuccess: () {
-                                      Navigator.of(otpCtx).popUntil((route) => route.isFirst);
-                                      setState(() => _isLoggedIn = true);
-                                    },
-                                  ),
-                                ),
-                              );
+                              Navigator.pop(registerCtx);
+                              setState(() => _isLoggedIn = true);
                             },
                           ),
                         ),

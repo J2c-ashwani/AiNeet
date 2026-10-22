@@ -25,13 +25,40 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
         }
 
+        const cleanEmail = email.toLowerCase().trim();
+
         // Supabase Native SignIn via SSR Cookies
-        const { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
-            email: email.toLowerCase().trim(),
+        let { data: authData, error: authError } = await supabaseAuth.auth.signInWithPassword({
+            email: cleanEmail,
             password: password
         });
 
-        if (authError || !authData.user) {
+        // If email was unconfirmed from the previous OTP flow, auto-confirm it in Supabase and retry login
+        if (authError && authError.message?.toLowerCase().includes('email not confirmed')) {
+            try {
+                const { data: dbUser } = await supabaseAdmin
+                    .from('users')
+                    .select('id')
+                    .eq('email', cleanEmail)
+                    .single();
+
+                if (dbUser?.id) {
+                    await supabaseAdmin.auth.admin.updateUserById(dbUser.id, { email_confirm: true });
+                    const retry = await supabaseAuth.auth.signInWithPassword({
+                        email: cleanEmail,
+                        password: password
+                    });
+                    if (retry.data?.user) {
+                        authData = retry.data;
+                        authError = null;
+                    }
+                }
+            } catch (confirmErr) {
+                console.error('Auto-confirm retry error:', confirmErr);
+            }
+        }
+
+        if (authError || !authData?.user) {
             console.error('Supabase Login Error:', authError);
             return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }

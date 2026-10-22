@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/security/secure_storage.dart';
 
 class NativeRegisterScreen extends StatefulWidget {
   final void Function(String email) onRegistered;
@@ -72,6 +73,19 @@ class _NativeRegisterScreenState extends State<NativeRegisterScreen> {
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
+        if (res.data != null && res.data is Map) {
+          final data = res.data as Map;
+          final token = data['token'] ?? data['access_token'];
+          final userId = data['user']?['id']?.toString() ?? '';
+          if (token != null && token.toString().isNotEmpty) {
+            await SecureStorageService.saveSession(
+              token: token.toString(),
+              refreshToken: data['refresh_token']?.toString(),
+              userId: userId,
+              email: email,
+            );
+          }
+        }
         NeetTokens.hapticSuccess();
         widget.onRegistered(email);
       } else {

@@ -53,7 +53,7 @@ export async function POST(request) {
             if (error.message.includes('expired')) {
                 return NextResponse.json({ error: 'This code has expired. Please request a new one.' }, { status: 400 });
             }
-            return NextResponse.json({ error: error.message || 'Invalid 6-digit code. Please check and try again.' }, { status: 400 });
+            return NextResponse.json({ error: error.message || 'Invalid verification code. Please check and try again.' }, { status: 400 });
         }
 
         if (!data?.session) {
