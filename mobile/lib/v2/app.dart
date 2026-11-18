@@ -17,8 +17,9 @@ import 'features/blueprint/presentation/blueprint_screen.dart';
 import 'features/study_plan/presentation/study_plan_screen.dart';
 import 'features/pricing/presentation/pricing_screen.dart';
 import 'features/profile/presentation/profile_screen.dart';
-import 'features/practice/presentation/test_engine_screen.dart';
-import 'features/practice/presentation/test_results_screen.dart';
+import 'features/practice/presentation/test_configure_screen.dart';
+import 'features/analytics/presentation/analytics_screen.dart';
+import 'features/leaderboard/presentation/leaderboard_screen.dart';
 
 class _NeetSplashScreen extends StatelessWidget {
   const _NeetSplashScreen();
@@ -96,18 +97,6 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
         _isCheckingSession = false;
       });
     }
-  }
-
-  void _navigateToResults(BuildContext context, Map<String, dynamic> resultData) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (resultsCtx) => NativeTestResultsScreen(
-          resultData: resultData,
-          onReturnHome: () => Navigator.pop(resultsCtx),
-        ),
-      ),
-    );
   }
 
   @override
@@ -193,12 +182,18 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                             Navigator.push(
                               scaffoldCtx,
                               MaterialPageRoute(
-                                builder: (testCtx) => NativeTestEngineScreen(
-                                  testTitle: topic,
-                                  onSubmitTest: (resultData) {
-                                    _navigateToResults(testCtx, resultData);
-                                  },
+                                builder: (_) => NativeTestConfigureScreen(
+                                  initialType: 'custom',
+                                  initialTopic: topic,
                                 ),
+                              ),
+                            );
+                          },
+                          onOpenCustomTest: () {
+                            Navigator.push(
+                              scaffoldCtx,
+                              MaterialPageRoute(
+                                builder: (_) => const NativeTestConfigureScreen(),
                               ),
                             );
                           },
@@ -248,6 +243,22 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                                       setState(() => _isLoggedIn = false);
                                     }
                                   },
+                                  onOpenAnalytics: () {
+                                    Navigator.push(
+                                      scaffoldCtx,
+                                      MaterialPageRoute(
+                                        builder: (_) => const NativeAnalyticsScreen(),
+                                      ),
+                                    );
+                                  },
+                                  onOpenLeaderboard: () {
+                                    Navigator.push(
+                                      scaffoldCtx,
+                                      MaterialPageRoute(
+                                        builder: (_) => const NativeLeaderboardScreen(),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             );
@@ -257,6 +268,22 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                               scaffoldCtx,
                               MaterialPageRoute(
                                 builder: (_) => const NativePricingScreen(),
+                              ),
+                            );
+                          },
+                          onOpenAnalytics: () {
+                            Navigator.push(
+                              scaffoldCtx,
+                              MaterialPageRoute(
+                                builder: (_) => const NativeAnalyticsScreen(),
+                              ),
+                            );
+                          },
+                          onOpenLeaderboard: () {
+                            Navigator.push(
+                              scaffoldCtx,
+                              MaterialPageRoute(
+                                builder: (_) => const NativeLeaderboardScreen(),
                               ),
                             );
                           },

@@ -7,23 +7,31 @@ import '../../../core/cache/offline_cache.dart';
 /// Fast first paint using local cached data before network revalidation.
 class NativeDashboardScreen extends StatefulWidget {
   final Function(String topic) onStartPractice;
+  final VoidCallback onOpenCustomTest;
   final VoidCallback onOpenMistakes;
   final VoidCallback onOpenRevision;
   final VoidCallback onOpenStudyPlan;
   final VoidCallback onOpenBlueprint;
   final VoidCallback onOpenProfile;
   final VoidCallback onOpenPricing;
+  final VoidCallback onOpenAnalytics;
+  final VoidCallback onOpenLeaderboard;
 
   const NativeDashboardScreen({
     super.key,
     required this.onStartPractice,
+    required this.onOpenCustomTest,
     required this.onOpenMistakes,
     required this.onOpenRevision,
     required this.onOpenStudyPlan,
     required this.onOpenBlueprint,
     required this.onOpenProfile,
     required this.onOpenPricing,
+    this.onOpenAnalytics = _defaultVoidCallback,
+    this.onOpenLeaderboard = _defaultVoidCallback,
   });
+
+  static void _defaultVoidCallback() {}
 
   @override
   State<NativeDashboardScreen> createState() => _NativeDashboardScreenState();
@@ -230,6 +238,93 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                 ),
                 const SizedBox(height: 24),
 
+                // Primary Custom Test Generator Banner
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        NeetTokens.bgCard,
+                        NeetTokens.accentPrimary.withValues(alpha: 0.16),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
+                    border: Border.all(color: NeetTokens.accentPrimary.withValues(alpha: 0.4)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: NeetTokens.accentPrimary.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.tune_rounded, color: NeetTokens.accentPrimary, size: 20),
+                          ),
+                          const SizedBox(width: 10),
+                          const Text(
+                            'CUSTOM TEST GENERATOR',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: NeetTokens.accentPrimary,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Practice Exactly What You Need',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: NeetTokens.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Configure chapter-wise tests, 180-Q full mocks, year-wise PYQs, or AI-adaptive tests tailored to your preparation.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: NeetTokens.textSecondary,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          NeetTokens.hapticMedium();
+                          widget.onOpenCustomTest();
+                        },
+                        icon: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 20),
+                        label: const Text(
+                          'Configure Custom Test →',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: NeetTokens.accentGlow,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
                 // Quick Navigation Grid
                 const Text(
                   'Quick Study Tools',
@@ -245,6 +340,16 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                   children: [
                     Expanded(
                       child: _buildToolCard(
+                        title: 'Custom Test',
+                        subtitle: 'Full & Chapter Mocks',
+                        icon: Icons.tune_rounded,
+                        color: NeetTokens.accentPrimary,
+                        onTap: widget.onOpenCustomTest,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildToolCard(
                         title: 'Mistake Notebook',
                         subtitle: 'Review weak Qs',
                         icon: Icons.auto_stories_outlined,
@@ -252,7 +357,12 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                         onTap: widget.onOpenMistakes,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                Row(
+                  children: [
                     Expanded(
                       child: _buildToolCard(
                         title: 'Spaced Revision',
@@ -260,6 +370,16 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                         icon: Icons.replay_circle_filled_outlined,
                         color: NeetTokens.chemistryColor,
                         onTap: widget.onOpenRevision,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildToolCard(
+                        title: 'NEET Blueprint',
+                        subtitle: 'High-yield topics',
+                        icon: Icons.pie_chart_outline_rounded,
+                        color: NeetTokens.accentSecondary,
+                        onTap: widget.onOpenBlueprint,
                       ),
                     ),
                   ],
@@ -280,11 +400,36 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _buildToolCard(
-                        title: 'NEET Blueprint',
-                        subtitle: 'High-yield topics',
-                        icon: Icons.pie_chart_outline_rounded,
-                        color: NeetTokens.accentSecondary,
-                        onTap: widget.onOpenBlueprint,
+                        title: 'Pro Upgrade',
+                        subtitle: 'Unlock all features',
+                        icon: Icons.workspace_premium_outlined,
+                        color: NeetTokens.warning,
+                        onTap: widget.onOpenPricing,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildToolCard(
+                        title: 'Analytics',
+                        subtitle: 'Score & accuracy',
+                        icon: Icons.insights_rounded,
+                        color: NeetTokens.accentPrimary,
+                        onTap: widget.onOpenAnalytics,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildToolCard(
+                        title: 'Leaderboard',
+                        subtitle: 'All-India ranks',
+                        icon: Icons.emoji_events_outlined,
+                        color: NeetTokens.chemistryColor,
+                        onTap: widget.onOpenLeaderboard,
                       ),
                     ),
                   ],

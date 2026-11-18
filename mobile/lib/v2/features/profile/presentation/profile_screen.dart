@@ -5,8 +5,15 @@ import '../../auth/presentation/settings_screen.dart';
 
 class NativeProfileScreen extends StatefulWidget {
   final VoidCallback onLogout;
+  final VoidCallback? onOpenAnalytics;
+  final VoidCallback? onOpenLeaderboard;
 
-  const NativeProfileScreen({super.key, required this.onLogout});
+  const NativeProfileScreen({
+    super.key,
+    required this.onLogout,
+    this.onOpenAnalytics,
+    this.onOpenLeaderboard,
+  });
 
   @override
   State<NativeProfileScreen> createState() => _NativeProfileScreenState();
@@ -95,6 +102,16 @@ class _NativeProfileScreenState extends State<NativeProfileScreen> {
               ),
             ),
             const SizedBox(height: 24),
+
+            if (widget.onOpenAnalytics != null || widget.onOpenLeaderboard != null) ...[
+              Text('Performance & Ranking', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: NeetTokens.textMuted)),
+              const SizedBox(height: 12),
+              if (widget.onOpenAnalytics != null)
+                _buildSettingsItem(Icons.insights_rounded, 'Performance Analytics', widget.onOpenAnalytics!),
+              if (widget.onOpenLeaderboard != null)
+                _buildSettingsItem(Icons.emoji_events_outlined, 'All-India Leaderboard', widget.onOpenLeaderboard!),
+              const SizedBox(height: 16),
+            ],
 
             Text('Account Controls', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: NeetTokens.textMuted)),
             const SizedBox(height: 12),

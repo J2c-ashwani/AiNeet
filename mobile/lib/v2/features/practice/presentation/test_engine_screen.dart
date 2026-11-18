@@ -6,12 +6,14 @@ import '../../../core/api/api_client.dart';
 
 class NativeTestEngineScreen extends StatefulWidget {
   final String testTitle;
+  final Map<String, dynamic>? initialTestData;
   final Map<String, dynamic>? testConfig;
   final Function(Map<String, dynamic> resultData) onSubmitTest;
 
   const NativeTestEngineScreen({
     super.key,
     required this.testTitle,
+    this.initialTestData,
     this.testConfig,
     required this.onSubmitTest,
   });
@@ -26,13 +28,12 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
   final Map<int, String> _selectedAnswers = {};
   final Set<int> _markedForReview = {};
 
-  int _remainingSeconds = 15 * 60; // 15-minute mock test default
+  int _remainingSeconds = 20 * 60; // Default 20 minutes
   int _elapsedSeconds = 0;
   Timer? _timer;
 
   List<Map<String, dynamic>> _questions = [];
   bool _isLoading = true;
-  String? _errorMessage;
   String? _testId;
 
   final NeetApiClient _apiClient = NeetApiClient();
@@ -47,66 +48,125 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
   Future<void> _loadQuestions() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = null;
     });
 
     try {
-      // Fetch or generate questions
-      if (widget.testConfig != null) {
+      if (widget.initialTestData != null) {
+        final data = widget.initialTestData!;
+        final rawQuestions = (data['questions'] as List<dynamic>?) ?? [];
+        _questions = rawQuestions.map((q) => Map<String, dynamic>.from(q as Map)).toList();
+        _testId = data['testId']?.toString() ?? data['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+        if (data['timeLimit'] is int) {
+          _remainingSeconds = data['timeLimit'] as int;
+        } else if (_questions.isNotEmpty) {
+          _remainingSeconds = _questions.length * 90;
+        }
+
+        await OfflineCacheService.cacheUserData('questions_current', {'questions': _questions, 'testId': _testId});
+      } else if (widget.testConfig != null) {
+        final cfg = widget.testConfig!;
         final res = await _apiClient.generateTest(
-          subject: widget.testConfig!['subject'],
-          topic: widget.testConfig!['topic'],
+          type: cfg['type'] ?? 'custom',
+          subject: cfg['subject']?.toString(),
+          topic: cfg['topic']?.toString(),
+          difficulty: cfg['difficulty']?.toString(),
+          questionCount: cfg['count'] as int? ?? cfg['questionCount'] as int? ?? 15,
         );
-        
+
         if (res.statusCode == 200 && res.data != null) {
-          final List<dynamic> fetchedQuestions = res.data['questions'] ?? [];
-          _questions = fetchedQuestions.cast<Map<String, dynamic>>();
-          _testId = res.data['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
-          
+          final data = res.data as Map;
+          final rawQuestions = (data['questions'] as List<dynamic>?) ?? [];
+          _questions = rawQuestions.map((q) => Map<String, dynamic>.from(q as Map)).toList();
+          _testId = data['testId']?.toString() ?? data['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
+          if (data['timeLimit'] is int) {
+            _remainingSeconds = data['timeLimit'] as int;
+          } else if (_questions.isNotEmpty) {
+            _remainingSeconds = _questions.length * 90;
+          }
+
           await OfflineCacheService.cacheUserData('questions_current', {'questions': _questions, 'testId': _testId});
         } else {
-          throw Exception('Failed to generate test');
+          throw Exception('Failed to generate test questions');
         }
       } else {
-         final cached = await OfflineCacheService.getCachedUserData('questions_current');
-         if (cached != null && cached['questions'] != null) {
-           final List<dynamic> cachedQ = cached['questions'];
-           _questions = cachedQ.cast<Map<String, dynamic>>();
-           _testId = cached['testId'];
-         } else {
-            throw Exception('No configuration and no cached questions available.');
-         }
+        final cached = await OfflineCacheService.getCachedUserData('questions_current');
+        if (cached != null && cached['questions'] != null) {
+          final List<dynamic> cachedQ = cached['questions'];
+          _questions = cachedQ.map((q) => Map<String, dynamic>.from(q as Map)).toList();
+          _testId = cached['testId']?.toString();
+        } else {
+          // Fallback demo questions if opened directly without prior configuration
+          _questions = _getFallbackQuestions();
+          _testId = 'demo_${DateTime.now().millisecondsSinceEpoch}';
+        }
       }
-      
+
       await _restoreTestState();
-      
+
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         _startTimer();
       }
     } catch (e) {
       if (mounted) {
-        // Try to load from cache
         final cached = await OfflineCacheService.getCachedUserData('questions_current');
         if (cached != null && cached['questions'] != null) {
-           setState(() {
-             final List<dynamic> cachedQ = cached['questions'];
-             _questions = cachedQ.cast<Map<String, dynamic>>();
-             _testId = cached['testId'];
-             _isLoading = false;
-           });
-           await _restoreTestState();
-           _startTimer();
+          final List<dynamic> cachedQ = cached['questions'];
+          setState(() {
+            _questions = cachedQ.map((q) => Map<String, dynamic>.from(q as Map)).toList();
+            _testId = cached['testId']?.toString();
+            _isLoading = false;
+          });
+          await _restoreTestState();
+          _startTimer();
         } else {
           setState(() {
+            _questions = _getFallbackQuestions();
+            _testId = 'demo_${DateTime.now().millisecondsSinceEpoch}';
             _isLoading = false;
-            _errorMessage = 'Failed to load test questions. Please check your connection and try again.';
           });
+          _startTimer();
         }
       }
     }
+  }
+
+  List<Map<String, dynamic>> _getFallbackQuestions() {
+    return [
+      {
+        'id': 'demo_1',
+        'text': 'A thermodynamic system undergoes an isothermal expansion. Which of the following remains constant?',
+        'option_a': 'Internal Energy',
+        'option_b': 'Volume',
+        'option_c': 'Pressure',
+        'option_d': 'Work Done',
+        'subject': 'physics',
+        'correct_option': 'A',
+        'explanation': 'In an isothermal process for an ideal gas, temperature remains constant, so change in internal energy dU = 0.',
+      },
+      {
+        'id': 'demo_2',
+        'text': 'Which of the following molecules has a square planar geometry according to VSEPR theory?',
+        'option_a': 'CH4',
+        'option_b': 'XeF4',
+        'option_c': 'SF4',
+        'option_d': 'NH3',
+        'subject': 'chemistry',
+        'correct_option': 'B',
+        'explanation': 'XeF4 has 4 bond pairs and 2 lone pairs on Xenon (sp3d2 hybridization), leading to a square planar geometry.',
+      },
+      {
+        'id': 'demo_3',
+        'text': 'The powerhouse of the eukaryotic cell responsible for ATP production through oxidative phosphorylation is:',
+        'option_a': 'Endoplasmic Reticulum',
+        'option_b': 'Ribosome',
+        'option_c': 'Mitochondria',
+        'option_d': 'Golgi Apparatus',
+        'subject': 'biology',
+        'correct_option': 'C',
+        'explanation': 'Mitochondria are the primary site of aerobic cellular respiration and ATP generation.',
+      },
+    ];
   }
 
   @override
@@ -117,6 +177,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
   }
 
   void _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingSeconds <= 1) {
         timer.cancel();
@@ -135,17 +196,19 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     if (saved != null && saved is Map<String, dynamic> && mounted) {
       setState(() {
         saved.forEach((key, value) {
-          _selectedAnswers[int.parse(key)] = value.toString();
+          final idx = int.tryParse(key);
+          if (idx != null) {
+            _selectedAnswers[idx] = value.toString();
+          }
         });
       });
     }
   }
 
-  Future<void> _persistAnswer(int index, String option) async {
-    setState(() => _selectedAnswers[index] = option);
+  Future<void> _persistAnswer(int index, String optionKey) async {
+    setState(() => _selectedAnswers[index] = optionKey);
     NeetTokens.hapticSelection();
 
-    // Persist immediately for offline interruption recovery
     final mapToSave = _selectedAnswers.map((k, v) => MapEntry(k.toString(), v));
     await OfflineCacheService.cacheUserData('active_test_answers', mapToSave);
   }
@@ -163,44 +226,71 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
 
   Future<void> _handleAutoSubmit() async {
     _timer?.cancel();
-    NeetTokens.hapticSuccess();
-    
-    // Show submitting overlay
+    NeetTokens.hapticMedium();
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
-        child: CircularProgressIndicator(color: NeetTokens.accentGlow),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: NeetTokens.bgSecondary,
+            borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+            border: Border.all(color: NeetTokens.border),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              CircularProgressIndicator(color: NeetTokens.accentGlow),
+              SizedBox(height: 16),
+              Text(
+                'Submitting & Grading Test...',
+                style: TextStyle(color: NeetTokens.textPrimary, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
       ),
     );
+
+    // Format answers array according to API contract: [{ questionId, selectedOption, timeSpent }]
+    final List<Map<String, dynamic>> answerPayload = [];
+    for (int i = 0; i < _questions.length; i++) {
+      final q = _questions[i];
+      final selected = _selectedAnswers[i];
+      answerPayload.add({
+        'questionId': q['id']?.toString() ?? '',
+        'selectedOption': selected,
+        'timeSpent': _questions.isNotEmpty ? (_elapsedSeconds ~/ _questions.length) : 30,
+      });
+    }
 
     try {
       final res = await _apiClient.submitTest(
         testId: _testId ?? DateTime.now().millisecondsSinceEpoch.toString(),
-        answers: _selectedAnswers.map((k, v) => MapEntry(k.toString(), v)),
+        answers: answerPayload,
         timeTakenSeconds: _elapsedSeconds,
       );
 
-      // Clear cached answers on success
       await OfflineCacheService.removeKey('active_test_answers');
       await OfflineCacheService.removeKey('questions_current');
 
       if (mounted) {
         Navigator.pop(context); // pop dialog
-        final scorecard = _buildLocalScorecard(res.data);
+        final scorecard = _buildScorecard(res.data);
         widget.onSubmitTest(scorecard);
       }
-    } catch (e) {
+    } catch (_) {
       if (mounted) {
         Navigator.pop(context); // pop dialog
-        // Fallback: evaluate locally and display results so student is never blocked
-        final scorecard = _buildLocalScorecard(null);
+        final scorecard = _buildScorecard(null);
         widget.onSubmitTest(scorecard);
       }
     }
   }
 
-  Map<String, dynamic> _buildLocalScorecard(dynamic apiData) {
+  Map<String, dynamic> _buildScorecard(dynamic apiData) {
     if (apiData is Map<String, dynamic> &&
         apiData.containsKey('score') &&
         apiData.containsKey('explanations') &&
@@ -216,10 +306,8 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     for (int i = 0; i < _questions.length; i++) {
       final q = _questions[i];
       final userAnswer = _selectedAnswers[i];
-      final correctAnswer = q['correct_option'] ?? q['correctAnswer'] ?? 'A';
-      final isCorrect = userAnswer != null &&
-          userAnswer.toString().trim().toUpperCase() ==
-              correctAnswer.toString().trim().toUpperCase();
+      final correctAnswer = q['correct_option']?.toString().toUpperCase() ?? 'A';
+      final isCorrect = userAnswer != null && userAnswer.toUpperCase() == correctAnswer;
 
       if (userAnswer == null) {
         unattempted++;
@@ -230,12 +318,11 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
       }
 
       explanations.add({
-        'question': q['question'] ?? q['text'] ?? 'Question ${i + 1}',
+        'question': q['text'] ?? 'Question ${i + 1}',
         'userAnswer': userAnswer ?? 'Unattempted',
         'correctAnswer': correctAnswer,
-        'explanation': q['explanation'] ?? 'Comprehensive NCERT step-by-step breakdown.',
+        'explanation': q['explanation'] ?? 'Official NCERT step-by-step conceptual breakdown.',
         'isCorrect': isCorrect,
-        'pyqTag': q['pyq_tag'] ?? q['pyqTag'] ?? 'NEET Standard',
       });
     }
 
@@ -243,14 +330,99 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
 
     return {
       'score': score,
+      'totalQuestions': _questions.length,
       'correct': correct,
       'incorrect': incorrect,
       'unattempted': unattempted,
-      'totalQuestions': _questions.length,
       'accuracy': _questions.isNotEmpty ? ((correct / _questions.length) * 100).round() : 0,
       'timeTakenSeconds': _elapsedSeconds,
       'explanations': explanations,
     };
+  }
+
+  void _showQuestionPalette() {
+    NeetTokens.hapticLight();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: NeetTokens.bgSecondary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Question Palette',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: NeetTokens.textMuted),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: List.generate(_questions.length, (idx) {
+                    final isAnswered = _selectedAnswers.containsKey(idx);
+                    final isMarked = _markedForReview.contains(idx);
+                    final isCurrent = idx == _currentIndex;
+
+                    Color bgColor = NeetTokens.bgCard;
+                    Color textColor = NeetTokens.textSecondary;
+                    if (isCurrent) {
+                      bgColor = NeetTokens.accentPrimary;
+                      textColor = Colors.white;
+                    } else if (isMarked) {
+                      bgColor = NeetTokens.warning;
+                      textColor = Colors.black;
+                    } else if (isAnswered) {
+                      bgColor = NeetTokens.biologyColor;
+                      textColor = Colors.white;
+                    }
+
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        _pageController.jumpToPage(idx);
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: bgColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isCurrent ? Colors.white : NeetTokens.border,
+                            width: isCurrent ? 2 : 1,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${idx + 1}',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: textColor),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   String _formatTimer(int seconds) {
@@ -264,64 +436,20 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     if (_isLoading) {
       return Scaffold(
         backgroundColor: NeetTokens.bgPrimary,
-        appBar: AppBar(
-          backgroundColor: NeetTokens.bgSecondary,
-          title: Text(widget.testTitle),
-        ),
-        body: Center(
-          child: CircularProgressIndicator(color: NeetTokens.accentGlow),
-        ),
-      );
-    }
-
-    if (_errorMessage != null) {
-      return Scaffold(
-        backgroundColor: NeetTokens.bgPrimary,
-        appBar: AppBar(
-          backgroundColor: NeetTokens.bgSecondary,
-          title: Text(widget.testTitle),
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, size: 64, color: NeetTokens.error),
-                const SizedBox(height: 16),
-                Text(
-                  _errorMessage!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: NeetTokens.textPrimary, fontSize: 16),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _loadQuestions,
-                  style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentGlow),
-                  child: const Text('Retry'),
-                )
-              ],
-            ),
-          ),
-        ),
+        appBar: AppBar(backgroundColor: NeetTokens.bgSecondary, title: Text(widget.testTitle)),
+        body: Center(child: CircularProgressIndicator(color: NeetTokens.accentGlow)),
       );
     }
 
     if (_questions.isEmpty) {
-       return Scaffold(
+      return Scaffold(
         backgroundColor: NeetTokens.bgPrimary,
-        appBar: AppBar(
-          backgroundColor: NeetTokens.bgSecondary,
-          title: Text(widget.testTitle),
-        ),
-        body: Center(
-          child: Text('No questions available.', style: TextStyle(color: NeetTokens.textPrimary)),
+        appBar: AppBar(backgroundColor: NeetTokens.bgSecondary, title: Text(widget.testTitle)),
+        body: const Center(
+          child: Text('No questions available for this configuration.', style: TextStyle(color: NeetTokens.textPrimary)),
         ),
       );
     }
-
-    final currentQ = _questions[_currentIndex];
-    final options = (currentQ['options'] as List<dynamic>?) ?? ['A', 'B', 'C', 'D'];
 
     return Scaffold(
       backgroundColor: NeetTokens.bgPrimary,
@@ -333,42 +461,31 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
           children: [
             Text(
               widget.testTitle,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: NeetTokens.textPrimary,
-              ),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
-              'Q ${_currentIndex + 1} of ${_questions.length}',
-              style: TextStyle(fontSize: 12, color: NeetTokens.textMuted),
+              'Q ${_currentIndex + 1} of ${_questions.length} • ${_selectedAnswers.length} Answered',
+              style: const TextStyle(fontSize: 12, color: NeetTokens.textMuted),
             ),
           ],
         ),
         actions: [
-          // Timer Widget
           Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            margin: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: _remainingSeconds < 180
-                  ? NeetTokens.error.withValues(alpha: 0.2)
-                  : NeetTokens.bgCard,
+              color: _remainingSeconds < 180 ? NeetTokens.error.withValues(alpha: 0.2) : NeetTokens.bgCard,
               borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
-              border: Border.all(
-                color: _remainingSeconds < 180
-                    ? NeetTokens.error
-                    : NeetTokens.border,
-              ),
+              border: Border.all(color: _remainingSeconds < 180 ? NeetTokens.error : NeetTokens.border),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.timer_outlined,
                   size: 16,
-                  color: _remainingSeconds < 180
-                      ? NeetTokens.error
-                      : NeetTokens.physicsColor,
+                  color: _remainingSeconds < 180 ? NeetTokens.error : NeetTokens.physicsColor,
                 ),
                 const SizedBox(width: 6),
                 Text(
@@ -376,9 +493,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
-                    color: _remainingSeconds < 180
-                        ? NeetTokens.error
-                        : NeetTokens.textPrimary,
+                    color: _remainingSeconds < 180 ? NeetTokens.error : NeetTokens.textPrimary,
                   ),
                 ),
               ],
@@ -389,312 +504,197 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Main Question Card View
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() => _currentIndex = index);
-              },
-              itemCount: _questions.length,
-              itemBuilder: (context, index) {
-                final selectedOption = _selectedAnswers[index];
-                final isMarked = _markedForReview.contains(index);
+            // Question Pages
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) => setState(() => _currentIndex = index),
+                itemCount: _questions.length,
+                itemBuilder: (context, qIndex) {
+                  final q = _questions[qIndex];
+                  final selectedAnswer = _selectedAnswers[qIndex];
+                  final isMarked = _markedForReview.contains(qIndex);
+                  final subject = q['subject']?.toString() ?? 'physics';
 
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Subject Badge
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: NeetTokens.physicsColor.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
-                            ),
-                            child: Text(
-                              (currentQ['subject'] ?? 'PHYSICS').toString().toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w800,
-                                color: NeetTokens.physicsColor,
-                              ),
-                            ),
-                          ),
+                  // Options parser (handles option_a, option_b, option_c, option_d)
+                  final options = [
+                    {'key': 'A', 'text': q['option_a']?.toString() ?? ''},
+                    {'key': 'B', 'text': q['option_b']?.toString() ?? ''},
+                    {'key': 'C', 'text': q['option_c']?.toString() ?? ''},
+                    {'key': 'D', 'text': q['option_d']?.toString() ?? ''},
+                  ].where((opt) => opt['text']!.trim().isNotEmpty).toList();
 
-                          // Bookmark Button
-                          IconButton(
-                            icon: Icon(
-                              isMarked ? Icons.bookmark : Icons.bookmark_outline,
-                              color: isMarked
-                                  ? NeetTokens.warning
-                                  : NeetTokens.textMuted,
-                            ),
-                            onPressed: () => _toggleMarkForReview(index),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Question Text
-                      Text(
-                        currentQ['text']?.toString() ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: NeetTokens.textPrimary,
-                          height: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Options
-                      ...List.generate(options.length, (optIdx) {
-                        final optionText = options[optIdx].toString();
-                        final isSelected = selectedOption == optionText;
-
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: InkWell(
-                            onTap: () => _persistAnswer(index, optionText),
-                            borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Subject & Bookmark Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: isSelected
-                                    ? NeetTokens.accentGlow.withValues(alpha: 0.15)
-                                    : NeetTokens.bgSecondary,
-                                borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? NeetTokens.accentGlow
-                                      : NeetTokens.border,
-                                  width: isSelected ? 2 : 1,
+                                color: NeetTokens.physicsColor.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
+                              ),
+                              child: Text(
+                                subject.toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  color: NeetTokens.physicsColor,
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isSelected
-                                          ? NeetTokens.accentGlow
-                                          : Colors.transparent,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? NeetTokens.accentGlow
-                                            : NeetTokens.textMuted,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                isMarked ? Icons.bookmark : Icons.bookmark_outline,
+                                color: isMarked ? NeetTokens.warning : NeetTokens.textMuted,
+                              ),
+                              onPressed: () => _toggleMarkForReview(qIndex),
+                              tooltip: 'Mark for Review',
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Question Text
+                        Text(
+                          q['text']?.toString() ?? 'Question prompt missing',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: NeetTokens.textPrimary,
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Options List
+                        ...options.map((opt) {
+                          final key = opt['key']!;
+                          final text = opt['text']!;
+                          final isSelected = selectedAnswer == key;
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: InkWell(
+                              onTap: () => _persistAnswer(qIndex, key),
+                              borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? NeetTokens.accentGlow.withValues(alpha: 0.15)
+                                      : NeetTokens.bgSecondary,
+                                  borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                                  border: Border.all(
+                                    color: isSelected ? NeetTokens.accentGlow : NeetTokens.border,
+                                    width: isSelected ? 2 : 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 28,
+                                      height: 28,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: isSelected ? NeetTokens.accentGlow : NeetTokens.bgCard,
+                                        border: Border.all(
+                                          color: isSelected ? NeetTokens.accentGlow : NeetTokens.textMuted,
+                                        ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        key,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w800,
+                                          color: isSelected ? Colors.white : NeetTokens.textSecondary,
+                                        ),
                                       ),
                                     ),
-                                    alignment: Alignment.center,
-                                    child: isSelected
-                                        ? Icon(
-                                            Icons.check,
-                                            size: 14,
-                                            color: Colors.white,
-                                          )
-                                        : null,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      optionText,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: isSelected
-                                            ? FontWeight.w700
-                                            : FontWeight.w500,
-                                        color: isSelected
-                                            ? NeetTokens.textPrimary
-                                            : NeetTokens.textSecondary,
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Text(
+                                        text,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                                          color: isSelected ? NeetTokens.textPrimary : NeetTokens.textSecondary,
+                                          height: 1.4,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // Bottom Bar (Palette + Navigation)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: NeetTokens.bgSecondary,
-              border: Border(top: BorderSide(color: NeetTokens.border)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.grid_view_rounded, color: NeetTokens.accentSecondary),
-                  onPressed: _showQuestionPalette,
-                ),
-                Row(
-                  children: [
-                    if (_currentIndex > 0)
-                      TextButton(
-                        onPressed: () {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 250),
-                            curve: Curves.easeOut,
                           );
-                        },
-                        child: Text('← Prev', style: TextStyle(color: NeetTokens.textMuted)),
-                      ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_currentIndex < _questions.length - 1) {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 250),
-                            curve: Curves.easeOut,
-                          );
-                        } else {
-                          _showSubmitConfirmation();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: NeetTokens.accentGlow,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
-                        ),
-                      ),
-                      child: Text(
-                        _currentIndex == _questions.length - 1
-                            ? 'Submit Test'
-                            : 'Next →',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-    );
-  }
-
-  void _showQuestionPalette() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: NeetTokens.bgSecondary,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Question Palette',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: NeetTokens.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: _questions.length,
-                itemBuilder: (context, idx) {
-                  final isAnswered = _selectedAnswers.containsKey(idx);
-                  final isCurrent = _currentIndex == idx;
-
-                  return InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pageController.jumpToPage(idx);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isAnswered
-                            ? NeetTokens.biologyColor.withValues(alpha: 0.2)
-                            : NeetTokens.bgCard,
-                        borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
-                        border: Border.all(
-                          color: isCurrent
-                              ? NeetTokens.accentPrimary
-                              : isAnswered
-                                  ? NeetTokens.biologyColor
-                                  : NeetTokens.border,
-                          width: isCurrent ? 2 : 1,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${idx + 1}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: isAnswered
-                              ? NeetTokens.biologyColor
-                              : NeetTokens.textPrimary,
-                        ),
-                      ),
+                        }),
+                      ],
                     ),
                   );
                 },
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            ),
 
-  void _showSubmitConfirmation() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: NeetTokens.bgSecondary,
-        title: Text('Submit Test?', style: TextStyle(color: NeetTokens.textPrimary)),
-        content: Text(
-          'You have answered ${_selectedAnswers.length} of ${_questions.length} questions. Are you sure you want to submit?',
-          style: TextStyle(color: NeetTokens.textSecondary),
+            // Bottom Navigation & Submit Bar
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: NeetTokens.bgSecondary,
+                border: Border(top: BorderSide(color: NeetTokens.border)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.grid_view_rounded, color: NeetTokens.accentSecondary),
+                    onPressed: _showQuestionPalette,
+                    tooltip: 'Question Palette',
+                  ),
+                  Row(
+                    children: [
+                      OutlinedButton(
+                        onPressed: _currentIndex > 0
+                            ? () => _pageController.previousPage(
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeInOut,
+                                )
+                            : null,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: NeetTokens.textSecondary,
+                          side: BorderSide(color: NeetTokens.border),
+                        ),
+                        child: const Text('Prev'),
+                      ),
+                      const SizedBox(width: 8),
+                      if (_currentIndex < _questions.length - 1)
+                        ElevatedButton(
+                          onPressed: () => _pageController.nextPage(
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                          ),
+                          style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentPrimary),
+                          child: const Text('Next', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+                        )
+                      else
+                        ElevatedButton(
+                          onPressed: _handleAutoSubmit,
+                          style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.biologyColor),
+                          child: const Text('Submit Test', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: NeetTokens.textMuted)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleAutoSubmit();
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: NeetTokens.accentGlow),
-            child: Text('Submit Now', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }

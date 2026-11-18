@@ -10,6 +10,7 @@ class NeetTokens {
   static const Color bgPrimary = Color(0xFF080C18);
   static const Color bgSecondary = Color(0xFF0F172A);
   static const Color bgCard = Color(0xFF1E293B);
+  static const Color bgTertiary = Color(0xFF1E293B);
   static const Color bgCardHover = Color(0xFF334155);
 
   static const Color accentPrimary = Color(0xFF818CF8);
@@ -51,6 +52,7 @@ class NeetTokens {
   static const double radiusMd = 12.0;
   static const double radiusLg = 16.0;
   static const double radiusXl = 24.0;
+  static const double radiusFull = 999.0;
 
   // ── Haptic Triggers ────────────────────────────────────────
   static void hapticLight() => HapticFeedback.lightImpact();

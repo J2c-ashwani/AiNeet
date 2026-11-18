@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
 
+import '../../practice/presentation/test_engine_screen.dart';
+import '../../practice/presentation/test_results_screen.dart';
+
 class NativeBattlegroundScreen extends StatefulWidget {
   const NativeBattlegroundScreen({super.key});
 
@@ -20,22 +23,44 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
     try {
       // Fetch 5 rapid questions from live backend test generator
       final testRes = await _apiClient.generateTest(
-        subject: 'Physics',
-        topic: 'Rapid Battle',
-        count: 5,
+        type: 'custom',
+        questionCount: 5,
       );
 
       if (mounted) {
         setState(() => _isSearchingMatch = false);
         NeetTokens.hapticSuccess();
-        
-        final qCount = (testRes.data?['questions'] as List?)?.length ?? 5;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Match Found! 1v1 Battle Loaded ($qCount Questions Ready).'),
-            backgroundColor: NeetTokens.warning,
-          ),
-        );
+
+        if (testRes.statusCode == 200 && testRes.data != null) {
+          final testData = Map<String, dynamic>.from(testRes.data as Map);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (testCtx) => NativeTestEngineScreen(
+                testTitle: '1v1 Rapid Quiz Battle',
+                initialTestData: testData,
+                onSubmitTest: (resultData) {
+                  Navigator.pushReplacement(
+                    testCtx,
+                    MaterialPageRoute(
+                      builder: (resCtx) => NativeTestResultsScreen(
+                        resultData: resultData,
+                        onReturnHome: () => Navigator.pop(resCtx),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Matchmaking server busy. Please retry shortly.'),
+              backgroundColor: NeetTokens.warning,
+            ),
+          );
+        }
       }
     } catch (_) {
       if (mounted) {

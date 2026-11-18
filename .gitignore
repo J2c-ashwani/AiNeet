@@ -58,6 +58,7 @@ mobile/ios/Runner/GoogleService-Info.plist
 keystore.properties
 
 # ─── Local Audit & Scratch Scripts (may contain hardcoded keys) ─
+scratch/
 test_audit.js
 test_audit2.js
 test_db*.js

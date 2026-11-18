@@ -192,13 +192,125 @@ class NeetApiClient {
     }
   }
 
-  // ── Tests ───────────────────────────────────────────────────
-  Future<Response> generateTest({required String subject, required String topic, int count = 30}) async {
-    return await dio.post('/api/tests/generate', data: {'subject': subject, 'topic': topic, 'count': count});
+  // ── NCERT Library ──────────────────────────────────────────
+  Future<Response> getNcertLibrary({String? subject, int? classNum}) async {
+    final query = <String, dynamic>{};
+    if (subject != null && subject != 'all') query['subject'] = subject.toLowerCase();
+    if (classNum != null) query['class'] = classNum;
+    try {
+      final res = await dio.get('/api/ncert/library', queryParameters: query);
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData(
+          'ncert_lib_${subject ?? "all"}_${classNum ?? "all"}',
+          res.data,
+          ttlSeconds: 86400 * 7,
+        );
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData(
+        'ncert_lib_${subject ?? "all"}_${classNum ?? "all"}',
+      );
+      if (cached != null) {
+        return Response(
+          requestOptions: RequestOptions(path: '/api/ncert/library'),
+          statusCode: 200,
+          data: cached,
+        );
+      }
+      rethrow;
+    }
   }
 
-  Future<Response> submitTest({required String testId, required Map<String, dynamic> answers, required int timeTakenSeconds}) async {
-    return await dio.post('/api/tests/submit', data: {'testId': testId, 'answers': answers, 'timeTakenSeconds': timeTakenSeconds});
+  // ── Syllabus & PYQ Metadata ─────────────────────────────────
+  Future<Response> getSyllabus() async {
+    try {
+      final res = await dio.get('/api/syllabus');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('syllabus_data', res.data, ttlSeconds: 86400 * 7);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('syllabus_data');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/syllabus'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Response> getPyqYears() async {
+    try {
+      final res = await dio.get('/api/pyq/years');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('pyq_years', res.data, ttlSeconds: 86400 * 7);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('pyq_years');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/pyq/years'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
+  }
+
+  // ── Tests ───────────────────────────────────────────────────
+  Future<Response> generateTest({
+    List<String>? subjects,
+    List<String>? chapters,
+    List<String>? topics,
+    String? difficulty,
+    int? questionCount,
+    String type = 'custom',
+    String? year,
+    String? subject,
+    String? topic,
+  }) async {
+    final payload = <String, dynamic>{
+      'type': type,
+    };
+    if (subjects != null && subjects.isNotEmpty) {
+      payload['subjects'] = subjects;
+    } else if (subject != null && subject.isNotEmpty) {
+      payload['subjects'] = [subject.toLowerCase()];
+    }
+    if (chapters != null && chapters.isNotEmpty) payload['chapters'] = chapters;
+    if (topics != null && topics.isNotEmpty) {
+      payload['topics'] = topics;
+    } else if (topic != null && topic.isNotEmpty) {
+      payload['topics'] = [topic];
+    }
+    if (difficulty != null && difficulty != 'all') {
+      payload['difficulty'] = difficulty.toLowerCase();
+    }
+    if (questionCount != null) {
+      payload['questionCount'] = questionCount;
+    }
+    if (year != null && year.isNotEmpty) {
+      payload['year'] = year;
+    }
+
+    return await dio.post('/api/tests/generate', data: payload);
+  }
+
+  Future<Response> generatePyqTest({required String chapterName, int questionCount = 20}) async {
+    return await dio.post('/api/tests/pyq', data: {
+      'chapter_name': chapterName,
+      'questionCount': questionCount,
+    });
+  }
+
+  Future<Response> submitTest({
+    required String testId,
+    required List<Map<String, dynamic>> answers,
+    required int timeTakenSeconds,
+  }) async {
+    return await dio.post('/api/tests/submit', data: {
+      'testId': testId,
+      'answers': answers,
+      'timeTaken': timeTakenSeconds,
+    });
   }
 
   Future<Response> getTestResult(String testId) async {
@@ -244,20 +356,20 @@ class NeetApiClient {
     }
   }
 
-  Future<Response> logRevision({required String cardId, required String quality}) async {
-    return await dio.post('/api/revision/log', data: {'cardId': cardId, 'quality': quality});
+  Future<Response> logRevision({required String questionId, required int quality}) async {
+    return await dio.post('/api/revision/log', data: {'questionId': questionId, 'quality': quality});
   }
 
   // ── Blueprint / Study Plan ──────────────────────────────────
-  Future<Response> getBlueprint() async {
+  Future<Response> getBlueprint({String viewType = 'chapter'}) async {
     try {
-      final res = await dio.get('/api/blueprint');
+      final res = await dio.get('/api/blueprint', queryParameters: {'viewType': viewType});
       if (res.statusCode == 200 && res.data != null) {
-        await OfflineCacheService.cacheUserData('blueprint', res.data);
+        await OfflineCacheService.cacheUserData('blueprint_$viewType', res.data);
       }
       return res;
     } catch (e) {
-      final cached = await OfflineCacheService.getCachedUserData('blueprint');
+      final cached = await OfflineCacheService.getCachedUserData('blueprint_$viewType');
       if (cached != null) {
         return Response(requestOptions: RequestOptions(path: '/api/blueprint'), statusCode: 200, data: cached);
       }
@@ -283,7 +395,19 @@ class NeetApiClient {
 
   // ── Leaderboard ─────────────────────────────────────────────
   Future<Response> getLeaderboard() async {
-    return await dio.get('/api/leaderboard');
+    try {
+      final res = await dio.get('/api/leaderboard');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('leaderboard', res.data, ttlSeconds: 300);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('leaderboard');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/leaderboard'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
   }
 
   // ── Subscription / Billing ──────────────────────────────────

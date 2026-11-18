@@ -122,6 +122,7 @@ void main() {
         MaterialApp(
           home: NativeDashboardScreen(
             onStartPractice: (topic) => practiceTriggered = true,
+            onOpenCustomTest: () {},
             onOpenMistakes: () => mistakesTriggered = true,
             onOpenRevision: () => revisionTriggered = true,
             onOpenStudyPlan: () => studyPlanTriggered = true,
