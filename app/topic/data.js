@@ -1,6 +1,6 @@
 export const topics = [
     {
-        title: "NEET Biology Preparation Strategy 2026",
+        title: "NEET Biology Preparation Strategy 2027",
         slug: "neet-biology-preparation",
         description: "Master NEET Biology with AI. Get chapter-wise weightage, NCERT focus areas, and high-yield questions for Botany and Zoology.",
         content: "Biology makes up 50% of the NEET exam (360 marks). To score 340+, you must master NCERT. AI NEET Coach helps you focus on high-yield chapters like Genetics, Ecology, and Human Physiology with spaced repetition and instant doubt solving."
@@ -18,7 +18,7 @@ export const topics = [
         content: "Organic Chemistry requires understanding reaction mechanisms, while Inorganic is largely memory-based from NCERT. Use AI NEET Coach to get instant explanations for tricky reactions and practice PYQs."
     },
     {
-        title: "Free NEET Mock Tests 2026",
+        title: "Free NEET Mock Tests 2027",
         slug: "neet-mock-test-free",
         description: "Take free full-length and chapter-wise NEET mock tests aligned with the latest NTA pattern. Get instant AI analysis.",
         content: "Practice makes perfect. Our AI generates endless unique mock tests tailored to your preparation level. Get a detailed post-test analysis including time spent per question, weak chapters, and a projected NEET All India Rank."
@@ -32,13 +32,13 @@ export const topics = [
     {
         title: "How to Crack NEET in First Attempt",
         slug: "how-to-crack-neet",
-        description: "Expert strategy and study plan to crack NEET 2026 in your first attempt. Built by toppers and powered by AI.",
+        description: "Expert strategy and study plan to crack NEET 2027 in your first attempt. Built by toppers and powered by AI.",
         content: "Consistency is key. Follow our AI-generated daily study plan, stick strictly to NCERT, take weekly mock tests, and resolve doubts instantly using our photo-upload feature. Avoid resource hoarding."
     },
     {
-        title: "Latest NEET Syllabus 2026 & Weightage",
-        slug: "neet-syllabus-2026",
-        description: "Updated NTA NEET 2026 syllabus, deleted topics, and chapter-wise weightage for Physics, Chemistry, and Biology.",
+        title: "Latest NEET Syllabus 2027 & Weightage",
+        slug: "neet-syllabus-2027",
+        description: "Updated NTA NEET 2027 syllabus, deleted topics, and chapter-wise weightage for Physics, Chemistry, and Biology.",
         content: "Stay updated with the latest NTA syllabus changes. Focus on high-weightage chapters. Our platform dynamically adapts your test generations to ensure you are practicing only what is relevant for the upcoming exam."
     },
     {
@@ -56,7 +56,7 @@ export const topics = [
     {
         title: "NEET Admit Card & Exam Date Updates",
         slug: "neet-admit-card",
-        description: "Get the latest updates on NEET 2026 exam dates, admit card release, and application form details.",
+        description: "Get the latest updates on NEET 2027 exam dates, admit card release, and application form details.",
         content: "Stay informed about crucial deadlines. Make sure your registration details are accurate. In the final weeks before the exam, shift your focus entirely to full-length syllabus mock tests and revising your mistake log."
     }
 ];

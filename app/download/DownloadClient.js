@@ -31,7 +31,7 @@ export default function DownloadClient() {
             <section style={styles.hero}>
                 <div style={styles.badge}>
                     <span style={styles.badgeDot} />
-                    v1.2 — Dark Mode + OMR Upgrade
+                    v2.0 Native Edition — 0-Lag + OMR Camera AI + 1v1 Battleground
                 </div>
 
                 <h1 style={styles.h1}>
@@ -110,7 +110,7 @@ export default function DownloadClient() {
 
             {/* Bottom CTA */}
             <section style={styles.bottomCta}>
-                <h2 style={styles.h2}>Ready to ace NEET 2026?</h2>
+                <h2 style={styles.h2}>Ready to ace NEET 2027?</h2>
                 <a
                     href="/downloads/neet-coach.apk"
                     download="AI-NEET-Coach-v2.0.apk"

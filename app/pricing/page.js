@@ -272,6 +272,46 @@ export default function PricingPage() {
                     </Card>
                 </div>
 
+                {/* Mobile App Callout */}
+                <div style={{
+                    padding: '28px 32px',
+                    borderRadius: 16,
+                    background: 'var(--bg-glass)',
+                    border: '1px solid var(--border-focus)',
+                    marginBottom: 60,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 20
+                }}>
+                    <div style={{ maxWidth: 650 }}>
+                        <div style={{ fontWeight: 800, fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span>📱 Included with Every Plan: Android Mobile App</span>
+                            <Badge variant="success" size="sm">NEET 2027</Badge>
+                        </div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0, lineHeight: 1.5 }}>
+                            Take practice tests offline on your Android phone, evaluate physical paper tests with our AI OMR Camera scanner, and play real-time 1v1 duels with zero latency.
+                        </p>
+                    </div>
+                    <a
+                        href="/download"
+                        className="btn btn-primary btn-md"
+                        style={{
+                            padding: '12px 24px',
+                            fontWeight: 700,
+                            fontSize: '0.9rem',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <span>Download Android APK</span>
+                    </a>
+                </div>
+
                 {/* FAQ */}
                 <div style={{ maxWidth: 700, margin: '0 auto', marginBottom: 80 }}>
                     <h2 style={{ textAlign: 'center', fontWeight: 800, marginBottom: 40 }}>

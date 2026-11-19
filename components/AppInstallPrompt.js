@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { isInsideNativeApp, isMobileLikeBrowser } from '@/lib/platform';
-import { Button } from '@/components/ui';
+import { Button, Badge } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
 
 // You can change the 'mode' prop to determine aggressiveness
@@ -10,8 +10,6 @@ import { Icon } from '@/components/ui/Icon';
 export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always', showModal = false, onClose }) {
     const [isMobile, setIsMobile] = useState(false);
     const [dismissed, setDismissed] = useState(false);
-
-    const DOWNLOAD_URL = process.env.NEXT_PUBLIC_PLAY_STORE_URL || '/download';
 
     useEffect(() => {
         setIsMobile(isMobileLikeBrowser() && !isInsideNativeApp());
@@ -24,35 +22,107 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
     }, [mode]);
 
     if (!isMobile) return null; // Don't show on desktop or inside native app
+    if (dismissed && mode === 'soft') return null;
 
     if (mode === 'hard') {
         if (!showModal) return null; // Wait for trigger
 
         return (
-            <div className="fixed inset-0 z-[9999] surface_black_90 flex flex-col items-center justify-center space_pa_6 text-center backdrop-blur-md">
-                <div className="surface_gray_900 border line_gray_800 space_pa_8 radius_3xl max-w-sm w-full shadow-2xl relative overflow-hidden">
+            <div style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 99999,
+                background: 'rgba(0, 0, 0, 0.85)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 20,
+                backdropFilter: 'blur(8px)'
+            }}>
+                <div style={{
+                    background: 'var(--bg-glass)',
+                    border: '1px solid var(--border-focus)',
+                    borderRadius: 24,
+                    padding: 32,
+                    maxWidth: 400,
+                    width: '100%',
+                    textAlign: 'center',
+                    boxShadow: 'var(--shadow-xl)',
+                    position: 'relative'
+                }}>
                     {onClose && (
-                        <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close" className="absolute top-2 right-2 tone_gray_500 hover_tone_white z-20 text-xl font-bold w-11 h-11 flex items-center justify-center space_pa_2">
-                            <Icon name="X" size={18} />
-                        </Button>
+                        <div style={{ position: 'absolute', top: 16, right: 16 }}>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onClose}
+                                aria-label="Close"
+                                style={{ padding: 6, minWidth: 'auto', height: 'auto' }}
+                            >
+                                <Icon name="X" size={20} />
+                            </Button>
+                        </div>
                     )}
 
-                    <div className="w-16 h-16 mx-auto surface_indigo_600 radius_2xl flex items-center justify-center space_mb_6">
-                        <Icon name="Download" size={28} className="tone_white" />
+                    <div style={{
+                        width: 64,
+                        height: 64,
+                        margin: '0 auto 20px',
+                        borderRadius: 20,
+                        background: 'var(--primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 8px 24px rgba(99,102,241,0.5)'
+                    }}>
+                        <Icon name="Download" size={30} />
                     </div>
-                    <h2 className="text-2xl font-bold tone_white space_mb_2">App Required</h2>
-                    <p className="tone_gray_400 space_mb_8 text-sm leading-relaxed">
-                        Tests can only be taken on the Android app. <br />Install NEET Coach to continue.
+
+                    <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
+                        Native App Recommended
+                    </h2>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 24 }}>
+                        Get the full NEET 2027 experience: 0-latency test engine, physical camera OMR evaluation, and offline mock exams.
                     </p>
 
                     <a
-                        href={DOWNLOAD_URL}
-                        className="btn btn-primary btn-lg w-full flex items-center justify-center gap-2"
-                        style={{ padding: '16px', fontSize: '1.1rem' }}
+                        href="/downloads/neet-coach.apk"
+                        download="AI-NEET-Coach-v2.0.apk"
+                        className="btn btn-primary btn-lg"
+                        style={{
+                            width: '100%',
+                            padding: '16px',
+                            fontWeight: 800,
+                            textDecoration: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 8,
+                            fontSize: '1rem',
+                            borderRadius: 12,
+                            boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)'
+                        }}
                     >
                         <Icon name="Download" size={18} />
-                        Install Android App
+                        Download Android App (Free APK)
                     </a>
+
+                    {onClose && (
+                        <div style={{ marginTop: 14 }}>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onClose}
+                                style={{
+                                    color: 'var(--text-muted)',
+                                    fontSize: '0.82rem',
+                                    textDecoration: 'underline'
+                                }}
+                            >
+                                Continue in Web Browser
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -60,24 +130,64 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
 
     // Soft banner
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 surface_indigo_900_95 border-t line_indigo_500_30 space_pa_4 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] backdrop-blur-sm transform transition-transform">
-            <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 surface_white radius_xl flex items-center justify-center shadow-inner shrink-0">
-                        <Icon name="Brain" size={24} className="tone_indigo_700" />
+        <div style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+            background: 'var(--bg-glass)',
+            borderTop: '1px solid var(--border-focus)',
+            padding: '12px 16px',
+            boxShadow: '0 -10px 30px rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(12px)'
+        }}>
+            <div style={{ maxWidth: 900, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: 12,
+                        background: 'var(--primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--text-primary)',
+                        fontWeight: 900,
+                        fontSize: '1rem',
+                        flexShrink: 0,
+                        boxShadow: '0 4px 12px rgba(99,102,241,0.4)'
+                    }}>
+                        AI
                     </div>
                     <div>
-                        <div className="tone_white font-bold text-sm leading-tight">NEET Coach App</div>
-                        <div className="tone_indigo_200 text-xs">Faster tests, OMR scans, and reminders</div>
+                        <div style={{ color: 'var(--text-primary)', fontWeight: 800, fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <span>AI NEET Coach App</span>
+                            <Badge variant="success" size="sm">0-LAG</Badge>
+                        </div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.74rem' }}>
+                            Physical OMR scanner • 1v1 Battleground • Offline practice
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                     <a
-                        href={DOWNLOAD_URL}
-                        className="surface_white tone_indigo_900 space_px_4 space_py_2 radius_full font-bold text-sm shadow-md hover_surface_indigo_50"
+                        href="/downloads/neet-coach.apk"
+                        download="AI-NEET-Coach-v2.0.apk"
+                        className="btn btn-primary btn-sm"
+                        style={{
+                            padding: '8px 14px',
+                            borderRadius: 99,
+                            fontWeight: 700,
+                            fontSize: '0.8rem',
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 6
+                        }}
                     >
-                        Download
+                        <span>Download APK</span>
                     </a>
                     <Button
                         variant="ghost"
@@ -86,10 +196,15 @@ export default function AppInstallPrompt({ mode = 'soft', triggerLevel = 'always
                             setDismissed(true);
                             sessionStorage.setItem('appPromoDismissed', 'true');
                         }}
-                        className="tone_indigo_300 hover_tone_white space_pa_2 shrink-0"
+                        style={{
+                            padding: 6,
+                            minWidth: 'auto',
+                            height: 'auto',
+                            color: 'var(--text-muted)'
+                        }}
                         aria-label="Dismiss banner"
                     >
-                        <Icon name="X" size={18} />
+                        <Icon name="X" size={16} />
                     </Button>
                 </div>
             </div>

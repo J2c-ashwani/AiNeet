@@ -21,7 +21,7 @@ export async function GET() {
             '/topic/neet-mock-test-free',
             '/topic/neet-pyq-chapterwise',
             '/topic/how-to-crack-neet',
-            '/topic/neet-syllabus-2026',
+            '/topic/neet-syllabus-2027',
             '/topic/best-books-for-neet',
             '/topic/neet-online-coaching',
             '/topic/neet-admit-card',

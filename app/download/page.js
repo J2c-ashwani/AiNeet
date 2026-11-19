@@ -8,7 +8,7 @@ export const metadata = {
     openGraph: {
         title: 'Download AI NEET Coach — Android App',
         description:
-            'India\'s #1 AI-powered NEET preparation app. Download the APK and start cracking NEET 2026 today!',
+            'India\'s #1 AI-powered NEET preparation app. Download the APK and start cracking NEET 2027 today!',
         url: 'https://aineetcoach.com/download',
         type: 'website',
     },

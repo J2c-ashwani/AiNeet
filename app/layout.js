@@ -9,19 +9,19 @@ const APP_URL = 'https://aineetcoach.com';
 export const metadata = {
     metadataBase: new URL(APP_URL),
     title: {
-        default: 'AI NEET Coach — #1 AI-Powered NEET 2026 Preparation Platform',
+        default: 'AI NEET Coach — #1 AI-Powered NEET 2027 Preparation Platform',
         template: '%s | AI NEET Coach',
     },
     description: APP_DESCRIPTION,
     manifest: '/manifest.json',
     keywords: [
-        'NEET preparation', 'NEET 2026', 'AI NEET coach', 'NEET mock test',
+        'NEET preparation', 'NEET 2027', 'AI NEET coach', 'NEET mock test',
         'NEET online test', 'NEET AI tutor', 'NEET doubt solver',
         'NEET study plan', 'NEET rank predictor', 'NEET question bank',
         'NEET biology', 'NEET physics', 'NEET chemistry',
         'NEET preparation app', 'best NEET app', 'free NEET preparation',
         'NEET previous year questions', 'NEET PYQ', 'NCERT for NEET',
-        'NEET 2026 preparation', 'medical entrance exam', 'MBBS entrance',
+        'NEET 2027 preparation', 'medical entrance exam', 'MBBS entrance',
     ],
     authors: [{ name: 'AI NEET Coach' }],
     creator: 'AI NEET Coach',
@@ -36,7 +36,7 @@ export const metadata = {
         locale: 'en_IN',
         url: APP_URL,
         siteName: APP_NAME,
-        title: 'AI NEET Coach — Crack NEET 2026 with Artificial Intelligence',
+        title: 'AI NEET Coach — Crack NEET 2027 with Artificial Intelligence',
         description: APP_DESCRIPTION,
         images: [
             {
@@ -51,7 +51,7 @@ export const metadata = {
     // Twitter Card
     twitter: {
         card: 'summary_large_image',
-        title: 'AI NEET Coach — #1 AI-Powered NEET 2026 Preparation',
+        title: 'AI NEET Coach — #1 AI-Powered NEET 2027 Preparation',
         description: APP_DESCRIPTION,
         images: ['/og-image.png'],
     },

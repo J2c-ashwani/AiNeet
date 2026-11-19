@@ -190,6 +190,52 @@ function CoachingHome({ user, stats, statsLoading }) {
                     ))}
                 </div>
             </div>
+
+            {/* Native Mobile App Card */}
+            <Card style={{
+                padding: '20px 24px',
+                marginBottom: 24,
+                background: 'var(--bg-glass)',
+                border: '1px solid var(--border-focus)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 16
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: 'var(--primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'var(--text-primary)',
+                        fontWeight: 900
+                    }}>
+                        📱
+                    </div>
+                    <div>
+                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span>Get AI NEET Coach Android App</span>
+                            <Badge variant="success" size="sm">NEET 2027</Badge>
+                        </div>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                            Access 0-lag 1v1 duels, instant camera OMR scanner, and offline test practice.
+                        </div>
+                    </div>
+                </div>
+                <a
+                    href="/downloads/neet-coach.apk"
+                    download="AI-NEET-Coach-v2.0.apk"
+                    className="btn btn-primary btn-sm"
+                    style={{ textDecoration: 'none', padding: '10px 18px', fontWeight: 700, borderRadius: 8, whiteSpace: 'nowrap' }}
+                >
+                    Download APK (46MB)
+                </a>
+            </Card>
         </div>
     );
 }
@@ -209,13 +255,24 @@ function GuestLanding() {
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: 600, margin: '0 auto 32px' }}>
                     Don't guess what's wrong. Take our 10-minute AI diagnostic test to find the exact chapter destroying your NEET score.
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
+                    <a
+                        href="/downloads/neet-coach.apk"
+                        download="AI-NEET-Coach-v2.0.apk"
+                        className="btn btn-success btn-lg"
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '16px 28px', fontSize: '1.05rem', fontWeight: 800, textDecoration: 'none' }}
+                    >
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.996-3.4572c.1146-.1986.0467-.4528-.152-.5674-.1986-.1146-.4527-.0467-.5673.152l-2.0233 3.5045c-1.5238-.6968-3.2393-1.085-5.0849-1.085s-3.5611.3882-5.0849 1.085L4.9411 5.4491c-.1146-.1987-.3687-.2666-.5673-.152-.1987.1146-.2666.3688-.152.5674l1.996 3.4572C2.6889 11.2867.3195 14.8697.0019 19.1242h23.9962c-.3176-4.2545-2.687-7.8375-6.1171-9.8028"/>
+                        </svg>
+                        Download Android App (Free APK)
+                    </a>
                     <Link href="/test/diagnostic">
-                        <Button size="lg" variant="primary">Find My Weakest Chapter →</Button>
+                        <Button size="lg" variant="primary">Take Web Diagnostic Test →</Button>
                     </Link>
-                    <Link href="/register">
-                        <Button size="lg" variant="secondary">Create Free Account</Button>
-                    </Link>
+                </div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                    Android 7.0+ • 46 MB • Offline Practice • OMR Scanner
                 </div>
             </div>
 

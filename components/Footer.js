@@ -36,7 +36,7 @@ export default function Footer() {
                             </span>
                         </a>
                         <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                            India's #1 AI-powered NEET preparation platform. Crack NEET 2026 with infinite mocks, live battles, and personalized analytics.
+                            India's #1 AI-powered NEET preparation platform. Crack NEET 2027 with infinite mocks, live battles, and personalized analytics.
                         </p>
                     </div>
 
@@ -46,6 +46,7 @@ export default function Footer() {
                             <p style={{ color: 'var(--text-primary)', fontWeight: 600, marginBottom: '16px', fontSize: '0.9rem' }}>Platform</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {[
+                                    { label: '📱 Download Android App', href: '/download' },
                                     { label: 'Practice Tests', href: '/test/configure' },
                                     { label: 'Battleground', href: '/battleground' },
                                     { label: 'NCERT Blueprint', href: '/blueprint' },

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OfflineBanner from '@/components/OfflineBanner';
+import AppInstallPrompt from '@/components/AppInstallPrompt';
 import { AuthProvider } from '@/context/AuthContext';
 import QueryProvider from '@/providers/query-provider';
 import { bootApp } from '@/lib/boot/orchestrator';
@@ -50,6 +51,7 @@ export default function ClientLayout({ children }) {
                 <main style={{ flex: 1 }}>
                     {children}
                 </main>
+                <AppInstallPrompt mode="soft" />
                 <Footer />
             </AuthProvider>
         </QueryProvider>

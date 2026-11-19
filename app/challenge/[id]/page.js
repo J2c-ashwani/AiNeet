@@ -97,24 +97,106 @@ export default async function ChallengePage({ params }) {
                     </div>
                 </div>
 
-                <p style={{ marginBottom: 40, lineHeight: 1.6 }}>
-                    {challenge.creator_name} has generated a high-difficulty 10-question AI Mock Test. Think you can beat their score?
+                <p style={{ marginBottom: 30, lineHeight: 1.6, color: 'var(--text-muted)' }}>
+                    {challenge.creator_name} has challenged you to an intense 10-question NEET 2027 AI Battle. Accept the duel, climb the leaderboard, and claim victory!
                 </p>
 
-                <a href={`/register?challenge=${id}`} className="btn btn-primary btn-lg" style={{ width: '100%', padding: '18px 32px', fontWeight: 800, textDecoration: 'none', display: 'inline-block', boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)' }}>
-                    <Icon name="Flame" /> Accept Challenge
+                {/* Primary CTA: Android App Download for best duel experience */}
+                <a
+                    href="/downloads/neet-coach.apk"
+                    download="AI-NEET-Coach-v2.0.apk"
+                    className="btn btn-primary btn-lg"
+                    style={{
+                        width: '100%',
+                        padding: '18px 24px',
+                        fontWeight: 800,
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 10,
+                        fontSize: '1.05rem',
+                        boxShadow: '0 8px 30px rgba(99, 102, 241, 0.5)',
+                        marginBottom: 14,
+                        borderRadius: 12
+                    }}
+                >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span>Download Android App & Battle (0 Lag)</span>
                 </a>
 
-                <div style={{ marginTop: 20, }}>
-                    Free sign up required to track your score.
+                {/* Native App Perks Banner */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 16,
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    border: '1px solid rgba(99, 102, 241, 0.25)',
+                    fontSize: '0.8rem',
+                    color: 'var(--text-secondary)',
+                    marginBottom: 24,
+                    flexWrap: 'wrap'
+                }}>
+                    <span>⚡ 0 Latency</span>
+                    <span>•</span>
+                    <span>📳 Haptic Buzzer</span>
+                    <span>•</span>
+                    <span>⚔️ Live Battleground</span>
+                </div>
+
+                {/* Secondary CTA: Web Fallback */}
+                <a
+                    href={`/register?challenge=${id}`}
+                    style={{
+                        display: 'inline-block',
+                        color: 'var(--text-secondary)',
+                        fontSize: '0.9rem',
+                        textDecoration: 'underline',
+                        textUnderlineOffset: 4,
+                        fontWeight: 600,
+                        transition: 'color 0.2s'
+                    }}
+                >
+                    Or accept in web browser →
+                </a>
+
+                <div style={{ marginTop: 12, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    Free instant access • No credit card required
                 </div>
             </div>
 
-            {/* Download App CTA */}
-            <div style={{ marginTop: 60, textAlign: 'center' }}>
-                <div style={{ marginBottom: 16, fontWeight: 600 }}>Or play the native experience</div>
-                <a href="/download" style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10, fontWeight: 600 }}>
-                    📱 Download Android App
+            {/* Download App CTA footer */}
+            <div style={{ marginTop: 50, textAlign: 'center', maxWidth: 450 }}>
+                <div style={{ marginBottom: 12, fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                    Preparing for NEET 2027?
+                </div>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: 14 }}>
+                    Install the native Android app for physical OMR camera scanning, offline chapter tests, and 24/7 AI Doubt Tutor.
+                </p>
+                <a
+                    href="/download"
+                    style={{
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        background: 'rgba(255,255,255,0.05)',
+                        borderRadius: 10,
+                        padding: '10px 20px',
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontWeight: 600,
+                        fontSize: '0.85rem',
+                        color: 'var(--text-primary)'
+                    }}
+                >
+                    <span>📱 Learn more about Android App</span>
                 </a>
             </div>
         </div>

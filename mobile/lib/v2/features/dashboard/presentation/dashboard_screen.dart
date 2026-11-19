@@ -117,7 +117,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
     final userName = _userProfile?['name'] as String? ?? 'NEET Aspirant';
     final streak = _userProfile?['streak'] as int? ?? 7;
     final xp = _userProfile?['xp'] as int? ?? 450;
-    final targetYear = _userProfile?['target_year']?.toString() ?? '2026';
+    final targetYear = _userProfile?['target_year']?.toString() ?? '2027';
 
     return Scaffold(
       backgroundColor: NeetTokens.bgPrimary,

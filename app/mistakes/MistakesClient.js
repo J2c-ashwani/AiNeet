@@ -101,7 +101,7 @@ export default function MistakesClient() {
                         <p style={{ marginBottom: 24, lineHeight: 1.6 }}>Refer 2 friends to unlock unlimited Mistake Notebook PDF exports for last-minute revision.</p>
                         <Button
                             onClick={() => {
-                                const text = `I'm preparing for NEET 2026 with AI NEET Coach!\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
+                                const text = `I'm preparing for NEET 2027 with AI NEET Coach!\n\nJoin me: https://aineetcoach.com/register?ref=${user?.referral_code || ''}`;
                                 openWhatsAppShare(text);
                             }}
                             className="btn btn-success btn-lg w-full"

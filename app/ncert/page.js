@@ -2,7 +2,7 @@ import NCERTLibraryClient from './NCERTLibraryClient';
 import { Suspense } from 'react';
 
 export const metadata = {
-    title: 'NCERT Smart Library for NEET 2026',
+    title: 'NCERT Smart Library for NEET 2027',
     description: 'Read chapter-wise PDFs from official NCERT. Solve chapter-wise previous year questions (PYQs) aligned with NEET syllabus.',
 };
 

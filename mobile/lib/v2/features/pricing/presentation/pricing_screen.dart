@@ -222,7 +222,7 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: const Text(
-                  'ALL-INCLUSIVE NEET 2026 PASS',
+                  'ALL-INCLUSIVE NEET 2027 PASS',
                   style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: NeetTokens.accentPrimary),
                 ),
               ),
