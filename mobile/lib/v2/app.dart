@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'core/constants/tokens.dart';
 import 'core/security/secure_storage.dart';
+import 'core/api/api_client.dart';
 import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'features/auth/presentation/otp_screen.dart';
@@ -91,11 +93,32 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
 
   Future<void> _restoreSession() async {
     final token = await SecureStorageService.getAuthToken();
+    final loggedIn = token != null && token.isNotEmpty;
     if (mounted) {
       setState(() {
-        _isLoggedIn = token != null && token.isNotEmpty;
+        _isLoggedIn = loggedIn;
         _isCheckingSession = false;
       });
+    }
+    if (loggedIn) {
+      _syncFcmToken();
+    }
+  }
+
+  Future<void> _syncFcmToken() async {
+    try {
+      final fcm = FirebaseMessaging.instance;
+      final settings = await fcm.requestPermission(alert: true, badge: true, sound: true);
+      if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+          settings.authorizationStatus == AuthorizationStatus.provisional) {
+        final fcmToken = await fcm.getToken();
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          await NeetApiClient().updateFcmToken(token: fcmToken);
+          debugPrint('📱 [FCM] Push token registered: ${fcmToken.substring(0, 10)}...');
+        }
+      }
+    } catch (e) {
+      debugPrint('⚠️ [FCM] Registration skipped: $e');
     }
   }
 
@@ -117,7 +140,10 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
           : !_isLoggedIn
               ? Builder(
                   builder: (ctx) => NativeLoginScreen(
-                    onLoginSuccess: () => setState(() => _isLoggedIn = true),
+                    onLoginSuccess: () {
+                      setState(() => _isLoggedIn = true);
+                      _syncFcmToken();
+                    },
                     onNavigateToRegister: () {
                       Navigator.push(
                         ctx,
@@ -127,6 +153,7 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
                             onRegistered: (email) {
                               Navigator.pop(registerCtx);
                               setState(() => _isLoggedIn = true);
+                              _syncFcmToken();
                             },
                           ),
                         ),

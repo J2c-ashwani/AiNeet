@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/tokens.dart';
 
 class NativeTestResultsScreen extends StatelessWidget {
@@ -90,6 +91,29 @@ class NativeTestResultsScreen extends StatelessWidget {
                     ],
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // WhatsApp Brag Scorecard (Growth Add-on)
+            ElevatedButton.icon(
+              onPressed: () async {
+                NeetTokens.hapticMedium();
+                final text = '🎯 I scored $score/${totalQuestions * 4} ($accuracy% accuracy) on AI NEET Coach!\nCan you beat my score? Test yourself: https://aineetcoach.com';
+                final whatsappUri = Uri.parse('https://api.whatsapp.com/send?text=${Uri.encodeComponent(text)}');
+                if (await canLaunchUrl(whatsappUri)) {
+                  await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+                }
+              },
+              icon: const Icon(Icons.share, color: Colors.white, size: 18),
+              label: const Text(
+                'Share Score on WhatsApp 💬',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF25D366),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
               ),
             ),
             const SizedBox(height: 24),

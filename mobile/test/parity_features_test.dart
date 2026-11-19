@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:neet_coach_mobile/v2/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:neet_coach_mobile/v2/features/practice/presentation/test_configure_screen.dart';
 import 'package:neet_coach_mobile/v2/features/ncert/presentation/ncert_reader_screen.dart';
+import 'package:neet_coach_mobile/v2/features/battleground/presentation/battleground_screen.dart';
 
 void main() {
   group('Mobile Parity Feature Tests', () {
@@ -106,6 +107,68 @@ void main() {
       expect(find.text('Practice PYQs'), findsWidgets);
 
       // Clean up async timers
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    testWidgets('Dashboard renders AI Daily Coach Banner and Dream College Cutoff Simulator', (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: NativeDashboardScreen(
+            onStartPractice: (_) {},
+            onOpenCustomTest: () {},
+            onOpenMistakes: () {},
+            onOpenRevision: () {},
+            onOpenStudyPlan: () {},
+            onOpenBlueprint: () {},
+            onOpenProfile: () {},
+            onOpenPricing: () {},
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Verify AI Daily Coach presence
+      expect(find.text('AI DAILY COACH BRIEFING'), findsOneWidget);
+      expect(find.text('Start Daily Drill →'), findsOneWidget);
+
+      // Verify Dream College Cutoff Simulator presence
+      expect(find.text('DREAM COLLEGE CUTOFF SIMULATOR'), findsOneWidget);
+      expect(find.text('Practice High-Yield Chapters →'), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 1));
+    });
+
+    testWidgets('Battleground renders 1v1 WhatsApp Duel and Live Multiplayer Room', (tester) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: NativeBattlegroundScreen(),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // Verify 1v1 Peer Duel Card
+      expect(find.text('1V1 WHATSAPP PEER DUEL'), findsOneWidget);
+      expect(find.text('Challenge a Friend ⚔️'), findsOneWidget);
+      expect(find.text('Create 1v1 WhatsApp Duel →'), findsOneWidget);
+
+      // Verify Live Multiplayer Room
+      expect(find.text('LIVE MULTIPLAYER ROOM'), findsOneWidget);
+      expect(find.text('Host Room'), findsOneWidget);
+      expect(find.text('Join Code'), findsOneWidget);
+
+      // Verify Solo Blitz
+      expect(find.text('Solo Speed Blitz'), findsOneWidget);
+
       await tester.pump(const Duration(seconds: 1));
     });
   });

@@ -42,6 +42,17 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
 
   Map<String, dynamic>? _performanceData;
   Map<String, dynamic>? _userProfile;
+  Map<String, dynamic>? _dailyCoachData;
+  String _selectedDreamCollege = 'AIIMS New Delhi';
+
+  static const Map<String, int> _dreamCollegeCutoffs = {
+    'AIIMS New Delhi': 710,
+    'MAMC New Delhi': 690,
+    'KGMU Lucknow': 665,
+    'Grant Medical College Mumbai': 655,
+    'Madras Medical College Chennai': 645,
+    'Govt. Medical College (General)': 610,
+  };
 
   @override
   void initState() {
@@ -53,10 +64,12 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
     // 1. Instant First Paint from Offline Cache
     final cached = await OfflineCacheService.getCachedUserData('performance');
     final cachedProfile = await OfflineCacheService.getCachedUserData('user_profile');
+    final cachedCoach = await OfflineCacheService.getCachedUserData('daily_coach');
     if (mounted) {
       setState(() {
         if (cached is Map<String, dynamic>) _performanceData = cached;
         if (cachedProfile is Map<String, dynamic>) _userProfile = cachedProfile;
+        if (cachedCoach is Map<String, dynamic>) _dailyCoachData = cachedCoach;
       });
     }
 
@@ -65,10 +78,12 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
       final results = await Future.wait([
         _apiClient.getPerformance(),
         _apiClient.getMe(),
+        _apiClient.getDailyCoach(),
       ]);
 
       final perfRes = results[0];
       final profileRes = results[1];
+      final coachRes = results[2];
 
       if (mounted) {
         setState(() {
@@ -79,6 +94,10 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
           if (profileRes.statusCode == 200 && profileRes.data?['user'] is Map<String, dynamic>) {
             _userProfile = profileRes.data['user'] as Map<String, dynamic>;
             OfflineCacheService.cacheUserData('user_profile', _userProfile, ttlSeconds: 86400);
+          }
+          if (coachRes.statusCode == 200 && coachRes.data is Map<String, dynamic>) {
+            _dailyCoachData = coachRes.data as Map<String, dynamic>;
+            OfflineCacheService.cacheUserData('daily_coach', _dailyCoachData, ttlSeconds: 14400);
           }
         });
       }
@@ -236,6 +255,10 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 24),
+
+                // AI Daily Coach Morning Briefing
+                _buildDailyCoachBanner(),
                 const SizedBox(height: 24),
 
                 // Primary Custom Test Generator Banner
@@ -434,6 +457,10 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 24),
+
+                // Dream Medical College Cutoff Simulator (Growth Add-on)
+                _buildCutoffSimulatorCard(avgAccuracy),
                 const SizedBox(height: 24),
 
                 // Recommended Practice Card
@@ -656,6 +683,303 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDailyCoachBanner() {
+    final greeting = _dailyCoachData?['greeting'] as String? ?? 'Good day, Doctor in the making! 🩺';
+    final message = _dailyCoachData?['message'] as String? ??
+        'Consistency beats intensity. Tackle today\'s high-yield drill to maintain your edge for NEET.';
+    final tip = _dailyCoachData?['tip'] as String? ??
+        'Focus on NCERT diagrams and line-by-line concept clarity in Biology & Inorganic Chemistry.';
+    final actionItem = _dailyCoachData?['actionItem'] as Map<String, dynamic>?;
+    final actionText = actionItem?['text'] as String? ?? 'Start Daily Drill →';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            NeetTokens.bgCard,
+            NeetTokens.chemistryColor.withValues(alpha: 0.16),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
+        border: Border.all(color: NeetTokens.chemistryColor.withValues(alpha: 0.35)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: NeetTokens.chemistryColor.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.auto_awesome, color: NeetTokens.chemistryColor, size: 20),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'AI DAILY COACH BRIEFING',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: NeetTokens.chemistryColor,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            greeting,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: NeetTokens.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            message,
+            style: const TextStyle(
+              fontSize: 13,
+              color: NeetTokens.textSecondary,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: NeetTokens.bgSecondary.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: NeetTokens.border),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('💡', style: TextStyle(fontSize: 14)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    tip,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: NeetTokens.textMuted,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              NeetTokens.hapticMedium();
+              final link = actionItem?['link'] as String? ?? '';
+              if (link.contains('mock') || link.contains('diagnostic')) {
+                widget.onOpenCustomTest();
+              } else if (link.contains('topic=')) {
+                final topic = Uri.tryParse(link)?.queryParameters['topic'] ?? 'Thermodynamics';
+                widget.onStartPractice(topic);
+              } else {
+                widget.onStartPractice('Thermodynamics');
+              }
+            },
+            icon: const Icon(Icons.bolt, color: Colors.black, size: 18),
+            label: Text(
+              actionText,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: Colors.black,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: NeetTokens.chemistryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(NeetTokens.radiusSm),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCutoffSimulatorCard(num avgAccuracy) {
+    final estimatedScore = (avgAccuracy > 0 ? (avgAccuracy / 100 * 720).round() : 520).clamp(180, 720);
+    final targetCutoff = _dreamCollegeCutoffs[_selectedDreamCollege] ?? 710;
+    final marksGap = targetCutoff - estimatedScore;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: NeetTokens.bgSecondary,
+        borderRadius: BorderRadius.circular(NeetTokens.radiusLg),
+        border: Border.all(color: NeetTokens.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: NeetTokens.accentPrimary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.school_outlined, color: NeetTokens.accentPrimary, size: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'DREAM COLLEGE CUTOFF SIMULATOR',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: NeetTokens.accentPrimary,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'Select Target Medical College:',
+            style: TextStyle(fontSize: 12, color: NeetTokens.textMuted, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            decoration: BoxDecoration(
+              color: NeetTokens.bgCard,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: NeetTokens.border),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedDreamCollege,
+                isExpanded: true,
+                dropdownColor: NeetTokens.bgCard,
+                icon: const Icon(Icons.arrow_drop_down, color: NeetTokens.accentPrimary),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: NeetTokens.textPrimary),
+                onChanged: (val) {
+                  if (val != null) {
+                    setState(() => _selectedDreamCollege = val);
+                  }
+                },
+                items: _dreamCollegeCutoffs.keys.map((name) {
+                  final cutoff = _dreamCollegeCutoffs[name]!;
+                  return DropdownMenuItem(
+                    value: name,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(child: Text(name, overflow: TextOverflow.ellipsis)),
+                        Text('$cutoff Marks', style: const TextStyle(fontSize: 12, color: NeetTokens.accentPrimary)),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Est. Score', style: TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
+                    const SizedBox(height: 2),
+                    Text('$estimatedScore / 720', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: NeetTokens.textPrimary)),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text('Target Cutoff', style: TextStyle(fontSize: 11, color: NeetTokens.textMuted)),
+                    const SizedBox(height: 2),
+                    Text('$targetCutoff Marks', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: NeetTokens.accentPrimary)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: (estimatedScore / targetCutoff).clamp(0.0, 1.0),
+              minHeight: 8,
+              backgroundColor: NeetTokens.bgCard,
+              color: marksGap <= 0 ? NeetTokens.biologyColor : NeetTokens.accentPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: NeetTokens.bgCard,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: NeetTokens.border),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  marksGap <= 0 ? Icons.check_circle : Icons.trending_up,
+                  color: marksGap <= 0 ? NeetTokens.biologyColor : NeetTokens.physicsColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    marksGap <= 0
+                        ? 'Congratulations! You are on track to clear the cutoff for $_selectedDreamCollege.'
+                        : 'Bridge the +$marksGap mark gap by mastering high-weightage chapters.',
+                    style: const TextStyle(fontSize: 12, color: NeetTokens.textSecondary, height: 1.3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          OutlinedButton.icon(
+            onPressed: () {
+              NeetTokens.hapticMedium();
+              widget.onStartPractice('Genetics and Evolution');
+            },
+            icon: const Icon(Icons.rocket_launch_outlined, color: NeetTokens.accentPrimary, size: 18),
+            label: const Text(
+              'Practice High-Yield Chapters →',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: NeetTokens.accentPrimary),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: NeetTokens.accentPrimary),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusSm)),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             ),
           ),
         ],

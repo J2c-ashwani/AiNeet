@@ -461,4 +461,126 @@ class NeetApiClient {
       return Response(requestOptions: RequestOptions(path: '/api/telemetry/mobile-events'), statusCode: 204);
     }
   }
+
+  // ── Push Notifications (FCM) ────────────────────────────────
+  Future<Response> updateFcmToken({
+    required String token,
+    String? deviceId,
+    String timezone = 'Asia/Kolkata',
+  }) async {
+    try {
+      final payload = <String, dynamic>{
+        'token': token,
+        'timezone': timezone,
+      };
+      if (deviceId != null) payload['deviceId'] = deviceId;
+      return await dio.post('/api/user/update-fcm-token', data: payload);
+    } catch (_) {
+      return Response(requestOptions: RequestOptions(path: '/api/user/update-fcm-token'), statusCode: 200);
+    }
+  }
+
+  // ── AI Daily Coach ──────────────────────────────────────────
+  Future<Response> getDailyCoach() async {
+    try {
+      final res = await dio.get('/api/coach/daily');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('daily_coach', res.data, ttlSeconds: 14400);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('daily_coach');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/coach/daily'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
+  }
+
+  // ── Peer Challenges (1v1 WhatsApp Duels) ─────────────────────
+  Future<Response> createChallenge() async {
+    return await dio.post('/api/challenge/create');
+  }
+
+  // ── Multiplayer Battleground (Live Rooms) ───────────────────
+  Future<Response> createBattlegroundRoom({int questionCount = 10, int timeLimitMinutes = 10}) async {
+    return await dio.post('/api/battleground/create', data: {
+      'questionCount': questionCount,
+      'timeLimitMinutes': timeLimitMinutes,
+    });
+  }
+
+  Future<Response> joinBattlegroundRoom(String inviteCode) async {
+    return await dio.post('/api/battleground/join', data: {
+      'inviteCode': inviteCode.trim().toUpperCase(),
+    });
+  }
+
+  Future<Response> startBattlegroundRoom(String battleId) async {
+    return await dio.post('/api/battleground/start', data: {
+      'battleId': battleId,
+    });
+  }
+
+  Future<Response> getBattlegroundState(String battleId) async {
+    return await dio.get('/api/battleground/state', queryParameters: {'battleId': battleId});
+  }
+
+  Future<Response> submitBattleground({
+    required String battleId,
+    required Map<String, dynamic> answers,
+    required int timeTaken,
+  }) async {
+    return await dio.post('/api/battleground/submit', data: {
+      'battleId': battleId,
+      'answers': answers,
+      'timeTaken': timeTaken,
+    });
+  }
+
+  // ── Parental Controls & Summary Reports ─────────────────────
+  Future<Response> getParentSettings() async {
+    try {
+      final res = await dio.get('/api/user/parent-settings');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('parent_settings', res.data, ttlSeconds: 86400);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('parent_settings');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/user/parent-settings'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Response> updateParentSettings({
+    required String parentEmail,
+    required String parentPhone,
+    bool consentGiven = true,
+  }) async {
+    return await dio.post('/api/user/parent-settings', data: {
+      'parent_email': parentEmail.trim(),
+      'parent_phone': parentPhone.trim(),
+      'consent_given': consentGiven,
+    });
+  }
+
+  // ── Achievements & Trophy Cabinet ───────────────────────────
+  Future<Response> getAchievements() async {
+    try {
+      final res = await dio.get('/api/achievements');
+      if (res.statusCode == 200 && res.data != null) {
+        await OfflineCacheService.cacheUserData('achievements', res.data, ttlSeconds: 86400);
+      }
+      return res;
+    } catch (e) {
+      final cached = await OfflineCacheService.getCachedUserData('achievements');
+      if (cached != null) {
+        return Response(requestOptions: RequestOptions(path: '/api/achievements'), statusCode: 200, data: cached);
+      }
+      rethrow;
+    }
+  }
 }
