@@ -257,16 +257,47 @@ class NeetApiClient {
 
   // ── Tests ───────────────────────────────────────────────────
   Future<Response> generateTest({
-    List<String>? subjects,
-    List<String>? chapters,
-    List<String>? topics,
+    List<dynamic>? subjects,
+    List<dynamic>? chapters,
+    List<dynamic>? topics,
     String? difficulty,
     int? questionCount,
     String type = 'custom',
     String? year,
     String? subject,
     String? topic,
+    dynamic subjectId,
+    dynamic topicId,
   }) async {
+    if (type == 'adaptive') {
+      final payload = <String, dynamic>{
+        'count': questionCount ?? 15,
+      };
+      if (subjectId != null) {
+        payload['subjectId'] = subjectId;
+      } else if (subject != null) {
+        payload['subjectId'] = subject;
+      } else if (subjects != null && subjects.isNotEmpty) {
+        payload['subjectId'] = subjects.first;
+      }
+      if (topicId != null) {
+        payload['topicId'] = topicId;
+      } else if (topic != null) {
+        payload['topicId'] = topic;
+      }
+      return await dio.post('/api/tests/adaptive', data: payload);
+    }
+
+    if (type == 'pyq') {
+      final payload = <String, dynamic>{
+        'questionCount': questionCount ?? 20,
+      };
+      if (subjects != null && subjects.isNotEmpty) payload['subjects'] = subjects;
+      if (chapters != null && chapters.isNotEmpty) payload['chapters'] = chapters;
+      if (topics != null && topics.isNotEmpty) payload['topics'] = topics;
+      return await dio.post('/api/tests/pyq', data: payload);
+    }
+
     final payload = <String, dynamic>{
       'type': type,
     };

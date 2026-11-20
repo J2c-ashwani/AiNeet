@@ -20,12 +20,16 @@ export async function POST(request) {
         }
 
         const body = _body;
-        const subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
-        const topicId = body.topicId ? sanitizeString(String(body.topicId), 128) : null;
+        let subjectId = body.subjectId ? sanitizeString(String(body.subjectId), 128) : null;
+        let topicId = body.topicId ? sanitizeString(String(body.topicId), 128) : null;
         const count = validatePositiveInt(body.count, 1, 50) || 10;
 
+        const SUBJECT_MAP = { 'physics': 1, 'chemistry': 2, 'biology': 3, '1': 1, '2': 2, '3': 3, 1: 1, 2: 2, 3: 3 };
+        if (subjectId && SUBJECT_MAP[String(subjectId).toLowerCase()]) {
+            subjectId = SUBJECT_MAP[String(subjectId).toLowerCase()];
+        }
         if (!subjectId && !topicId) {
-            return NextResponse.json({ error: 'Subject or Topic ID required' }, { status: 400 });
+            subjectId = 1; // Default to Physics
         }
 
         const selectedQuestions = [];
@@ -84,7 +88,16 @@ export async function POST(request) {
             difficulty_score: Math.round(q.difficulty) // Expose Elo for debugging/UI?
         }));
 
-        return NextResponse.json({ testId, questions: clientQuestions });
+        return NextResponse.json({
+            testId,
+            questions: clientQuestions,
+            totalQuestions: selectedQuestions.length,
+            totalMarks,
+            timeLimit: timeLimitSeconds,
+            type: 'adaptive',
+            startedAt,
+            expiresAt
+        });
 
     } catch (error) {
         console.error('Adaptive generation error:', error);

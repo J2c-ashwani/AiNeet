@@ -23,12 +23,17 @@ export async function POST(request) {
 
         // Input validation
         if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
-        if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
-        if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
+        if (chapters && !validateArray(chapters, 200)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 200)' }, { status: 400 });
+        if (topics && !validateArray(topics, 500)) return NextResponse.json({ error: 'Invalid topics (must be array, max 500)' }, { status: 400 });
         if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
         if (chapter_name && typeof chapter_name !== 'string') return NextResponse.json({ error: 'Invalid chapter name' }, { status: 400 });
 
-        let chapterIds = chapters ? [...chapters] : [];
+        const SUBJECT_MAP = { 'physics': 1, 'chemistry': 2, 'biology': 3, '1': 1, '2': 2, '3': 3, 1: 1, 2: 2, 3: 3 };
+        const normalizedSubjectIds = (subjects && subjects.length > 0)
+            ? subjects.map(s => SUBJECT_MAP[String(s).toLowerCase()] || Number(s)).filter(id => !isNaN(id) && id > 0)
+            : null;
+
+        let chapterIds = chapters ? chapters.map(c => Number(c)).filter(id => !isNaN(id) && id > 0) : [];
         if (chapter_name) {
             const cleanName = chapter_name.replace(/[^a-zA-Z0-9 ]/g, '');
             // Simple approach: matching first few words
@@ -42,16 +47,18 @@ export async function POST(request) {
             }
         }
 
+        const normalizedTopicIds = (topics && topics.length > 0)
+            ? topics.map(t => Number(t)).filter(id => !isNaN(id) && id > 0)
+            : null;
+
         let query = supabase.from('questions').select('*').eq('is_pyq', true);
 
-        if (subjects && subjects.length > 0) {
-            query = query.in('subject_id', subjects);
-        }
-        if (chapterIds && chapterIds.length > 0) {
+        if (normalizedTopicIds && normalizedTopicIds.length > 0) {
+            query = query.in('topic_id', normalizedTopicIds);
+        } else if (chapterIds && chapterIds.length > 0) {
             query = query.in('chapter_id', chapterIds);
-        }
-        if (topics && topics.length > 0) {
-            query = query.in('topic_id', topics);
+        } else if (normalizedSubjectIds && normalizedSubjectIds.length > 0) {
+            query = query.in('subject_id', normalizedSubjectIds);
         }
 
         // Supabase JS doesn't support ORDER BY RANDOM(). We fetch a larger pool and shuffle.

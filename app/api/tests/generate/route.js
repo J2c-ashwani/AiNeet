@@ -24,35 +24,46 @@ export async function POST(request) {
 
         const { subjects, chapters, topics, difficulty, questionCount, type, year } = _body;
 
-        // Input validation
+        // Input validation - expanded limits for multi-topic custom tests
         if (subjects && !validateArray(subjects, 20)) return NextResponse.json({ error: 'Invalid subjects (must be array, max 20)' }, { status: 400 });
-        if (chapters && !validateArray(chapters, 20)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 20)' }, { status: 400 });
-        if (topics && !validateArray(topics, 20)) return NextResponse.json({ error: 'Invalid topics (must be array, max 20)' }, { status: 400 });
+        if (chapters && !validateArray(chapters, 200)) return NextResponse.json({ error: 'Invalid chapters (must be array, max 200)' }, { status: 400 });
+        if (topics && !validateArray(topics, 500)) return NextResponse.json({ error: 'Invalid topics (must be array, max 500)' }, { status: 400 });
         if (questionCount && validatePositiveInt(questionCount, 1, 200) === false) return NextResponse.json({ error: 'questionCount must be 1–200' }, { status: 400 });
         if (type && !validateEnum(type, ['custom', 'mock', 'chapter', 'ai_generated', 'pyq', 'yearly_pyq'])) return NextResponse.json({ error: 'Invalid test type' }, { status: 400 });
         if (difficulty && !validateEnum(difficulty, ['easy', 'medium', 'hard', 'all'])) return NextResponse.json({ error: 'Invalid difficulty' }, { status: 400 });
         if (year && typeof year !== 'string') return NextResponse.json({ error: 'Invalid year format' }, { status: 400 });
 
-        // Rate Limiting (10 req/hour per User) - Kept as DDoS protection
-        // Rate limit based on User ID if available, else IP
+        // Rate Limiting (20 req/hour per User)
         const rateKey = decoded ? `user:${decoded.id}:gen` : `ip:${request.headers.get('x-forwarded-for')}:gen`;
-        const limitPos = await rateLimit(rateKey, 10, 3600000, 'open'); // 10 per hour
+        const limitPos = await rateLimit(rateKey, 20, 3600000, 'open');
         if (!limitPos.success) {
             return NextResponse.json({ error: 'You have reached the test generation limit for this hour.' }, { status: 429 });
         }
 
-        // GROWTH ENGINE: Lock Grand Mock Test behind referrals
+        // GROWTH ENGINE: Free trial mock + referral unlock
         if (type === 'mock') {
-            const { count: referralsCount } = await supabase
-                .from('users')
-                .select('*', { count: 'exact', head: true })
-                .eq('referred_by', decoded.id);
-            if ((referralsCount || 0) < 1) {
-                return NextResponse.json({
-                    error: 'Refer 1 friend to unlock the Grand Mock Test.',
-                    locked: true,
-                    feature: 'grand_mock'
-                }, { status: 403 });
+            const isPrivileged = decoded.plan_type === 'pro' || decoded.plan_type === 'plus' || decoded.subscription_tier === 'pro';
+            if (!isPrivileged) {
+                const { count: mocksAttempted } = await supabase
+                    .from('tests')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', decoded.id)
+                    .eq('type', 'mock');
+                
+                // Allow first full mock free for onboarding/testing
+                if ((mocksAttempted || 0) >= 1) {
+                    const { count: referralsCount } = await supabase
+                        .from('users')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('referred_by', decoded.id);
+                    if ((referralsCount || 0) < 1) {
+                        return NextResponse.json({
+                            error: 'You have completed your free Grand Mock. Refer 1 friend to unlock unlimited mocks!',
+                            locked: true,
+                            feature: 'grand_mock'
+                        }, { status: 403 });
+                    }
+                }
             }
         }
 
@@ -76,18 +87,37 @@ export async function POST(request) {
             else limit = 20;
         }
 
+        // Normalize subject names to integer IDs (e.g. 'physics' -> 1, 'chemistry' -> 2, 'biology' -> 3)
+        const SUBJECT_MAP = {
+            'physics': 1, 'chemistry': 2, 'biology': 3,
+            '1': 1, '2': 2, '3': 3,
+            1: 1, 2: 2, 3: 3
+        };
+
+        const normalizedSubjectIds = (subjects && subjects.length > 0)
+            ? subjects.map(s => SUBJECT_MAP[String(s).toLowerCase()] || Number(s)).filter(id => !isNaN(id) && id > 0)
+            : null;
+
+        const normalizedChapterIds = (chapters && chapters.length > 0)
+            ? chapters.map(c => Number(c)).filter(id => !isNaN(id) && id > 0)
+            : null;
+
+        const normalizedTopicIds = (topics && topics.length > 0)
+            ? topics.map(t => Number(t)).filter(id => !isNaN(id) && id > 0)
+            : null;
+
         // Build Supabase Query
         let queryBuilder = supabase.from('questions').select('*');
 
-        if (subjects && subjects.length > 0 && type !== 'yearly_pyq') {
-            queryBuilder = queryBuilder.in('subject_id', subjects);
+        // Hierarchy priority: topics -> chapters -> subjects
+        if (normalizedTopicIds && normalizedTopicIds.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('topic_id', normalizedTopicIds);
+        } else if (normalizedChapterIds && normalizedChapterIds.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('chapter_id', normalizedChapterIds);
+        } else if (normalizedSubjectIds && normalizedSubjectIds.length > 0 && type !== 'yearly_pyq') {
+            queryBuilder = queryBuilder.in('subject_id', normalizedSubjectIds);
         }
-        if (chapters && chapters.length > 0 && type !== 'yearly_pyq') {
-            queryBuilder = queryBuilder.in('chapter_id', chapters);
-        }
-        if (topics && topics.length > 0 && type !== 'yearly_pyq') {
-            queryBuilder = queryBuilder.in('topic_id', topics);
-        }
+
         if (difficulty && difficulty !== 'all' && type !== 'yearly_pyq') {
             queryBuilder = queryBuilder.eq('difficulty', difficulty);
         }
@@ -95,121 +125,62 @@ export async function POST(request) {
             queryBuilder = queryBuilder.ilike('year_asked', `%${year}%`);
             queryBuilder = queryBuilder.eq('is_pyq', 1);
         }
+        if (type === 'pyq') {
+            queryBuilder = queryBuilder.eq('is_pyq', 1);
+        }
 
-        // Note: Supabase doesn't natively support ORDER BY RANDOM() easily without an RPC. 
-        // We will fetch up to 1000 and shuffle in JS.
+        // Fetch pool of matching questions
         const { data: fetchQuestions, error } = await queryBuilder.limit(1000);
         if (error) throw error;
 
         // Shuffle
-        let questions = fetchQuestions.sort(() => Math.random() - 0.5).slice(0, limit);
+        let questions = (fetchQuestions || []).sort(() => Math.random() - 0.5).slice(0, limit);
 
+        // Gap filling if pool has fewer questions than requested limit
         if (questions.length < limit) {
             const extraNeeded = limit - questions.length;
+            const existingIds = questions.map(q => q.id);
 
             if (type === 'yearly_pyq') {
                 console.log(`[yearly_pyq] Insufficient questions for ${year} (Found ${questions.length}, Needed ${limit}). Filling gap with ${extraNeeded} random PYQs...`);
-
-                // Get IDs of questions already selected to avoid duplicates
-                const existingIds = questions.map(q => q.id);
-
                 let gapQuery = supabase.from('questions').select('*').eq('is_pyq', 1);
                 if (existingIds.length > 0) {
                     gapQuery = gapQuery.not('id', 'in', `(${existingIds.join(',')})`);
                 }
-
-                // Fetch extra random PYQs
                 const { data: gapData } = await gapQuery.limit(1000);
                 if (gapData) {
                     const gapQuestions = gapData.sort(() => Math.random() - 0.5).slice(0, extraNeeded);
                     questions.push(...gapQuestions);
                 }
-
             } else {
-                console.log(`Insufficient questions (Found ${questions.length}, Needed ${limit}). Triggering AI RAG...`);
-                const aiEnabled = await isFeatureEnabled('ai_generation');
-                if (!aiEnabled) {
-                    return NextResponse.json({
-                        error: 'Not enough verified questions are available right now. Please choose fewer questions or another chapter.',
-                        code: 'INSUFFICIENT_QUESTION_POOL',
-                    }, { status: 409 });
+                // First try filling gap from parent chapters or subjects
+                let gapQuery = supabase.from('questions').select('*');
+                if (existingIds.length > 0) {
+                    gapQuery = gapQuery.not('id', 'in', `(${existingIds.join(',')})`);
                 }
-                const { generateInstantQuestions } = await import('@/lib/rag_engine');
+                if (normalizedChapterIds && normalizedChapterIds.length > 0) {
+                    gapQuery = gapQuery.in('chapter_id', normalizedChapterIds);
+                } else if (normalizedSubjectIds && normalizedSubjectIds.length > 0) {
+                    gapQuery = gapQuery.in('subject_id', normalizedSubjectIds);
+                }
+                const { data: gapFromCategory } = await gapQuery.limit(1000);
+                if (gapFromCategory && gapFromCategory.length > 0) {
+                    const extra = gapFromCategory.sort(() => Math.random() - 0.5).slice(0, extraNeeded);
+                    questions.push(...extra);
+                }
 
-                // Determine topic for generation (use first requested topic or 'General')
-                const topicId = (topics && topics.length > 0) ? topics[0] : 'General Science';
-
-                const aiQuestions = await generateInstantQuestions(`Topic ${topicId}`, extraNeeded);
-
-                // AI Quality Verification: verify each generated question before saving
-                const { verifyQuestion } = await import('@/lib/ai_verifier');
-
-                for (let i = 0; i < aiQuestions.length; i++) {
-                    let q = aiQuestions[i];
-                    let retryCount = 0;
-                    let isVerified = false;
-                    let finalAnswer = q.correct_option;
-                    let confScore = 0;
-                    let vStatus = 'pending';
-
-                    // CTO Constraint: Maximum 3 retries for a failed verification to prevent infinite loops
-                    while (retryCount < 3 && !isVerified) {
-                        try {
-                            const verification = await verifyQuestion(q, q.source_context || '');
-
-                            if (verification.verification_status === 'rejected') {
-                                console.warn(`Rejected AI question (Attempt ${retryCount + 1}): ${q.text?.substring(0, 50)}...`);
-                                retryCount++;
-
-                                if (retryCount < 3) {
-                                    // Generate a completely new question for this slot to replace the bad one
-                                    const newQArray = await generateInstantQuestions(`Topic ${topicId}`, 1);
-                                    if (newQArray && newQArray.length > 0) {
-                                        q = newQArray[0];
-                                    }
-                                }
-                            } else {
-                                isVerified = true;
-                                finalAnswer = verification.verified_answer || q.correct_option;
-                                confScore = verification.confidence_score || 0;
-                                vStatus = verification.verification_status || 'verified';
-                            }
-                        } catch (e) {
-                            console.error('Verifier threw an error:', e);
-                            retryCount++;
-                        }
+                // If still short, fill from general questions pool
+                if (questions.length < limit) {
+                    const remainingGap = limit - questions.length;
+                    const allExistingIds = questions.map(q => q.id);
+                    let broadGapQuery = supabase.from('questions').select('*');
+                    if (allExistingIds.length > 0) {
+                        broadGapQuery = broadGapQuery.not('id', 'in', `(${allExistingIds.join(',')})`);
                     }
-
-                    if (isVerified) {
-                        // Save passed AI questions to DB
-                        try {
-                            await safeInsert('questions', {
-                                id: q.id, text: q.text, option_a: q.option_a, option_b: q.option_b, option_c: q.option_c, option_d: q.option_d,
-                                correct_option: finalAnswer, difficulty: q.difficulty, explanation: q.explanation,
-                                subject_id: q.subject_id, chapter_id: q.chapter_id, topic_id: q.topic_id,
-                                is_ai_generated: 1, source_context: q.source_context,
-                                confidence_score: confScore, verification_status: vStatus, verified_answer: finalAnswer
-                            }, {
-                                route: '/api/tests/generate/question',
-                                userId: decoded.id,
-                            });
-
-                            q.correct_option = finalAnswer;
-                            q.confidence_score = confScore;
-                            q.verification_status = vStatus;
-                            questions.push(q);
-                        } catch (e) { console.error('Failed to save verified AI question to DB. Please try again in a moment.', e); }
-                    } else {
-                        // CTO Constraint Fallback: If 3 AI attempts failed, fallback to pulling a random verified PYQ
-                        console.warn(`AI generation failed 3 times for slot ${i}. Falling back to verified PYQ.`);
-                        const { data: fallbackPyq } = await supabase.from('questions').select('*').eq('is_pyq', 1).limit(100);
-                        if (fallbackPyq && fallbackPyq.length > 0) {
-                            // Pick random
-                            const randQ = fallbackPyq[Math.floor(Math.random() * fallbackPyq.length)];
-                            if (!questions.find(existing => existing.id === randQ.id)) {
-                                questions.push(randQ);
-                            }
-                        }
+                    const { data: broadGapData } = await broadGapQuery.limit(1000);
+                    if (broadGapData && broadGapData.length > 0) {
+                        const broadExtra = broadGapData.sort(() => Math.random() - 0.5).slice(0, remainingGap);
+                        questions.push(...broadExtra);
                     }
                 }
             }
