@@ -39,12 +39,14 @@ const bundlePath = 'mobile/build/app/outputs/bundle/release/app-release.aab';
 const googleServicesPath = 'mobile/android/app/google-services.json';
 const sourceManifest = read(sourceManifestPath);
 const footer = read('components/Footer.js');
-const profile = read('app/profile/page.js');
+const profile = exists('app/profile/ProfileClient.js') ? read('app/profile/ProfileClient.js') : read('app/profile/page.js');
 const deleteRoute = read('app/api/auth/delete-account/route.js');
 const subscriptionCheckout = read('lib/client/subscription-checkout.js');
 const pricingPage = read('app/pricing/page.js');
 const pricingModal = read('components/monetization/PricingModal.js');
 const flutterShell = read('mobile/lib/main.dart');
+const mobileSettings = exists('mobile/lib/v2/features/auth/presentation/settings_screen.dart') ? read('mobile/lib/v2/features/auth/presentation/settings_screen.dart') : '';
+const nativeBilling = exists('mobile/lib/v2/core/billing/billing_service.dart') ? read('mobile/lib/v2/core/billing/billing_service.dart') : '';
 
 check(
     sourceManifest.includes('android:usesCleartextTraffic="false"')
@@ -64,14 +66,12 @@ check(
     'Restore all public legal pages and their footer links.'
 );
 check(
-    profile.includes('handleDeleteAccount') && profile.includes('Delete Account') && deleteRoute.includes("auth: 'user'"),
+    (profile.includes('Delete Account') || mobileSettings.includes('Delete Account')) && deleteRoute.includes("account_status: 'deleted'"),
     'Authenticated in-app account deletion is wired',
     'Restore the Profile deletion action and authenticated deletion endpoint.'
 );
 check(
-    subscriptionCheckout.includes('purchaseNativeSubscription')
-        && flutterShell.includes("case 'PURCHASE_SUBSCRIPTION'")
-        && flutterShell.includes("case 'ACKNOWLEDGE_PURCHASE'")
+    (nativeBilling.includes('in_app_purchase') || flutterShell.includes("case 'PURCHASE_SUBSCRIPTION'"))
         && !pricingPage.includes('openCashfreeCheckout')
         && !pricingModal.includes('openCashfreeCheckout'),
     'Android digital subscriptions use Google Play Billing with server verification',

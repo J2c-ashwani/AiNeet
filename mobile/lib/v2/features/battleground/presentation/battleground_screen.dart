@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/api/api_client.dart';
 import '../../practice/presentation/test_engine_screen.dart';
@@ -48,12 +49,20 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
           SnackBar(content: Text(msg), backgroundColor: NeetTokens.warning),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() => _isCreatingDuel = false);
+        String msg = 'Could not create duel at this time. Check your connection.';
+        if (e is DioException) {
+          if (e.response?.statusCode == 401) {
+            msg = 'Session expired or not signed in. Please sign in to battle.';
+          } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+            msg = e.response!.data['error'].toString();
+          }
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not create duel at this time. Check your connection.'),
+          SnackBar(
+            content: Text(msg),
             backgroundColor: NeetTokens.warning,
           ),
         );
@@ -225,11 +234,22 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
           SnackBar(content: Text(msg), backgroundColor: NeetTokens.warning),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() => _isCreatingRoom = false);
+        String msg = 'Room creation failed. Please try again.';
+        if (e is DioException) {
+          if (e.response?.statusCode == 401) {
+            msg = 'Session expired or not signed in. Please sign in.';
+          } else if (e.response?.statusCode == 403) {
+            final serverMsg = e.response?.data is Map ? e.response?.data['message']?.toString() : null;
+            msg = serverMsg ?? 'Multiplayer room hosting is a Pro feature. Upgrade to host live rooms!';
+          } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+            msg = e.response!.data['error'].toString();
+          }
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Room creation server busy. Try again.'), backgroundColor: NeetTokens.warning),
+          SnackBar(content: Text(msg), backgroundColor: NeetTokens.warning),
         );
       }
     }
@@ -523,11 +543,19 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
           SnackBar(content: Text(msg), backgroundColor: NeetTokens.warning),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() => _isJoiningRoom = false);
+        String msg = 'Could not join room. Check code and connection.';
+        if (e is DioException) {
+          if (e.response?.statusCode == 401) {
+            msg = 'Session expired or not signed in. Please sign in.';
+          } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+            msg = e.response!.data['error'].toString();
+          }
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not join room. Check code and connection.')),
+          SnackBar(content: Text(msg), backgroundColor: NeetTokens.warning),
         );
       }
     }
@@ -560,12 +588,22 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
           );
         }
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         setState(() => _isSearchingSolo = false);
+        String msg = 'Could not start Solo Blitz. Please try again.';
+        if (e is DioException) {
+          if (e.response?.statusCode == 401) {
+            msg = 'Session expired or not signed in. Please sign in.';
+          } else if (e.response?.data is Map && e.response?.data['error'] != null) {
+            msg = e.response!.data['error'].toString();
+          } else if (e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.receiveTimeout) {
+            msg = 'Server took too long to respond. Please tap Play again.';
+          }
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Matchmaking server busy. Please retry shortly.'),
+          SnackBar(
+            content: Text(msg),
             backgroundColor: NeetTokens.warning,
           ),
         );

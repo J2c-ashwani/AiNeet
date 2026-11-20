@@ -72,11 +72,13 @@ class _NativeLoginScreenState extends State<NativeLoginScreen> {
       if (res.statusCode == 200 && res.data != null) {
         final data = res.data;
         final token = data['token'] ?? data['access_token'] ?? data['session']?['access_token'] ?? '';
+        final refreshToken = data['refresh_token'] ?? data['refreshToken'] ?? data['session']?['refresh_token'] ?? '';
         final userId = data['user']?['id'] ?? '';
 
         if (token.toString().isNotEmpty) {
           await SecureStorageService.saveSession(
             token: token.toString(),
+            refreshToken: refreshToken.toString().isNotEmpty ? refreshToken.toString() : null,
             userId: userId.toString(),
             email: email,
           );

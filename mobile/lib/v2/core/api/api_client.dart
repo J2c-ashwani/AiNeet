@@ -45,7 +45,7 @@ class NeetApiClient {
                 if (newToken != null) {
                   await SecureStorageService.saveSession(
                     token: newToken,
-                    refreshToken: refreshResponse.data['refreshToken'] ?? await SecureStorageService.getRefreshToken(),
+                    refreshToken: refreshResponse.data['refresh_token'] ?? refreshResponse.data['refreshToken'] ?? await SecureStorageService.getRefreshToken(),
                     userId: await SecureStorageService.getUserId() ?? '',
                     email: await SecureStorageService.getUserEmail() ?? '',
                   );

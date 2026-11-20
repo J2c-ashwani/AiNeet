@@ -11,7 +11,7 @@ import 'v2/app.dart';
 import 'v2/core/cache/offline_cache.dart';
 import 'v2/core/telemetry/frame_observer.dart';
 
-const String kAppVersion = '1.1.0';
+const String kAppVersion = '2.0.0';
 
 // Background message handler (must be top-level function)
 @pragma('vm:entry-point')
