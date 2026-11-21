@@ -12,19 +12,20 @@ export async function POST(request) {
     const body = await request.json().catch(() => ({}));
     const questionText = body.questionText || body.message || body.question;
     const imageBase64 = body.imageBase64;
+    const mimeType = body.mimeType || 'image/jpeg';
 
     if (!questionText && !imageBase64) {
       return NextResponse.json({ error: 'Question text or image is required' }, { status: 400 });
     }
 
-    const prompt = questionText || 'Please analyze this NEET image doubt.';
-    const context = imageBase64 ? `[User uploaded image base64, size: ${imageBase64.length} chars]` : '';
+    const prompt = questionText || 'Please analyze this NEET image doubt and provide step-by-step guidance.';
 
-    const answer = await generateDoubtResponse(prompt, context, user);
+    const answer = await generateDoubtResponse(prompt, '', user, imageBase64, mimeType);
 
     return NextResponse.json({
       answer,
       text: answer,
+      solution: answer,
       provider: 'ai-engine',
     }, { status: 200 });
   } catch (err) {

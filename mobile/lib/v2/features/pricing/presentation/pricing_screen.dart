@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/billing/billing_service.dart';
 
@@ -44,20 +43,6 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
     }
   }
 
-  Future<void> _handleWebUpiCheckout() async {
-    NeetTokens.hapticMedium();
-    final url = Uri.parse('https://aineetcoach.com/pricing');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open checkout. Please visit aineetcoach.com/pricing')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,53 +80,59 @@ class _NativePricingScreenState extends State<NativePricingScreen> {
               _buildFeatureRow('150-Day Strategic NEET Study Plan & Spaced Revision'),
               const SizedBox(height: 28),
 
-              // Google Play Button (if ready)
-              if (_initStatus == BillingInitResult.ready) ...[
+              // Enterprise Google Play Billing Button (Policy Compliant)
+              if (_isLoading) ...[
                 ElevatedButton(
+                  onPressed: null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: NeetTokens.bgSecondary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: NeetTokens.accentPrimary)),
+                      SizedBox(width: 12),
+                      Text('Connecting to Google Play...', style: TextStyle(fontSize: 14, color: NeetTokens.textMuted)),
+                    ],
+                  ),
+                ),
+              ] else if (_initStatus == BillingInitResult.ready) ...[
+                ElevatedButton.icon(
                   onPressed: _handleSubscribe,
+                  icon: const Icon(Icons.verified_user_rounded, color: Colors.white, size: 20),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NeetTokens.accentGlow,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
+                    elevation: 4,
                   ),
-                  child: const Text(
-                    'Subscribe via Google Play →',
+                  label: const Text(
+                    'Subscribe with Google Play →',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white),
                   ),
                 ),
-                const SizedBox(height: 14),
-                Row(
-                  children: const [
-                    Expanded(child: Divider(color: NeetTokens.border)),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('OR', style: TextStyle(fontSize: 12, color: NeetTokens.textMuted)),
-                    ),
-                    Expanded(child: Divider(color: NeetTokens.border)),
-                  ],
+              ] else ...[
+                ElevatedButton.icon(
+                  onPressed: _initializeBilling,
+                  icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                  label: const Text(
+                    'Retry Google Play Connection',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: NeetTokens.bgSecondary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
+                  ),
                 ),
-                const SizedBox(height: 14),
               ],
-
-              // Instant UPI / Net Banking Option (GPay, PhonePe, Paytm, Cards)
-              ElevatedButton.icon(
-                onPressed: _handleWebUpiCheckout,
-                icon: const Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 20),
-                label: const Text(
-                  'Pay via UPI (GPay / PhonePe / Paytm) ⚡',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0F9D58), // UPI Green
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(NeetTokens.radiusMd)),
-                ),
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               const Text(
-                'Instant activation. Safe and encrypted 256-bit checkout via Cashfree / UPI.',
+                'Auto-renewable subscription processed safely via Google Play. Cancel anytime in Google Play Store > Payments & subscriptions.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: NeetTokens.textMuted),
+                style: TextStyle(fontSize: 11, color: NeetTokens.textMuted, height: 1.4),
               ),
             ],
           ),

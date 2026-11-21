@@ -444,6 +444,7 @@ export async function POST(request) {
         return NextResponse.json({ 
             score: scoreData, xpEarned: actualXpEarned, level: newLevel, 
             streak: newStreak, badges: newBadges, answers: processedAnswers,
+            explanations: processedAnswers,
             trustHint: trustHint?.show ? trustHint : undefined,
             referralRewardUnlocked,
             ...(postCommitWarning ? { warning: postCommitWarning } : {}),

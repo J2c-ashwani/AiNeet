@@ -6,6 +6,10 @@ import '../cache/offline_cache.dart';
 /// Central API Client with Exponential Backoff Retries, Token Refresh & Offline Fallback
 class NeetApiClient {
   late final Dio dio;
+  late final Dio _tokenRefreshDio;
+
+  static final StreamController<bool> _sessionExpiredController = StreamController<bool>.broadcast();
+  static Stream<bool> get onSessionExpired => _sessionExpiredController.stream;
 
   static const String defaultBaseUrl = String.fromEnvironment(
     'NEET_API_URL',
@@ -13,9 +17,24 @@ class NeetApiClient {
   );
 
   NeetApiClient({String? baseUrl}) {
+    final effectiveBaseUrl = baseUrl ?? defaultBaseUrl;
+    
     dio = Dio(
       BaseOptions(
-        baseUrl: baseUrl ?? defaultBaseUrl,
+        baseUrl: effectiveBaseUrl,
+        connectTimeout: const Duration(seconds: 8),
+        receiveTimeout: const Duration(seconds: 12),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // Dedicated isolated Dio instance strictly for token refreshes (no auth interceptor to avoid recursion loops)
+    _tokenRefreshDio = Dio(
+      BaseOptions(
+        baseUrl: effectiveBaseUrl,
         connectTimeout: const Duration(seconds: 8),
         receiveTimeout: const Duration(seconds: 12),
         headers: {
@@ -38,6 +57,13 @@ class NeetApiClient {
         onError: (DioException error, handler) async {
           // Handle 401 Token Refresh / Purge
           if (error.response?.statusCode == 401) {
+            // Guard 1: Never attempt refresh on auth endpoints (login, register, refresh) to prevent infinite loops
+            final path = error.requestOptions.path;
+            if (path.contains('/api/auth/')) {
+              return handler.next(error);
+            }
+
+            // Guard 2: Attempt refresh once using isolated _tokenRefreshDio
             try {
               final refreshResponse = await refreshToken();
               if (refreshResponse.statusCode == 200 && refreshResponse.data != null) {
@@ -48,18 +74,22 @@ class NeetApiClient {
                     refreshToken: refreshResponse.data['refresh_token'] ?? refreshResponse.data['refreshToken'] ?? await SecureStorageService.getRefreshToken(),
                     userId: await SecureStorageService.getUserId() ?? '',
                     email: await SecureStorageService.getUserEmail() ?? '',
+                    name: await SecureStorageService.getUserName(),
                   );
-                  // Retry the request with new token
+                  // Retry the original request with the fresh token
                   error.requestOptions.headers['Authorization'] = 'Bearer $newToken';
                   final retryResponse = await dio.fetch(error.requestOptions);
                   return handler.resolve(retryResponse);
                 }
               }
             } catch (_) {
-              // Ignore refresh errors and proceed to clear session
+              // Refresh failed or refresh token expired
             }
+
+            // Both token and refreshToken are dead. Purge storage and notify app router
             await SecureStorageService.clearSession();
             await OfflineCacheService.clearAll();
+            _sessionExpiredController.add(true);
           }
           return handler.next(error);
         },
@@ -102,7 +132,7 @@ class NeetApiClient {
   Future<Response> refreshToken() async {
     final refreshTkn = await SecureStorageService.getRefreshToken();
     if (refreshTkn == null) throw Exception('No refresh token');
-    return await dio.post('/api/auth/refresh-token', data: {'refresh_token': refreshTkn});
+    return await _tokenRefreshDio.post('/api/auth/refresh-token', data: {'refresh_token': refreshTkn});
   }
 
   // ── Auth Operations ─────────────────────────────────────────
@@ -161,12 +191,14 @@ class NeetApiClient {
   }
 
   // ── AI Doubt Solver & RAG Pipeline ──────────────────────────
-  Future<Response> solveDoubt(String questionText, {String? imageBase64}) async {
-    return await dio.post('/api/doubts/solve', data: {
+  Future<Response> solveDoubt(String questionText, {String? imageBase64, String? mimeType}) async {
+    final Map<String, dynamic> payload = {
       'questionText': questionText,
-      'imageBase64': ?imageBase64,
       'model': 'gemini-1.5-flash',
-    });
+    };
+    if (imageBase64 != null) payload['imageBase64'] = imageBase64;
+    if (mimeType != null) payload['mimeType'] = mimeType;
+    return await dio.post('/api/doubts/solve', data: payload);
   }
 
   // ── Performance & Stats ─────────────────────────────────────
@@ -366,8 +398,26 @@ class NeetApiClient {
   }
 
   // ── OMR ─────────────────────────────────────────────────────
-  Future<Response> gradeOmr({required String imageBase64, required String mimeType}) async {
-    return await dio.post('/api/omr/grade', data: {'imageBase64': imageBase64, 'mimeType': mimeType});
+  Future<Response> scanOmr({
+    required String imageBase64,
+    required String mimeType,
+    required String testId,
+  }) async {
+    return await dio.post('/api/omr/scan', data: {
+      'imageBase64': imageBase64,
+      'mimeType': mimeType,
+      'testId': testId,
+    });
+  }
+
+  Future<Response> gradeOmr({
+    required Map<String, dynamic> verifiedAnswers,
+    required String testId,
+  }) async {
+    return await dio.post('/api/omr/grade', data: {
+      'verifiedAnswers': verifiedAnswers,
+      'testId': testId,
+    });
   }
 
   // ── Revision ────────────────────────────────────────────────
@@ -531,6 +581,10 @@ class NeetApiClient {
   // ── Peer Challenges (1v1 WhatsApp Duels) ─────────────────────
   Future<Response> createChallenge() async {
     return await dio.post('/api/challenge/create');
+  }
+
+  Future<Response> getChallengeDetails(String challengeId) async {
+    return await dio.get('/api/challenge/details', queryParameters: {'id': challengeId});
   }
 
   // ── Multiplayer Battleground (Live Rooms) ───────────────────

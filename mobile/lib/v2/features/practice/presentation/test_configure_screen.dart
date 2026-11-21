@@ -45,6 +45,7 @@ class _NativeTestConfigureScreenState extends State<NativeTestConfigureScreen> {
   void initState() {
     super.initState();
     _testType = widget.initialType;
+    _syllabus = _getFallbackSyllabus();
     _loadMetadata();
   }
 
@@ -60,8 +61,11 @@ class _NativeTestConfigureScreenState extends State<NativeTestConfigureScreen> {
 
       if (mounted) {
         setState(() {
-          if (syllabusRes.statusCode == 200 && syllabusRes.data != null) {
-            _syllabus = (syllabusRes.data['subjects'] as List<dynamic>?) ?? [];
+          if (syllabusRes.statusCode == 200 && syllabusRes.data != null && syllabusRes.data['subjects'] is List) {
+            final subs = syllabusRes.data['subjects'] as List<dynamic>;
+            if (subs.isNotEmpty) {
+              _syllabus = subs;
+            }
           }
           if (yearsRes.statusCode == 200 && yearsRes.data != null) {
             final years = (yearsRes.data['years'] as List<dynamic>?)?.map((y) => y.toString()).toList() ?? [];
@@ -76,6 +80,7 @@ class _NativeTestConfigureScreenState extends State<NativeTestConfigureScreen> {
     } catch (_) {
       if (mounted) {
         setState(() {
+          if (_syllabus.isEmpty) _syllabus = _getFallbackSyllabus();
           _availableYears = ['2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017'];
           _isLoadingSyllabus = false;
         });
@@ -1071,5 +1076,375 @@ class _NativeTestConfigureScreenState extends State<NativeTestConfigureScreen> {
         );
       }).toList(),
     );
+  }
+
+  static List<Map<String, dynamic>> _getFallbackSyllabus() {
+    return [
+      {
+        'id': 1,
+        'name': 'Physics',
+        'icon': '⚡',
+        'chapters': [
+          {
+            'id': 101,
+            'name': 'Physical World & Measurement',
+            'topics': [
+              {'id': 1001, 'name': 'Physical quantities & SI Units'},
+              {'id': 1002, 'name': 'Dimensional analysis & Applications'},
+              {'id': 1003, 'name': 'Errors in measurement & Significant figures'},
+            ],
+          },
+          {
+            'id': 102,
+            'name': 'Kinematics',
+            'topics': [
+              {'id': 1004, 'name': 'Motion in a straight line & Graphs'},
+              {'id': 1005, 'name': 'Relative velocity & Vectors'},
+              {'id': 1006, 'name': 'Projectile motion & Trajectory'},
+              {'id': 1007, 'name': 'Uniform circular motion'},
+            ],
+          },
+          {
+            'id': 103,
+            'name': 'Laws of Motion',
+            'topics': [
+              {'id': 1008, 'name': "Newton's laws of motion & Momentum"},
+              {'id': 1009, 'name': 'Friction & Dynamics of circular motion'},
+              {'id': 1010, 'name': 'Free body diagrams & Equilibrium'},
+            ],
+          },
+          {
+            'id': 104,
+            'name': 'Work, Energy & Power',
+            'topics': [
+              {'id': 1011, 'name': 'Work-energy theorem & Kinetic energy'},
+              {'id': 1012, 'name': 'Potential energy & Conservative forces'},
+              {'id': 1013, 'name': 'Collisions (Elastic & Inelastic)'},
+            ],
+          },
+          {
+            'id': 105,
+            'name': 'Rotational Motion',
+            'topics': [
+              {'id': 1014, 'name': 'Centre of mass & Rigid bodies'},
+              {'id': 1015, 'name': 'Moment of inertia & Parallel axes'},
+              {'id': 1016, 'name': 'Torque & Angular momentum conservation'},
+              {'id': 1017, 'name': 'Rolling motion & Dynamics'},
+            ],
+          },
+          {
+            'id': 106,
+            'name': 'Gravitation',
+            'topics': [
+              {'id': 1018, 'name': "Kepler's laws & Gravitational potential"},
+              {'id': 1019, 'name': 'Escape velocity & Orbital velocity'},
+            ],
+          },
+          {
+            'id': 107,
+            'name': 'Thermodynamics & Kinetic Theory',
+            'topics': [
+              {'id': 1020, 'name': 'Zeroth & First law of thermodynamics'},
+              {'id': 1021, 'name': 'Carnot engine, Efficiency & Second law'},
+              {'id': 1022, 'name': 'Kinetic theory of gases & Degrees of freedom'},
+            ],
+          },
+          {
+            'id': 108,
+            'name': 'Oscillations & Waves',
+            'topics': [
+              {'id': 1023, 'name': 'Simple harmonic motion (SHM) & Springs'},
+              {'id': 1024, 'name': 'Wave motion, Superposition & Standing waves'},
+              {'id': 1025, 'name': 'Doppler effect & Resonance'},
+            ],
+          },
+          {
+            'id': 109,
+            'name': 'Electrostatics',
+            'topics': [
+              {'id': 1026, 'name': "Coulomb's law & Electric field"},
+              {'id': 1027, 'name': "Gauss's theorem & Applications"},
+              {'id': 1028, 'name': 'Electric potential & Capacitors/Dielectrics'},
+            ],
+          },
+          {
+            'id': 110,
+            'name': 'Current Electricity',
+            'topics': [
+              {'id': 1029, 'name': "Ohm's law, Resistance & Temperature"},
+              {'id': 1030, 'name': "Kirchhoff's laws & Wheatstone bridge"},
+              {'id': 1031, 'name': 'Potentiometer & Cell EMF combinations'},
+            ],
+          },
+          {
+            'id': 111,
+            'name': 'Magnetic Effects of Current & Magnetism',
+            'topics': [
+              {'id': 1032, 'name': "Biot-Savart law & Ampere's law"},
+              {'id': 1033, 'name': 'Moving coil galvanometer & Conversion'},
+              {'id': 1034, 'name': 'Earth magnetism & Magnetic materials'},
+            ],
+          },
+          {
+            'id': 112,
+            'name': 'Electromagnetic Induction & AC',
+            'topics': [
+              {'id': 1035, 'name': "Faraday's & Lenz's laws of induction"},
+              {'id': 1036, 'name': 'LCR series circuits, Resonance & AC Power'},
+              {'id': 1037, 'name': 'Transformers & AC generators'},
+            ],
+          },
+          {
+            'id': 113,
+            'name': 'Optics (Ray & Wave)',
+            'topics': [
+              {'id': 1038, 'name': 'Reflection, Refraction, Lenses & Prisms'},
+              {'id': 1039, 'name': 'Microscopes & Astronomical telescopes'},
+              {'id': 1040, 'name': "Wavefronts, Young's double slit interference"},
+              {'id': 1041, 'name': 'Diffraction & Polarisation'},
+            ],
+          },
+          {
+            'id': 114,
+            'name': 'Modern Physics & Semiconductors',
+            'topics': [
+              {'id': 1042, 'name': 'Photoelectric effect & de Broglie wavelength'},
+              {'id': 1043, 'name': 'Bohr atom model & Hydrogen spectrum'},
+              {'id': 1044, 'name': 'Radioactivity, Nuclear fission & fusion'},
+              {'id': 1045, 'name': 'p-n junction diodes, Rectifiers & Logic gates'},
+            ],
+          },
+        ],
+      },
+      {
+        'id': 2,
+        'name': 'Chemistry',
+        'icon': '🧪',
+        'chapters': [
+          {
+            'id': 201,
+            'name': 'Some Basic Concepts of Chemistry',
+            'topics': [
+              {'id': 2001, 'name': 'Mole concept & Molar masses'},
+              {'id': 2002, 'name': 'Stoichiometry & Limiting reagent'},
+              {'id': 2003, 'name': 'Empirical & Molecular formula'},
+            ],
+          },
+          {
+            'id': 202,
+            'name': 'Structure of Atom',
+            'topics': [
+              {'id': 2004, 'name': 'Bohr model & Quantum numbers'},
+              {'id': 2005, 'name': 'Electronic configurations & Orbitals'},
+            ],
+          },
+          {
+            'id': 203,
+            'name': 'Chemical Bonding & Molecular Structure',
+            'topics': [
+              {'id': 2006, 'name': 'VSEPR theory & Hybridization'},
+              {'id': 2007, 'name': 'Molecular orbital theory (MOT)'},
+              {'id': 2008, 'name': 'Dipole moment & Hydrogen bonding'},
+            ],
+          },
+          {
+            'id': 204,
+            'name': 'Chemical Thermodynamics',
+            'topics': [
+              {'id': 2009, 'name': 'Enthalpy, Entropy & Gibbs free energy'},
+              {'id': 2010, 'name': "Hess's law & Spontaneity criteria"},
+            ],
+          },
+          {
+            'id': 205,
+            'name': 'Equilibrium (Chemical & Ionic)',
+            'topics': [
+              {'id': 2011, 'name': 'Equilibrium constants (Kp, Kc) & Le Chatelier'},
+              {'id': 2012, 'name': 'pH, Buffer solutions & Henderson equation'},
+              {'id': 2013, 'name': 'Solubility product (Ksp) & Common ion effect'},
+            ],
+          },
+          {
+            'id': 206,
+            'name': 'Redox Reactions & Electrochemistry',
+            'topics': [
+              {'id': 2014, 'name': 'Nernst equation & Electrochemical cells'},
+              {'id': 2015, 'name': "Kohlrausch's law & Electrolytic conductance"},
+            ],
+          },
+          {
+            'id': 207,
+            'name': 'Solutions',
+            'topics': [
+              {'id': 2016, 'name': "Raoult's law & Colligative properties"},
+              {'id': 2017, 'name': "van 't Hoff factor & Abnormal molar mass"},
+            ],
+          },
+          {
+            'id': 208,
+            'name': 'Chemical Kinetics',
+            'topics': [
+              {'id': 2018, 'name': 'Rate law, Order & Molecularity of reaction'},
+              {'id': 2019, 'name': 'Arrhenius equation & Activation energy'},
+            ],
+          },
+          {
+            'id': 209,
+            'name': 'Coordination Compounds',
+            'topics': [
+              {'id': 2020, 'name': 'IUPAC nomenclature of complex compounds'},
+              {'id': 2021, 'name': 'Werner theory, CFT & Isomerism'},
+            ],
+          },
+          {
+            'id': 210,
+            'name': 'Organic Chemistry: Basic Principles & Techniques',
+            'topics': [
+              {'id': 2022, 'name': 'IUPAC nomenclature & Isomerism'},
+              {'id': 2023, 'name': 'Inductive, Electromeric & Hyperconjugation effects'},
+              {'id': 2024, 'name': 'Carbocations, Free radicals & Intermediates'},
+            ],
+          },
+          {
+            'id': 211,
+            'name': 'Hydrocarbons',
+            'topics': [
+              {'id': 2025, 'name': 'Alkanes, Alkenes & Markownikoff addition'},
+              {'id': 2026, 'name': 'Aromatic hydrocarbons & Electrophilic substitution'},
+            ],
+          },
+          {
+            'id': 212,
+            'name': 'Organic Functional Groups (Haloalkanes to Amines)',
+            'topics': [
+              {'id': 2027, 'name': 'SN1 & SN2 reaction mechanisms'},
+              {'id': 2028, 'name': 'Alcohols, Phenols & Ethers'},
+              {'id': 2029, 'name': 'Aldehydes & Ketones (Aldol, Cannizzaro)'},
+              {'id': 2030, 'name': 'Carboxylic acids & Amines (Diazonium)'},
+            ],
+          },
+          {
+            'id': 213,
+            'name': 'Biomolecules',
+            'topics': [
+              {'id': 2031, 'name': 'Carbohydrates & Glucose structures'},
+              {'id': 2032, 'name': 'Proteins, Amino acids & Nucleic acids'},
+            ],
+          },
+        ],
+      },
+      {
+        'id': 3,
+        'name': 'Biology',
+        'icon': '🧬',
+        'chapters': [
+          {
+            'id': 301,
+            'name': 'The Living World & Biological Classification',
+            'topics': [
+              {'id': 3001, 'name': 'Taxonomy, Binomial nomenclature & Keys'},
+              {'id': 3002, 'name': 'Five Kingdom system: Monera, Protista, Fungi'},
+              {'id': 3003, 'name': 'Viruses, Viroids & Prions'},
+            ],
+          },
+          {
+            'id': 302,
+            'name': 'Plant Kingdom & Animal Kingdom',
+            'topics': [
+              {'id': 3004, 'name': 'Algae, Bryophytes, Pteridophytes & Gymnosperms'},
+              {'id': 3005, 'name': 'Non-chordates (Porifera to Echinodermata)'},
+              {'id': 3006, 'name': 'Chordates classification & Characteristics'},
+            ],
+          },
+          {
+            'id': 303,
+            'name': 'Morphology & Anatomy of Flowering Plants',
+            'topics': [
+              {'id': 3007, 'name': 'Root, Stem & Leaf modifications'},
+              {'id': 3008, 'name': 'Inflorescence, Flower structure & Fruits'},
+              {'id': 3009, 'name': 'Meristematic & Permanent tissues, Secondary growth'},
+            ],
+          },
+          {
+            'id': 304,
+            'name': 'Cell: The Unit of Life & Cell Cycle',
+            'topics': [
+              {'id': 3010, 'name': 'Prokaryotic vs Eukaryotic cells & Organelles'},
+              {'id': 3011, 'name': 'Plasma membrane, Endomembrane & Mitochondria'},
+              {'id': 3012, 'name': 'Mitosis, Meiosis stages & Significance'},
+            ],
+          },
+          {
+            'id': 305,
+            'name': 'Plant Physiology',
+            'topics': [
+              {'id': 3013, 'name': 'Photosynthesis: Light & Dark reactions (C3, C4)'},
+              {'id': 3014, 'name': 'Respiration: Glycolysis, Krebs cycle & ETS'},
+              {'id': 3015, 'name': 'Plant growth regulators: Auxins, Gibberellins'},
+            ],
+          },
+          {
+            'id': 306,
+            'name': 'Human Physiology',
+            'topics': [
+              {'id': 3016, 'name': 'Breathing & Exchange of gases'},
+              {'id': 3017, 'name': 'Body fluids, Cardiac cycle & ECG'},
+              {'id': 3018, 'name': 'Excretory products & Nephron function'},
+              {'id': 3019, 'name': 'Locomotion: Muscle contraction & Skeleton'},
+              {'id': 3020, 'name': 'Neural control & Coordination (Eye, Ear)'},
+              {'id': 3021, 'name': 'Chemical coordination: Endocrine glands'},
+            ],
+          },
+          {
+            'id': 307,
+            'name': 'Reproduction (Plants & Humans)',
+            'topics': [
+              {'id': 3022, 'name': 'Microsporogenesis, Megasporogenesis & Pollination'},
+              {'id': 3023, 'name': 'Double fertilization & Endosperm development'},
+              {'id': 3024, 'name': 'Male & Female reproductive systems'},
+              {'id': 3025, 'name': 'Menstrual cycle & Fertilization'},
+              {'id': 3026, 'name': 'Reproductive health, Contraception & ART'},
+            ],
+          },
+          {
+            'id': 308,
+            'name': 'Genetics & Molecular Basis of Inheritance',
+            'topics': [
+              {'id': 3027, 'name': "Mendelian inheritance & Linkage"},
+              {'id': 3028, 'name': 'Sex determination & Genetic disorders'},
+              {'id': 3029, 'name': 'DNA structure, Replication & Central Dogma'},
+              {'id': 3030, 'name': 'Transcription, Genetic code & Translation'},
+              {'id': 3031, 'name': 'Lac operon regulation & HGP'},
+            ],
+          },
+          {
+            'id': 309,
+            'name': 'Evolution',
+            'topics': [
+              {'id': 3032, 'name': 'Origin of life, Homology & Analogy'},
+              {'id': 3033, 'name': 'Darwinian natural selection & Hardy-Weinberg'},
+            ],
+          },
+          {
+            'id': 310,
+            'name': 'Biotechnology: Principles & Applications',
+            'topics': [
+              {'id': 3034, 'name': 'Restriction enzymes & Cloning vectors'},
+              {'id': 3035, 'name': 'Polymerase chain reaction (PCR) & Bioreactors'},
+              {'id': 3036, 'name': 'Bt crops, Gene therapy & Transgenic animals'},
+            ],
+          },
+          {
+            'id': 311,
+            'name': 'Ecology & Environment',
+            'topics': [
+              {'id': 3037, 'name': 'Organism & Population interactions'},
+              {'id': 3038, 'name': 'Ecosystems: Food chains & Energy pyramids'},
+              {'id': 3039, 'name': 'Biodiversity conservation (In-situ & Ex-situ)'},
+            ],
+          },
+        ],
+      },
+    ];
   }
 }

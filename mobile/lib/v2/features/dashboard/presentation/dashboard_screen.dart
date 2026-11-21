@@ -44,6 +44,7 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
   Map<String, dynamic>? _userProfile;
   Map<String, dynamic>? _dailyCoachData;
   String _selectedDreamCollege = 'AIIMS New Delhi';
+  String _selectedCategory = 'UR';
 
   static const Map<String, int> _dreamCollegeCutoffs = {
     'AIIMS New Delhi': 710,
@@ -821,7 +822,18 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
 
   Widget _buildCutoffSimulatorCard(num avgAccuracy) {
     final estimatedScore = (avgAccuracy > 0 ? (avgAccuracy / 100 * 720).round() : 520).clamp(180, 720);
-    final targetCutoff = _dreamCollegeCutoffs[_selectedDreamCollege] ?? 710;
+    final baseCutoff = _dreamCollegeCutoffs[_selectedDreamCollege] ?? 710;
+    int categoryOffset = 0;
+    if (_selectedCategory == 'OBC') {
+      categoryOffset = 10;
+    } else if (_selectedCategory == 'EWS') {
+      categoryOffset = 12;
+    } else if (_selectedCategory == 'SC') {
+      categoryOffset = 65;
+    } else if (_selectedCategory == 'ST') {
+      categoryOffset = 95;
+    }
+    final targetCutoff = (baseCutoff - categoryOffset).clamp(180, 720);
     final marksGap = targetCutoff - estimatedScore;
 
     return Container(
@@ -903,7 +915,37 @@ class _NativeDashboardScreenState extends State<NativeDashboardScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
+          // Category Selector Chips (UR, OBC, EWS, SC, ST)
+          Row(
+            children: ['UR', 'OBC', 'EWS', 'SC', 'ST'].map((cat) {
+              final isCatSelected = _selectedCategory == cat;
+              return Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ChoiceChip(
+                  label: Text(
+                    cat,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: isCatSelected ? Colors.white : NeetTokens.textSecondary,
+                    ),
+                  ),
+                  selected: isCatSelected,
+                  selectedColor: NeetTokens.accentPrimary,
+                  backgroundColor: NeetTokens.bgCard,
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  onSelected: (val) {
+                    if (val) {
+                      setState(() => _selectedCategory = cat);
+                      NeetTokens.hapticSelection();
+                    }
+                  },
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 14),
           Row(
             children: [
               Expanded(

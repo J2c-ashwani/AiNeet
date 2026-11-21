@@ -13,6 +13,7 @@ class NativeMistakeNotebookScreen extends StatefulWidget {
 class _NativeMistakeNotebookScreenState extends State<NativeMistakeNotebookScreen> {
   final NeetApiClient _apiClient = NeetApiClient();
   bool _isLoading = true;
+  String? _errorMessage;
   List<dynamic> _weakAreas = [];
 
   @override
@@ -22,7 +23,10 @@ class _NativeMistakeNotebookScreenState extends State<NativeMistakeNotebookScree
   }
 
   Future<void> _loadMistakes() async {
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
     try {
       final res = await _apiClient.getPerformance();
       if (mounted) {
@@ -33,9 +37,12 @@ class _NativeMistakeNotebookScreenState extends State<NativeMistakeNotebookScree
           }
         });
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Could not sync mistake notebook. Please check your connection.';
+        });
       }
     }
   }
@@ -103,6 +110,33 @@ class _NativeMistakeNotebookScreenState extends State<NativeMistakeNotebookScree
                       ),
                     ),
                     const SizedBox(height: 20),
+
+                    if (_errorMessage != null)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: NeetTokens.error.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(NeetTokens.radiusMd),
+                          border: Border.all(color: NeetTokens.error.withValues(alpha: 0.4)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.error_outline, color: NeetTokens.error, size: 20),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: NeetTokens.error, fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: _loadMistakes,
+                              child: const Text('Retry', style: TextStyle(color: NeetTokens.error, fontWeight: FontWeight.w800)),
+                            ),
+                          ],
+                        ),
+                      ),
 
                     if (_weakAreas.isEmpty)
                       _buildEmptyState()

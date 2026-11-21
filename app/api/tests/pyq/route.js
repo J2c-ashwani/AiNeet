@@ -51,7 +51,7 @@ export async function POST(request) {
             ? topics.map(t => Number(t)).filter(id => !isNaN(id) && id > 0)
             : null;
 
-        let query = supabase.from('questions').select('*').eq('is_pyq', true);
+        let query = supabase.from('questions').select('*').eq('is_pyq', 1);
 
         if (normalizedTopicIds && normalizedTopicIds.length > 0) {
             query = query.in('topic_id', normalizedTopicIds);

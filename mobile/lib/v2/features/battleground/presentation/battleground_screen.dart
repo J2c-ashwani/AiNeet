@@ -198,6 +198,27 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
   Future<void> _launchDuelTest(String challengeId) async {
     NeetTokens.hapticMedium();
     try {
+      if (challengeId.isNotEmpty) {
+        final challengeRes = await _apiClient.getChallengeDetails(challengeId);
+        if (challengeRes.statusCode == 200 && challengeRes.data != null) {
+          final cData = challengeRes.data;
+          final questionsList = cData['questions'];
+          if (questionsList is List && questionsList.isNotEmpty) {
+            final testData = {
+              'id': challengeId,
+              'testId': challengeId,
+              'title': '1v1 WhatsApp Duel (10 Qs)',
+              'questions': questionsList,
+              'timeLimit': 600,
+              'time_limit': 600,
+            };
+            if (!mounted) return;
+            _navigateToTestEngine('1v1 WhatsApp Duel (10 Qs)', testData);
+            return;
+          }
+        }
+      }
+
       final testRes = await _apiClient.generateTest(type: 'custom', questionCount: 10);
       if (!mounted) return;
       if (testRes.statusCode == 200 && testRes.data != null) {
@@ -205,10 +226,10 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
         testData['testId'] = challengeId.isNotEmpty ? challengeId : testData['id'];
         _navigateToTestEngine('1v1 WhatsApp Duel (10 Qs)', testData);
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not load duel questions. Please retry.')),
+          const SnackBar(content: Text('Could not load duel questions. Please check connection and retry.')),
         );
       }
     }
@@ -578,7 +599,9 @@ class _NativeBattlegroundScreenState extends State<NativeBattlegroundScreen> {
 
         if (testRes.statusCode == 200 && testRes.data != null) {
           final testData = Map<String, dynamic>.from(testRes.data as Map);
-          _navigateToTestEngine('Solo Blitz Match (5 Qs)', testData);
+          testData['timeLimit'] = 60;
+          testData['time_limit'] = 60;
+          _navigateToTestEngine('Solo Speed Blitz (60s)', testData);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

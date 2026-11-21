@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'core/constants/tokens.dart';
@@ -70,16 +71,25 @@ class _NeetV2AppState extends State<NeetV2App> with WidgetsBindingObserver {
   bool _isCheckingSession = true;
   bool _isLoggedIn = false;
   int _currentTab = 0;
+  StreamSubscription<bool>? _sessionSub;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _sessionSub = NeetApiClient.onSessionExpired.listen((expired) {
+      if (expired && mounted) {
+        setState(() {
+          _isLoggedIn = false;
+        });
+      }
+    });
     _restoreSession();
   }
 
   @override
   void dispose() {
+    _sessionSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

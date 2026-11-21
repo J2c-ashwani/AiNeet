@@ -91,7 +91,7 @@ class _NativeSettingsScreenState extends State<NativeSettingsScreen> {
             onPressed: () async {
               Navigator.pop(ctx);
               try {
-                await NeetApiClient().dio.delete('/api/auth/delete-account');
+                await NeetApiClient().dio.post('/api/auth/delete-account');
                 widget.onLogout();
               } catch (e) {
                 if (mounted) {

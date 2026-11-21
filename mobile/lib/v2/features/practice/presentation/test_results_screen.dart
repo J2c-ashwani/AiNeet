@@ -99,7 +99,9 @@ class NativeTestResultsScreen extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 NeetTokens.hapticMedium();
-                final text = '🎯 I scored $score/${totalQuestions * 4} ($accuracy% accuracy) on AI NEET Coach!\nCan you beat my score? Test yourself: https://aineetcoach.com';
+                final testId = (resultData['testId'] ?? resultData['id'] ?? '').toString();
+                final scorecardParam = testId.isNotEmpty ? '&testId=$testId' : '';
+                final text = '🎯 I scored $score/${totalQuestions * 4} ($accuracy% accuracy) on AI NEET Coach!\nVerified Scorecard: https://aineetcoach.com/api/tests/scorecard?score=$score&total=${totalQuestions * 4}$scorecardParam\nBeat my score: https://aineetcoach.com';
                 final whatsappUri = Uri.parse('https://api.whatsapp.com/send?text=${Uri.encodeComponent(text)}');
                 if (await canLaunchUrl(whatsappUri)) {
                   await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);

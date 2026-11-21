@@ -19,7 +19,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
   final ImagePicker _picker = ImagePicker();
   bool _isSolving = false;
 
-  Future<void> _handleAskDoubt({String? imageBase64, String? imagePath}) async {
+  Future<void> _handleAskDoubt({String? imageBase64, String? imagePath, String? mimeType}) async {
     final text = _questionController.text.trim();
     if (text.isEmpty && imageBase64 == null) return;
 
@@ -36,7 +36,7 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
     });
 
     try {
-      final res = await _apiClient.solveDoubt(text, imageBase64: imageBase64);
+      final res = await _apiClient.solveDoubt(text, imageBase64: imageBase64, mimeType: mimeType);
       if (res.statusCode == 200 && res.data != null && mounted) {
         final answer = res.data['solution'] ?? res.data['answer'] ?? res.data['text'] ?? 'Solution provided.';
         setState(() {
@@ -76,7 +76,8 @@ class _NativeDoubtSolverScreenState extends State<NativeDoubtSolverScreen> {
       if (image != null) {
         final bytes = await image.readAsBytes();
         final base64String = base64Encode(bytes);
-        _handleAskDoubt(imageBase64: base64String, imagePath: image.path);
+        final mimeType = image.name.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+        _handleAskDoubt(imageBase64: base64String, imagePath: image.path, mimeType: mimeType);
       }
     } catch (e) {
       // Handle camera error gracefully if needed

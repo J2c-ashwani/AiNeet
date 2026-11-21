@@ -4,7 +4,7 @@ import { logPaymentTimeline } from '@/lib/core/payment-timeline';
 
 const ROUTE = '/api/auth/delete-account';
 
-export const POST = withApiRoute(async (_request, { user }) => {
+const deleteAccountHandler = withApiRoute(async (_request, { user }) => {
     const userId = user.id;
     const profile = await safeSelect('users', query => query
         .select('id, account_status')
@@ -70,3 +70,6 @@ export const POST = withApiRoute(async (_request, { user }) => {
     appCheck: 'native',
     rateLimit: { limit: 2, window: 60 * 60 * 1000, failBehavior: 'closed', key: 'account-delete' },
 });
+
+export const POST = deleteAccountHandler;
+export const DELETE = deleteAccountHandler;

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../../../core/constants/tokens.dart';
 import '../../../core/cache/offline_cache.dart';
 import '../../../core/api/api_client.dart';
@@ -58,6 +59,8 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
         _testId = data['testId']?.toString() ?? data['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
         if (data['timeLimit'] is int) {
           _remainingSeconds = data['timeLimit'] as int;
+        } else if (data['time_limit'] is int) {
+          _remainingSeconds = data['time_limit'] as int;
         } else if (_questions.isNotEmpty) {
           _remainingSeconds = _questions.length * 90;
         }
@@ -277,27 +280,78 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
       await OfflineCacheService.removeKey('questions_current');
 
       if (mounted) {
-        Navigator.pop(context); // pop dialog
-        final scorecard = _buildScorecard(res.data);
-        widget.onSubmitTest(scorecard);
+        Navigator.pop(context); // pop progress dialog
+        if (res.statusCode == 200 && res.data != null) {
+          final scorecard = _buildScorecard(res.data);
+          widget.onSubmitTest(scorecard);
+        } else {
+          throw Exception(res.data?['error'] ?? 'Submission rejected by server');
+        }
       }
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
-        Navigator.pop(context); // pop dialog
-        final scorecard = _buildScorecard(null);
-        widget.onSubmitTest(scorecard);
+        Navigator.pop(context); // pop progress dialog
+        final errorMsg = e is DioException
+            ? (e.response?.data?['error']?.toString() ?? e.message ?? 'Network error')
+            : e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit test: $errorMsg'),
+            backgroundColor: NeetTokens.error,
+            duration: const Duration(seconds: 8),
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: _handleAutoSubmit,
+            ),
+          ),
+        );
       }
     }
   }
 
   Map<String, dynamic> _buildScorecard(dynamic apiData) {
-    if (apiData is Map<String, dynamic> &&
-        apiData.containsKey('score') &&
-        apiData.containsKey('explanations') &&
-        (apiData['explanations'] as List).isNotEmpty) {
-      return apiData;
+    if (apiData is Map) {
+      final scoreObj = (apiData['score'] is Map) ? apiData['score'] as Map : null;
+      final answersList = (apiData['answers'] is List)
+          ? apiData['answers'] as List
+          : (apiData['explanations'] is List)
+              ? apiData['explanations'] as List
+              : [];
+
+      if (scoreObj != null && answersList.isNotEmpty) {
+        final List<Map<String, dynamic>> explanations = [];
+        for (var a in answersList) {
+          if (a is Map) {
+            final aMap = Map<String, dynamic>.from(a);
+            final isCorrect = aMap['is_correct'] == 1 || aMap['is_correct'] == true;
+            explanations.add({
+              'question': aMap['text'] ?? 'NEET Question',
+              'userAnswer': aMap['selected_option'] ?? aMap['userAnswer'] ?? 'Unattempted',
+              'correctAnswer': aMap['correct_option'] ?? aMap['correctAnswer'] ?? 'Unverified',
+              'explanation': aMap['explanation'] ?? 'Official NCERT step-by-step conceptual breakdown.',
+              'isCorrect': isCorrect,
+            });
+          }
+        }
+
+        return {
+          'score': scoreObj['scaledScore'] ?? scoreObj['rawScore'] ?? 0,
+          'totalQuestions': scoreObj['totalQuestions'] ?? _questions.length,
+          'correct': scoreObj['correct'] ?? 0,
+          'incorrect': scoreObj['incorrect'] ?? 0,
+          'unattempted': scoreObj['unanswered'] ?? 0,
+          'accuracy': scoreObj['accuracy'] ?? 0,
+          'timeTakenSeconds': _elapsedSeconds,
+          'explanations': explanations,
+          'xpEarned': apiData['xpEarned'] ?? 0,
+          'streak': apiData['streak'] ?? 0,
+          'level': apiData['level'] ?? 1,
+        };
+      }
     }
 
+    // Secondary fallback using locally verified questions (never defaulting to 'A')
     int correct = 0;
     int incorrect = 0;
     int unattempted = 0;
@@ -306,8 +360,8 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
     for (int i = 0; i < _questions.length; i++) {
       final q = _questions[i];
       final userAnswer = _selectedAnswers[i];
-      final correctAnswer = q['correct_option']?.toString().toUpperCase() ?? 'A';
-      final isCorrect = userAnswer != null && userAnswer.toUpperCase() == correctAnswer;
+      final correctAnswer = q['correct_option']?.toString().toUpperCase();
+      final isCorrect = correctAnswer != null && userAnswer != null && userAnswer.toUpperCase() == correctAnswer;
 
       if (userAnswer == null) {
         unattempted++;
@@ -320,7 +374,7 @@ class _NativeTestEngineScreenState extends State<NativeTestEngineScreen> {
       explanations.add({
         'question': q['text'] ?? 'Question ${i + 1}',
         'userAnswer': userAnswer ?? 'Unattempted',
-        'correctAnswer': correctAnswer,
+        'correctAnswer': correctAnswer ?? 'Pending Verification',
         'explanation': q['explanation'] ?? 'Official NCERT step-by-step conceptual breakdown.',
         'isCorrect': isCorrect,
       });
